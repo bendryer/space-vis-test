@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OU Space Research Visualiser</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    
+    <div id="ui-layer">
+      <div id="header">
+        <h1>OU Space Research <span style="font-weight:lighter">| Live Data</span></h1>
+        <div id="clock">Loading Time...</div>
+      </div>
+      
+      <div id="mission-menu">
+        <h3>Select Mission</h3>
+        <div id="mission-list"></div>
+        <button id="reset-btn">Reset View</button>
+      </div>
+
+      <div id="controls">
+        <button id="btn-slower" class="time-btn">−</button>
+        <span id="speedLabel">Real Time</span>
+        <button id="btn-faster" class="time-btn">+</button>
+      </div>
+    </div>
+
+    <div id="sidebar">
+        <div id="info-content"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

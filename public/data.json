@@ -1,0 +1,92 @@
+[
+  { "name": "Sun", "type": "star", "status": "Launched", "shape": "sphere", "radius": 25, "texture": "/textures/sun.jpg", "color": "#ffcc00", "tilt": 7.25, "rot_period": 27, "orbit": { "a": 0, "e": 0, "i": 0, "M0": 0, "rate": 0 }, "description": "The star at the center of our Solar System." },
+  
+  { "name": "Mercury", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 2, "texture": "/textures/mercury.jpg", "color": "#aaaaaa", "tilt": 0.03, "rot_period": 58.6, "orbit": { "a": 400, "e": 0.205, "i": 7.0, "M0": 174.7, "rate": 4.09 }, "description": "The smallest planet in the Solar System." },
+  { "name": "BepiColombo", "parent": "Mercury", "type": "mission", "status": "En Route", "launch_year": "2018", "image_url": "/images/bepi_science.jpg", "description": "Europe's first mission to Mercury.", "ou_involvement": "The CEI provided the MIXS instrument.", "model": "/models/bepicolombo.glb", "model_scale": 2.5, "radius": 0.8, "color": "#00aaff", "orbit": { "a": 4, "e": 0.1, "i": 80, "M0": 0, "rate": 5.0 } },
+
+  { "name": "Venus", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 4.5, "texture": "/textures/venus.jpg", "color": "#e6c229", "tilt": 177.3, "rot_period": -243, "orbit": { "a": 700, "e": 0.007, "i": 3.4, "M0": 50.1, "rate": 1.60 }, "description": "Second planet from the Sun." },
+
+  { "name": "Earth", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 5, "texture": "/textures/earth.jpg", "night_texture": "/textures/earth_night.jpg", "color": "#2244ff", "tilt": 23.4, "rot_period": 0.997, "orbit": { "a": 1000, "e": 0.017, "i": 0.0, "M0": 357.5, "rate": 0.9856 }, "description": "Our home planet." },
+  { "name": "Moon", "parent": "Earth", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 1.5, "texture": "/textures/moon.jpg", "color": "#aaaaaa", "tilt": 6.68, "rot_period": 27.3, "orbit": { "a": 30, "e": 0.055, "i": 5.1, "M0": 135, "rate": 13.17 } },
+  
+  { "name": "Earth-Sun L2", "parent": "Sun", "type": "reference_point", "status": "Launched", "description": "Lagrange Point 2", "radius": 1, "orbit": { "a": 1150, "e": 0.017, "i": 0.0, "M0": 357.5, "rate": 0.9856 } },
+  
+  { 
+    "name": "Gaia", 
+    "parent": "Earth-Sun L2", 
+    "type": "mission", 
+    "status": "Operational", 
+    "launch_year": "2013",
+    "image_url": "/images/gaia_science.jpg",
+    "description": "Gaia is creating a 3D map of the Milky Way.", 
+    "ou_involvement": "CEI researchers work on transient analysis.", 
+    "model": "/models/gaia.glb", 
+    "model_scale": 2.0, 
+    "radius": 1, 
+    "color": "#ffffff", 
+    "orbit_type": "lissajous", 
+    "orbit": { "a": 8, "e": 0, "i": 90, "rate": 2.0, "M0": 0 },
+    "attitude": { "x": 45, "z": 0 }
+  },
+  { 
+    "name": "Euclid", 
+    "parent": "Earth-Sun L2", 
+    "type": "mission", 
+    "status": "Planned", 
+    "launch_year": "2023", 
+    "image_url": "/images/euclid_science.jpg", 
+    "description": "Euclid will explore the dark universe.", 
+    "ou_involvement": "The CEI developed the VIS detectors.", 
+    "model": "/models/euclid.glb", 
+    "model_scale": 2.0, 
+    "radius": 1, 
+    "color": "#ff00ff", 
+    "orbit_type": "lissajous", 
+    "orbit": { "a": 10, "e": 0, "i": 90, "rate": 2.0, "M0": 180 },
+    "attitude": { "x": 25, "z": 10 }
+  },
+
+  { "name": "Mars", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 3, "texture": "/textures/mars.jpg", "color": "#cc3300", "tilt": 25.2, "rot_period": 1.03, "orbit": { "a": 1600, "e": 0.094, "i": 1.9, "M0": 19.4, "rate": 0.524 }, "description": "The Red Planet." },
+  
+  { 
+    "name": "ExoMars TGO", 
+    "parent": "Mars", 
+    "type": "mission", 
+    "status": "Operational", 
+    "launch_year": "2016", 
+    "image_url": "/images/tgo_science.jpg", 
+    "description": "Searching for trace gases.", 
+    "ou_involvement": "The CEI leads the NOMAD instrument.", 
+    "model": "/models/tgo.glb", 
+    "model_scale": 2.0, 
+    "radius": 0.8, 
+    "color": "#ffffff", 
+    "orbit": { "a": 5, "e": 0, "i": 74, "M0": 0, "rate": 4500 },
+    "attitude": { "x": 10, "z": 0 }
+  },
+  
+  { "name": "Perseverance", "parent": "Mars", "type": "mission", "status": "Operational", "orbit_type": "landed", "landed_coords": { "lat": 18.4, "lon": 77.5 }, "launch_year": "2020", "image_url": "/images/perseverance.jpg", "description": "Exploring Jezero Crater.", "ou_involvement": "CEI validates SHERLOC sensors.", "model": "/models/perseverance.glb", "model_scale": 0.2, "radius": 0.2, "color": "#ffaa00" },
+
+  { "name": "Jupiter", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 22, "texture": "/textures/jupiter.jpg", "color": "#d8ca9d", "tilt": 3.1, "rot_period": 0.41, "orbit": { "a": 3200, "e": 0.049, "i": 1.3, "M0": 20.0, "rate": 0.083 }, "description": "The largest planet." },
+  { "name": "Io", "parent": "Jupiter", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 1.5, "texture": "/textures/io.jpg", "color": "#ffff00", "orbit": { "a": 35, "e": 0.004, "i": 0.05, "M0": 0, "rate": 203 } },
+  { "name": "Europa", "parent": "Jupiter", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 1.4, "texture": "/textures/europa.jpg", "color": "#dddddd", "orbit": { "a": 45, "e": 0.009, "i": 0.47, "M0": 45, "rate": 101 } },
+  { "name": "Ganymede", "parent": "Jupiter", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 2.2, "texture": "/textures/ganymede.jpg", "color": "#aaaaaa", "orbit": { "a": 75, "e": 0.001, "i": 0.2, "M0": 10, "rate": 50.5 } },
+  { "name": "Callisto", "parent": "Jupiter", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 2.1, "texture": "/textures/callisto.jpg", "color": "#888888", "orbit": { "a": 130, "e": 0.007, "i": 0.2, "M0": 200, "rate": 21.5 } },
+  
+  { "name": "JUICE", "parent": "Sun", "type": "trajectory", "status": "En Route", "launch_year": "2023", "image_url": "/images/juice_science.jpg", "description": "JUpiter ICy moons Explorer.", "ou_involvement": "Involved in JANUS and PEP.", "model": "/models/juice.glb", "model_scale": 2.5, "radius": 1.5, "color": "#00AAFF", "waypoints": [ { "date": "2023-04-14", "target": "Earth" }, { "date": "2024-08-20", "target": "Earth" }, { "date": "2025-08-31", "target": "Venus" }, { "date": "2026-09-29", "target": "Earth" }, { "date": "2029-01-18", "target": "Earth" }, { "date": "2031-07-01", "target": "Jupiter" } ] },
+
+  { "name": "Saturn", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 20, "texture": "/textures/saturn.jpg", "color": "#ead6b8", "tilt": 26.7, "rot_period": 0.45, "ring": { "texture": "/textures/saturn_ring.png", "inner_radius": 1.2, "outer_radius": 2.3, "opacity": 0.9, "emissive": 0.2 }, "orbit": { "a": 4500, "e": 0.057, "i": 2.49, "M0": 317.0, "rate": 0.033 }, "description": "Famous for its rings." },
+  { "name": "Titan", "parent": "Saturn", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 2, "texture": "/textures/titan.jpg", "color": "#ff9900", "orbit": { "a": 50, "e": 0.028, "i": 0.3, "M0": 0, "rate": 22 } },
+
+  { "name": "Uranus", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 12, "texture": "/textures/uranus.jpg", "color": "#99ccff", "tilt": 97.8, "rot_period": -0.72, "orbit": { "a": 6000, "e": 0.046, "i": 0.77, "M0": 141.0, "rate": 0.011 } },
+
+  { "name": "Neptune", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 11, "texture": "/textures/neptune.jpg", "color": "#3366ff", "tilt": 28.3, "rot_period": 0.67, "orbit": { "a": 7000, "e": 0.011, "i": 1.77, "M0": 256.0, "rate": 0.006 } },
+
+  { "name": "Comet 67P", "parent": "Sun", "type": "comet", "status": "Launched", "model": "/models/67p.glb", "model_scale": 4.0, "radius": 1, "color": "#aaaaaa", "tilt": 0, "rot_period": 0.5, "orbit": { "a": 2500, "e": 0.64, "i": 7.0, "M0": 340, "rate": 0.15 } },
+  { "name": "Rosetta", "parent": "Comet 67P", "type": "mission", "status": "Decommissioned", "launch_year": "2004", "image_url": "/images/rosetta_science.jpg", "description": "Rosetta performed a detailed study of comet 67P.", "ou_involvement": "CEI provided Ptolemy.", "model": "/models/rosetta.glb", "model_scale": 2.0, "radius": 0.5, "color": "#00aaff", "orbit": { "a": 2.5, "e": 0, "i": 30, "M0": 0, "rate": 150 } },
+
+  { "name": "Philae", "parent": "Comet 67P", "type": "mission", "status": "Landed", "orbit_type": "landed", "landed_coords": { "lat": 45, "lon": 10 }, "launch_year": "2004", "description": "Philae lander on 67P.", "model": "/models/philae.glb", "model_scale": 0.2, "radius": 0.1, "color": "#cccccc" },
+
+  { "name": "Test Shadow Earth", "parent": "Sun", "type": "planet", "status": "Launched", "shape": "sphere", "radius": 5, "color": "#44ff44", "texture": "/textures/earth.jpg", "tilt": 0, "rot_period": 10, "orbit": { "a": 600, "e": 0, "i": 0, "M0": 0, "rate": 0 } },
+  { "name": "Test Shadow Moon", "parent": "Test Shadow Earth", "type": "moon", "status": "Launched", "shape": "sphere", "radius": 2, "color": "#ff4444", "texture": "/textures/moon.jpg", "orbit": { "a": 15, "e": 0, "i": 0, "M0": 180, "rate": 0 } }
+]
