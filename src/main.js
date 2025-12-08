@@ -51,7 +51,8 @@ dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5
 dracoLoader.setDecoderConfig({ type: 'js' });
 gltfLoader.setDRACOLoader(dracoLoader);
 
-const bgTexture = texLoader.load('/textures/milky_way.jpg');
+// FIX: Remove leading slash for relative path
+const bgTexture = texLoader.load('textures/milky_way.jpg');
 bgTexture.colorSpace = THREE.SRGBColorSpace;
 bgTexture.mapping = THREE.EquirectangularReflectionMapping;
 scene.background = bgTexture;
@@ -107,6 +108,13 @@ if (DEBUG_SHADOWS) {
 // --- GLOBAL VARS ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+
+// --- HELPER: PATH SANITIZER ---
+// Converts "/textures/foo.jpg" -> "textures/foo.jpg"
+function fixPath(path) {
+    if (!path) return null;
+    return path.startsWith('/') ? path.slice(1) : path;
+}
 
 // --- PHYSICS HELPER FUNCTIONS ---
 function getDaysSinceJ2000(date) { return (date - J2000_DATE) / 86400000; }
@@ -207,7 +215,7 @@ function createLissajousLine(orbitData) {
 // --- DYNAMIC SUN GENERATOR ---
 function createSun(radius, texturePath) {
     const sunGroup = new THREE.Group();
-    const texture = texLoader.load(texturePath);
+    const texture = texLoader.load(fixPath(texturePath)); // FIX PATH
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     const surfaceMaterial = new THREE.ShaderMaterial({
         uniforms: { uTime: { value: 0 }, uTexture: { value: texture } },
@@ -276,7 +284,7 @@ function createSun(radius, texturePath) {
 function createEarthNightLayer(radius, texturePath) {
     try {
         const geometry = new THREE.SphereGeometry(radius * 1.005, 64, 64);
-        const nightTexture = texLoader.load(texturePath);
+        const nightTexture = texLoader.load(fixPath(texturePath)); // FIX PATH
         nightTexture.colorSpace = THREE.SRGBColorSpace;
         const material = new THREE.ShaderMaterial({
             uniforms: { tNight: { value: nightTexture } },
@@ -391,6 +399,7 @@ function attemptToLand() {
                 targetQuaternion.setFromUnitVectors(landerUp, surfaceNormal);
                 request.group.quaternion.copy(targetQuaternion);
                 
+                // Final Scale Application
                 const s = request.data.model_scale || 1.0;
                 request.group.scale.set(s,s,s);
 
@@ -405,7 +414,7 @@ function attemptToLand() {
 // --- LOADING ---
 async function loadSystem() {
     try {
-        const res = await fetch('/data.json');
+        const res = await fetch('./data.json'); // FIX: Relative path
         const data = await res.json();
 
         data.forEach(item => {
@@ -428,7 +437,7 @@ async function loadSystem() {
             celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item });
 
             if (item.model) {
-                gltfLoader.load(item.model, (gltf) => {
+                gltfLoader.load(fixPath(item.model), (gltf) => { // FIX PATH
                     const model = gltf.scene;
                     const wrapper = new THREE.Group();
                     wrapper.add(model);
@@ -500,7 +509,7 @@ async function loadSystem() {
                 } else {
                     let geo, mat;
                     if (item.texture) {
-                        const tex = texLoader.load(item.texture);
+                        const tex = texLoader.load(fixPath(item.texture)); // FIX PATH
                         tex.colorSpace = THREE.SRGBColorSpace;
                         geo = new THREE.SphereGeometry(item.radius, 64, 64);
                         mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0.1 });
@@ -536,7 +545,7 @@ async function loadSystem() {
                     const u = (len - innerRadius) / (outerRadius - innerRadius);
                     ringGeo.attributes.uv.setXY(i, u, 0.5);
                 }
-                const ringTex = texLoader.load(item.ring.texture);
+                const ringTex = texLoader.load(fixPath(item.ring.texture)); // FIX PATH
                 ringTex.colorSpace = THREE.SRGBColorSpace;
                 const ringMat = new THREE.MeshStandardMaterial({ 
                     map: ringTex, side: THREE.DoubleSide, transparent: true, 
@@ -658,7 +667,7 @@ function updateUI(data) {
     let imageHtml = '';
     if (data.image_url) {
         imageHtml = `<div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 1px solid #444;">
-            <img src="${data.image_url}" style="width:100%; display:block;" alt="${data.name} Science Image" onerror="this.style.display='none'"/>
+            <img src="${fixPath(data.image_url)}" style="width:100%; display:block;" alt="${data.name} Science Image" onerror="this.style.display='none'"/>
         </div>`;
     }
 
@@ -851,27 +860,7 @@ function animate() {
         let idealCamPos = new THREE.Vector3();
 
         // --- CAMERA SHIFT (Cinematic Offset) ---
-        // Shift camera logic to offset mission to left side of screen
         let shiftOffset = new THREE.Vector3(0, 0, 0);
-        if (cinematicActive) {
-            // Calculate Right Vector relative to view
-            // We use standard world up (0,1,0) for orbiters, surfaceNormal for landers
-            let upVec = new THREE.Vector3(0, 1, 0);
-            
-            if (selectedObject.userData.orbit_type === 'landed') {
-                const parentName = selectedObject.userData.parent;
-                const parentObj = celestialMap.get(parentName);
-                if (parentObj) {
-                    const parentPos = new THREE.Vector3();
-                    parentObj.mesh.getWorldPosition(parentPos);
-                    upVec.subVectors(targetWorldPos, parentPos).normalize();
-                }
-            }
-
-            // Estimate view direction (Target - Camera)
-            // We don't have final camera pos yet, so we use current target pos - previous camera pos roughly
-            // Better: use the ideal un-shifted position we are about to calculate
-        }
 
         if (selectedObject.userData.orbit_type === 'landed') {
             // Lander Mode
@@ -913,10 +902,8 @@ function animate() {
             const viewDir = new THREE.Vector3().subVectors(targetWorldPos, idealCamPos).normalize();
             
             // Calculate "Right" vector (View X Up)
-            // For landers we use surface normal as Up, otherwise World Y
             let upVec = new THREE.Vector3(0, 1, 0);
             if (selectedObject.userData.orbit_type === 'landed') {
-                 // Re-calculate normal just to be safe/clean
                  const parentName = selectedObject.userData.parent;
                  const parentObj = celestialMap.get(parentName);
                  if (parentObj) {
@@ -929,11 +916,10 @@ function animate() {
             const rightVec = new THREE.Vector3().crossVectors(viewDir, upVec).normalize();
             
             // Shift both camera and target to the RIGHT so object appears LEFT
-            // Shift amount = approx 20% of distance
             shiftOffset.copy(rightVec).multiplyScalar(dist * 0.3);
             
             idealCamPos.add(shiftOffset);
-            targetWorldPos.add(shiftOffset); // Shift target too
+            targetWorldPos.add(shiftOffset); 
         }
         
         controls.target.lerp(targetWorldPos, CAMERA_FLY_SPEED);
@@ -943,12 +929,10 @@ function animate() {
         if(selectedObject.userData && selectedObject.userData.type !== 'star') {
             sunLight.intensity = 0; 
             const sunPos = new THREE.Vector3(0,0,0);
-            const vecToSun = sunPos.clone().sub(targetWorldPos).normalize(); // Use original target for light dir
+            const vecToSun = sunPos.clone().sub(targetWorldPos).normalize(); 
             const lightPos = targetWorldPos.clone().add(vecToSun.multiplyScalar(100));
             focusLight.position.copy(lightPos);
-            focusLight.target.position.copy(targetWorldPos); // Point at shifted target? No, point at object.
-            // Actually light target should be the object real position.
-            // targetWorldPos has been shifted. Let's re-get real position.
+            // Light should point at the real object position, not the shifted camera target
             const realTargetPos = new THREE.Vector3();
             selectedObject.getWorldPosition(realTargetPos);
             focusLight.target.position.copy(realTargetPos);
