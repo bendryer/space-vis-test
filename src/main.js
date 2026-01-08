@@ -132,30 +132,117 @@ function getKeplerPosition(orbitData, days) {
     return { x: x_orb, y: z_orb * Math.sin(i_rad), z: z_orb * Math.cos(i_rad) };
 }
 
+// --- NEW TRAJECTORY LOGIC (CURVED HOHMANN PATHS) ---
 function getTrajectoryPosition(waypoints, currentDate) {
     const currentMs = currentDate.getTime();
+    
+    // 1. Find the active "Leg" of the journey
     let startIndex = -1;
     for (let i = 0; i < waypoints.length - 1; i++) {
         if (currentMs >= new Date(waypoints[i].date).getTime() && currentMs < new Date(waypoints[i+1].date).getTime()) {
             startIndex = i; break;
         }
     }
+    
+    // Handle "Before Launch" or "After Arrival"
     if (startIndex === -1) {
-        if(currentMs > new Date(waypoints[waypoints.length-1].date).getTime()) {
+        if (currentMs < new Date(waypoints[0].date).getTime()) {
+             // Pre-launch: stick to Earth (or first target)
+             const t = celestialMap.get(waypoints[0].target);
+             return t ? t.group.position : {x:0,y:0,z:0};
+        }
+        if (currentMs >= new Date(waypoints[waypoints.length-1].date).getTime()) {
+             // Arrived: stick to Jupiter (or last target)
              const t = celestialMap.get(waypoints[waypoints.length-1].target);
+             // We return the PLANET position, so it orbits with it
              return t ? t.group.position : {x:0,y:0,z:0};
         }
         return {x:0,y:0,z:0};
     }
-    const startWp = waypoints[startIndex], endWp = waypoints[startIndex+1];
-    const sObj = celestialMap.get(startWp.target), eObj = celestialMap.get(endWp.target);
+
+    // 2. Get Start and End Nodes
+    const startWp = waypoints[startIndex];
+    const endWp = waypoints[startIndex+1];
+    
+    const sObj = celestialMap.get(startWp.target);
+    const eObj = celestialMap.get(endWp.target);
+    
     if(!sObj || !eObj) return {x:0,y:0,z:0};
-    const progress = (currentMs - new Date(startWp.date).getTime()) / (new Date(endWp.date).getTime() - new Date(startWp.date).getTime());
+
+    // 3. Calculate FIXED positions of planets at the specific Dates (Not current date!)
+    const dateStart = new Date(startWp.date);
+    const dateEnd = new Date(endWp.date);
+    const daysStart = getDaysSinceJ2000(dateStart);
+    const daysEnd = getDaysSinceJ2000(dateEnd);
+
+    // Get Kepler positions for the planets at the MOMENT of flyby
+    const p1 = getKeplerPosition(sObj.data.orbit, daysStart);
+    const p2 = getKeplerPosition(eObj.data.orbit, daysEnd);
+
+    // 4. Polar Interpolation (The "Curve" Magic)
+    const progress = (currentMs - dateStart.getTime()) / (dateEnd.getTime() - dateStart.getTime());
+
+    // Convert to Polar (Radius & Angle)
+    const r1 = Math.sqrt(p1.x*p1.x + p1.z*p1.z);
+    const r2 = Math.sqrt(p2.x*p2.x + p2.z*p2.z);
+    
+    const angle1 = Math.atan2(p1.x, p1.z);
+    let angle2 = Math.atan2(p2.x, p2.z);
+
+    // Ensure we rotate the "long way" or "short way" correctly (Prograde/Counter-Clockwise)
+    // Most solar system transfers are prograde.
+    while (angle2 < angle1) angle2 += Math.PI * 2;
+    
+    // Heuristic: If transfer takes > 1.5 years (Earth-Earth loops), add extra loops?
+    // For simplicity, we stick to the shortest prograde arc for visualization stability.
+    // If you want multi-loop, uncomment below:
+    // const years = (dateEnd - dateStart) / (1000 * 60 * 60 * 24 * 365);
+    // if (years > 1.5 && startWp.target === endWp.target) angle2 += Math.PI * 2;
+
+    // Interpolate Radius and Angle
+    const r = r1 + (r2 - r1) * progress; // Spirals out/in
+    const theta = angle1 + (angle2 - angle1) * progress; // Rotates
+    
+    // Interpolate Height (Y - Inclination change)
+    const y = p1.y + (p2.y - p1.y) * progress;
+
     return {
-        x: sObj.group.position.x + (eObj.group.position.x - sObj.group.position.x)*progress,
-        y: sObj.group.position.y + (eObj.group.position.y - sObj.group.position.y)*progress,
-        z: sObj.group.position.z + (eObj.group.position.z - sObj.group.position.z)*progress
+        x: r * Math.sin(theta),
+        y: y,
+        z: r * Math.cos(theta)
     };
+}
+
+function createTrajectoryLine(data) {
+    if (!data.waypoints) return null;
+    const points = [];
+    
+    // Sample the path
+    const totalSegments = 200;
+    const startDate = new Date(data.waypoints[0].date);
+    const endDate = new Date(data.waypoints[data.waypoints.length-1].date);
+    const totalTime = endDate.getTime() - startDate.getTime();
+
+    for (let i = 0; i <= totalSegments; i++) {
+        const t = startDate.getTime() + (totalTime * (i / totalSegments));
+        const date = new Date(t);
+        const pos = getTrajectoryPosition(data.waypoints, date);
+        points.push(pos.x, pos.y, pos.z);
+    }
+
+    const geometry = new LineGeometry();
+    geometry.setPositions(points);
+    const material = new LineMaterial({
+        color: 0x00AAFF, 
+        linewidth: 1.5, 
+        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        dashed: false, 
+        opacity: 0.4, 
+        transparent: true
+    });
+    const line = new Line2(geometry, material);
+    line.computeLineDistances();
+    return line;
 }
 
 function getSurfacePosition(radius, lat, lon) {
@@ -567,15 +654,26 @@ async function loadSystem() {
                 pendingLanders.push({ group: group, data: data });
             } else {
                 scene.add(group);
-                if (data.parent && data.type !== 'trajectory') {
+                if (data.type === 'trajectory') {
+                    // Draw the specialized JUICE path
+                    const trail = createTrajectoryLine(data);
+                    if(trail) { 
+                        scene.add(trail); 
+                        obj.orbitLine = trail; // Store for resizing
+                    }
+                } 
+                else if (data.parent) {
                     let line = null;
                     if (data.orbit_type === 'lissajous') {
                          line = createLissajousLine(data.orbit);
                          const parent = celestialMap.get(data.parent);
                          if(parent && line) parent.mesh.add(line);
                     } else {
-                         line = createOrbitLine(data.orbit, data.color);
-                         if(line) scene.add(line);
+                        // Hide L2 Orbit Ring as requested
+                        if (data.name !== 'Earth-Sun L2') {
+                             line = createOrbitLine(data.orbit, data.color);
+                             if(line) scene.add(line);
+                        }
                     }
                     if(line) obj.orbitLine = line;
                 }
