@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OUniverse — Mission &amp; Object Guide</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.181.2/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.181.2/examples/jsm/"
+  }
+}
+</script>
+<style>
+  :root {
+    --bg: #05070d;
+    --panel: rgba(15, 20, 35, 0.85);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --accent: #00aaff;
+    --accent-dim: rgba(0, 170, 255, 0.1);
+    --text: #e8ecf5;
+    --text-dim: #9aa4bb;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(ellipse at top, #0b1020 0%, #05070d 60%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  a { color: var(--accent); }
+
+  /* --- HEADER --- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(6, 9, 18, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--panel-border);
+    padding: 18px 24px;
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 1.4rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+  }
+  header p.sub {
+    margin: 0 0 14px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    max-width: 800px;
+    line-height: 1.5;
+  }
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  #search {
+    flex: 1 1 220px;
+    background: #0d1220;
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    padding: 9px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    outline: none;
+  }
+  #search:focus { border-color: var(--accent); }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #10182b;
+    border: 1px solid var(--panel-border);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .chip.active {
+    color: #fff;
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .chip.warn.active { border-color: #ffb020; background: rgba(255,176,32,0.12); color: #ffd580; }
+  #result-count { color: var(--text-dim); font-size: 0.78rem; margin-left: auto; white-space: nowrap; }
+  #toc {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 24px 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  #toc a {
+    text-decoration: none;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--panel-border);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+  #toc a:hover { color: #fff; border-color: var(--accent); }
+
+  main { padding: 20px 24px 60px; max-width: 1500px; margin: 0 auto; }
+
+  #loading, #load-error {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 80px 20px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  section.system { margin-bottom: 44px; }
+  section.system h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 300;
+    font-size: 1.3rem;
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  section.system h2 .icon { font-size: 1.2rem; }
+  section.system .intro {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    margin: -8px 0 14px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: 140px;
+  }
+  .card.root-card { border-color: rgba(0,170,255,0.35); }
+  .card.incomplete { outline: 1px solid rgba(255,176,32,0.4); }
+
+  .card-head { padding: 14px 16px 0; }
+  .card-head h3 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 500; }
+  .badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .badge.orbits { background: transparent; border-style: dashed; color: var(--text-dim); text-transform: none; letter-spacing: 0; font-size: 0.7rem; }
+  .badge.warn { background: rgba(255,176,32,0.15); border-color: #ffb020; color: #ffd580; }
+
+  .preview-wrap {
+    position: relative;
+    margin: 10px 16px 0;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, #131a2c 0%, #060810 75%);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .preview-wrap canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+  .preview-status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 10px;
+    pointer-events: none;
+  }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .preview-hint {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+    pointer-events: none;
+  }
+  .preview-static {
+    margin: 10px 16px 0;
+    height: 120px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed var(--panel-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    gap: 6px;
+    text-align: center;
+    padding: 10px;
+  }
+  .preview-static .icon { font-size: 1.6rem; }
+
+  .card-body { padding: 12px 16px 16px; font-size: 0.86rem; line-height: 1.5; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .card-body p { margin: 0; color: #d6dbe8; }
+  .card-body p.missing { color: var(--text-dim); font-style: italic; }
+  .science-img { border-radius: 8px; overflow: hidden; border: 1px solid #444; }
+  .science-img img { width: 100%; display: block; max-height: 150px; object-fit: cover; }
+  .science-img figcaption { font-size: 0.65rem; color: var(--text-dim); text-align: center; padding: 4px 0 0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ou-block {
+    background: var(--accent-dim);
+    border-left: 3px solid var(--accent);
+    padding: 10px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.83rem;
+    line-height: 1.5;
+  }
+  .ou-block strong { color: var(--accent); display: block; margin-bottom: 4px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ou-block.empty {
+    background: rgba(255,176,32,0.06);
+    border-left-color: #ffb020;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .ou-block.empty strong { color: #ffb020; }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    padding: 30px 20px 50px;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  #back-to-top {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    background: rgba(0,170,255,0.15);
+    border: 1px solid var(--accent);
+    color: #fff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: none;
+    z-index: 60;
+  }
+  #back-to-top:hover { background: rgba(0,170,255,0.3); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>OUniverse — Mission &amp; Object Guide</h1>
+  <p class="sub">
+    A single-page reference covering every body and mission in the OUniverse interactive: description,
+    Open University involvement, and an interactive 3D preview of each model. Content is pulled live from
+    <code>data.json</code> — edit that file and reload this page to see updates, no rebuild required.
+  </p>
+  <div class="controls-row">
+    <input id="search" type="search" placeholder="Search by name, description or OU involvement…" />
+    <div id="type-filters"></div>
+    <span class="chip warn" id="incomplete-toggle" title="Show only entries missing a description or OU-involvement writeup">⚠ Incomplete only</span>
+    <span id="result-count"></span>
+  </div>
+</header>
+
+<nav id="toc"></nav>
+
+<main id="app">
+  <div id="loading">Loading mission data…</div>
+</main>
+
+<footer id="footer" hidden>
+  Generated as a companion to the OUniverse 3D explorer. Data source: <code>data.json</code> —
+  the app's own "single source of truth" per the project's asset conventions. 3D previews load lazily
+  as you scroll and use the same generic-model substitution as the main app for named-asteroid privacy.
+  <br />This page needs to be hosted alongside the site's <code>models/</code>, <code>textures/</code> and
+  <code>images/</code> folders (i.e. served from the same place as the main app) for previews and images to load.
+</footer>
+
+<button id="back-to-top" title="Back to top">↑</button>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// --- Privacy toggle: kept in sync with USE_NAMED_ASTEROID_MODELS in src/main.js. ---
+// When false, custom OU-researcher-named asteroid models are swapped for generic ones.
+const USE_NAMED_ASTEROID_MODELS = false;
+
+const GENERIC_ASTEROID_MODELS = [
+  '/models/Asteroid1.glb', '/models/Asteroid2.glb', '/models/Asteroid3.glb',
+  '/models/Asteroid4.glb', '/models/Asteroid5.glb'
+];
+const NAMED_ASTEROID_MODELS = [
+  '/models/Grady.glb', '/models/Franchi.glb', '/models/Greenwood.glb', '/models/Rider-Stokes.glb',
+  '/models/OU.glb', '/models/Norton.glb', '/models/Green.glb', '/models/Pillinger.glb', '/models/Zarnecki.glb'
+];
+
+function getHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function getEffectiveModelPath(item) {
+  let modelPath = item.model;
+  if (!modelPath && item.type === 'asteroid') {
+    return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
+  }
+  if (!modelPath) return null;
+  const base = modelPath.split('/').pop().toLowerCase();
+  const isNamed = NAMED_ASTEROID_MODELS.some(m => m.split('/').pop().toLowerCase() === base);
+  if (isNamed && !USE_NAMED_ASTEROID_MODELS) {
+    return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
+  }
+  return modelPath;
+}
+
+// Resolve a data.json root-relative path ("/models/x.glb") against this document's own location,
+// so the page works whether it's served from a site root or a GitHub Pages sub-path.
+function fixPath(p) { return p ? p.replace(/^\/+/, '') : p; }
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+const TYPE_META = {
+  star: { icon: '☀️', color: '#ffcc00', label: 'Star' },
+  planet: { icon: '🪐', color: '#00aaff', label: 'Planet' },
+  moon: { icon: '🌕', color: '#9aa4bb', label: 'Moon' },
+  mission: { icon: '🛰️', color: '#00e0c0', label: 'Mission' },
+  asteroid: { icon: '🪨', color: '#c9975f', label: 'Asteroid' },
+  comet: { icon: '☄️', color: '#7fd4ff', label: 'Comet' },
+  reference_point: { icon: '📍', color: '#b57edc', label: 'Reference Point' }
+};
+function typeMeta(t) { return TYPE_META[t] || { icon: '•', color: '#888', label: t || 'Object' }; }
+
+// Mirrors updateUI()'s status colour logic in src/main.js, so badges read the same as the live app.
+function statusColor(status) {
+  if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return '#006622';
+  if (status === 'Planned') return '#004466';
+  if (['Crashed', 'Landed', 'Decommissioned'].includes(status)) return '#662200';
+  return '#333';
+}
+function statusTextColor(status) { return status === 'Planned' ? '#000' : '#fff'; }
+
+// --- Shared three.js loaders/caches (kept outside the per-card lifecycle) ---
+THREE.Cache.enabled = true;
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.181.2/examples/jsm/libs/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+const textureLoader = new THREE.TextureLoader();
+
+const gltfCache = new Map();
+function loadModel(path) {
+  if (!gltfCache.has(path)) {
+    gltfCache.set(path, new Promise((resolve, reject) => gltfLoader.load(path, resolve, undefined, reject)));
+  }
+  return gltfCache.get(path);
+}
+const textureCache = new Map();
+function loadTexture(path) {
+  if (!textureCache.has(path)) textureCache.set(path, textureLoader.load(path));
+  return textureCache.get(path);
+}
+
+function fitAndCenter(object, targetSize = 1.7) {
+  const box = new THREE.Box3().setFromObject(object);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  const maxDim = Math.max(size.x, size.y, size.z) || 1;
+  const scale = targetSize / maxDim;
+  object.scale.setScalar(scale);
+  object.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+}
+
+function buildRing(ring) {
+  const geo = new THREE.RingGeometry(ring.inner_radius, ring.outer_radius, 64, 1);
+  const pos = geo.attributes.position;
+  const uv = geo.attributes.uv;
+  const v3 = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    v3.fromBufferAttribute(pos, i);
+    const t = (v3.length() - ring.inner_radius) / (ring.outer_radius - ring.inner_radius);
+    uv.setXY(i, t, 1);
+  }
+  const mat = new THREE.MeshBasicMaterial({
+    map: loadTexture(fixPath(ring.texture)),
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: ring.opacity ?? 1
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = Math.PI / 2;
+  return mesh;
+}
+
+// --- Per-card lazy 3D preview lifecycle. Contexts are only live while the card is (near) on screen,
+// since browsers cap concurrent WebGL contexts far below the ~80 objects in this dataset. ---
+const activePreviews = new Set();
+
+function setStatus(container, html) {
+  let el = container.querySelector('.preview-status');
+  if (!html) { el?.remove(); return; }
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'preview-status';
+    container.appendChild(el);
+  }
+  el.innerHTML = html;
+}
+
+function initPreview(container, item) {
+  const w = container.clientWidth || 300, h = container.clientHeight || 200;
+  const canvas = document.createElement('canvas');
+  container.insertBefore(canvas, container.firstChild);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, w / h, 0.05, 100);
+  camera.position.set(2.4, 1.5, 2.4);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const sunLight = new THREE.DirectionalLight(0xffffff, 1.1);
+  sunLight.position.set(3, 4, 2);
+  scene.add(sunLight);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.minDistance = 0.8;
+  controls.maxDistance = 6;
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  const spinDir = (item.rot_period && item.rot_period < 0) ? -1 : 1;
+  const spinSpeed = 0.25;
+
+  const state = { renderer, scene, camera, controls, group, disposed: false, raf: null, container };
+  activePreviews.add(state);
+
+  setStatus(container, '<span class="spinner"></span>Loading preview…');
+
+  const effectiveModel = getEffectiveModelPath(item);
+
+  if (effectiveModel) {
+    loadModel(fixPath(effectiveModel)).then(gltf => {
+      if (state.disposed) return;
+      const root = gltf.scene.clone(true);
+      fitAndCenter(root);
+      group.add(root);
+      setStatus(container, '');
+    }).catch(() => {
+      if (state.disposed) return;
+      setStatus(container, 'Preview unavailable');
+    });
+  } else if (item.texture) {
+    const isSelfLit = item.type === 'star';
+    const material = isSelfLit
+      ? new THREE.MeshBasicMaterial({ map: loadTexture(fixPath(item.texture)) })
+      : new THREE.MeshStandardMaterial({ map: loadTexture(fixPath(item.texture)), roughness: 1, metalness: 0 });
+    const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), material);
+    group.add(sphere);
+    if (item.ring) group.add(buildRing(item.ring));
+    group.rotation.z = THREE.MathUtils.degToRad(item.tilt || 0);
+    setStatus(container, '');
+  } else {
+    setStatus(container, 'No 3D model available');
+  }
+
+  function tick() {
+    if (state.disposed) return;
+    group.rotation.y += spinDir * spinSpeed * 0.016;
+    controls.update();
+    renderer.render(scene, camera);
+    state.raf = requestAnimationFrame(tick);
+  }
+  tick();
+
+  return state;
+}
+
+function disposePreview(state) {
+  state.disposed = true;
+  if (state.raf) cancelAnimationFrame(state.raf);
+  state.controls.dispose();
+  const gl = state.renderer.getContext();
+  state.renderer.dispose();
+  gl?.getExtension('WEBGL_lose_context')?.loseContext();
+  state.renderer.domElement.remove();
+  activePreviews.delete(state);
+}
+
+function resizeActivePreviews() {
+  activePreviews.forEach(state => {
+    const w = state.container.clientWidth, h = state.container.clientHeight;
+    if (!w || !h) return;
+    state.renderer.setSize(w, h, false);
+    state.camera.aspect = w / h;
+    state.camera.updateProjectionMatrix();
+  });
+}
+window.addEventListener('resize', resizeActivePreviews);
+
+function wireLazyPreviews(root, byName) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const container = entry.target;
+      const name = container.dataset.name;
+      if (entry.isIntersecting) {
+        if (!container._previewState) container._previewState = initPreview(container, byName.get(name));
+      } else if (container._previewState) {
+        disposePreview(container._previewState);
+        container._previewState = null;
+      }
+    });
+  }, { rootMargin: '400px 0px', threshold: 0.01 });
+
+  root.querySelectorAll('.preview-wrap[data-name]').forEach(el => io.observe(el));
+}
+
+// --- Data loading, tree building, rendering ---
+
+function cardHtml(item) {
+  const meta = typeMeta(item.type);
+  const hasVisual = !!(getEffectiveModelPath(item) || item.texture);
+  const missingDesc = !item.description;
+  const missingOu = !item.ou_involvement;
+  const incomplete = missingDesc || missingOu;
+  const slug = slugify(item.name);
+
+  const badges = [
+    `<span class="badge" style="background:${meta.color}22;border-color:${meta.color}">${meta.icon} ${escapeHtml(meta.label)}</span>`,
+    `<span class="badge" style="background:${statusColor(item.status)};color:${statusTextColor(item.status)}">${escapeHtml(item.status || 'Unknown')}</span>`
+  ];
+  if (item.launch_year) {
+    const prefix = item.status === 'Planned' ? 'Planned launch' : 'Launched';
+    badges.push(`<span class="badge" style="background:#555">${prefix}: ${escapeHtml(item.launch_year)}</span>`);
+  }
+  if (item.parent) badges.push(`<span class="badge orbits">↳ orbits ${escapeHtml(item.parent)}</span>`);
+  if (incomplete) badges.push(`<span class="badge warn">⚠ incomplete</span>`);
+
+  const preview = hasVisual
+    ? `<div class="preview-wrap" data-name="${escapeHtml(item.name)}"><div class="preview-hint">drag to rotate</div></div>`
+    : `<div class="preview-static"><span class="icon">${meta.icon}</span>No 3D model — ${escapeHtml(meta.label.toLowerCase())}</div>`;
+
+  const scienceImg = item.image_url
+    ? `<figure class="science-img"><img src="${fixPath(item.image_url)}" alt="${escapeHtml(item.name)} mission image" loading="lazy" onerror="this.closest('figure').remove()"/><figcaption>Mission imagery</figcaption></figure>`
+    : '';
+
+  const descHtml = item.description
+    ? `<p>${escapeHtml(item.description)}</p>`
+    : `<p class="missing">No description recorded yet.</p>`;
+
+  const ouHtml = item.ou_involvement
+    ? `<div class="ou-block"><strong>Open University Involvement</strong>${escapeHtml(item.ou_involvement)}</div>`
+    : `<div class="ou-block empty"><strong>Open University Involvement</strong>No specific OU involvement recorded yet.</div>`;
+
+  const searchText = escapeHtml(`${item.name} ${item.description || ''} ${item.ou_involvement || ''}`.toLowerCase());
+
+  return `
+    <article class="card${item.parent ? '' : ' root-card'}${incomplete ? ' incomplete' : ''}"
+      id="obj-${slug}" data-type="${item.type}" data-incomplete="${incomplete}" data-search="${searchText}">
+      <div class="card-head">
+        <h3>${escapeHtml(item.name)}</h3>
+        <div class="badges">${badges.join('')}</div>
+      </div>
+      ${preview}
+      <div class="card-body">
+        ${descHtml}
+        ${scienceImg}
+        ${ouHtml}
+      </div>
+    </article>`;
+}
+
+async function main() {
+  const app = document.getElementById('app');
+  let data;
+  try {
+    const res = await fetch('data.json');
+    if (!res.ok) throw new Error(res.statusText);
+    data = await res.json();
+  } catch (err) {
+    app.innerHTML = `<div id="load-error">Could not load data.json (${escapeHtml(err.message)}).<br/>Make sure this page is hosted alongside data.json.</div>`;
+    return;
+  }
+
+  const byName = new Map(data.map(d => [d.name, d]));
+  const childrenOf = new Map();
+  data.forEach(d => {
+    if (d.parent) {
+      if (!childrenOf.has(d.parent)) childrenOf.set(d.parent, []);
+      childrenOf.get(d.parent).push(d);
+    }
+  });
+
+  function descendantsOf(name, acc = []) {
+    (childrenOf.get(name) || []).forEach(child => {
+      acc.push(child);
+      descendantsOf(child.name, acc);
+    });
+    return acc;
+  }
+
+  const root = data.find(d => !d.parent);
+  const topLevel = childrenOf.get(root.name) || [];
+  const soloAsteroids = topLevel.filter(d => d.type === 'asteroid' && !(childrenOf.get(d.name) || []).length);
+  const soloNames = new Set(soloAsteroids.map(d => d.name));
+  const branches = topLevel.filter(d => !soloNames.has(d.name));
+
+  const toc = [];
+  let html = '';
+
+  // Hero: the root body (the Sun)
+  html += `<section class="system" id="sec-${slugify(root.name)}">
+    <h2><span class="icon">${typeMeta(root.type).icon}</span>${escapeHtml(root.name)}</h2>
+    <div class="grid">${cardHtml(root)}</div>
+  </section>`;
+  toc.push({ id: slugify(root.name), label: root.name });
+
+  branches.forEach(branch => {
+    const meta = typeMeta(branch.type);
+    const desc = descendantsOf(branch.name);
+    const id = slugify(branch.name);
+    toc.push({ id, label: branch.name });
+    html += `<section class="system" id="sec-${id}">
+      <h2><span class="icon">${meta.icon}</span>${escapeHtml(branch.name)} <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400;text-transform:uppercase;letter-spacing:0.5px;">${escapeHtml(meta.label)}</span></h2>
+      <div class="grid">${cardHtml(branch)}${desc.map(cardHtml).join('')}</div>
+    </section>`;
+  });
+
+  if (soloAsteroids.length) {
+    const id = 'named-asteroids';
+    toc.push({ id, label: 'Named Asteroids' });
+    html += `<section class="system" id="sec-${id}">
+      <h2><span class="icon">🪨</span>Named Asteroids</h2>
+      <p class="intro">Minor planets named in honour of Open University planetary scientists.</p>
+      <div class="grid">${soloAsteroids.map(cardHtml).join('')}</div>
+    </section>`;
+  }
+
+  app.innerHTML = html;
+  document.getElementById('toc').innerHTML = toc.map(t => `<a href="#sec-${t.id}">${escapeHtml(t.label)}</a>`).join('');
+  document.getElementById('footer').hidden = false;
+
+  wireLazyPreviews(app, byName);
+  setupFilters(data.length);
+}
+
+function setupFilters(total) {
+  const typeCounts = {};
+  document.querySelectorAll('.card').forEach(c => {
+    typeCounts[c.dataset.type] = (typeCounts[c.dataset.type] || 0) + 1;
+  });
+  const typeFilterEl = document.getElementById('type-filters');
+  const activeTypes = new Set(Object.keys(typeCounts));
+  typeFilterEl.innerHTML = Object.keys(typeCounts).map(t => {
+    const meta = typeMeta(t);
+    return `<span class="chip active" data-type="${t}">${meta.icon} ${meta.label} (${typeCounts[t]})</span>`;
+  }).join('');
+
+  let incompleteOnly = false;
+  const searchEl = document.getElementById('search');
+  const countEl = document.getElementById('result-count');
+
+  function applyFilters() {
+    const q = searchEl.value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.card').forEach(card => {
+      const matchesType = activeTypes.has(card.dataset.type);
+      const matchesSearch = !q || card.dataset.search.includes(q);
+      const matchesIncomplete = !incompleteOnly || card.dataset.incomplete === 'true';
+      const show = matchesType && matchesSearch && matchesIncomplete;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    document.querySelectorAll('section.system').forEach(section => {
+      section.hidden = !section.querySelector('.card:not([hidden])');
+    });
+    countEl.textContent = `Showing ${visible} of ${total} objects`;
+  }
+
+  typeFilterEl.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const t = chip.dataset.type;
+    if (activeTypes.has(t)) { activeTypes.delete(t); chip.classList.remove('active'); }
+    else { activeTypes.add(t); chip.classList.add('active'); }
+    applyFilters();
+  });
+
+  document.getElementById('incomplete-toggle').addEventListener('click', e => {
+    incompleteOnly = !incompleteOnly;
+    e.target.classList.toggle('active', incompleteOnly);
+    applyFilters();
+  });
+
+  searchEl.addEventListener('input', applyFilters);
+  applyFilters();
+}
+
+const backToTop = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => { backToTop.style.display = window.scrollY > 500 ? 'block' : 'none'; });
+backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+main();
+</script>
+</body>
+</html>
