@@ -4,32 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OUniverse</title>
+    <!-- Start this in parallel with the JS bundle instead of after it runs -->
+    <link rel="preload" href="./data.json" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <div id="app"></div>
-    
+
+    <div id="loading-overlay" role="status" aria-live="polite">
+      <div id="loading-text">Loading Assets...</div>
+      <div class="progress-bar" aria-hidden="true">
+        <div id="progress-fill"></div>
+      </div>
+      <p id="loading-note" hidden></p>
+      <button id="loading-action" type="button" hidden></button>
+    </div>
+
     <div id="ui-layer">
       <div id="header">
-        <h1>OU Space Research <span style="font-weight:lighter">| Live Data</span></h1>
+        <h1>Explore the OUniverse</h1>
         <div id="clock">Loading Time...</div>
       </div>
-      
-      <div id="mission-menu">
-        <h3>Select Mission</h3>
+
+      <nav id="mission-menu" aria-labelledby="mission-menu-title">
+        <h2 id="mission-menu-title">Select Mission</h2>
         <div id="mission-list"></div>
-        <button id="reset-btn">Reset View</button>
-      </div>
+        <button id="reset-btn" type="button">Reset View</button>
+      </nav>
 
-      <div id="controls">
-        <button id="btn-slower" class="time-btn">−</button>
-        <span id="speedLabel">Real Time</span>
-        <button id="btn-faster" class="time-btn">+</button>
-      </div>
+      <div id="controls"></div>
     </div>
 
-    <div id="sidebar">
+    <aside id="sidebar" aria-labelledby="info-title" inert>
+        <button id="sidebar-close" type="button" aria-label="Close details">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </button>
         <div id="info-content"></div>
-    </div>
+    </aside>
+
+    <div id="announcer" class="visually-hidden" aria-live="polite"></div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

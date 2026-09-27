@@ -1,5 +1,16 @@
-body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #000; }
-canvas { display: block; }
+html, body { 
+    margin: 0; 
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: #000; 
+}
+canvas { 
+    display: block; 
+    outline: none;
+}
 
 /* --- UI CONTAINER --- */
 #ui-layer {
@@ -14,6 +25,59 @@ canvas { display: block; }
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+/* --- LOADING OVERLAY --- */
+#loading-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #00aaff;
+    transition: opacity 0.5s ease;
+}
+#loading-text {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.progress-bar {
+    width: 300px;
+    height: 10px;
+    background: #222;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #00aaff;
+}
+#loading-note {
+    max-width: 32rem;
+    margin: 20px 20px 0;
+    color: #ccc;
+    text-align: center;
+    line-height: 1.5;
+}
+#loading-action {
+    margin-top: 16px;
+    min-height: 44px;
+    padding: 10px 22px;
+    background: transparent;
+    border: 1px solid #00aaff;
+    border-radius: 22px;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+#loading-action:hover { background: rgba(0, 170, 255, 0.2); }
+#progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #00aaff;
+    transition: width 0.1s linear;
 }
 
 /* --- HEADER --- */
@@ -59,7 +123,7 @@ h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercas
     border-left: 3px solid #fff;
 }
 
-#mission-menu h3 {
+#mission-menu h2 {
     margin: 0;
     padding: 15px;
     background: rgba(0, 170, 255, 0.1);
@@ -75,6 +139,7 @@ h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercas
 }
 
 .mission-btn {
+    overflow-wrap: anywhere;
     display: block;
     width: 100%;
     background: transparent;
@@ -187,7 +252,27 @@ h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercas
 
 #sidebar.active { right: 0; }
 
-h2 { color: #00aaff; margin-top: 0; font-weight: 300; font-size: 2rem; }
+#sidebar-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+#sidebar-close:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.5); }
+
+#sidebar h2 { color: #00aaff; margin-top: 0; font-weight: 300; font-size: 2rem; overflow-wrap: anywhere; padding-right: 36px; }
+#sidebar h2:focus { outline: none; }
+#sidebar h2:focus-visible { outline: 2px solid #00aaff; outline-offset: 4px; }
 .badge { 
     display: inline-block; 
     background: #222; 
@@ -270,3 +355,62 @@ hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
     font-weight: bold;
     color: #00aaff;
 }
+
+/* --- TARGET BOUNDING BOX OVERLAY --- */
+.target-box {
+    position: absolute;
+    pointer-events: none;
+    display: none;
+    border: 1px solid rgba(0, 240, 255, 0.75);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.15);
+    border-radius: 2px;
+    z-index: 1000;
+    box-sizing: border-box;
+    transition: opacity 0.15s ease-out;
+}
+
+.target-corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-color: #00f0ff;
+    border-style: solid;
+}
+.target-corner.top-left { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
+.target-corner.top-right { top: -2px; right: -2px; border-width: 2px 2px 0 0; }
+.target-corner.bottom-left { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; }
+.target-corner.bottom-right { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; }
+
+.target-label {
+    position: absolute;
+    top: -24px;
+    left: -1px;
+    background: rgba(0, 20, 40, 0.9);
+    color: #00f0ff;
+    font-family: 'Courier New', monospace, sans-serif;
+    font-size: 11px;
+    padding: 2px 6px;
+    border: 1px solid rgba(0, 240, 255, 0.6);
+    border-radius: 3px;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+/* --- ACCESSIBILITY UTILITIES --- */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+button:focus-visible {
+    outline: 2px solid #00aaff;
+    outline-offset: 2px;
+}
+.mission-btn:focus-visible { outline-offset: -2px; }
