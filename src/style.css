@@ -1,297 +1,659 @@
-html, body { 
-    margin: 0; 
+/* OU identity on the app's compact layout. Colours are the OU brand palette; plates are
+   Core blue, hairlines a Core blue tint, and OU light blue is the one accent. */
+:root {
+    --ou-core: #060645;
+    --ou-mid: #1C46C0;
+    --ou-light: #66EEFA;
+    --ou-green: #7DFFD3;
+    --ou-yellow: #FFF488;
+    --ou-pink: #FFB4FF;
+    --surface: rgba(6, 6, 69, 0.9);       /* Core blue plate over the scene */
+    --surface-solid: #05053E;              /* the same plate, opaque: sticky heads, the panel */
+    --surface-menu: #05053E;
+    --line: rgba(166, 181, 248, 0.2);      /* Core blue tint #A6B5F8 */
+    --text: #fff;
+    --text-muted: rgba(255, 255, 255, 0.78);
+    --text-faint: rgba(255, 255, 255, 0.6);
+    --accent: var(--ou-light);
+    --accent-wash: rgba(102, 238, 250, 0.12);
+    --accent-current: rgba(102, 238, 250, 0.22);
+    --status-active: var(--ou-green);
+    --status-planned: var(--ou-yellow);
+    --status-ended: var(--ou-pink);
+    --status-neutral: rgba(255, 255, 255, 0.5);
+    --link: var(--ou-light);
+    --font: 'Poppins', Arial, sans-serif;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --radius: 10px;
+    --radius-shield: 2px;                  /* the OU shield's squared top-left corner */
+    --plate-radius: var(--radius-shield) var(--radius) var(--radius) var(--radius);
+}
+
+html, body {
+    margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background-color: #000; 
+    overflow: hidden;
+    font-family: var(--font);
+    background-color: #000;
+    color: var(--text);
 }
-canvas { 
-    display: block; 
+button { font: inherit; }
+::selection { background: var(--accent); color: #000; }
+canvas {
+    display: block;
     outline: none;
 }
 
 /* --- UI CONTAINER --- */
 #ui-layer {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     pointer-events: none; /* Let clicks pass through to canvas */
     padding: 20px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    transition: opacity 0.6s var(--ease-out);
 }
+/* Held back until the way in has finished, then faded up. */
+#ui-layer.is-waiting { opacity: 0; }
 
-/* --- LOADING OVERLAY --- */
-#loading-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #000;
+/* --- SPLASH (also the loader) --- */
+/* OU brand pairing 2: Core blue ground, one accent (light blue), white type, Poppins. The
+   orbit draws itself as the scene loads; once ready a craft sets off round it. */
+.splash {
+    --pad: clamp(24px, 6vw, 96px);
+    --logo-h: clamp(40px, 8.33vmin, 72px);
+    --progress: 0;
+    position: fixed;
+    inset: 0;
     z-index: 9999;
+    display: grid;
+    grid-template-columns: minmax(0, calc(40rem + 2 * var(--pad))) minmax(0, 1fr);
+    overflow: hidden auto;
+    color: #fff;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+.splash[hidden] { display: none; }
+/* The Core blue ground is its own layer, so leaving can cut a hole in it onto the scene. */
+.splash::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--ou-core);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.5px));
+    mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.5px));
+}
+.splash ::selection { background: var(--ou-light); color: var(--ou-core); }
+
+/* The drawing is centred in the space beside the copy. */
+.splash-art {
+    grid-column: 2;
+    grid-row: 1;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: var(--pad) var(--pad) var(--pad) 0;
+    pointer-events: none;
+}
+.splash-orbit {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    max-height: calc(100vh - 2 * var(--pad));
+    overflow: visible;
+}
+.splash-world {
+    fill: url(#splash-world-grad);
+    stroke: #000;
+    stroke-width: 1.5;
+    stroke-opacity: 0;
+}
+.splash-orbit-track {
+    fill: none;
+    stroke: rgba(102, 238, 250, 0.3);
+    stroke-width: 1.5;
+}
+.splash-orbit-progress {
+    fill: none;
+    stroke: url(#splash-signal-grad);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: calc(1 - var(--progress));
+    transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+.splash-craft {
+    fill: #fff;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.splash.is-ready .splash-craft { opacity: 1; }
+
+.splash-copy {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    box-sizing: border-box;
+    max-width: calc(40rem + 2 * var(--pad));
+    padding: calc(var(--pad) * 0.75) var(--pad) calc(var(--logo-h) + var(--pad) * 1.25);
+}
+.splash-copy h2 {
+    margin: 0 0 0.4em;
+    font-size: clamp(2.5rem, min(6.5vw, 10.5vh), 5.75rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+}
+.splash-lede {
+    margin: 0 0 1em;
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+}
+.splash-facts {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+.splash-facts strong { color: #fff; font-weight: 600; }
+
+.splash-start {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-wrap: wrap;
     align-items: center;
-    color: #00aaff;
-    transition: opacity 0.5s ease;
+    gap: 12px 20px;
+    margin-top: clamp(1.25rem, 3.5vh, 2rem);
 }
-#loading-text {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+#splash-start,
+.splash-retry {
+    min-height: 52px;
+    padding: 0 28px;
+    background: var(--ou-light);
+    border: none;
+    border-radius: 999px;
+    color: var(--ou-core);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s var(--ease-out);
 }
-.progress-bar {
-    width: 300px;
-    height: 10px;
-    background: #222;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 1px solid #00aaff;
+#splash-start:hover:not(:disabled),
+.splash-retry:hover { background: #fff; }
+#splash-start:active:not(:disabled) { transform: scale(0.97); }
+#splash-start:disabled {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.75);
+    cursor: progress;
 }
-#loading-note {
+#splash-start:focus-visible,
+.splash-retry:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+#splash-start[hidden] { display: none; }
+.splash-status {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+}
+.splash-note {
     max-width: 32rem;
-    margin: 20px 20px 0;
-    color: #ccc;
-    text-align: center;
+    margin: 1rem 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9375rem;
     line-height: 1.5;
 }
-#loading-action {
-    margin-top: 16px;
-    min-height: 44px;
-    padding: 10px 22px;
-    background: transparent;
-    border: 1px solid #00aaff;
-    border-radius: 22px;
-    color: #fff;
-    font: inherit;
-    cursor: pointer;
+.splash-retry { margin-top: 1rem; }
+
+.splash-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin: clamp(1.25rem, 4vh, 2.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.875rem;
 }
-#loading-action:hover { background: rgba(0, 170, 255, 0.2); }
-#progress-fill {
-    width: 0%;
-    height: 100%;
-    background: #00aaff;
-    transition: width 0.1s linear;
+.splash-hints li { display: flex; align-items: center; gap: 8px; }
+.splash-hints svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--ou-light);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.splash.is-error .splash-hints,
+.splash.is-error .splash-facts { display: none; }
+
+/* The logo signs off bottom left, as the brand places it. */
+.splash-logo {
+    position: absolute;
+    left: var(--pad);
+    bottom: calc(var(--pad) * 0.75);
+    z-index: 1;
+    width: auto;
+    height: var(--logo-h);
+}
+
+/* Leaving, in one continuous move (timed in dismissSplash): the copy fades into the blue; the
+   world and its orbit glide to the centre, the craft still going round; the world turns
+   see-through, a hole in the ground behind it showing the scene, as its rim, the orbit and the
+   craft turn black; then hole and orbit grow together, speeding up, as if the camera flies
+   through, while the scene beyond scales up to meet it. */
+@property --hole {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 0px;
+}
+.splash { --hole: 0px; }
+.splash.is-leaving { overflow: hidden; pointer-events: none; }
+.splash.is-leaving .splash-copy,
+.splash.is-leaving .splash-logo {
+    opacity: 0;
+    transition: opacity 0.45s ease-out;
+}
+.splash.is-leaving .splash-orbit {
+    translate: var(--to-centre-x) var(--to-centre-y);
+    transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.15s;
+}
+.splash.is-open { --hole: var(--hole-start); }
+.splash.is-open .splash-world {
+    fill-opacity: 0;
+    stroke-opacity: 1;
+    transition: fill-opacity 0.45s ease-in-out, stroke-opacity 0.45s ease-in-out;
+}
+/* The orbit's gradient stops are recoloured rather than the stroke swapped, so it fades to black. */
+.splash.is-open #splash-signal-grad stop { stop-color: #000; transition: stop-color 0.45s ease-in-out; }
+.splash.is-open .splash-orbit-track { stroke: #000; transition: stroke 0.45s ease-in-out; }
+.splash.is-open .splash-craft { fill: #000; transition: fill 0.45s ease-in-out; }
+.splash.is-through {
+    --hole: var(--hole-end);
+    transition: --hole 1s cubic-bezier(0.6, 0, 0.9, 0.4);
+}
+.splash.is-through .splash-orbit {
+    scale: var(--fly-scale);
+    opacity: 0;
+    transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1), scale 1s cubic-bezier(0.6, 0, 0.9, 0.4), opacity 0.4s ease-in 0.6s;
+}
+/* The scene waits a little smaller behind the ground and grows as the hole opens. */
+body > canvas { transition: scale 1s cubic-bezier(0.6, 0, 0.9, 0.4); }
+body.is-arriving > canvas { scale: 0.88; transition: none; }
+
+@media (max-width: 720px) {
+    /* One column: the drawing centred above the copy. */
+    .splash { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto auto; }
+    .splash-art { grid-column: 1; grid-row: 1; padding: var(--pad) var(--pad) 8px; }
+    .splash-orbit { max-width: 520px; max-height: 34vh; }
+    .splash-copy { grid-row: 2; align-self: end; padding-top: 8px; padding-bottom: 0; }
+    /* Small screens scroll, so the logo joins the flow instead of pinning over the copy. */
+    .splash-logo { grid-row: 3; position: relative; left: auto; bottom: auto; margin: 28px var(--pad) var(--pad); }
+}
+
+/* Laptop-height screens: tighten the vertical rhythm so everything fits without scrolling. */
+@media (min-width: 721px) and (max-height: 820px) {
+    .splash-copy { padding-top: calc(var(--pad) * 0.5); padding-bottom: calc(var(--logo-h) + var(--pad)); }
+    .splash-copy h2 { font-size: clamp(2.5rem, min(6.5vw, 9.5vh), 5.75rem); }
+    .splash-lede { margin-bottom: 0.75em; }
+    .splash-logo { bottom: calc(var(--pad) * 0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash-orbit-progress, #ui-layer { transition-duration: 0.01s; }
+    .splash-craft { display: none; }
+}
+
+/* The OU logo stays with the scene once the splash has gone. */
+#app-logo {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: auto;
+    height: 40px;
+}
+@media (max-width: 720px) {
+    #app-logo { height: 32px; }
 }
 
 /* --- HEADER --- */
-#header {
-    pointer-events: auto;
-    color: white;
-    text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
-}
-h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; }
-#clock {
-    font-family: 'Courier New', monospace;
-    color: #00aaff;
-    font-size: 1rem;
-    margin-top: 5px;
+#header { pointer-events: auto; }
+h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+#clock-line {
+    margin: 2px 0 0;
+    color: var(--text-muted);
+    font-size: 0.78125rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
 }
 
 /* --- MISSION MENU (Left Side) --- */
 #mission-menu {
     pointer-events: auto;
     position: absolute;
-    top: 100px;
+    top: 84px;
     left: 20px;
-    width: 220px;
-    max-height: 60vh;
-    overflow-y: auto;
-    
-    /* Glassmorphism Effect */
-    background: rgba(10, 15, 30, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 3px solid #00aaff;
-    border-radius: 0 12px 12px 0;
-    padding: 0;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    
-    /* Animation */
-    transition: transform 0.3s ease;
-}
-
-#mission-menu:hover {
-    transform: translateX(5px);
-    border-left: 3px solid #fff;
-}
-
-#mission-menu h2 {
-    margin: 0;
-    padding: 15px;
-    background: rgba(0, 170, 255, 0.1);
-    color: #fff;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-#mission-list {
-    padding: 5px 0;
-}
-
-.mission-btn {
-    overflow-wrap: anywhere;
-    display: block;
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: #aaa;
-    text-align: left;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-    position: relative;
+    z-index: 1000; /* above the reticles (999), like the other plates */
+    width: 256px;
+    max-height: min(68vh, calc(100vh - 200px));
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-menu);
+    border: 1px solid var(--line);
+    border-radius: var(--plate-radius);
     overflow: hidden;
 }
 
-/* Hover Effect for Buttons */
-.mission-btn:hover {
-    color: #fff;
-    background: rgba(0, 170, 255, 0.15);
-    padding-left: 25px;
+/* Heading, search and the Solar System view stay put; only the list scrolls. */
+.menu-head {
+    flex: none;
+    padding: 12px 0 6px;
+    border-bottom: 1px solid var(--line);
+}
+#mission-menu h2 {
+    margin: 0 16px 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
 }
 
-.mission-btn::before {
-    content: '';
+.menu-search {
+    position: relative;
+    margin: 0 12px 6px;
+}
+.menu-search-icon {
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 3px;
-    background: #00aaff;
-    transform: scaleY(0);
-    transition: transform 0.2s;
+    left: 10px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    fill: none;
+    stroke: var(--text-faint);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
 }
-
-.mission-btn:hover::before {
-    transform: scaleY(1);
-}
-
-#reset-btn {
+#menu-filter {
+    box-sizing: border-box;
     width: 100%;
-    padding: 12px;
-    background: rgba(255, 50, 50, 0.2);
-    color: #ffaaaa;
+    min-height: 36px;
+    padding: 7px 10px 7px 34px;
+    background: rgba(166, 181, 248, 0.08);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.84375rem;
+    caret-color: var(--accent);
+}
+#menu-filter::placeholder { color: var(--text-faint); opacity: 1; }
+#menu-filter:hover { border-color: rgba(166, 181, 248, 0.4); }
+#menu-filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+
+.menu-hint { color: var(--text-faint); font-size: 0.8125rem; }
+
+#mission-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.menu-list { list-style: none; margin: 0; padding: 0; }
+.menu-group { border-top: 1px solid var(--line); }
+.menu-tree > .menu-item:first-child { border-top: none; }
+
+/* A group's heading row sticks to the top of the list while its contents scroll under it. */
+.menu-group-head {
+    box-shadow: 0 1px 0 var(--line); /* a clean edge for rows scrolling under a stuck head */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    background: var(--surface-menu);
+}
+.menu-group-head > .mission-btn { flex: 1 1 auto; min-width: 0; }
+
+.menu-toggle {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 52px;
+    padding: 0 12px 0 6px;
+    justify-content: flex-end;
+    background: transparent;
     border: none;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-faint);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
     cursor: pointer;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    transition: background 0.3s;
+    transition: background-color 0.15s, color 0.15s;
+}
+.menu-toggle:hover { color: var(--text); background: var(--accent-wash); }
+.menu-toggle:focus-visible { outline-offset: -2px; }
+.menu-chevron {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(-90deg);
+    transition: transform 0.2s var(--ease-out);
+}
+.menu-toggle[aria-expanded="true"] .menu-chevron { transform: none; }
+
+.menu-empty {
+    margin: 0;
+    padding: 14px 16px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
 }
 
-#reset-btn:hover {
-    background: rgba(255, 50, 50, 0.4);
-    color: #fff;
+.mission-btn {
+    --depth: 0;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    min-height: 36px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    padding: 9px 16px 9px calc(16px + var(--depth) * 16px);
+    scroll-margin-top: 40px; /* clear a sticky group heading when scrolled into view */
+    cursor: pointer;
+    font-size: 0.84375rem;
+    line-height: 1.35;
+    transition: background-color 0.15s, color 0.15s;
 }
+.mission-btn--mission { color: var(--text-muted); }
+.mission-btn:hover { color: var(--text); background: var(--accent-wash); }
+.mission-btn[aria-current] {
+    color: var(--text);
+    background: var(--accent-current);
+    font-weight: 600;
+}
+.mission-btn[aria-current] .menu-icon { opacity: 1; }
 
-/* --- SCROLLBAR --- */
-#mission-menu::-webkit-scrollbar { width: 6px; }
-#mission-menu::-webkit-scrollbar-track { background: transparent; }
-#mission-menu::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+/* Tabler-style line icons, drawn in the button's text colour. */
+.menu-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 0.1em; /* sit on the first line when a name wraps */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+.mission-btn:hover .menu-icon,
+.mission-btn:focus-visible .menu-icon { opacity: 1; }
+/* Colour-keyed icons (Sun, planets, asteroids) need more presence to read as their colour. */
+.menu-icon--tinted { opacity: 0.9; }
+.menu-label { min-width: 0; }
 
-/* --- CONTROLS (Bottom Right) --- */
 /* --- CONTROLS (Bottom Right) --- */
 #controls {
     position: absolute;
     bottom: 20px;
     right: 20px; /* Default position when sidebar is closed */
     pointer-events: auto;
-    background: rgba(0,0,0,0.7);
-    padding: 15px;
-    border-radius: 20px;
-    color: white;
-    backdrop-filter: blur(5px);
+    background: var(--surface);
+    padding: 12px;
+    border-radius: var(--plate-radius);
+    border: 1px solid var(--line);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-    
-    /* Animation to match Sidebar */
-    transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    gap: 6px;
+    transition: right 0.45s var(--ease-out);
     z-index: 1001; /* Ensure it sits above the sidebar */
 }
 
-/* New class to move controls when sidebar is open */
+/* Moves the controls clear of the open sidebar */
 #controls.shifted {
     right: 380px; /* 350px sidebar width + 30px buffer */
 }
 
-/* ... existing sidebar styles ... */
+#cinematic-btn {
+    min-height: 36px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 18px;
+    color: var(--text);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+#cinematic-btn:hover { background: var(--accent-wash); border-color: rgba(255, 255, 255, 0.7); }
+#cinematic-btn[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); }
 
 /* --- SIDEBAR (Right) --- */
 #sidebar {
-    position: absolute;
+    position: fixed; /* fixed so the parked, off-screen panel doesn't widen the page on phones */
     top: 0;
     right: -400px;
     width: 350px;
     height: 100vh;
-    background: rgba(10, 15, 25, 0.95);
-    backdrop-filter: blur(10px);
-    color: white;
-    padding: 30px;
-    transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
-    border-left: 2px solid #00aaff;
+    background: var(--surface-solid);
+    color: var(--text);
+    padding: 28px;
+    transition: right 0.45s var(--ease-out);
+    border-left: 1px solid var(--line);
     box-sizing: border-box;
     overflow-y: auto;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
     z-index: 1000;
 }
 
 #sidebar.active { right: 0; }
 
-#sidebar-close {
+#sidebar-close,
+#credits-close {
     position: absolute;
-    top: 16px;
-    right: 16px;
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: none;
     border-radius: 50%;
-    color: #fff;
+    color: var(--text-muted);
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
+    transition: background-color 0.15s, color 0.15s;
 }
-#sidebar-close:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.5); }
+#sidebar-close { top: 16px; right: 16px; }
+#credits-close { top: 14px; right: 14px; }
+#sidebar-close:hover,
+#credits-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--text); }
 
-#sidebar h2 { color: #00aaff; margin-top: 0; font-weight: 300; font-size: 2rem; overflow-wrap: anywhere; padding-right: 36px; }
-#sidebar h2:focus { outline: none; }
-#sidebar h2:focus-visible { outline: 2px solid #00aaff; outline-offset: 4px; }
-.badge { 
-    display: inline-block; 
-    background: #222; 
-    border: 1px solid #444; 
-    padding: 4px 8px; 
-    border-radius: 4px; 
-    font-size: 0.7rem; 
-    color: #aaa; 
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
+#sidebar h2 {
+    margin: 0 0 4px;
+    padding-right: 40px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
 }
-hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-.highlight { 
-    background: rgba(0, 170, 255, 0.1); 
-    padding: 15px; 
-    border-radius: 8px; 
-    border-left: 3px solid #00aaff;
-    line-height: 1.5;
+/* Focus lands on the title so screen readers start there; it isn't a control, so no ring. */
+#sidebar h2:focus, #sidebar h2:focus-visible { outline: none; }
+
+.info-meta {
+    margin: 0 0 22px;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+.info-status::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin: 0 6px 1px 0;
+    border-radius: 50%;
+    background: var(--status-neutral);
+}
+.info-status--active::before { background: var(--status-active); }
+.info-status--planned::before { background: var(--status-planned); }
+.info-status--ended::before { background: var(--status-ended); }
+
+.ou-involvement {
+    margin: 0 0 22px;
+    font-size: 0.90625rem;
+    line-height: 1.6;
+}
+.ou-involvement h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+/* The OU mark: a portal O in the OU green to light-blue gradient. */
+.ou-mark { flex: none; width: 14px; height: 14px; }
+
+.info-image {
+    margin: 0 0 22px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.info-image img { display: block; width: 100%; }
+
+.info-description {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.90625rem;
+    line-height: 1.6;
 }
 
 /* --- CINEMATIC MODE --- */
@@ -301,101 +663,103 @@ hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
     transition: opacity 1.0s ease-in-out;
 }
 
-#cinematic-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-family: inherit;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-}
-
-#cinematic-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-/* --- TIME CONTROLS --- */
-.time-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    user-select: none;
-}
-
-.time-btn:hover {
-    background: rgba(0, 170, 255, 0.4);
-    border-color: #00aaff;
-    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
-}
-
-.time-btn:active {
-    transform: scale(0.9);
-}
-
-#speedLabel {
-    min-width: 100px;
-    text-align: center;
-    font-variant-numeric: tabular-nums; /* Prevents jitter when numbers change */
-    font-weight: bold;
-    color: #00aaff;
-}
-
-/* --- TARGET BOUNDING BOX OVERLAY --- */
-.target-box {
+/* --- RETICLE --- */
+/* An instrument callout while an object is hovered in the menu: a ring (a light-blue dot up close)
+   and a 45-degree leader to a name tab. Choosing it plays one chained exit: the ring, lit in the
+   OU green to light-blue gradient, sweeps round into the leader's foot; the leader retracts
+   towards the name; the name wipes away. Each stage starts as the one before it lands. */
+.reticles {
     position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
     pointer-events: none;
+    z-index: 999;
+}
+.reticle-mark {
+    fill: var(--ou-light);
+    fill-opacity: 0;
+    stroke: rgba(255, 255, 255, 0.85);
+    stroke-width: 1.5;
+    stroke-dashoffset: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: fill-opacity 0.15s, stroke 0.15s;
+}
+/* Up close: a solid light-blue dot, outlined in core blue so it holds on bright surfaces. */
+.reticle-mark.is-dot {
+    fill-opacity: 1;
+    stroke: var(--ou-core);
+}
+.reticle-leader {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 1;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 0;
+}
+/* The exit is one gesture in three stages: sweep round into the leader's foot and run up the
+   leader at an even pace, then decelerate as the name wipes out. */
+/* The dash pattern goes on only for the exit: left on while the ring is held, it opens a hairline
+   gap at the leader's foot that flickers as the radius changes. */
+.reticle-mark.is-leaving {
+    stroke: url(#reticle-signal);
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.28s linear;
+}
+.reticle-mark.is-dot.is-leaving {
+    stroke: var(--ou-core);
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.55, 0, 1, 0.45);
+}
+.reticle-leader.is-leaving {
+    stroke-dashoffset: -1;
+    transition: stroke-dashoffset 0.18s linear 0.26s;
+}
+.reticle-tab.is-leaving {
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 0.26s var(--ease-out) 0.42s;
+}
+.reticle-tab.is-flipped.is-leaving {
+    clip-path: inset(0 100% 0 0);
+}
+.reticle-tab {
+    position: absolute;
     display: none;
-    border: 1px solid rgba(0, 240, 255, 0.75);
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.15);
-    border-radius: 2px;
-    z-index: 1000;
-    box-sizing: border-box;
-    transition: opacity 0.15s ease-out;
-}
-
-.target-corner {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-color: #00f0ff;
-    border-style: solid;
-}
-.target-corner.top-left { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
-.target-corner.top-right { top: -2px; right: -2px; border-width: 2px 2px 0 0; }
-.target-corner.bottom-left { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; }
-.target-corner.bottom-right { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; }
-
-.target-label {
-    position: absolute;
-    top: -24px;
-    left: -1px;
-    background: rgba(0, 20, 40, 0.9);
-    color: #00f0ff;
-    font-family: 'Courier New', monospace, sans-serif;
-    font-size: 11px;
-    padding: 2px 6px;
-    border: 1px solid rgba(0, 240, 255, 0.6);
+    padding: 3px 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
     border-radius: 3px;
+    color: var(--text);
+    font-size: 0.71875rem;
+    font-weight: 500;
+    line-height: 1.3;
     white-space: nowrap;
-    letter-spacing: 0.5px;
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    clip-path: inset(0); /* the starting point for the exit wipe */
+    pointer-events: none;
+    z-index: 999;
 }
+
+/* Informational: a holder's bodies while it's on show. A ticked ring alone, in the Core blue
+   tint its orbits are lit in, so none reads as the thing that's chosen; names come one at a time
+   on hover. The rings step back while anything is pointed at, so the hover stays the loudest. */
+.reticle-mark.reticle--info {
+    stroke: rgba(166, 181, 248, 0.85);
+    stroke-width: 1;
+    stroke-dasharray: 1.5 2.5;
+    transition: opacity 0.2s;
+}
+.reticle-mark.reticle--info.is-dot {
+    fill: #A6B5F8;
+    stroke: var(--ou-core);
+    stroke-dasharray: none;
+}
+.reticles.is-pointing .reticle-mark.reticle--info { opacity: 0.35; }
+/* A group's paths keep real lengths, so the primary's normalised dash pattern doesn't apply. */
+.reticle-leader.reticle--group { stroke-dasharray: none; }
+
 /* --- ACCESSIBILITY UTILITIES --- */
 .visually-hidden {
     position: absolute !important;
@@ -410,7 +774,87 @@ hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
 }
 
 button:focus-visible {
-    outline: 2px solid #00aaff;
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 .mission-btn:focus-visible { outline-offset: -2px; }
+
+@media (prefers-reduced-motion: reduce) {
+    #sidebar, #controls, .menu-chevron { transition-duration: 0.01s; }
+    .reticle-mark, .reticle-mark.is-leaving, .reticle-leader.is-leaving, .reticle-tab.is-leaving { transition: none; }
+}
+
+/* --- CREDITS --- */
+/* Deliberately quiet: there for anyone who looks for it, not part of the show. */
+#credits-btn {
+    background: none;
+    border: none;
+    padding: 2px 6px;
+    color: var(--text-faint);
+    font-size: 0.75rem;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.25);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.15s, text-decoration-color 0.15s;
+}
+#credits-btn:hover { color: var(--text); text-decoration-color: currentColor; }
+
+#credits-dialog {
+    width: min(640px, calc(100% - 32px));
+    max-height: min(80vh, 760px);
+    padding: 0;
+    box-sizing: border-box;
+    background: var(--surface-solid);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-shield) 12px 12px 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+#credits-dialog[open] { display: flex; flex-direction: column; }
+#credits-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+
+#credits-title {
+    margin: 0;
+    padding: 26px 76px 14px 28px;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+#credits-content {
+    overflow-y: auto;
+    padding: 0 28px 24px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+.credits-intro { margin: 0 0 8px; color: var(--text); }
+.credits-footer { margin: 20px 0 0; color: var(--text-faint); font-size: 0.8125rem; }
+#credits-content h3 {
+    margin: 22px 0 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-faint);
+}
+.credits-list { margin: 0; }
+.credits-list > div {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: 4px 16px;
+    padding: 7px 0;
+    border-top: 1px solid var(--line);
+}
+.credits-list dt { color: var(--text); overflow-wrap: anywhere; }
+.credits-list dd { margin: 0; overflow-wrap: anywhere; }
+.credits-list a { color: var(--link); text-underline-offset: 2px; }
+.credits-list a:hover { color: #fff; }
+.credits-list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+@media (max-width: 560px) {
+    .credits-list > div { grid-template-columns: 1fr; gap: 0; }
+    #credits-title { padding: 20px 70px 12px 20px; }
+    #credits-content { padding: 0 20px 20px; }
+}

@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
+import { createSun } from './sun.js';
 
 // --- CONFIGURATION ---
 const J2000_DATE = new Date('2000-01-01T12:00:00Z');
@@ -56,28 +57,9 @@ const HIGH_DETAIL_SHOW_PX = 160;
 const HIGH_DETAIL_HIDE_PX = 120;
 
 
-// Flag to toggle between custom named asteroid 3D models and generic models (Asteroid1-5) for privacy
+// Privacy switch: an object's "model_named" (a named asteroid's model, which shows a
+// researcher's name) is used in place of its "model" only when this is on.
 const USE_NAMED_ASTEROID_MODELS = false;
-
-const GENERIC_ASTEROID_MODELS = [
-    '/models/Asteroid1.glb',
-    '/models/Asteroid2.glb',
-    '/models/Asteroid3.glb',
-    '/models/Asteroid4.glb',
-    '/models/Asteroid5.glb'
-];
-
-const NAMED_ASTEROID_MODELS = [
-    '/models/Grady.glb',
-    '/models/Franchi.glb',
-    '/models/Greenwood.glb',
-    '/models/Rider-Stokes.glb',
-    '/models/OU.glb',
-    '/models/Norton.glb',
-    '/models/Green.glb',
-    '/models/Pillinger.glb',
-    '/models/Zarnecki.glb'
-];
 
 function getHash(str) {
     let hash = 0;
@@ -107,27 +89,115 @@ function getTumbleSpeed(name, totalSpeed = 0.25) {
 }
 
 
+// --- SPACECRAFT ATTITUDE ---
+// How an orbiting spacecraft turns, from its "motion" in data.json. Each mode is how that kind
+// of mission really flies, slowed or sped to read well on screen:
+//   spin   - rolls about "axis" (a telescope's tube), that axis tilted "tilt"° off the orbital
+//            plane's normal and precessing round a "wobble"° cone. Space telescopes.
+//   sun    - "axis" points at the Sun (a sunshield, a solar-array face, a high-gain antenna),
+//            rolling about that line with a "wobble"° precession. L2 observatories, craft in
+//            cruise, and true spinners (Planck, Gaia, Genesis) at a higher "rate".
+//   nadir  - "axis" faces the body below and "along" points along the track, so it turns once
+//            per orbit, with a slight "wobble"° yaw sway. Earth observers, the ISS, planetary
+//            orbiters, craft at asteroids and comets.
+//   tumble - a slow tumble about all three axes. Cubesats.
+// Axes are the model's own, as "+x", "-y" and so on; "rate" is degrees per second.
+const MOTION_DEFAULTS = {
+    spin: { axis: '+y', rate: 2, wobble: 8, tilt: 35, period: 90 },
+    sun: { axis: '+y', rate: 1.5, wobble: 5, period: 120 },
+    nadir: { axis: '-y', along: '+z', rate: 0, wobble: 3, period: 40 },
+    tumble: { rate: 3 },
+};
+const _attA = new THREE.Vector3(), _attB = new THREE.Vector3(), _attC = new THREE.Vector3();
+const _attD = new THREE.Vector3(), _attE = new THREE.Vector3(), _attF = new THREE.Vector3();
+const _attM = new THREE.Matrix4(), _attN = new THREE.Matrix4();
+const _attQ = new THREE.Quaternion(), _attRoll = new THREE.Quaternion();
+
+function parseModelAxis(text) {
+    const m = /^([+-]?)([xyz])$/.exec(String(text || '+y').trim().toLowerCase()) || ['', '', 'y'];
+    const v = new THREE.Vector3();
+    v[m[2]] = m[1] === '-' ? -1 : 1;
+    return v;
+}
+
+// Settles an object's motion settings once: its mode's defaults under its own, plus a phase
+// and (for "spin") a resting direction of its own, so no two craft turn in step.
+function getMotion(obj) {
+    if (obj.motion) return obj.motion;
+    const given = obj.data.motion || {};
+    const mode = MOTION_DEFAULTS[given.mode] ? given.mode : 'spin';
+    const s = { ...MOTION_DEFAULTS[mode], ...given, mode };
+    const hash = getHash(obj.data.name);
+    const azimuth = ((hash % 360) * Math.PI) / 180;
+    const tilt = THREE.MathUtils.degToRad(s.tilt || 0);
+    obj.motion = {
+        mode,
+        axis: parseModelAxis(s.axis),
+        along: parseModelAxis(s.along),
+        rate: THREE.MathUtils.degToRad(s.rate || 0),
+        wobble: THREE.MathUtils.degToRad(s.wobble || 0),
+        period: s.period || 90,
+        phase: ((hash >> 9) % 628) / 100,
+        rest: new THREE.Vector3(Math.sin(tilt) * Math.cos(azimuth), Math.cos(tilt), Math.sin(tilt) * Math.sin(azimuth)),
+    };
+    return obj.motion;
+}
+
+// `dir` precessed round a cone of half-angle `wobble` about itself, at angle `turn` round it.
+function precess(dir, wobble, turn, out) {
+    if (!wobble) return out.copy(dir);
+    _attE.set(1, 0, 0);
+    if (Math.abs(dir.x) > 0.9) _attE.set(0, 0, 1);
+    _attE.cross(dir).normalize().applyAxisAngle(dir, turn);
+    return out.copy(dir).multiplyScalar(Math.cos(wobble)).addScaledVector(_attE, Math.sin(wobble));
+}
+
+function updateMissionAttitude(obj, time, dt, days) {
+    const m = getMotion(obj);
+    const meshGroup = obj.meshGroup;
+    const turn = (time / m.period) * Math.PI * 2 + m.phase;
+
+    if (m.mode === 'tumble') {
+        if (!obj.tumbleSpeed) obj.tumbleSpeed = getTumbleSpeed(obj.data.name, m.rate);
+        meshGroup.rotateX(obj.tumbleSpeed.x * dt);
+        meshGroup.rotateY(obj.tumbleSpeed.y * dt);
+        meshGroup.rotateZ(obj.tumbleSpeed.z * dt);
+        return;
+    }
+
+    const parent = celestialMap.get(obj.data.parent);
+    if (m.mode === 'nadir' && parent && obj.data.orbit) {
+        // Down: towards the body. Along: the direction of travel, from where it'll be shortly.
+        _attD.subVectors(parent.group.position, obj.group.position).normalize();
+        const now = getKeplerPosition(obj.data.orbit, days);
+        const soon = getKeplerPosition(obj.data.orbit, days + 0.001);
+        _attF.set(soon.x - now.x, soon.y - now.y, soon.z - now.z);
+        _attF.addScaledVector(_attD, -_attF.dot(_attD));
+        if (_attF.lengthSq() < 1e-16) _attF.crossVectors(_attD, _UP);
+        _attF.normalize();
+        _attE.crossVectors(_attD, _attF);
+        _attM.makeBasis(_attD, _attF, _attE);                                      // world
+        _attC.crossVectors(m.axis, m.along);
+        _attN.makeBasis(m.axis, m.along, _attC).transpose();                       // model, inverted
+        meshGroup.quaternion.setFromRotationMatrix(_attM.multiply(_attN));
+        _attRoll.setFromAxisAngle(m.axis, m.wobble * Math.sin(turn));
+        meshGroup.quaternion.multiply(_attRoll);
+        return;
+    }
+
+    // spin and sun: the axis held on a direction that precesses, the craft rolling about it.
+    if (m.mode === 'sun') _attA.subVectors(_sunPos, obj.group.position).normalize();
+    else _attA.copy(m.rest);
+    precess(_attA, m.wobble, turn, _attB);
+    _attQ.setFromUnitVectors(m.axis, _attB);
+    _attRoll.setFromAxisAngle(m.axis, m.rate * time + m.phase);
+    meshGroup.quaternion.copy(_attQ).multiply(_attRoll);
+}
+
+// The model data.json gives the object, or null for none.
 function getEffectiveModel(item) {
-    let modelPath = item.model;
-
-    if (!modelPath && item.type === 'asteroid') {
-        const hash = getHash(item.name);
-        modelPath = GENERIC_ASTEROID_MODELS[hash % GENERIC_ASTEROID_MODELS.length];
-        return modelPath;
-    }
-
-    if (!modelPath) return null;
-
-    const isNamedModel = NAMED_ASTEROID_MODELS.some(m =>
-        modelPath.toLowerCase().endsWith(m.toLowerCase().replace('/models/', ''))
-    );
-
-    if (isNamedModel && !USE_NAMED_ASTEROID_MODELS) {
-        const hash = getHash(item.name);
-        return GENERIC_ASTEROID_MODELS[hash % GENERIC_ASTEROID_MODELS.length];
-    }
-
-    return modelPath;
+    if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
+    return item.model || null;
 }
 
 
@@ -141,7 +211,7 @@ let celestialMap = new Map();
 let objects = [];
 let selectedObject = null;
 let isTracking = false;
-let sunUniforms = null;
+let sunEffect = null; // see src/sun.js
 let plannedMaterials = [];
 let shadowHelper, lightHelper;
 let pendingLanders = [];
@@ -182,28 +252,99 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
 
 // --- LOADING MANAGER ---
+// The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
+// arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    const progress = (itemsLoaded / itemsTotal) * 100;
-    const progressFill = document.getElementById('progress-fill');
-    if (progressFill) progressFill.style.width = progress + '%';
+    if (splashReady || fatalErrorShown) return;
+    const progress = itemsLoaded / itemsTotal;
+    document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
     const loadingText = document.getElementById('loading-text');
-    if (loadingText) loadingText.innerText = `Loading Assets... ${Math.round(progress)}%`;
+    if (loadingText) {
+        // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
+        loadingText.textContent = progress < 1 ? `Loading the Solar System… ${Math.round(progress * 100)}%` : 'Preparing the view…';
+    }
 };
 
 const SLOW_LOAD_NOTICE_MS = 8000;
-let loadingDismissed = false;
+let lastInputWasKeyboard = false;
+window.addEventListener('keydown', () => { lastInputWasKeyboard = true; }, true);
+window.addEventListener('pointerdown', () => { lastInputWasKeyboard = false; }, true);
+let splashReady = false;
+let splashDismissed = false;
 let fatalErrorShown = false;
 
-function dismissLoadingOverlay() {
-    if (loadingDismissed || fatalErrorShown) return;
-    loadingDismissed = true;
+// The scene is ready: finish the orbit, set the craft moving and offer the way in.
+function markSceneReady() {
+    if (splashReady || fatalErrorShown) return;
+    splashReady = true;
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
-    if (overlay && overlay.style.display !== 'none') {
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 500);
+    if (!overlay || splashDismissed) return;
+    overlay.style.setProperty('--progress', '1');
+    overlay.classList.add('is-ready');
+    document.getElementById('loading-note').hidden = true;
+    // Said for screen readers; on screen the button's own label says it.
+    const loadingText = document.getElementById('loading-text');
+    loadingText.textContent = 'Ready';
+    loadingText.classList.add('visually-hidden');
+    const start = document.getElementById('splash-start');
+    start.disabled = false;
+    start.textContent = 'Start exploring';
+    // Keyboard visitors get the button focused; pointer visitors aren't shown a ring on load.
+    if (lastInputWasKeyboard && (!document.activeElement || document.activeElement === document.body)) start.focus({ preventScroll: true });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Both copies of the craft (behind and in front of the world) start together.
+        overlay.querySelectorAll('.splash-orbit animateMotion').forEach(motion => motion.beginElement?.());
     }
+}
+
+// The way in, staged in time with the splash's leaving styles: the copy fades (from 0), the world
+// glides to the centre (0.15–1.05 s), turns see-through onto the scene (from OPEN), and the camera
+// flies through it (THROUGH to ARRIVE); then the controls fade up.
+const SPLASH_OPEN_MS = 1000;
+const SPLASH_THROUGH_MS = 1450;
+const SPLASH_ARRIVE_MS = 2450;
+
+function dismissSplash({ fromKeyboard = false } = {}) {
+    if (splashDismissed || fatalErrorShown) return;
+    splashDismissed = true;
+    clearTimeout(slowLoadTimer);
+    const overlay = document.getElementById('loading-overlay');
+    const ui = document.getElementById('ui-layer');
+    overlay.inert = true;
+    announce('Showing the whole Solar System');
+
+    const arrive = () => {
+        if (fatalErrorShown) return;
+        overlay.hidden = true;
+        ui.inert = false;
+        ui.classList.remove('is-waiting');
+        // Keyboard visitors carry on from the menu's search; pointer visitors go to the scene.
+        if (fromKeyboard) document.getElementById('menu-filter')?.focus({ preventScroll: true });
+    };
+    const art = overlay.querySelector('.splash-orbit');
+    if (prefersReducedMotion.matches || !art) { arrive(); return; }
+
+    // The world sits at the centre of the drawing (400,400 in a 680-wide view box, r = 150).
+    const box = art.getBoundingClientRect();
+    const w = window.innerWidth, h = window.innerHeight;
+    const worldR = box.width * 150 / 680;
+    const reach = Math.hypot(w, h) / 2 + 2; // a hole this wide from the centre clears every corner
+    overlay.style.setProperty('--to-centre-x', `${(w / 2 - (box.left + box.width / 2)).toFixed(1)}px`);
+    overlay.style.setProperty('--to-centre-y', `${(h / 2 - (box.top + box.height / 2)).toFixed(1)}px`);
+    overlay.style.setProperty('--hole-start', `${worldR.toFixed(1)}px`);
+    overlay.style.setProperty('--hole-end', `${reach.toFixed(1)}px`);
+    overlay.style.setProperty('--fly-scale', (reach / worldR).toFixed(3));
+
+    document.body.classList.add('is-arriving');
+    overlay.classList.add('is-leaving');
+    setTimeout(() => overlay.classList.add('is-open'), SPLASH_OPEN_MS);
+    setTimeout(() => {
+        overlay.classList.add('is-through');
+        document.body.classList.remove('is-arriving');
+    }, SPLASH_THROUGH_MS);
+    setTimeout(arrive, SPLASH_ARRIVE_MS);
 }
 
 function setLoadingAction(label, handler) {
@@ -214,30 +355,35 @@ function setLoadingAction(label, handler) {
     action.hidden = false;
 }
 
-// Keep the overlay up until the scene is actually ready. On a slow connection,
-// say so after a few seconds and let the visitor go in early rather than wait.
+// On a slow connection, say so after a few seconds and let the visitor go in early.
 const slowLoadTimer = setTimeout(() => {
     const note = document.getElementById('loading-note');
     if (note) {
-        note.textContent = 'This is taking longer than usual. Some planets may appear before their surfaces finish loading.';
+        note.textContent = 'This is taking longer than usual. You can go in now; some planets may appear before their surfaces finish loading.';
         note.hidden = false;
     }
-    setLoadingAction('Explore now', dismissLoadingOverlay);
+    const start = document.getElementById('splash-start');
+    if (start) {
+        start.disabled = false;
+        start.textContent = 'Explore now';
+    }
 }, SLOW_LOAD_NOTICE_MS);
 
-// Stops the app with a plain explanation and a way to retry, replacing the loader.
+// Stops the app with a plain explanation and a way to retry, in place of the way in.
 function showFatalError(message) {
     fatalErrorShown = true;
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     if (!overlay) return;
     overlay.setAttribute('role', 'alert');
-    overlay.style.display = '';
-    overlay.style.opacity = '1';
+    overlay.hidden = false;
+    overlay.inert = false;
+    overlay.classList.remove('is-leaving', 'is-ready');
+    overlay.classList.add('is-error');
+    const start = document.getElementById('splash-start');
+    if (start) start.hidden = true;
     const text = document.getElementById('loading-text');
     if (text) text.textContent = 'OUniverse couldn’t start';
-    const bar = overlay.querySelector('.progress-bar');
-    if (bar) bar.hidden = true;
     const note = document.getElementById('loading-note');
     if (note) {
         note.textContent = message;
@@ -245,6 +391,24 @@ function showFatalError(message) {
     }
     setLoadingAction('Try again', () => window.location.reload());
 }
+
+// The count comes from data.json, so the splash stays true as content changes. It counts
+// spacecraft the OU worked on, so ground facilities (Mars Yard, observatories) are left out.
+function fillSplashFacts(items) {
+    const count = items.filter(item => item.type === 'mission' && item.ou_involvement
+        && !(item.orbit_type === 'landed' && item.parent === 'Earth')).length;
+    if (!count) return;
+    document.getElementById('splash-count').textContent = count;
+    document.getElementById('splash-explore').hidden = false;
+}
+
+(function setupSplash() {
+    const start = document.getElementById('splash-start');
+    start?.addEventListener('click', (e) => dismissSplash({ fromKeyboard: e.detail === 0 }));
+    document.getElementById('loading-overlay')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !start.disabled) dismissSplash({ fromKeyboard: true });
+    });
+})();
 
 // The background texture can finish before data.json has queued the planets,
 // so only treat the manager going idle as "ready" once the system is built.
@@ -255,8 +419,9 @@ loadingManager.onLoad = () => { if (systemReady) warmUpSceneThenReveal(); };
 // textures upload mid-flight. Upload everything while the loader is still up.
 let sceneWarmedUp = false;
 function warmUpSceneThenReveal() {
-    if (sceneWarmedUp) { dismissLoadingOverlay(); return; }
+    if (sceneWarmedUp) { markSceneReady(); return; }
     sceneWarmedUp = true;
+    performance.mark('warmup-start'); // read by the performance checks
     const textures = collectTextures(scene);
     if (scene.background && scene.background.isTexture) textures.add(scene.background);
     textures.forEach(texture => {
@@ -264,9 +429,11 @@ function warmUpSceneThenReveal() {
     });
     const WARM_UP_TIMEOUT_MS = 5000;
     Promise.race([
-        renderer.compileAsync(scene, camera).catch(e => console.warn('Shader warm-up failed', e)),
+        renderer.compileAsync(scene, camera)
+            .then(() => performance.mark('warmup-shaders-ready'))
+            .catch(e => console.warn('Shader warm-up failed', e)),
         new Promise(resolve => setTimeout(resolve, WARM_UP_TIMEOUT_MS))
-    ]).then(dismissLoadingOverlay);
+    ]).then(markSceneReady);
 }
 
 
@@ -437,33 +604,56 @@ sunLight.position.set(0, 0, 0);
 sunLight.castShadow = false;
 scene.add(sunLight);
 
-// This light casts uniform high-resolution shadows for the targeted active system
-// Max size strictly capped to 1024 to save memory bandwidth on laptops and integrated GPUs.
+// Inside a planet's system the Sun becomes this directional light, which casts shadows (see
+// updateSunShadow). The map stays at 1024 to spare memory bandwidth on laptops and integrated
+// GPUs; fitting it to the view is what keeps it sharp.
+const SUN_SHADOW_MAP_SIZE = 1024;
 const shadowLight = new THREE.DirectionalLight(0xffffff, 0);
 shadowLight.castShadow = true;
-shadowLight.shadow.mapSize.width = 1024;
-shadowLight.shadow.mapSize.height = 1024;
-shadowLight.shadow.bias = -0.0001;
-shadowLight.shadow.normalBias = 0.02;
-shadowLight.shadow.camera.near = 1;
-shadowLight.shadow.camera.far = 1000;
+shadowLight.shadow.mapSize.set(SUN_SHADOW_MAP_SIZE, SUN_SHADOW_MAP_SIZE);
+// Edges filtered over a slightly wider patch: still crisp, but a shadow edge crossing a coarse
+// facet (a tumbling comet's) fades across it instead of flipping texel by texel.
+shadowLight.shadow.radius = 1.5;
 scene.add(shadowLight);
 scene.add(shadowLight.target);
 
 // --- SELECTION SPOTLIGHT ---
-// The selected spacecraft gets its own light from above the local surface, so a lander on a
-// planet's night side is still visible. It fades in when the camera arrives and out when the
-// selection ends. It's in the scene from the start at zero intensity: adding a light later
-// would change every material's shader and force them all to recompile.
-const SPOT_INTENSITY = 5;
+// The selected spacecraft gets a light of its own, so its side away from the Sun isn't lost in
+// the dark. A lander or rover is lit from above the local surface and casts its shadow on the
+// ground. An orbiter gets a fill light on its side away from the Sun, never aimed at the body
+// beneath it, so it lights and shadows only the craft (the Sun casts its shadow on the planet).
+// It fades in when the camera arrives and out when the selection ends. It's in the scene from
+// the start at zero intensity: adding a light later would change every material's shader and
+// force them all to recompile.
+// Only as bright as the craft needs: a faint fill when the Sun is on it (just enough to read its
+// shaded side, and never enough to wash out the Sun's shadows), full strength on a night side or
+// in a planet's shadow, where it's the only light the craft gets.
+const SPOT_INTENSITY_DAY = 0.2;
+const SPOT_INTENSITY_NIGHT = 2.5;
+// Its shadows stay lighter than the Sun's: this strong at night, fading out entirely in sunlight,
+// where the Sun's shadows are the only ones that should read.
+const SPOT_SHADOW_STRENGTH = 0.5;
 const SPOT_FADE_SECONDS = 0.6;
-const SPOT_HEIGHT_RADII = 8;  // how far above the model the light sits, in model radii
+const SPOT_HEIGHT_RADII = 8;  // how far from the model the light sits, in model radii
+// An orbiter's light points at least this far away from the body it orbits: wider than the
+// cone's half-angle (~17°), so none of the beam can reach the surface.
+const SPOT_CLEARANCE = Math.sin(THREE.MathUtils.degToRad(25));
+const SURFACE_TYPES = new Set(['planet', 'moon', 'asteroid', 'comet']);
+const CLOSED_BODY_TYPES = SURFACE_TYPES; // solid bodies, whose models are closed shapes
 const selectionSpot = new THREE.SpotLight(0xfff2e0, 0, 0, Math.PI / 8, 0.7, 0);
-selectionSpot.castShadow = false;
+// Shadows are on from the start for the same reason (turning them on later recompiles every
+// material); the shadow map is only drawn while the light is up (see updateSelectionSpot).
+selectionSpot.castShadow = true;
+selectionSpot.shadow.mapSize.set(1024, 1024);
+selectionSpot.shadow.intensity = SPOT_SHADOW_STRENGTH;
+selectionSpot.shadow.autoUpdate = false;
+let spotGoal = 0; // how bright the light should be for where the craft is now
 scene.add(selectionSpot, selectionSpot.target);
 let spotSubject = null;
 const _spotUp = new THREE.Vector3();
 const _spotParent = new THREE.Vector3();
+const _spotToParent = new THREE.Vector3();
+const _spotToSun = new THREE.Vector3();
 
 if (DEBUG_SHADOWS) {
     shadowHelper = new THREE.CameraHelper(shadowLight.shadow.camera);
@@ -478,6 +668,14 @@ const mouse = new THREE.Vector2();
 
 // --- PRE-ALLOCATED SCRATCHPADS FOR ZERO-ALLOCATION LOOPS ---
 const clockElement = document.getElementById('clock');
+// "28 Sep 2026, 17:07:19 UTC": the mission-log form, day first, always labelled UTC. Fixed
+// three-letter months, since en-GB formatting now writes "Sept".
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const pad2 = n => String(n).padStart(2, '0');
+function formatSimulatedTime(d) {
+    return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}, `
+        + `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())} UTC`;
+}
 let lastSimulatedSeconds = -1;
 
 const _tempVec1 = new THREE.Vector3();
@@ -486,7 +684,6 @@ const _tempVec3 = new THREE.Vector3();
 const _tempQuat = new THREE.Quaternion();
 const _UP = new THREE.Vector3(0, 1, 0);
 const _FORWARD = new THREE.Vector3(0, 0, -1);
-const _scratchDate = new Date();
 
 // Orbital Math Scratchpads
 const _keplerPos = new THREE.Vector3();
@@ -509,7 +706,6 @@ const _closestPointOnRay = new THREE.Vector3();
 const _sunPos = new THREE.Vector3(0, 0, 0);
 const _viewCenter = new THREE.Vector3();
 const _vecToSun = new THREE.Vector3();
-const _lightPos = new THREE.Vector3();
 const _transitionDestPos = new THREE.Vector3();
 const _transitionDestTarget = new THREE.Vector3();
 const _lastTrackedPos = new THREE.Vector3();
@@ -557,84 +753,150 @@ function getKeplerPosition(orbitData, days) {
     return { x: _keplerPos.x, y: _keplerPos.y, z: _keplerPos.z };
 }
 
-// --- NEW TRAJECTORY LOGIC ---
-function getTrajectoryPosition(waypoints, currentDate) {
-    const currentMs = currentDate.getTime();
-    let startIndex = -1;
-    for (let i = 0; i < waypoints.length - 1; i++) {
-        if (currentMs >= new Date(waypoints[i].date).getTime() && currentMs < new Date(waypoints[i + 1].date).getTime()) {
-            startIndex = i; break;
-        }
-    }
-    if (startIndex === -1) {
-        if (currentMs < new Date(waypoints[0].date).getTime()) {
-            const t = celestialMap.get(waypoints[0].target);
-            return t ? t.group.position : { x: 0, y: 0, z: 0 };
-        }
-        if (currentMs >= new Date(waypoints[waypoints.length - 1].date).getTime()) {
-            const t = celestialMap.get(waypoints[waypoints.length - 1].target);
-            return t ? t.group.position : { x: 0, y: 0, z: 0 };
-        }
-        return { x: 0, y: 0, z: 0 };
-    }
-    const startWp = waypoints[startIndex];
-    const endWp = waypoints[startIndex + 1];
-    const sObj = celestialMap.get(startWp.target);
-    const eObj = celestialMap.get(endWp.target);
-    if (!sObj || !eObj) return { x: 0, y: 0, z: 0 };
-    const dateStart = new Date(startWp.date);
-    const dateEnd = new Date(endWp.date);
-    const daysStart = getDaysSinceJ2000(dateStart);
-    const daysEnd = getDaysSinceJ2000(dateEnd);
-    const p1 = getKeplerPosition(sObj.data.orbit, daysStart);
-    const p2 = getKeplerPosition(eObj.data.orbit, daysEnd);
-    const progress = (currentMs - dateStart.getTime()) / (dateEnd.getTime() - dateStart.getTime());
-    const r1 = Math.sqrt(p1.x * p1.x + p1.z * p1.z);
-    const r2 = Math.sqrt(p2.x * p2.x + p2.z * p2.z);
-    const angle1 = Math.atan2(p1.x, p1.z);
-    let angle2 = Math.atan2(p2.x, p2.z);
-    while (angle2 < angle1) angle2 += Math.PI * 2;
-    const r = r1 + (r2 - r1) * progress;
-    const theta = angle1 + (angle2 - angle1) * progress;
-    const y = p1.y + (p2.y - p1.y) * progress;
-    return { x: r * Math.sin(theta), y: y, z: r * Math.cos(theta) };
+// --- TRAJECTORIES ---
+// A mission in transit ("orbit_type": "trajectory") follows a cartoon of its real route: it flies
+// past each waypoint's body on that waypoint's date, at the place this simulation shows the body
+// then, just outside it. Between waypoints it loops round the Sun: the angle advances faster
+// close in and slower far out (as a real orbit's does), with as many loops as the time allows
+// (or "revs", if a waypoint gives it), through an optional farthest or nearest distance from
+// the Sun ("extreme"). After the last waypoint it's on "arrival_orbit" round that body.
+const TRAJECTORY_STEP_DAYS = 1;        // path resolution
+const FLYBY_OFFSET_RADII = 2.5;        // passes this many of the body's radii outside its centre
+const AU = 1000;                       // scene units per astronomical unit (Earth's orbit)
+
+// Where a body is (its orbit about its parent, and its parent's about the Sun) on a given day.
+function bodyPositionAt(name, days) {
+    const obj = celestialMap.get(name);
+    if (!obj) return new THREE.Vector3();
+    const p = getKeplerPosition(obj.data.orbit, days);
+    const pos = new THREE.Vector3(p.x, p.y, p.z);
+    if (obj.data.parent && obj.data.parent !== 'Sun') pos.add(bodyPositionAt(obj.data.parent, days));
+    return pos;
 }
 
-const PLANET_ORBIT_COLORS = {
-    'Mercury': '#a1a1a1',
-    'Venus': '#e3bb76',
-    'Earth': '#4a90e2',
-    'Mars': '#ff4433',
-    'Jupiter': '#e0a96d',
-    'Saturn': '#f4d06f',
-    'Uranus': '#7de3e4',
-    'Neptune': '#4b70dd'
-};
+const dateToDays = date => getDaysSinceJ2000(new Date(`${date}T12:00:00Z`));
 
+// Monotone cubic (Fritsch-Carlson) through (xs, ys): smooth, and never overshoots between
+// knots, so an angle that only moves one way keeps moving that way and a turning point in the
+// distance from the Sun stays a turning point.
+function monotoneCubic(xs, ys) {
+    const n = xs.length, d = [], m = new Array(n).fill(0);
+    for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (let i = 1; i < n - 1; i++) {
+        if (d[i - 1] * d[i] <= 0) { m[i] = 0; continue; }
+        const w1 = 2 * (xs[i + 1] - xs[i]) + (xs[i] - xs[i - 1]), w2 = (xs[i + 1] - xs[i]) + 2 * (xs[i] - xs[i - 1]);
+        m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]);
+    }
+    let i = 0; // calls come in increasing x, so the search carries on from the last interval
+    return x => {
+        if (x < xs[i]) i = 0;
+        while (i < n - 2 && x > xs[i + 1]) i++;
+        const h = xs[i + 1] - xs[i], t = THREE.MathUtils.clamp((x - xs[i]) / h, 0, 1), t2 = t * t, t3 = t2 * t;
+        return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + t) * h * m[i] + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * h * m[i + 1];
+    };
+}
+
+// Samples the whole cruise once, a point per TRAJECTORY_STEP_DAYS, cached on the object. Each leg
+// is first laid out on its own (its loops, its farthest or nearest point, faster close to the
+// Sun); control points from all of them are then joined by one smooth curve each for the angle
+// round the Sun, the distance from it and the height, so the path runs on through every flyby
+// without a corner or a jump.
+function getTrajectoryPlan(obj) {
+    if (obj.trajectoryPlan) return obj.trajectoryPlan;
+    const spec = obj.data.trajectory || {};
+    const waypoints = (spec.waypoints || []).map(w => ({ ...w, days: dateToDays(w.date) }));
+    const arrival = spec.arrival_orbit && waypoints.length ? waypoints[waypoints.length - 1] : null;
+    // Each waypoint's point: just outside its body, on the side away from the Sun; the last,
+    // with an arrival orbit, exactly where that orbit has the craft on arrival.
+    const points = waypoints.map((w, i) => {
+        const body = bodyPositionAt(w.at, w.days);
+        if (arrival && i === waypoints.length - 1) {
+            const o = getKeplerPosition(spec.arrival_orbit, w.days);
+            return body.add(new THREE.Vector3(o.x, o.y, o.z));
+        }
+        const radius = celestialMap.get(w.at)?.data.radius || 1;
+        const out = new THREE.Vector3(body.x, 0, body.z).normalize();
+        return body.addScaledVector(out, radius * FLYBY_OFFSET_RADII);
+    });
+    const knots = { days: [], angle: [], radius: [], height: [] };
+    const legs = [];
+    let angle = points.length ? Math.atan2(points[0].x, points[0].z) : 0; // unwrapped, falling
+    for (let i = 0; i + 1 < waypoints.length; i++) {
+        const A = points[i], B = points[i + 1], wB = waypoints[i + 1];
+        const d0 = waypoints[i].days, span = wB.days - d0;
+        const rA = Math.hypot(A.x, A.z), rB = Math.hypot(B.x, B.z);
+        // Planets go round in the direction of falling atan2(x, z), so the craft does too.
+        let turn = Math.atan2(A.x, A.z) - Math.atan2(B.x, B.z);
+        while (turn < 0) turn += Math.PI * 2;
+        if (span < 30 && turn > Math.PI * 11 / 6) turn -= Math.PI * 2; // a short hop slightly back, not a lap
+        const bump = wB.extreme !== undefined ? wB.extreme - (rA + rB) / 2 : 0;
+        const radiusAt = s => rA + (rB - rA) * s + bump * Math.sin(Math.PI * s);
+        // Angular rate falls off with distance, as in an orbit: ~r^-1.5.
+        const N = Math.max(8, Math.ceil(span / TRAJECTORY_STEP_DAYS));
+        const cum = [0];
+        for (let k = 1; k <= N; k++) cum.push(cum[k - 1] + Math.pow(radiusAt((k - 0.5) / N) / AU, -1.5));
+        // Loops: as given, or as many as a real orbit at these distances would make in the time.
+        const expected = (0.9856 * span / N) * cum[N] * (Math.PI / 180);
+        const revs = wB.revs ?? Math.max(0, Math.round((expected - turn) / (Math.PI * 2)));
+        const total = turn + revs * Math.PI * 2;
+        // Control points: every eighth of the leg (the half-way one is the farthest or nearest point).
+        for (let q = i === 0 ? 0 : 1; q <= 8; q++) {
+            const s = q / 8, k = Math.round(s * N);
+            knots.days.push(d0 + span * s);
+            knots.angle.push(angle - total * (cum[k] / cum[N]));
+            knots.radius.push(radiusAt(s));
+            knots.height.push(A.y + (B.y - A.y) * s);
+        }
+        angle -= total;
+        legs.push({ to: wB.label || wB.at, revs });
+    }
+    const samples = [];
+    if (knots.days.length > 1) {
+        const angleAt = monotoneCubic(knots.days, knots.angle), radiusOf = monotoneCubic(knots.days, knots.radius);
+        const heightAt = monotoneCubic(knots.days, knots.height);
+        const first = knots.days[0], last = knots.days[knots.days.length - 1];
+        for (let d = first; ; d += TRAJECTORY_STEP_DAYS) {
+            const day = Math.min(d, last), th = angleAt(day), r = radiusOf(day);
+            samples.push({ days: day, pos: new THREE.Vector3(r * Math.sin(th), heightAt(day), r * Math.cos(th)) });
+            if (day === last) break;
+        }
+    }
+    obj.trajectoryPlan = { waypoints, points, samples, arrival, legs, arrivalOrbit: spec.arrival_orbit };
+    return obj.trajectoryPlan;
+}
+
+// The craft's position on the day `days` (into `out`); true once it's in its arrival orbit.
+function getTrajectoryPosition(obj, days, out) {
+    const plan = getTrajectoryPlan(obj);
+    const S = plan.samples;
+    if (!S.length) return false;
+    if (plan.arrival && days >= plan.arrival.days) {
+        const o = getKeplerPosition(plan.arrivalOrbit, days);
+        const host = celestialMap.get(plan.arrival.at);
+        out.set(o.x, o.y, o.z);
+        if (host) out.add(host.group.position);
+        return true;
+    }
+    if (days <= S[0].days) { out.copy(S[0].pos); return false; }
+    // Samples are evenly spaced in time within each leg, so a binary search finds the pair.
+    let lo = 0, hi = S.length - 1;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (S[mid].days <= days) lo = mid; else hi = mid; }
+    const a = S[lo], b = S[hi];
+    out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1));
+    return false;
+}
+
+// An orbit line's colour: the object's "orbit_color" if data.json gives one; a moon without one
+// shares its planet's; otherwise a colour by type (a planet falls back to its own "color").
 function getStandardizedOrbitColor(item) {
     if (!item) return '#888888';
+    if (item.orbit_color) return item.orbit_color;
 
-    if (item.type === 'planet') {
-        return PLANET_ORBIT_COLORS[item.name] || item.color || '#4a90e2';
-    }
-    if (item.type === 'moon') {
-        if (item.name === 'Moon' || item.name === 'Luna') {
-            return '#888888';
-        }
-        if (item.parent && PLANET_ORBIT_COLORS[item.parent]) {
-            return PLANET_ORBIT_COLORS[item.parent];
-        }
-        return '#888888';
-    }
-    if (item.type === 'asteroid') {
-        return '#888888';
-    }
-    if (item.type === 'comet') {
-        return '#ffffff';
-    }
-    if (item.type === 'mission' || item.type === 'reference_point') {
-        return '#888888'; // Grey by default; glows techno electric blue on hover / selection!
-    }
+    if (item.type === 'planet') return item.color || '#4a90e2';
+    if (item.type === 'moon') return celestialMap.get(item.parent)?.data.orbit_color || '#888888';
+    if (item.type === 'comet') return '#ffffff';
+    // Asteroids, missions and reference points: grey, lit light blue on hover or selection.
     return '#888888';
 }
 
@@ -649,39 +911,32 @@ function getStandardizedOrbitOpacity(item) {
 }
 
 let hoveredObj = null;
-let targetBoxElem = null;
-let targetBoxLabelElem = null;
+let hoveredHolder = null; // a menu holder (asteroids, comets) whose row is hovered
+let shownHolder = null;   // the holder on show after its row was chosen
 
-function setupTargetBoxOverlay() {
-    const uiLayer = document.getElementById('ui-layer');
-    if (!uiLayer) return;
-
-    targetBoxElem = document.createElement('div');
-    targetBoxElem.id = 'target-box';
-    targetBoxElem.className = 'target-box';
-    targetBoxElem.innerHTML = `
-        <div class="target-corner top-left"></div>
-        <div class="target-corner top-right"></div>
-        <div class="target-corner bottom-left"></div>
-        <div class="target-corner bottom-right"></div>
-        <div class="target-label" id="target-box-label"></div>
-    `;
-    uiLayer.appendChild(targetBoxElem);
-    targetBoxLabelElem = document.getElementById('target-box-label');
+// The bodies a holder gathers: its asteroids or comets, not the missions to them.
+function holderMembers(holder) {
+    return [...celestialMap.values()].filter(obj => holder.holds(obj.data));
 }
 
 function updateOrbitLineHighlights() {
     celestialMap.forEach(obj => {
         if (obj.orbitLine && obj.orbitLine.material) {
-            const isHovered = (hoveredObj === obj);
+            const isHovered = hoveredObj === obj
+                || Boolean(hoveredHolder && hoveredHolder !== shownHolder && hoveredHolder.holds(obj.data));
             const isSelected = (selectedObject === obj.mesh);
+            const isShown = Boolean(shownHolder && shownHolder.holds(obj.data));
             const mat = obj.orbitLine.material;
             const baseColor = obj.orbitLine.userData.baseColor || '#888888';
             const baseOpacity = obj.orbitLine.userData.baseOpacity || 0.35;
 
             if (isHovered || isSelected) {
                 mat.opacity = 0.95;
-                mat.color.set('#00ffff'); // Techno electric blue highlight!
+                mat.color.set('#66EEFA'); // OU light blue
+            } else if (isShown) {
+                // Informational: lit in the Core blue tint, apart from the light blue of a choice.
+                mat.opacity = 0.7;
+                mat.color.set('#A6B5F8');
             } else {
                 mat.opacity = baseOpacity;
                 mat.color.set(baseColor);
@@ -701,142 +956,380 @@ function setHoveredObject(obj) {
     updateOrbitLineHighlights();
 }
 
-let currBox = { left: 0, top: 0, width: 0, height: 0, initialized: false };
-
 function clearHoveredObject() {
     if (hoveredObj) {
         hoveredObj = null;
         updateOrbitLineHighlights();
     }
-    if (targetBoxElem) {
-        targetBoxElem.style.display = 'none';
-    }
-    currBox.initialized = false;
+    // The reticle is hidden by the next frame's updateReticles, not here: choosing an object
+    // blurs its row, and the reticle must survive that long enough to swipe out.
 }
 
-const _box3 = new THREE.Box3();
-const _corners = [
-    new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
-    new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()
-];
-
-function updateTargetBoxOverlay(dt = 0.016) {
-    if (!hoveredObj || !targetBoxElem) {
-        currBox.initialized = false;
-        return;
-    }
-    if (!isInScene(hoveredObj.group)) {
-        targetBoxElem.style.display = 'none';
-        currBox.initialized = false;
-        return;
-    }
-
-    if (hoveredObj.group) hoveredObj.group.updateMatrixWorld(true);
-    if (hoveredObj.mesh) hoveredObj.mesh.updateMatrixWorld(true);
-
-    _box3.setFromObject(hoveredObj.mesh);
-    if (_box3.isEmpty()) {
-        targetBoxElem.style.display = 'none';
-        currBox.initialized = false;
-        return;
-    }
-
-    const min = _box3.min;
-    const max = _box3.max;
-
-    _corners[0].set(min.x, min.y, min.z);
-    _corners[1].set(min.x, min.y, max.z);
-    _corners[2].set(min.x, max.y, min.z);
-    _corners[3].set(min.x, max.y, max.z);
-    _corners[4].set(max.x, min.y, min.z);
-    _corners[5].set(max.x, min.y, max.z);
-    _corners[6].set(max.x, max.y, min.z);
-    _corners[7].set(max.x, max.y, max.z);
-
-    let minX = Infinity, maxX = -Infinity;
-    let minY = Infinity, maxY = -Infinity;
-    let anyInFront = false;
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    for (let i = 0; i < 8; i++) {
-        const v = _corners[i].clone().project(camera);
-        if (v.z <= 1) anyInFront = true;
-
-        const screenX = (v.x * 0.5 + 0.5) * width;
-        const screenY = (-(v.y * 0.5) + 0.5) * height;
-
-        if (screenX < minX) minX = screenX;
-        if (screenX > maxX) maxX = screenX;
-        if (screenY < minY) minY = screenY;
-        if (screenY > maxY) maxY = screenY;
-    }
-
-    if (!anyInFront || minX >= width || maxX <= 0 || minY >= height || maxY <= 0) {
-        targetBoxElem.style.display = 'none';
-        currBox.initialized = false;
-        return;
-    }
-
-    const padding = 10;
-    const rawLeft = Math.max(10, minX - padding);
-    const rawRight = Math.min(width - 10, maxX + padding);
-    const rawTop = Math.max(10, minY - padding);
-    const rawBottom = Math.min(height - 10, maxY + padding);
-
-    const targetLeft = rawLeft;
-    const targetTop = rawTop;
-    const targetWidth = Math.max(24, rawRight - rawLeft);
-    const targetHeight = Math.max(24, rawBottom - rawTop);
-
-    if (!currBox.initialized) {
-        currBox.left = targetLeft;
-        currBox.top = targetTop;
-        currBox.width = targetWidth;
-        currBox.height = targetHeight;
-        currBox.initialized = true;
-    } else {
-        const lerpFactor = 1 - Math.pow(1 - 0.25, (dt || 0.016) * 60);
-        currBox.left += (targetLeft - currBox.left) * lerpFactor;
-        currBox.top += (targetTop - currBox.top) * lerpFactor;
-        currBox.width += (targetWidth - currBox.width) * lerpFactor;
-        currBox.height += (targetHeight - currBox.height) * lerpFactor;
-    }
-
-    targetBoxElem.style.left = `${currBox.left.toFixed(2)}px`;
-    targetBoxElem.style.top = `${currBox.top.toFixed(2)}px`;
-    targetBoxElem.style.width = `${currBox.width.toFixed(2)}px`;
-    targetBoxElem.style.height = `${currBox.height.toFixed(2)}px`;
-    targetBoxElem.style.display = 'block';
-
-    if (targetBoxLabelElem && hoveredObj.data) {
-        targetBoxLabelElem.innerText = hoveredObj.data.name;
-    }
+function setHoveredHolder(holder) {
+    if (hoveredHolder === holder) return;
+    hoveredHolder = holder;
+    updateOrbitLineHighlights();
 }
 
-function createTrajectoryLine(data) {
-    if (!data.waypoints) return null;
-    const points = [];
-    const totalSegments = 200;
-    const startDate = new Date(data.waypoints[0].date);
-    const endDate = new Date(data.waypoints[data.waypoints.length - 1].date);
-    const totalTime = endDate.getTime() - startDate.getTime();
-    for (let i = 0; i <= totalSegments; i++) {
-        const t = startDate.getTime() + (totalTime * (i / totalSegments));
-        const date = new Date(t);
-        const pos = getTrajectoryPosition(data.waypoints, date);
-        points.push(new THREE.Vector3(pos.x, pos.y, pos.z));
-    }
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.LineBasicMaterial({
-        color: new THREE.Color('#888888'),
-        transparent: true,
-        opacity: 0.35,
-        depthWrite: false
+// A holder's row: the same overview as "Solar System", with its bodies' orbits kept lit and each
+// body labelled, until something else is chosen.
+function showHolder(holder) {
+    showSolarSystem();
+    shownHolder = holder;
+    updateOrbitLineHighlights();
+    syncMenuCurrent(holder.name);
+    const count = holderMembers(holder).length;
+    announce(`Showing ${count} ${holder.name.toLowerCase()} and their orbits`);
+}
+
+function clearShownHolder() {
+    if (!shownHolder) return;
+    shownHolder = null;
+    updateOrbitLineHighlights();
+}
+
+// --- RETICLE ---
+// An instrument-style callout drawn over the scene while an object is hovered in the menu: a thin
+// ring round the body and a leader rising at 45 degrees to a name tab. Once the body is large on
+// screen the ring gives way to a light-blue dot pinned to its centre, since a ring fitted to a
+// bounding box stops being accurate up close. The mark's centre follows the body exactly; only its
+// size eases, so it doesn't twitch as the body's on-screen size changes.
+// Choosing the marked object acknowledges it in one stroke: the ring sweeps round into the leader's
+// foot, the leader retracts towards the name, and the name wipes away, leaving the approach clear.
+// A holder (asteroids, comets) marks every body it holds at once: in the hover style while its row
+// is hovered, and while it's on show as ticked rings alone, which fade back while anything is hovered.
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const RETICLE_MIN_RADIUS = 10;
+const RETICLE_GAP = 6; // ring sits this far outside the body's projected edge
+const RETICLE_DOT_RADIUS = 4;
+const RETICLE_DOT_ENTER = 72; // projected body radius (px) at which the ring becomes a dot...
+const RETICLE_DOT_LEAVE = 56; // ...and below which it returns, so the mark doesn't flicker between them
+const RETICLE_MORPH_RATE = 18; // ring-to-dot morph speed (1/s); only the size morphs, never the position
+const RETICLE_SIZE_RATE = 1; // how quickly the ring's size follows the body's (1/s); lower is more viscous
+const LEADER_RISE = 18;
+// Leader heights tried, in order, when a group's labels would collide; negative ones drop below.
+const LEADER_RISES = [LEADER_RISE, 34, 50, -LEADER_RISE, -34, -50];
+const LABEL_PAD = 4; // clear space kept between a group's labels
+const RETICLE_EXIT_MS = 700; // matches the chained transitions in style.css
+let reticleLayer = null;
+let reticle = null; // the hovered object's reticle, the only one that plays the exit
+const groupReticles = new Map(); // obj -> reticle, for the members of a hovered or shown holder
+let reticleExit = null; // { obj, until } while the chosen object's reticle swipes out
+let reticleLastSelected = null;
+
+function svgEl(name, attrs) {
+    const el = document.createElementNS(SVG_NS, name);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+}
+
+// One reticle's elements and eased state. Only the primary normalises its path lengths, which
+// its exit animates; a group's ticked ring needs real lengths for its dash pattern.
+function createReticle({ primary = false } = {}) {
+    const lengths = primary ? { pathLength: '1' } : {};
+    const r = {
+        obj: null, dot: false, morph: 0, ringR: 0, placement: null, variant: '', tabText: '', tabW: 0, tabH: 0,
+        mark: svgEl('path', { class: primary ? 'reticle-mark' : 'reticle-mark reticle--group', ...lengths }),
+        leader: svgEl('path', { class: primary ? 'reticle-leader' : 'reticle-leader reticle--group', ...lengths }),
+        tab: document.createElement('div'),
+    };
+    r.tab.className = 'reticle-tab';
+    // A group's reticles go beneath the primary, so the one the visitor points at stays on top.
+    reticleLayer.insertBefore(r.mark, reticle ? reticle.mark : null);
+    reticleLayer.insertBefore(r.leader, reticle ? reticle.mark : null);
+    reticleLayer.parentNode.insertBefore(r.tab, reticle ? reticle.tab : null);
+    hideReticle(r);
+    return r;
+}
+
+function setupReticles() {
+    const uiLayer = document.getElementById('ui-layer');
+    if (!uiLayer || reticleLayer) return;
+    reticleLayer = svgEl('svg', { class: 'reticles', 'aria-hidden': 'true', focusable: 'false' });
+    const defs = svgEl('defs', {});
+    const grad = svgEl('linearGradient', { id: 'reticle-signal', x1: '0', y1: '1', x2: '1', y2: '0' });
+    grad.append(svgEl('stop', { offset: '0', 'stop-color': '#7DFFD3' }), svgEl('stop', { offset: '1', 'stop-color': '#66EEFA' }));
+    defs.append(grad);
+    reticleLayer.append(defs);
+    uiLayer.appendChild(reticleLayer);
+    reticle = createReticle({ primary: true });
+    // Labels are measured once per name; measure again once the web font has arrived.
+    document.fonts?.addEventListener('loadingdone', () => {
+        [reticle, ...groupReticles.values()].forEach(r => { r.tabW = 0; });
     });
-    const line = new THREE.Line(geometry, material);
-    line.userData = { baseColor: '#888888', baseOpacity: 0.35 };
+}
+
+function setReticleLeaving(leaving) {
+    [reticle.mark, reticle.leader, reticle.tab].forEach(el => el.classList.toggle('is-leaving', leaving));
+}
+
+function setReticleVariant(r, variant) {
+    if (r.variant === variant) return;
+    r.variant = variant;
+    [r.mark, r.leader, r.tab].forEach(el => el.classList.toggle('reticle--info', variant === 'info'));
+    r.tabW = 0; // the label's size changes with its style
+}
+
+function hideReticle(r) {
+    if (!r || !r.mark) return;
+    r.mark.style.display = 'none';
+    r.leader.style.display = 'none';
+    r.tab.style.display = 'none';
+    r.obj = null;
+    r.placement = null;
+}
+
+const _sphere = new THREE.Sphere();
+const _toLocal = new THREE.Matrix4();
+const _worldScale = new THREE.Vector3();
+const _bodyCentre = new THREE.Vector3();
+const _bodyEdge = new THREE.Vector3();
+const _camUp = new THREE.Vector3();
+
+// The body's bounding sphere in its own frame, cached on the object and rebuilt only when its
+// geometry changes (a model finishing loading, a detail level arriving). Measured this way the
+// sphere turns with the body, so its size and centre never shift as the body or its parent
+// rotates, the way a world-aligned bounding box would.
+function getLocalBodySphere(obj) {
+    const root = obj.mesh;
+    let key = '';
+    root.traverse(child => { if (child.geometry) key += child.geometry.uuid; });
+    if (!key) return null;
+    if (obj.reticleSphereKey === key) return obj.reticleSphere;
+
+    root.updateWorldMatrix(true, true);
+    _toLocal.copy(root.matrixWorld).invert();
+    const sphere = new THREE.Sphere();
+    let first = true;
+    root.traverse(child => {
+        if (!child.geometry) return;
+        if (!child.geometry.boundingSphere) child.geometry.computeBoundingSphere();
+        _sphere.copy(child.geometry.boundingSphere).applyMatrix4(child.matrixWorld).applyMatrix4(_toLocal);
+        if (first) { sphere.copy(_sphere); first = false; } else sphere.union(_sphere);
+    });
+    obj.reticleSphereKey = key;
+    obj.reticleSphere = sphere;
+    return sphere;
+}
+
+// The body's on-screen centre and radius, or null when it is off-screen or behind us: its
+// bounding sphere projected exactly, the radius carried out along the camera's up axis so view
+// offsets are respected.
+function projectBody(obj) {
+    if (!obj || !obj.mesh || !isInScene(obj.group)) return null;
+    obj.mesh.updateWorldMatrix(true, false);
+    const local = getLocalBodySphere(obj);
+    if (!local) return null;
+    _bodyCentre.copy(local.center).applyMatrix4(obj.mesh.matrixWorld);
+    obj.mesh.getWorldScale(_worldScale);
+    const worldR = local.radius * Math.max(_worldScale.x, _worldScale.y, _worldScale.z);
+    const inside = camera.position.distanceTo(_bodyCentre) <= worldR;
+
+    _camUp.setFromMatrixColumn(camera.matrixWorld, 1);
+    _bodyEdge.copy(_bodyCentre).addScaledVector(_camUp, worldR).project(camera);
+    _bodyCentre.project(camera);
+    if (_bodyCentre.z > 1) return null; // behind the camera
+    const w = window.innerWidth, h = window.innerHeight;
+    const cx = (_bodyCentre.x * 0.5 + 0.5) * w;
+    const cy = (-_bodyCentre.y * 0.5 + 0.5) * h;
+    const ex = (_bodyEdge.x * 0.5 + 0.5) * w;
+    const ey = (-_bodyEdge.y * 0.5 + 0.5) * h;
+    return { cx, cy, bodyR: inside ? Infinity : Math.hypot(ex - cx, ey - cy), w, h };
+}
+
+// The details panel's left edge when it sits beside the scene, else the viewport's right edge.
+function sceneRightEdge() {
+    const sb = document.getElementById('sidebar');
+    const open = sb && sb.classList.contains('active') && isSidebarBesideScene();
+    return open ? window.innerWidth - sb.offsetWidth : window.innerWidth;
+}
+
+// A full circle starting and ending at the 45-degree point on the leader's side, drawn as four
+// quarter arcs. Not two half arcs: a 180-degree arc's centre is ill-defined from its endpoints, so
+// rounding made the renderer re-fit it each frame and the ring pulsed along the other diagonal.
+function reticleRingPath(cx, cy, r, dir) {
+    const sweep = dir > 0 ? 0 : 1; // mirror the winding when the leader flips left
+    const start = dir > 0 ? -Math.PI / 4 : -3 * Math.PI / 4;
+    const step = dir > 0 ? -Math.PI / 2 : Math.PI / 2;
+    const rr = r.toFixed(2);
+    const pt = i => `${(cx + r * Math.cos(start + i * step)).toFixed(2)} ${(cy + r * Math.sin(start + i * step)).toFixed(2)}`;
+    let d = `M${pt(0)}`;
+    for (let i = 1; i <= 4; i++) d += ` A${rr} ${rr} 0 0 ${sweep} ${pt(i)}`;
+    return d;
+}
+
+// Where the label goes for a leader rising (or, for a negative rise, dropping) to one side: its
+// box, and the leader's foot and elbow.
+function labelBox(cx, cy, r, dir, rise, tabW, tabH) {
+    const sx = cx + dir * r * Math.SQRT1_2, sy = cy - Math.sign(rise) * r * Math.SQRT1_2;
+    const ex = sx + dir * (Math.abs(rise) + 12), ey = sy - rise;
+    const left = dir > 0 ? ex : ex - tabW;
+    return { sx, sy, ex, ey, left, top: ey - tabH / 2, right: left + tabW, bottom: ey + tabH / 2 };
+}
+
+function boxesOverlap(a, b) {
+    return a.left < b.right + LABEL_PAD && b.left < a.right + LABEL_PAD && a.top < b.bottom + LABEL_PAD && b.top < a.bottom + LABEL_PAD;
+}
+
+// Draws one reticle. With `placed` (a group's labels so far) the label takes the first spot that
+// clears the others, keeping last frame's spot while it still does, and is left off if none does.
+function drawReticle(r, obj, dt, fresh, placed = null) {
+    const body = projectBody(obj);
+    if (!body) { hideReticle(r); return; }
+    const { cx, cy, bodyR, w, h } = body;
+    const reduced = prefersReducedMotion.matches;
+    const ease = rate => 1 - Math.exp(-rate * (dt || 0.016));
+
+    // The ring's size eases towards the body's so it doesn't twitch as the camera moves; the
+    // centre above is never eased.
+    const ringTarget = Math.max(RETICLE_MIN_RADIUS, Math.min(bodyR + RETICLE_GAP, Math.min(w, h) * 0.45));
+    r.ringR = fresh || reduced ? ringTarget : r.ringR + (ringTarget - r.ringR) * ease(RETICLE_SIZE_RATE);
+    const ringR = r.ringR;
+
+    // Ring at range, dot up close, judged on the eased size so the choice can't flicker either:
+    // decided outright for a new object, latched while leaving.
+    const sizeR = ringR - RETICLE_GAP;
+    if (!r.mark.classList.contains('is-leaving')) {
+        if (fresh) r.dot = bodyR >= RETICLE_DOT_ENTER;
+        else if (!r.dot && sizeR >= RETICLE_DOT_ENTER) r.dot = true;
+        else if (r.dot && sizeR < RETICLE_DOT_LEAVE) r.dot = false;
+    }
+    const target = r.dot ? 1 : 0;
+    r.morph = fresh || reduced ? target : r.morph + (target - r.morph) * ease(RETICLE_MORPH_RATE);
+    const rad = ringR + (RETICLE_DOT_RADIUS - ringR) * r.morph;
+    if (cx + rad < 0 || cx - rad > w || cy + rad < 0 || cy - rad > h) { hideReticle(r); return; }
+
+    r.obj = obj;
+    // Informational marks are the ring alone: a shown group only says where its bodies are, and
+    // names appear one at a time as the visitor points at them.
+    if (r.variant === 'info') {
+        r.mark.setAttribute('d', reticleRingPath(cx, cy, rad, 1));
+        r.mark.classList.toggle('is-dot', r.morph > 0.5);
+        r.mark.style.display = '';
+        r.leader.style.display = 'none';
+        r.tab.style.display = 'none';
+        return;
+    }
+    const tab = r.tab;
+    if (r.tabText !== obj.data.name) { r.tabText = tab.textContent = obj.data.name; r.tabW = 0; }
+    tab.style.display = 'block';
+    if (!r.tabW) { r.tabW = tab.offsetWidth; r.tabH = tab.offsetHeight; }
+    const edge = sceneRightEdge() - 8;
+
+    let spot = null;
+    if (!placed) {
+        // The leader rises up and to the right; it flips left when the tab would leave the scene.
+        const dir = labelBox(cx, cy, rad, 1, LEADER_RISE, r.tabW, r.tabH).right > edge ? -1 : 1;
+        spot = { dir, rise: LEADER_RISE };
+    } else {
+        const fits = s => {
+            const box = labelBox(cx, cy, rad, s.dir, s.rise, r.tabW, r.tabH);
+            return box.left >= 8 && box.right <= edge && box.top >= 8 && box.bottom <= h - 8
+                && !placed.some(p => boxesOverlap(box, p));
+        };
+        if (r.placement && fits(r.placement)) spot = r.placement;
+        else {
+            for (const rise of LEADER_RISES) {
+                spot = [{ dir: 1, rise }, { dir: -1, rise }].find(fits) || null;
+                if (spot) break;
+            }
+        }
+        r.placement = spot;
+    }
+
+    const dir = spot ? spot.dir : 1;
+    r.mark.setAttribute('d', reticleRingPath(cx, cy, rad, dir));
+    r.mark.classList.toggle('is-dot', r.morph > 0.5);
+    r.mark.style.display = '';
+    if (!spot) {
+        r.leader.style.display = 'none';
+        tab.style.display = 'none';
+        return;
+    }
+    const box = labelBox(cx, cy, rad, dir, spot.rise, r.tabW, r.tabH);
+    if (placed) placed.push(box);
+    r.leader.setAttribute('d', `M${box.sx.toFixed(2)} ${box.sy.toFixed(2)} l${(dir * Math.abs(spot.rise)).toFixed(2)} ${(-spot.rise).toFixed(2)} H${box.ex.toFixed(2)}`);
+    r.leader.style.display = '';
+    tab.classList.toggle('is-flipped', dir < 0);
+    tab.style.left = `${box.left.toFixed(1)}px`;
+    tab.style.top = `${box.top.toFixed(1)}px`;
+}
+
+// The members of a hovered holder (hover style) and of the holder on show (informational),
+// minus the object the primary reticle is marking.
+function updateGroupReticles(dt, exclude) {
+    const wanted = new Map();
+    if (shownHolder) holderMembers(shownHolder).forEach(obj => wanted.set(obj, 'info'));
+    if (hoveredHolder && hoveredHolder !== shownHolder) holderMembers(hoveredHolder).forEach(obj => wanted.set(obj, 'hover'));
+    if (exclude) wanted.delete(exclude);
+
+    groupReticles.forEach((r, obj) => { if (!wanted.has(obj)) hideReticle(r); });
+    const placed = [];
+    wanted.forEach((variant, obj) => {
+        let r = groupReticles.get(obj);
+        if (!r) { r = createReticle(); groupReticles.set(obj, r); }
+        setReticleVariant(r, variant);
+        drawReticle(r, obj, dt, r.obj !== obj, placed);
+    });
+}
+
+function updateReticles(dt = 0.016) {
+    if (!reticleLayer) return;
+    // The renderer refreshes the camera's matrices only when it draws, so do it now; otherwise the
+    // mark is projected through last frame's camera and trails the body whenever the view moves.
+    camera.updateMatrixWorld();
+    const selected = selectedObject && selectedObject.userData ? celestialMap.get(selectedObject.userData.name) : null;
+
+    // Choosing the object the reticle marks: acknowledge it, then clear the view.
+    if (selected !== reticleLastSelected) {
+        reticleLastSelected = selected;
+        if (selected && reticle.obj === selected) {
+            reticleExit = { obj: selected, until: performance.now() + (prefersReducedMotion.matches ? 0 : RETICLE_EXIT_MS) };
+            setReticleLeaving(true);
+        }
+    }
+    if (reticleExit && performance.now() >= reticleExit.until) {
+        reticleExit = null;
+        hideReticle(reticle);
+        setReticleLeaving(false);
+    }
+
+    // Hover marks anything but the object already on show.
+    const hovered = reticleExit ? reticleExit.obj : (hoveredObj && hoveredObj !== selected ? hoveredObj : null);
+    updateGroupReticles(dt, hovered);
+    // A shown group's rings step back while anything is pointed at, so the hover stands out.
+    reticleLayer.classList.toggle('is-pointing', Boolean(hovered || (hoveredHolder && hoveredHolder !== shownHolder)));
+    if (!hovered) { hideReticle(reticle); return; }
+    drawReticle(reticle, hovered, dt, !reticleExit && reticle.obj !== hovered);
+}
+
+// Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
+// the craft's orbit line (which hover and selection light up).
+function updateTrajectoryLines(obj, arrived) {
+    const lines = obj.trajectoryLines;
+    if (!lines) return;
+    const shown = arrived ? lines.arrived : lines.cruise;
+    if (lines.cruise) lines.cruise.visible = !arrived;
+    if (lines.arrived) lines.arrived.visible = arrived;
+    if (shown && obj.orbitLine !== shown) {
+        obj.orbitLine = shown;
+        updateOrbitLineHighlights();
+    }
+}
+
+// The cruise drawn as a line through the sampled path, with a dot at each flyby.
+function createTrajectoryLine(obj, color, opacity) {
+    const plan = getTrajectoryPlan(obj);
+    if (plan.samples.length < 2) return null;
+    const geometry = new THREE.BufferGeometry().setFromPoints(plan.samples.map(s => s.pos));
+    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity, depthWrite: false }));
+    line.userData = { baseColor: color, baseOpacity: opacity };
+    const flybys = plan.points.slice(1, plan.arrival ? -1 : undefined);
+    if (flybys.length) {
+        const dots = new THREE.Points(new THREE.BufferGeometry().setFromPoints(flybys),
+            new THREE.PointsMaterial({ color: new THREE.Color(color), size: 5, sizeAttenuation: false, transparent: true, opacity: Math.min(1, opacity * 2), depthWrite: false }));
+        line.add(dots);
+    }
     return line;
 }
 
@@ -952,74 +1445,6 @@ function createSuborbitalLine(data, parentRadius) {
     return line;
 }
 
-// --- DYNAMIC SUN GENERATOR ---
-function createSun(radius, texturePath) {
-    const sunGroup = new THREE.Group();
-    const texture = loadBodyTexture(texturePath);
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    const surfaceMaterial = new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 }, uTexture: { value: texture } },
-        vertexShader: `
-            varying vec2 vUv; varying vec3 vNormal;
-            void main() { vUv = uv; vNormal = normalize(normalMatrix * normal);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-        `,
-        fragmentShader: `
-            uniform float uTime; uniform sampler2D uTexture; varying vec2 vUv;
-            void main() { vec2 p1 = vUv + vec2(uTime * 0.05, uTime * 0.01);
-            vec2 p2 = vUv + vec2(-uTime * 0.02, uTime * 0.06);
-            vec4 tex1 = texture2D(uTexture, p1); vec4 tex2 = texture2D(uTexture, p2);
-            vec4 color = mix(tex1, tex2, 0.5); float pulse = 1.0 + sin(uTime * 2.0) * 0.1;
-            gl_FragColor = vec4(color.rgb * pulse, 1.0); }
-        `
-    });
-    sunUniforms = surfaceMaterial.uniforms;
-    const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), surfaceMaterial);
-    sunGroup.add(sunMesh);
-
-    const atmosphereMaterial = new THREE.ShaderMaterial({
-        uniforms: {},
-        vertexShader: `
-            varying float intensity; void main() { vec3 vNormal = normalize(normalMatrix * normal);
-            intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1)), 4.0);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-        `,
-        fragmentShader: `
-            varying float intensity; void main() { vec3 glow = vec3(1.0, 0.5, 0.0) * intensity;
-            gl_FragColor = vec4(glow, 1.0); }
-        `,
-        side: THREE.BackSide, blending: THREE.AdditiveBlending, transparent: true
-    });
-    const atmMesh = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.25, 64, 64), atmosphereMaterial);
-    sunGroup.add(atmMesh);
-
-    const flareMaterial = new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 } },
-        vertexShader: `
-            varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-        `,
-        fragmentShader: `
-            varying vec2 vUv; uniform float uTime; void main() {
-            float dist = distance(vUv, vec2(0.5)); float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-            alpha *= (0.8 + sin(uTime * 5.0) * 0.2); vec3 color = vec3(1.0, 0.6, 0.1); 
-            gl_FragColor = vec4(color, alpha * 0.4); }
-        `,
-        transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
-    });
-
-    const flareCount = 4;
-    for (let i = 0; i < flareCount; i++) {
-        const flare = new THREE.Mesh(new THREE.PlaneGeometry(radius * 4, radius * 4), flareMaterial);
-        flare.rotation.z = Math.random() * Math.PI * 2;
-        flare.rotation.x = Math.random() * Math.PI * 0.2;
-        flare.userData = { speed: (Math.random() - 0.5) * 0.2 };
-        sunGroup.add(flare);
-        if (!sunGroup.userData.flares) sunGroup.userData.flares = [];
-        sunGroup.userData.flares.push(flare);
-    }
-    return sunGroup;
-}
-
 // --- VISUAL HELPERS ---
 function createEarthNightLayer(radius, texturePath) {
     try {
@@ -1095,6 +1520,86 @@ function createGenericSatellite(item) {
 }
 
 // --- LANDER LOGIC ---
+// Where a lander touches the ground, in its own frame: its lowest points (leg ends, wheels), the
+// one farthest out in each of six directions round it, in order. Cached per detail level.
+const SUPPORT_SECTORS = 6;
+function getLanderSupports(obj) {
+    const level = obj && (obj.highLevel || obj.lowLevel);
+    if (!level) return null;
+    if (obj.supportsLevel === level) return obj.supports;
+    obj.group.updateMatrixWorld(true);
+    const toLander = new THREE.Matrix4().copy(obj.group.matrixWorld).invert();
+    const m = new THREE.Matrix4(), v = new THREE.Vector3();
+    const eachVertex = fn => level.traverse(c => {
+        if (!c.isMesh || !c.geometry.attributes.position) return;
+        m.multiplyMatrices(toLander, c.matrixWorld);
+        const pos = c.geometry.attributes.position;
+        for (let i = 0; i < pos.count; i++) fn(v.fromBufferAttribute(pos, i).applyMatrix4(m));
+    });
+    let bottom = Infinity, top = -Infinity;
+    eachVertex(p => { bottom = Math.min(bottom, p.y); top = Math.max(top, p.y); });
+    const floor = bottom + (top - bottom) * 0.03;
+    const best = new Array(SUPPORT_SECTORS).fill(null);
+    eachVertex(p => {
+        if (p.y > floor) return;
+        const r = Math.hypot(p.x, p.z);
+        const k = Math.min(SUPPORT_SECTORS - 1, Math.floor(((Math.atan2(p.z, p.x) + Math.PI) / (2 * Math.PI)) * SUPPORT_SECTORS));
+        if (!best[k] || r > best[k].r) best[k] = { r, point: new THREE.Vector3(p.x, bottom, p.z) };
+    });
+    const points = best.filter(Boolean).map(b => b.point);
+    obj.supportsLevel = level;
+    obj.supports = points.length < 3 ? null : {
+        points,
+        centre: points.reduce((c, p) => c.add(p), new THREE.Vector3()).divideScalar(points.length),
+        reach: (top - bottom) + Math.max(...best.filter(Boolean).map(b => b.r)),
+    };
+    return obj.supports;
+}
+
+// Rests a lander on its supports: finds the ground under each and seats it on the plane through
+// those points. Tilting it to the one triangle under its centre left feet in the air on uneven
+// ground (Philae, on 67P). Works in `frame` (the parent's meshGroup); null keeps the simple placement.
+const SETTLE_MAX_TILT = Math.cos(THREE.MathUtils.degToRad(35));
+function settleOnSupports(landerObj, frame, surface, point, normal) {
+    const supports = getLanderSupports(landerObj);
+    if (!supports) return null;
+    const lean = new THREE.Quaternion().setFromUnitVectors(_UP, normal);
+    const down = normal.clone().negate().transformDirection(frame.matrixWorld);
+    const ground = [];
+    for (const s of supports.points) {
+        const above = s.clone().applyQuaternion(lean).add(point).addScaledVector(normal, supports.reach);
+        const h = new THREE.Raycaster(frame.localToWorld(above), down, 0, supports.reach * 3).intersectObject(surface, true)[0];
+        if (!h) return null;
+        ground.push(frame.worldToLocal(h.point.clone()));
+    }
+    // The plane through them: they run in order round the lander, so their summed cross
+    // products about the centre give its normal.
+    const centre = ground.reduce((c, g) => c.add(g), new THREE.Vector3()).divideScalar(ground.length);
+    const n = new THREE.Vector3();
+    for (let i = 0; i < ground.length; i++) {
+        n.add(ground[i].clone().sub(centre).cross(ground[(i + 1) % ground.length].clone().sub(centre)));
+    }
+    if (n.lengthSq() < 1e-12) return null;
+    n.normalize();
+    if (n.dot(normal) < 0) n.negate();
+    if (n.dot(normal) < SETTLE_MAX_TILT) return null; // implausibly steep: keep the simple placement
+    const seat = supports.centre.clone().applyQuaternion(new THREE.Quaternion().setFromUnitVectors(_UP, n));
+    return { position: centre.sub(seat), normal: n };
+}
+
+// Lands again the landers on `obj` (and `obj` itself, if it's one) that are already down: called
+// when a detail level arrives, so they sit on the surface shown and on their own feet.
+function relandLanders(obj) {
+    celestialMap.forEach(child => {
+        const d = child.data;
+        if (d.orbit_type !== 'landed' || (child !== obj && d.parent !== obj.data.name)) return;
+        const parent = celestialMap.get(d.parent);
+        if (!parent || child.group.parent !== parent.meshGroup) return; // not down yet
+        if (!pendingLanders.some(r => r.data === d)) pendingLanders.push({ group: child.group, data: d });
+    });
+    attemptToLand();
+}
+
 function attemptToLand() {
     for (let i = pendingLanders.length - 1; i >= 0; i--) {
         const request = pendingLanders[i];
@@ -1106,9 +1611,10 @@ function attemptToLand() {
         const parentReady = parent && parent.mesh && parent.meshGroup
             && (!getEffectiveModel(parent.data) || parent.data.isModelLoaded);
         if (parentReady) {
-            // Find target mesh for raycasting
+            // The surface to land on: the parent's full-detail model once it has one (that's what
+            // shows close up; its low-detail stand-in can be hundreds of triangles), else what it has.
             let targetMesh = null;
-            parent.mesh.traverse((child) => {
+            (parent.highLevel || parent.mesh).traverse((child) => {
                 if (child.isMesh && !targetMesh) targetMesh = child;
             });
 
@@ -1122,62 +1628,56 @@ function attemptToLand() {
             const geoCenter = geoBox.getCenter(new THREE.Vector3());
             const geoSize = geoBox.getSize(new THREE.Vector3());
 
-            let rayStartLocal, rayDirLocal;
+            // Drop in from above "landed_coords" (lat/lon on the parent; 45, 10 if not given).
+            const lat = request.data.landed_coords ? request.data.landed_coords.lat : 45;
+            const lon = request.data.landed_coords ? request.data.landed_coords.lon : 10;
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const dir = new THREE.Vector3(
+                -(Math.sin(phi) * Math.cos(theta)), Math.cos(phi), Math.sin(phi) * Math.sin(theta)
+            ).normalize();
+            const maxDim = Math.max(geoSize.x, geoSize.y, geoSize.z);
 
-            if (request.data.name === 'Philae' && !request.data.landed_coords) {
-                // Target the top surface of the smaller lobe (head) of Comet 67P in model space
-                const topY = geoBox.max.y + geoSize.y * 0.5;
-                const headX = geoBox.min.x + geoSize.x * 0.35;
-                const headZ = geoCenter.z;
-
-                rayStartLocal = new THREE.Vector3(headX, topY, headZ);
-                rayDirLocal = new THREE.Vector3(0, -1, 0);
-            } else {
-                const lat = request.data.landed_coords ? request.data.landed_coords.lat : 45;
-                const lon = request.data.landed_coords ? request.data.landed_coords.lon : 10;
-                const phi = (90 - lat) * (Math.PI / 180);
-                const theta = (lon + 180) * (Math.PI / 180);
-                const dir = new THREE.Vector3(
-                    -(Math.sin(phi) * Math.cos(theta)), Math.cos(phi), Math.sin(phi) * Math.sin(theta)
-                ).normalize();
-
-                const maxDim = Math.max(geoSize.x, geoSize.y, geoSize.z);
-                rayStartLocal = geoCenter.clone().addScaledVector(dir, maxDim * 2.0);
-                rayDirLocal = dir.clone().negate();
+            // A ray can slip through the seams where a mesh's triangles meet, which on a sphere
+            // crowd together at the poles (LUPEX, at -89°, landed 0.07 above the Moon). So a miss
+            // is retried with the ray nudged by a fraction of a degree, a few millimetres on screen.
+            const nudgeAxis = new THREE.Vector3().crossVectors(dir, Math.abs(dir.y) < 0.9 ? _UP : new THREE.Vector3(1, 0, 0)).normalize();
+            let hit = null;
+            for (let attempt = 0; attempt < 5 && !hit; attempt++) {
+                const aim = attempt === 0 ? dir : dir.clone().applyAxisAngle(
+                    nudgeAxis.clone().applyAxisAngle(dir, attempt * Math.PI / 2), 0.002);
+                const startWorld = geoCenter.clone().addScaledVector(aim, maxDim * 2).applyMatrix4(targetMesh.matrixWorld);
+                const dirWorld = aim.clone().negate().transformDirection(targetMesh.matrixWorld).normalize();
+                hit = new THREE.Raycaster(startWorld, dirWorld).intersectObject(targetMesh, true)[0] || null;
             }
-
-            // Convert local ray vectors to world space for THREE.Raycaster
-            const startWorld = rayStartLocal.clone().applyMatrix4(targetMesh.matrixWorld);
-            const dirWorld = rayDirLocal.clone().transformDirection(targetMesh.matrixWorld).normalize();
-
-            const raycaster = new THREE.Raycaster(startWorld, dirWorld);
-            const intersects = raycaster.intersectObject(targetMesh, true);
 
             let hitMeshGroupPoint, surfaceNormalLocal;
+            const parentNormalMatrix = new THREE.Matrix3().getNormalMatrix(parent.meshGroup.matrixWorld);
+            const invParentNormalMatrix = new THREE.Matrix3().copy(parentNormalMatrix).invert();
 
-            if (intersects.length > 0) {
-                const hit = intersects[0];
+            if (hit) {
                 hitMeshGroupPoint = parent.meshGroup.worldToLocal(hit.point.clone());
-
                 const hitNormalMatrix = new THREE.Matrix3().getNormalMatrix(hit.object.matrixWorld);
                 const worldNormal = hit.face.normal.clone().applyMatrix3(hitNormalMatrix).normalize();
-
-                const parentNormalMatrix = new THREE.Matrix3().getNormalMatrix(parent.meshGroup.matrixWorld);
-                const invParentNormalMatrix = new THREE.Matrix3().copy(parentNormalMatrix).invert();
-                surfaceNormalLocal = worldNormal.clone().applyMatrix3(invParentNormalMatrix).normalize();
+                surfaceNormalLocal = worldNormal.applyMatrix3(invParentNormalMatrix).normalize();
+                const settled = settleOnSupports(celestialMap.get(request.data.name), parent.meshGroup, targetMesh, hitMeshGroupPoint, surfaceNormalLocal);
+                if (settled) {
+                    hitMeshGroupPoint = settled.position;
+                    surfaceNormalLocal = settled.normal;
+                }
             } else {
-                // Fallback: Place directly on top of smaller lobe in meshGroup coordinates
-                const fallbackModelPoint = new THREE.Vector3(
-                    geoBox.min.x + geoSize.x * 0.35,
-                    geoBox.max.y,
-                    geoCenter.z
-                );
-                const fallbackWorld = fallbackModelPoint.applyMatrix4(targetMesh.matrixWorld);
-                hitMeshGroupPoint = parent.meshGroup.worldToLocal(fallbackWorld);
-                surfaceNormalLocal = new THREE.Vector3(0, 1, 0);
+                // Still no hit: stand it on the parent's bounding sphere along the same direction,
+                // upright to it, rather than somewhere unrelated.
+                if (!targetMesh.geometry.boundingSphere) targetMesh.geometry.computeBoundingSphere();
+                const { center, radius } = targetMesh.geometry.boundingSphere;
+                const surfaceWorld = center.clone().addScaledVector(dir, radius).applyMatrix4(targetMesh.matrixWorld);
+                hitMeshGroupPoint = parent.meshGroup.worldToLocal(surfaceWorld);
+                const worldNormal = dir.clone().transformDirection(targetMesh.matrixWorld);
+                surfaceNormalLocal = worldNormal.applyMatrix3(invParentNormalMatrix).normalize();
+                console.warn(`Couldn't find ${parent.data.name}'s surface under ${request.data.name}; placed it on the bounding sphere.`);
             }
 
-            // Parent directly to parent.meshGroup so Philae remains attached regardless of LOD level!
+            // Attached to the parent's meshGroup, so it stays put whichever detail level the parent shows.
             parent.meshGroup.add(request.group);
             request.group.position.copy(hitMeshGroupPoint);
 
@@ -1192,7 +1692,7 @@ function attemptToLand() {
             request.group.updateMatrixWorld(true);
             parent.meshGroup.updateMatrixWorld(true);
 
-            if (DEBUG_LANDING) console.log(`Landed ${request.data.name} on ${parent.data.name} smaller lobe at pos:`, hitMeshGroupPoint);
+            if (DEBUG_LANDING) console.log(`Landed ${request.data.name} on ${parent.data.name} at:`, hitMeshGroupPoint);
             pendingLanders.splice(i, 1);
 
             // Someone picked this lander before it had landed: fly there now.
@@ -1270,7 +1770,7 @@ function simplifyMaterial(material, cache) {
     return cache.get(material);
 }
 
-function processModelMeshes(item, effectiveModel, sceneRoot) {
+function processModelMeshes(item, sceneRoot) {
     const simplified = new Map();
     sceneRoot.traverse((child) => {
         if (child.isMesh) {
@@ -1278,22 +1778,20 @@ function processModelMeshes(item, effectiveModel, sceneRoot) {
                 ? child.material.map(m => simplifyMaterial(m, simplified))
                 : simplifyMaterial(child.material, simplified);
             child.userData = item;
-            child.castShadow = false;
+            child.castShadow = true;
             child.receiveShadow = true;
+            // Solid bodies cast from their back faces: a sunlit face is then tested against the
+            // far side of the body, not itself, so coarse facets don't flicker in and out of their
+            // own shadow as a comet or asteroid tumbles, while lobes and ridges still shadow each
+            // other. Spacecraft keep front faces: their thin panels have no back to cast from.
+            if (CLOSED_BODY_TYPES.has(item.type)) {
+                (Array.isArray(child.material) ? child.material : [child.material]).forEach(m => { m.shadowSide = THREE.BackSide; });
+            }
             if (child.material) {
                 if (child.material.map) child.material.map.colorSpace = THREE.SRGBColorSpace;
                 if (child.material.metalness !== undefined) {
                     child.material.metalness = Math.min(child.material.metalness, 0.4);
                     child.material.roughness = Math.max(child.material.roughness, 0.6);
-                }
-
-                if (effectiveModel && effectiveModel.includes('spitzer') && child.geometry.attributes.normal) {
-                    const normals = child.geometry.attributes.normal;
-                    for (let i = 0; i < normals.count; i++) {
-                        normals.setXYZ(i, -normals.getX(i), -normals.getY(i), -normals.getZ(i));
-                    }
-                    normals.needsUpdate = true;
-                    child.material.side = THREE.DoubleSide;
                 }
             }
             if (item.status === 'Planned') {
@@ -1359,23 +1857,15 @@ function buildModelLevel(item, effectiveModel, model) {
     wrapper.scale.set(finalScale, finalScale, finalScale);
     if (item.model_offset) { wrapper.position.set(item.model_offset.x, item.model_offset.y, item.model_offset.z); }
 
-    processModelMeshes(item, effectiveModel, model);
+    processModelMeshes(item, model);
     return wrapper;
 }
 
+// A model's low-detail version: "model_low" if given, else the file beside it named
+// "<model>-low.glb" (loading falls back to the full model when there's no such file).
 function getLowModelPath(item, effectiveModel) {
-    let modelLowPath = item.model_low || (effectiveModel ? effectiveModel.replace('.glb', '-low.glb') : null);
-    if (!modelLowPath && item.type === 'asteroid') {
-        const hash = getHash(item.name);
-        const genericLows = [
-            '/models/Asteroid1-low.glb',
-            '/models/Asteroid2-low.glb',
-            '/models/Asteroid3-low.glb',
-            '/models/Asteroid4-low.glb',
-            '/models/Asteroid5-low.glb'
-        ];
-        modelLowPath = genericLows[hash % genericLows.length];
-    }
+    const modelLowPath = (effectiveModel === item.model && item.model_low)
+        || (effectiveModel ? effectiveModel.replace('.glb', '-low.glb') : null);
     return modelLowPath && modelLowPath !== effectiveModel ? modelLowPath : null;
 }
 
@@ -1504,7 +1994,7 @@ async function executeModelLoad(item, isPriority, onDone) {
         celestialObj.lowLevel = level;
         item.hasHighDetail = !isLowDetail;
         item.isModelLoaded = true;
-        attemptToLand();
+        relandLanders(celestialObj); // lands any waiting on it, and seats landed ones on their feet
         if (item.wantsHighDetail) requestHighDetail(item);
     } catch (err) {
         console.warn(`Failed to load model for ${item.name}`, err);
@@ -1541,6 +2031,7 @@ function requestHighDetail(item) {
                     celestialObj.highLevel = level;
                     detailSwitchables.add(celestialObj);
                     item.hasHighDetail = true;
+                    relandLanders(celestialObj); // onto this surface, or on this lander's own feet
                 });
         })
         .catch(err => console.warn(`Failed to load full-detail model for ${item.name}`, err))
@@ -1561,14 +2052,15 @@ async function loadSystem() {
     try {
         const res = await fetch('./data.json'); // FIX: Relative path
         if (!res.ok) throw new Error(`data.json responded ${res.status}`);
-        const data = await res.json();
+        const entries = await res.json();
+        // The credits entry holds the credits page text, not a body to draw.
+        const credits = entries.find(item => item.type === 'credits');
+        const data = entries.filter(item => item.type !== 'credits');
+        fillSplashFacts(data);
         data.forEach(item => {
             const group = new THREE.Group();
             const meshGroup = new THREE.Group();
-            if (item.attitude) {
-                meshGroup.rotation.x = (item.attitude.x || 0) * (Math.PI / 180);
-                meshGroup.rotation.z = (item.attitude.z || 0) * (Math.PI / 180);
-            } else if (item.tilt) {
+            if (item.tilt) {
                 meshGroup.rotation.z = (item.tilt * Math.PI) / 180;
             }
             const visualContainer = new THREE.Group();
@@ -1582,8 +2074,8 @@ async function loadSystem() {
 
             // --- SUN ---
             if (item.type === 'star') {
-                const sunGroup = createSun(item.radius, item.texture);
-                visualContainer.add(sunGroup);
+                sunEffect = createSun({ radius: item.radius, renderer });
+                visualContainer.add(sunEffect.group);
                 objects.push(visualContainer);
             }
             // --- PLANETS, MOONS, MISSIONS & ASTEROIDS ---
@@ -1594,15 +2086,19 @@ async function loadSystem() {
                 } else if (item.texture) {
                     const tex = loadBodyTexture(item.texture);
                     tex.colorSpace = THREE.SRGBColorSpace;
-                    const segments = (item.name === "Earth" || item.type === "star") ? 48 : 32;
+                    // "segments": sphere smoothness where the default shows (Earth, seen close).
+                    const segments = item.segments || (item.type === 'star' ? 48 : 32);
                     const geo = new THREE.SphereGeometry(item.radius, segments, segments);
 
                     let matParams = { map: tex, roughness: 1.0, metalness: 0.0 };
-                    if (item.name === "Earth") {
-                        matParams.roughnessMap = tex;
+                    // "roughness_map": which parts shine (Earth's oceans); its own texture is reused.
+                    if (item.roughness_map) {
+                        matParams.roughnessMap = item.roughness_map === item.texture ? tex : loadBodyTexture(item.roughness_map);
                     }
+                    // A closed sphere: cast from its back faces, like the modelled bodies (see processModelMeshes).
+                    matParams.shadowSide = THREE.BackSide;
                     const mat = new THREE.MeshStandardMaterial(matParams);
-                    if (item.name === "Earth" && item.night_texture && ENABLE_NIGHT_LIGHTS) {
+                    if (item.night_texture && ENABLE_NIGHT_LIGHTS) {
                         const nightMesh = createEarthNightLayer(item.radius, item.night_texture);
                         if (nightMesh) visualContainer.add(nightMesh);
                     }
@@ -1621,14 +2117,6 @@ async function loadSystem() {
                 if (item.type !== 'reference_point') objects.push(visualContainer);
             }
 
-            // Immediately load model if object belongs to Sun or Earth system, or has priority
-            const effectiveModel = getEffectiveModel(item);
-            if (effectiveModel) {
-                const system = getSystemRoot(item.name);
-                if (system === 'Sun' || system === 'Earth' || item.name === 'Comet 67P' || item.name === 'Philae' || item.parent === 'Comet 67P') {
-                    loadModelForItem(item, true);
-                }
-            }
 
             if (item.ring) {
                 const innerRadius = item.radius * (item.ring.inner_radius || 1.4);
@@ -1659,16 +2147,33 @@ async function loadSystem() {
         // PASS 2: Link & Orbits & Landers
         celestialMap.forEach((obj) => {
             const { group, data } = obj;
+            // Models load up front for the Sun and any system data.json marks "preload" (Earth's,
+            // the opening view; Comet 67P's, which Philae lands on); the rest as they come into
+            // view. Decided here, once every object exists, so the order of data.json doesn't matter.
+            if (getEffectiveModel(data)) {
+                const system = getSystemRoot(data.name);
+                if (system === 'Sun' || data.preload || celestialMap.get(system)?.data.preload) loadModelForItem(data, true);
+            }
             if (data.orbit_type === 'landed') {
                 pendingLanders.push({ group: group, data: data });
             } else {
                 scene.add(group);
-                if (data.type === 'trajectory') {
-                    const trail = createTrajectoryLine(data);
-                    if (trail) {
-                        scene.add(trail);
-                        obj.orbitLine = trail; // Store for resizing
+                if (data.orbit_type === 'trajectory') {
+                    // The cruise line, and (after arrival) the orbit round the arrival body: one
+                    // shows at a time (see updateTrajectoryLines), as the craft's orbit line.
+                    const color = getStandardizedOrbitColor(data), opacity = getStandardizedOrbitOpacity(data);
+                    const cruise = createTrajectoryLine(obj, color, opacity);
+                    if (cruise) scene.add(cruise);
+                    const plan = getTrajectoryPlan(obj);
+                    let arrived = null;
+                    if (plan.arrival) {
+                        arrived = createOrbitLine(plan.arrivalOrbit, color, opacity);
+                        const host = celestialMap.get(plan.arrival.at);
+                        if (arrived && host) host.group.add(arrived);
                     }
+                    obj.trajectoryLines = { cruise, arrived };
+                    obj.orbitLine = cruise || arrived;
+                    if (DEBUG_LANDING) console.log(`${data.name} trajectory loops per leg:`, plan.legs);
                 }
                 else if (data.parent) {
                     let line = null;
@@ -1682,7 +2187,7 @@ async function loadSystem() {
                         line = createSuborbitalLine(data, parentRad);
                         if (parent && line) parent.meshGroup.add(line);
                     } else {
-                        if (data.name !== 'Earth-Sun L2') {
+                        if (data.show_orbit !== false) {
                             const orbitColor = getStandardizedOrbitColor(data);
                             const orbitOpacity = getStandardizedOrbitOpacity(data);
                             line = createOrbitLine(data.orbit, orbitColor, orbitOpacity);
@@ -1710,9 +2215,10 @@ async function loadSystem() {
             }
         });
 
-        setupTargetBoxOverlay();
+        setupReticles();
         populateMenu();
         setupCinematicControls();
+        setupCredits(credits);
         attemptToLand(); // landers on plain spheres can land right away
         showSolarSystem({ animate: false }); // open on the whole Solar System
         systemReady = true;
@@ -1857,14 +2363,16 @@ function getSystemRadius(obj) {
 }
 
 // --- OPTIMIZATION ---
+// The planet-level body an object belongs to: its own "system" if data.json gives one (the
+// Earth-Sun Lagrange points orbit the Sun but belong with Earth), else the ancestor that
+// orbits the Sun.
 function getSystemRoot(objName) {
     if (!objName || objName === 'Sun') return 'Sun';
-    if (objName.includes('Earth-Sun')) return 'Earth';
-    if (objName.includes('Mars-Sun')) return 'Mars';
 
     const obj = celestialMap.get(objName);
     if (!obj || !obj.data) return 'Sun';
 
+    if (obj.data.system) return obj.data.system;
     if (obj.data.parent === 'Sun') return objName;
     return getSystemRoot(obj.data.parent);
 }
@@ -1922,56 +2430,93 @@ function updateVisibility() {
 }
 
 // --- UI ---
+// Menu icons: Tabler Icons outline set (https://tabler.io/icons, MIT, v3.48), inlined so they
+// inherit the text colour and need no request. "asteroid" is drawn on the same 24px grid and
+// stroke, since Tabler has none. A data.json entry can pick one with an "icon" field.
+const MENU_ICONS = {
+    galaxy: '<path d="M12 3c-1.333 1 -2 2.5 -2 4.5c0 3 2 4.5 2 4.5s2 1.5 2 4.5c0 2 -.667 3.5 -2 4.5"/><path d="M19.794 16.5c-.2 -1.655 -1.165 -2.982 -2.897 -3.982c-2.597 -1.5 -4.897 -.518 -4.897 -.518s-2.299 .982 -4.897 -.518c-1.732 -1 -2.698 -2.327 -2.897 -3.982"/><path d="M19.794 7.5c-1.532 -.655 -3.165 -.482 -4.897 .518c-2.597 1.5 -2.897 3.982 -2.897 3.982s-.299 2.482 -2.897 3.982c-1.732 1 -3.365 1.173 -4.897 .518"/>',
+    sun: '<path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',
+    planet: '<path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805"/><path d="M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/>',
+    moon: '<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008"/>',
+    point: '<path d="M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0 -16 0"/><path d="M12 2l0 2"/><path d="M12 20l0 2"/><path d="M20 12l2 0"/><path d="M2 12l2 0"/>',
+    comet: '<path d="M21 3l-5 9h5l-6.891 7.086a6.5 6.5 0 1 1 -8.855 -9.506l7.746 -6.58l-1 5l9 -5"/><path d="M7 14.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0"/>',
+    asteroid: '<path d="M8 4.6c2.6 -1.5 6 -1.2 8.6 .5c2.8 1.8 4.5 4.8 4 7.9c-.5 3.3 -3 5.8 -6.3 6.6c-2.4 .6 -4.3 1.8 -6.9 1.1c-2.9 -.8 -4.2 -3.5 -3.9 -6.3c.2 -2 1.1 -3.3 1.6 -5.2c.5 -2 1.4 -3.4 2.9 -4.6z"/><path d="M8.5 10a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M13.5 15a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+    satellite: '<path d="M3.707 6.293l2.586 -2.586a1 1 0 0 1 1.414 0l5.586 5.586a1 1 0 0 1 0 1.414l-2.586 2.586a1 1 0 0 1 -1.414 0l-5.586 -5.586a1 1 0 0 1 0 -1.414"/><path d="M6 10l-3 3l3 3l3 -3"/><path d="M10 6l3 -3l3 3l-3 3"/><path d="M12 12l1.5 1.5"/><path d="M14.5 17a2.5 2.5 0 0 0 2.5 -2.5"/><path d="M15 21a6 6 0 0 0 6 -6"/>',
+    // Drawn to match Tabler's grid and stroke: Tabler has no lander or planetary rover.
+    lander: '<path d="M8 13l1 -5h6l1 5z"/><path d="M12 8v-2"/><path d="M9.5 4a2.5 2.5 0 0 0 5 0"/><path d="M8 13l-3.5 6"/><path d="M16 13l3.5 6"/><path d="M2.5 19h4"/><path d="M17.5 19h4"/>',
+    rover: '<path d="M4 11a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z"/><path d="M7 10v-4"/><path d="M5.5 5h3"/><path d="M20 12l2 -2"/><path d="M5 14v2"/><path d="M12 14v2"/><path d="M19 14v2"/><path d="M3 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M10 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>',
+    rocket: '<path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3"/><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3"/><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+    facility: '<path d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8"/><path d="M13 7l0 .01"/><path d="M17 7l0 .01"/><path d="M17 11l0 .01"/><path d="M17 15l0 .01"/>',
+};
+
+function menuIconName(data) {
+    if (MENU_ICONS[data.icon]) return data.icon;
+    switch (data.type) {
+        case 'star': return 'sun';
+        case 'planet': return 'planet';
+        case 'moon': return 'moon';
+        case 'reference_point': return 'point';
+        case 'comet': return 'comet';
+        case 'asteroid': return 'asteroid';
+    }
+    if (data.orbit_type === 'suborbital') return 'rocket';
+    // A rover says so with "icon": "rover"; other landers get the lander icon.
+    if (data.orbit_type === 'landed') return data.parent === 'Earth' ? 'facility' : 'lander';
+    return 'satellite';
+}
+
+// The Sun, planets and asteroids take the colour of their orbit line, so the menu and the
+// scene share one key. Everything else stays in the text colour.
+function menuIconColor(data) {
+    if (data.type === 'star') return data.color || '#ffcc00';
+    if (data.type === 'planet' || data.type === 'asteroid') return getStandardizedOrbitColor(data);
+    return null;
+}
+
+function menuIcon(name, color = null) {
+    const tint = color ? ` menu-icon--tinted" style="color:${color}` : '';
+    return `<svg class="menu-icon${tint}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${MENU_ICONS[name]}</svg>`;
+}
+
+// Holders gather small bodies (and their missions) into one foldable group by type: the
+// asteroids (near-Earth and main-belt) after Mars, and the comets beside them. A holder's row
+// shows the overview with its bodies marked; its missions stay in the list but aren't marked.
+// Where an object sits otherwise comes from data.json: under its "menu_parent" if it has one
+// (JUICE under Jupiter, Spitzer under Earth; "Sun" nests it in the Sun's own group), else its
+// parent, ordered by "menu_order" if given, else by orbit size.
+const MENU_HOLDERS = [
+    { name: 'Asteroids', icon: 'asteroid', after: 'Mars', holds: data => data.type === 'asteroid' },
+    { name: 'Comets', icon: 'comet', after: 'Asteroids', holds: data => data.type === 'comet' },
+];
+
 function populateMenu() {
     const list = document.getElementById('mission-list');
     if (!list) return;
     list.innerHTML = '';
 
-    // Build a map of parent -> children
+    // Build a map of parent -> children. An object marked "menu_top_level" (the Moon, with its
+    // many missions) leaves its parent's group for a group of its own at the top level, placed
+    // just after its parent and indented a step to show it belongs there.
     const childrenMap = new Map();
-    celestialMap.forEach((obj, name) => {
-        let parent = obj.data.parent || 'root';
-
-        // Custom UI Overrides
-        if (name === 'JUICE') parent = 'Jupiter'; // Relocate JUICE to Jupiter in the menu
+    const lifted = [];
+    celestialMap.forEach(obj => {
+        if (obj.data.menu_top_level && obj.data.parent) { lifted.push(obj); return; }
+        const parent = obj.data.menu_parent || obj.data.parent || 'root';
 
         if (!childrenMap.has(parent)) childrenMap.set(parent, []);
         childrenMap.get(parent).push(obj);
     });
 
-    // Sort children: Distance first (if available), then type
+    // Sort children: missions first, alphabetically, then natural bodies by "menu_order" or orbit
+    // size (then type), so a planet's own missions lead and its moons follow, as Earth's Moon does.
+    const sortKey = data => data.menu_order ?? (data.orbit ? (data.orbit.a || 0) : 0);
+    const isMission = data => data.type === 'mission';
     childrenMap.forEach(arr => {
         arr.sort((a, b) => {
-            let distA = a.data.orbit ? (a.data.orbit.a || 0) : 0;
-            let distB = b.data.orbit ? (b.data.orbit.a || 0) : 0;
-
-            // Custom UI Overrides for sorting
-            if (a.data.name === 'Bennu') distA = 1151; // Place after L2 (1150)
-            if (b.data.name === 'Bennu') distB = 1151;
-            if (a.data.name === 'Cassini') distA = 49; // Place before Titan (50)
-            if (b.data.name === 'Cassini') distB = 49;
-
-            // Group Comets (Wild 2, 67P) and all numbered asteroids in numerical order before Jupiter (3200)
-            const getMenuSortKey = (data) => {
-                const name = data.name || '';
-                if (name.includes('Wild 2') || name.includes('Wild2')) return 3101;
-                if (name.includes('67P')) return 3102;
-
-                const match = name.match(/^(\d+)/);
-                if (match) {
-                    const num = parseInt(match[1], 10);
-                    return 3110 + (num / 100000);
-                }
-                return null;
-            };
-
-            const keyA = getMenuSortKey(a.data);
-            const keyB = getMenuSortKey(b.data);
-            if (keyA !== null) distA = keyA;
-            if (keyB !== null) distB = keyB;
-
-
-
+            if (isMission(a.data) !== isMission(b.data)) return isMission(a.data) ? -1 : 1;
+            if (isMission(a.data)) return a.data.name.localeCompare(b.data.name, undefined, { numeric: true, sensitivity: 'base' });
+            const distA = sortKey(a.data);
+            const distB = sortKey(b.data);
             if (distA !== distB) return distA - distB;
 
             const typeScore = (t) => {
@@ -1985,79 +2530,282 @@ function populateMenu() {
         });
     });
 
-    function renderNode(obj, depth) {
+    // Each object is a list item holding its row; objects with children nest a list, so
+    // screen readers hear the hierarchy as list levels. Children of the Sun that have
+    // children of their own (planets, L1/L2, comets and asteroids with missions) are groups:
+    // their heading sticks while you scroll and a disclosure button folds them away.
+    let groupCount = 0;
+    // `indent` shifts a lifted group, and everything in it, a step in from its level.
+    function renderNode(obj, depth, parentList, { leaf = false, indent = 0 } = {}) {
         if (!obj || !obj.data) return;
-        const btn = document.createElement('button');
-        btn.className = 'mission-btn';
-
-        let icon = '🛰️';
-        if (obj.data.type === 'star') icon = '☀️';
-        else if (obj.data.type === 'planet') icon = '🪐';
-        else if (obj.data.type === 'moon') icon = '🌕';
-        else if (obj.data.type === 'reference_point') icon = '📍';
-        else if (obj.data.type === 'comet' || obj.data.type === 'asteroid') icon = '☄️';
-
-        let statusHtml = '';
-        if (obj.data.status === 'Planned') {
-            statusHtml = `<span style="font-size:0.6em; background:#004466; color:#00ffff; padding:2px 4px; border-radius:3px; margin-left:5px; vertical-align:middle;">PLANNED</span>`;
-        } else if (obj.data.status === 'Crashed' || obj.data.status === 'Landed' || obj.data.status === 'Decommissioned') {
-            statusHtml = `<span style="font-size:0.6em; background:#442200; color:#ffaa00; padding:2px 4px; border-radius:3px; margin-left:5px; vertical-align:middle;">ENDED</span>`;
+        const name = obj.data.name;
+        const children = leaf ? [] : (childrenMap.get(name) || []);
+        const li = document.createElement('li');
+        li.className = 'menu-item';
+        li.dataset.name = name;
+        const btn = createMenuRow(obj);
+        btn.style.setProperty('--depth', Math.max(0, depth - 1) + indent);
+        let ul = null;
+        if (children.length) {
+            ul = document.createElement('ul');
+            ul.className = 'menu-list';
         }
 
-        btn.type = 'button';
-        btn.innerHTML = `<span aria-hidden="true" style="display:inline-block; width:22px; text-align:center; opacity:0.8;">${icon}</span> ${obj.data.name} ${statusHtml}`;
-
-        const visualDepth = Math.max(0, depth - 1);
-        btn.style.paddingLeft = `${20 + visualDepth * 15}px`;
-
-        if (obj.data.type !== 'mission') {
-            btn.style.color = '#fff';
-            if (depth === 0) {
-                btn.style.background = 'rgba(255,255,255,0.05)';
-                btn.style.borderTop = '1px solid rgba(255,255,255,0.1)';
-                btn.style.marginTop = '2px';
-            }
+        if (depth === 1 && ul) {
+            makeGroup(li, ul, name, countDescendants(name), btn);
         } else {
-            btn.style.color = '#ccc';
+            li.appendChild(btn);
         }
 
-        btn.onclick = () => {
-            stopCinematicMode();
-            focusOnObject(obj.mesh, obj.data, { returnFocusTo: btn });
-        };
-        btn.onmouseenter = () => setHoveredObject(obj);
-        btn.onmouseleave = () => clearHoveredObject();
-        btn.onfocus = () => setHoveredObject(obj);
-        btn.onblur = () => clearHoveredObject();
-        list.appendChild(btn);
-
-
-        const children = childrenMap.get(obj.data.name);
-        if (children) children.forEach(child => renderNode(child, depth + 1));
+        if (ul) {
+            children.forEach(child => renderNode(child, depth + 1, ul, { indent }));
+            li.appendChild(ul);
+        }
+        parentList.appendChild(li);
     }
 
-    // "Solar System" heads the list: the zoomed-out view the app opens on.
-    const systemBtn = document.createElement('button');
-    systemBtn.type = 'button';
-    systemBtn.className = 'mission-btn';
-    systemBtn.innerHTML = `<span aria-hidden="true" style="display:inline-block; width:22px; text-align:center; opacity:0.8;">🌌</span> Solar System`;
-    systemBtn.style.paddingLeft = '20px';
-    systemBtn.style.color = '#fff';
-    systemBtn.style.background = 'rgba(255,255,255,0.05)';
-    systemBtn.style.marginTop = '2px';
+    function countDescendants(name) {
+        return (childrenMap.get(name) || []).reduce((n, child) => n + 1 + countDescendants(child.data.name), 0);
+    }
+
+    // A group's heading: its own row (to fly there, or for a holder to show its bodies) beside a
+    // disclosure button that folds the group.
+    function makeGroup(li, ul, label, count, row) {
+        ul.id = `menu-group-${groupCount++}`;
+        ul.hidden = true;
+        li.classList.add('menu-group');
+        const head = document.createElement('div');
+        head.className = 'menu-group-head';
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'menu-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-controls', ul.id);
+        toggle.setAttribute('aria-label', `${label}: ${count} ${count === 1 ? 'object' : 'objects'}`);
+        toggle.innerHTML = `<span class="menu-count" aria-hidden="true">${count}</span>${uiIcon('chevron', 'menu-chevron')}`;
+        toggle.onclick = () => setGroupExpanded(li, toggle.getAttribute('aria-expanded') !== 'true');
+        toggle.onmouseenter = toggle.onfocus = () => clearHoveredObject();
+        head.append(row, toggle);
+        li.appendChild(head);
+    }
+
+    function renderHolder(holder, members, parentList) {
+        const li = document.createElement('li');
+        li.className = 'menu-item menu-group--holder';
+        li.dataset.name = holder.name;
+        const ul = document.createElement('ul');
+        ul.className = 'menu-list';
+        const count = members.reduce((n, obj) => n + 1 + countDescendants(obj.data.name), 0);
+        makeGroup(li, ul, holder.name, count, createHolderRow(holder));
+        members.forEach(obj => renderNode(obj, 2, ul));
+        li.appendChild(ul);
+        parentList.appendChild(li);
+    }
+
+    // The Sun heads the list, then everything that orbits it at the same level.
+    const tree = document.createElement('ul');
+    tree.className = 'menu-list menu-tree';
+    const rootItems = childrenMap.get('root') || [];
+    const roots = rootItems.length ? rootItems
+        : [...celestialMap.values()].filter(obj => !obj.data.parent || !celestialMap.has(obj.data.parent));
+    roots.forEach(root => {
+        // Most of what orbits the Sun sits beside it at the top level; a few objects nest
+        // under the Sun's own row, and asteroids and comets gather into holders.
+        const orbiting = childrenMap.get(root.data.name) || [];
+        const own = orbiting.filter(obj => obj.data.menu_parent === root.data.name);
+        let entries = orbiting.filter(obj => !own.includes(obj)).map(obj => ({ obj }));
+        MENU_HOLDERS.forEach(holder => {
+            const members = entries.filter(e => e.obj && holder.holds(e.obj.data)).map(e => e.obj);
+            if (!members.length) return;
+            entries = entries.filter(e => !e.obj || !members.includes(e.obj));
+            const after = entries.findIndex(e => (e.obj ? e.obj.data.name : e.holder.name) === holder.after);
+            entries.splice(after === -1 ? entries.length : after + 1, 0, { holder, members });
+        });
+
+        // Lifted groups follow the top-level entry they belong under, nearest first (Earth, then
+        // the Moon, L1 and L2).
+        [...lifted].sort((a, b) => sortKey(a.data) - sortKey(b.data)).forEach(obj => {
+            const system = getSystemRoot(obj.data.name);
+            let at = entries.findIndex(e => e.obj && e.obj.data.name === system);
+            if (at === -1) { entries.push({ obj, indent: 1 }); return; }
+            while (entries[at + 1] && entries[at + 1].indent && getSystemRoot(entries[at + 1].obj.data.name) === system) at++;
+            entries.splice(at + 1, 0, { obj, indent: 1 });
+        });
+
+        childrenMap.set(root.data.name, own);
+        renderNode(root, own.length ? 1 : 0, tree, { leaf: !own.length });
+        entries.forEach(e => (e.holder ? renderHolder(e.holder, e.members, tree) : renderNode(e.obj, 1, tree, { indent: e.indent || 0 })));
+    });
+    list.appendChild(tree);
+
+    const empty = document.createElement('p');
+    empty.id = 'menu-empty';
+    empty.className = 'menu-empty';
+    empty.hidden = true;
+    list.appendChild(empty);
+
+    setupMenuFilter();
+    const systemBtn = document.getElementById('system-btn');
     systemBtn.onclick = () => showSolarSystem();
     systemBtn.onmouseenter = systemBtn.onfocus = () => clearHoveredObject();
-    list.appendChild(systemBtn);
+}
 
-    const rootItems = childrenMap.get('root') || [];
-    if (rootItems.length === 0) {
-        if (celestialMap.has('Sun')) renderNode(celestialMap.get('Sun'), 0);
-        else celestialMap.forEach((obj) => {
-            if (!obj.data.parent || !celestialMap.has(obj.data.parent)) renderNode(obj, 0);
-        });
-    } else {
-        rootItems.forEach(item => renderNode(item, 0));
+// Interface icons (Tabler outline, MIT), drawn like the menu icons.
+const UI_ICONS = {
+    chevron: '<path d="M6 9l6 6l6 -6"/>',
+    search: '<path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/>',
+};
+
+function uiIcon(name, className) {
+    return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${UI_ICONS[name]}</svg>`;
+}
+
+// A holder's row: hovering marks its bodies, choosing it shows them all in the overview.
+function createHolderRow(holder) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mission-btn';
+    btn.innerHTML = `${menuIcon(holder.icon)}<span class="menu-label">${holder.name}</span>`;
+    btn.onclick = () => {
+        stopCinematicMode();
+        showHolder(holder);
+    };
+    btn.onmouseenter = btn.onfocus = () => setHoveredHolder(holder);
+    btn.onmouseleave = btn.onblur = () => setHoveredHolder(null);
+    return btn;
+}
+
+// One selectable row: icon and name. A mission's status is shown in the details panel, not here.
+function createMenuRow(obj) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mission-btn';
+    if (obj.data.type === 'mission') btn.classList.add('mission-btn--mission');
+    btn.innerHTML = `${menuIcon(menuIconName(obj.data), menuIconColor(obj.data))}<span class="menu-label">${obj.data.name}</span>`;
+
+    btn.onclick = () => {
+        stopCinematicMode();
+        focusOnObject(obj.mesh, obj.data, { returnFocusTo: btn });
+    };
+    btn.onmouseenter = btn.onfocus = () => setHoveredObject(obj);
+    btn.onmouseleave = btn.onblur = () => clearHoveredObject();
+    return btn;
+}
+
+// --- MENU STATE: groups, filter, current object ---
+// Groups the visitor opened; a search opens groups too, but only for as long as it runs.
+const expandedGroups = new Set();
+
+function getMenuFilter() {
+    return document.getElementById('menu-filter')?.value.trim() || '';
+}
+
+function setGroupExpanded(li, expanded, { remember = true } = {}) {
+    const toggle = li.querySelector(':scope > .menu-group-head > .menu-toggle');
+    const ul = li.querySelector(':scope > .menu-list');
+    if (!toggle || !ul) return;
+    toggle.setAttribute('aria-expanded', String(expanded));
+    ul.hidden = !expanded;
+    if (remember && !getMenuFilter()) {
+        if (expanded) expandedGroups.add(li.dataset.name);
+        else expandedGroups.delete(li.dataset.name);
     }
+}
+
+// Case-, accent- and punctuation-insensitive, so "change5" and "chang'e" both find Chang'e-5.
+function normaliseForSearch(text) {
+    return text.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+}
+
+function applyMenuFilter() {
+    const query = getMenuFilter();
+    const needle = normaliseForSearch(query);
+    const tree = document.querySelector('#mission-list .menu-tree');
+    const empty = document.getElementById('menu-empty');
+    const status = document.getElementById('menu-filter-status');
+    if (!tree) return;
+    let matches = 0;
+
+    // Keeps an item if it or anything inside it matches, so results keep their parents.
+    // A holder that matches ("comets", "asteroids") shows everything it holds.
+    const walk = (li, forced = false) => {
+        const holder = li.classList.contains('menu-group--holder');
+        const self = !needle || forced || normaliseForSearch(li.dataset.name).includes(needle);
+        li.classList.toggle('is-match', Boolean(needle) && self && !holder);
+        if (self && needle && !holder) matches++;
+        const forceChildren = forced || (holder && self && Boolean(needle));
+        let childMatch = false;
+        const ul = li.querySelector(':scope > .menu-list');
+        if (ul) ul.querySelectorAll(':scope > li').forEach(child => { if (walk(child, forceChildren)) childMatch = true; });
+        li.hidden = !(self || childMatch);
+        if (ul) {
+            const open = needle ? childMatch
+                : !li.classList.contains('menu-group') || expandedGroups.has(li.dataset.name);
+            if (li.classList.contains('menu-group')) setGroupExpanded(li, open, { remember: false });
+            else ul.hidden = !open;
+        }
+        return self || childMatch;
+    };
+    tree.querySelectorAll(':scope > li').forEach(li => walk(li));
+
+    empty.hidden = !needle || matches > 0;
+    empty.textContent = `Nothing matches “${query}”.`;
+    if (status) status.textContent = !needle ? '' : matches ? `${matches} ${matches === 1 ? 'result' : 'results'}` : 'No results';
+    // Back from a search, show where the current object sits in the full list.
+    if (!needle && menuCurrentName) syncMenuCurrent(menuCurrentName);
+}
+
+// The first search result, skipping parents that are only shown for context.
+function firstVisibleMenuRow() {
+    const selector = getMenuFilter() ? '#mission-list .is-match' : '#mission-list .menu-item';
+    const li = [...document.querySelectorAll(selector)].find(item => item.offsetParent !== null && menuRowOf(item));
+    return li && menuRowOf(li);
+}
+
+function menuRowOf(li) {
+    return li.querySelector(':scope > .mission-btn, :scope > .menu-group-head > .mission-btn');
+}
+
+function setupMenuFilter() {
+    const input = document.getElementById('menu-filter');
+    if (!input || input.dataset.ready) return;
+    input.dataset.ready = 'true';
+    input.addEventListener('input', applyMenuFilter);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            firstVisibleMenuRow()?.click();
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            firstVisibleMenuRow()?.focus();
+        } else if (e.key === 'Escape' && input.value) {
+            // Clear the search first; a second Escape reaches the scene as usual.
+            e.stopPropagation();
+            input.value = '';
+            applyMenuFilter();
+        }
+    });
+}
+
+// Marks the object on show (null for none, 'Solar System' for the overview). An object chosen
+// elsewhere (a scene click, the tour) gets its group opened and is scrolled into view.
+let menuCurrentName = null;
+function syncMenuCurrent(name) {
+    menuCurrentName = name;
+    document.querySelectorAll('#mission-menu [aria-current]').forEach(el => el.removeAttribute('aria-current'));
+    if (!name) return;
+    if (name === 'Solar System') {
+        document.getElementById('system-btn')?.setAttribute('aria-current', 'true');
+        return;
+    }
+    const li = [...document.querySelectorAll('#mission-list .menu-item')].find(item => item.dataset.name === name);
+    if (!li) return;
+    const btn = menuRowOf(li);
+    if (!btn) return;
+    btn.setAttribute('aria-current', 'true');
+    const group = li.closest('.menu-group');
+    if (group && group !== li && !getMenuFilter()) setGroupExpanded(group, true);
+    if (btn.offsetParent !== null) btn.scrollIntoView({ block: 'nearest' });
 }
 
 function easeInOutCubic(x) {
@@ -2271,29 +3019,143 @@ function hurryTransition() {
 }
 
 function updateSelectionSpot(dt) {
+    // Planned missions are holograms that glow by themselves, so they get no light.
     const arrived = selectedObject && isTracking && !isTransitioning
-        && selectedObject.userData && selectedObject.userData.type === 'mission';
+        && selectedObject.userData && selectedObject.userData.type === 'mission'
+        && statusTone(selectedObject.userData.status) !== 'planned';
     const wanted = arrived ? selectedObject : null;
     // Only move to a new subject while dark, so the light never visibly jumps.
     if (wanted !== spotSubject && selectionSpot.intensity < 0.02) spotSubject = wanted;
-    const goal = wanted && wanted === spotSubject ? SPOT_INTENSITY : 0;
+    const goal = wanted && wanted === spotSubject ? spotGoal : 0;
     selectionSpot.intensity += (goal - selectionSpot.intensity) * (1 - Math.exp(-dt * 3 / SPOT_FADE_SECONDS));
     if (!spotSubject) return;
 
-    // "Above" is away from the body the craft sits on or orbits.
     getFocusPoint(spotSubject, selectionSpot.target.position);
     const parent = celestialMap.get(spotSubject.userData.parent);
-    if (parent) {
-        parent.group.getWorldPosition(_spotParent);
+    if (parent) parent.group.getWorldPosition(_spotParent);
+    _spotToSun.subVectors(_sunPos, selectionSpot.target.position).normalize();
+    if (spotSubject.userData.orbit_type === 'landed' && parent) {
+        // A lander: from straight above, away from the body it sits on. Brightest at night,
+        // fading to a faint fill as its ground turns to face the Sun.
         _spotUp.subVectors(selectionSpot.target.position, _spotParent).normalize();
+        const daylight = THREE.MathUtils.smoothstep(_spotUp.dot(_spotToSun), -0.1, 0.3);
+        spotGoal = THREE.MathUtils.lerp(SPOT_INTENSITY_NIGHT, SPOT_INTENSITY_DAY, daylight);
     } else {
-        _spotUp.set(0, 1, 0);
+        // An orbiter: a faint fill in sunlight, full strength inside its body's shadow.
+        spotGoal = SPOT_INTENSITY_DAY;
+        if (parent && SURFACE_TYPES.has(parent.data.type)) {
+            _spotToParent.subVectors(selectionSpot.target.position, _spotParent); // body centre to craft
+            const along = _spotToParent.dot(_spotToSun);
+            const across = _spotToParent.addScaledVector(_spotToSun, -along).length();
+            if (along < 0 && across < getVisualRadius(parent)) spotGoal = SPOT_INTENSITY_NIGHT;
+        }
+        // An orbiter: from its side away from the Sun...
+        _spotUp.subVectors(selectionSpot.target.position, _sunPos).normalize();
+        if (parent && SURFACE_TYPES.has(parent.data.type)) {
+            // ...but with the beam turned at least SPOT_CLEARANCE away from the body below. The
+            // light sits on the body's side of the craft, shining outward past it.
+            _spotToParent.subVectors(_spotParent, selectionSpot.target.position).normalize();
+            const along = _spotUp.dot(_spotToParent);
+            if (along < SPOT_CLEARANCE) {
+                _spotUp.addScaledVector(_spotToParent, -along); // the part across the body's direction
+                if (_spotUp.lengthSq() < 1e-8) _spotUp.set(1, 0, 0).cross(_spotToParent);
+                _spotUp.normalize().multiplyScalar(Math.sqrt(1 - SPOT_CLEARANCE ** 2))
+                    .addScaledVector(_spotToParent, SPOT_CLEARANCE);
+            }
+        }
     }
     const radius = getVisualRadius(celestialMap.get(spotSubject.userData.name));
     const height = radius * SPOT_HEIGHT_RADII;
     selectionSpot.position.copy(selectionSpot.target.position).addScaledVector(_spotUp, height);
     selectionSpot.angle = Math.atan((radius * 2.5) / height); // a pool a little wider than the model
     selectionSpot.target.updateMatrixWorld();
+
+    // Its shadow reaches just past the craft: onto the ground under a lander, or across an
+    // orbiter's own parts.
+    const darkness = THREE.MathUtils.clamp((spotGoal - SPOT_INTENSITY_DAY) / (SPOT_INTENSITY_NIGHT - SPOT_INTENSITY_DAY), 0, 1);
+    selectionSpot.shadow.intensity = SPOT_SHADOW_STRENGTH * darkness;
+    const lit = selectionSpot.intensity > 0.01 && darkness > 0.01; // no shadow to draw in sunlight
+    selectionSpot.shadow.autoUpdate = lit;
+    if (lit) {
+        const shadowCamera = selectionSpot.shadow.camera;
+        shadowCamera.near = height * 0.5;
+        shadowCamera.far = height + radius * 4;
+        shadowCamera.updateProjectionMatrix();
+        // About one shadow texel across the pool: the offset that stops surfaces shadowing themselves.
+        selectionSpot.shadow.normalBias = (radius * 5) / selectionSpot.shadow.mapSize.x;
+        selectionSpot.shadow.bias = -0.0001;
+    }
+}
+
+// --- SUN SHADOWS ---
+// Inside a planet's system the Sun is a directional light casting shadows: planets, rings,
+// moons and spacecraft all shadow one another. The shadow map covers what's on screen around
+// the view centre, not the whole system, so a lander's shadow is as sharp as a moon's; it moves
+// only in whole texels and resizes in steps, so shadow edges don't crawl as the camera orbits.
+const SUN_SHADOW_SIZE_STEP = 2 ** 0.25; // the covered area changes in ~19% steps
+const _shadowBasis = new THREE.Matrix4();
+const _shadowX = new THREE.Vector3();
+const _shadowY = new THREE.Vector3();
+const _shadowZ = new THREE.Vector3();
+const _ORIGIN = new THREE.Vector3();
+let shadowSystem = null;
+let shadowSystemReach = 0;
+
+function updateSunShadow() {
+    const systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
+    const baseRad = systemObj ? (systemObj.data.radius || 1) : 1;
+    if (!systemObj || camera.position.distanceTo(systemObj.group.position) >= Math.max(baseRad * 20, 100)) {
+        sunLight.intensity = 2.5;
+        shadowLight.intensity = 0;
+        shadowLight.shadow.autoUpdate = false; // Light is off: skip the shadow pass
+        return;
+    }
+    sunLight.intensity = 0;
+    shadowLight.intensity = 3;
+    shadowLight.shadow.autoUpdate = true;
+    if (shadowSystem !== systemObj) {
+        shadowSystem = systemObj;
+        shadowSystemReach = getSystemRadius(systemObj);
+    }
+
+    // Cover the view at the target's distance (the circle round the screen, as the map's square
+    // turns with the Sun's direction), never less than the object on show.
+    const viewDistance = camera.position.distanceTo(controls.target);
+    const halfHeight = viewDistance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+    let half = Math.hypot(halfHeight, halfHeight * camera.aspect) * 1.05;
+    const shown = selectedObject && selectedObject.userData ? celestialMap.get(selectedObject.userData.name) : null;
+    if (shown) half = Math.max(half, getVisualRadius(shown) * 1.5);
+    half = Math.max(0.05, Math.min(half, shadowSystemReach * 1.2));
+    half = SUN_SHADOW_SIZE_STEP ** Math.ceil(Math.log(half) / Math.log(SUN_SHADOW_SIZE_STEP));
+    const texel = (2 * half) / SUN_SHADOW_MAP_SIZE;
+
+    // Snap the centre to whole texels along the shadow camera's own axes (as it will be aimed:
+    // looking back along the Sun's direction, with world up as up).
+    _vecToSun.subVectors(_sunPos, controls.target).normalize();
+    _shadowBasis.lookAt(_vecToSun, _ORIGIN, _UP).extractBasis(_shadowX, _shadowY, _shadowZ);
+    _viewCenter.copy(controls.target);
+    const sx = _viewCenter.dot(_shadowX), sy = _viewCenter.dot(_shadowY);
+    _viewCenter.addScaledVector(_shadowX, Math.round(sx / texel) * texel - sx)
+        .addScaledVector(_shadowY, Math.round(sy / texel) * texel - sy);
+
+    // Deep enough to take in anything in the system between the Sun and the view (a moon
+    // eclipsing its planet) and no deeper, keeping depth precise enough for small craft.
+    const toward = shadowSystemReach + _viewCenter.distanceTo(systemObj.group.position) + half;
+    shadowLight.position.copy(_viewCenter).addScaledVector(_vecToSun, toward);
+    shadowLight.target.position.copy(_viewCenter);
+    const shadowCamera = shadowLight.shadow.camera;
+    shadowCamera.left = shadowCamera.bottom = -half;
+    shadowCamera.right = shadowCamera.top = half;
+    shadowCamera.near = half * 0.5;
+    shadowCamera.far = toward + Math.max(half, baseRad) * 2;
+    shadowCamera.updateProjectionMatrix();
+    // Offsets that stop surfaces shadowing themselves, about a texel in size: enough to prevent
+    // acne, small enough that a lander's shadow still meets its feet.
+    shadowLight.shadow.normalBias = texel;
+    shadowLight.shadow.bias = -(texel * 0.5) / (shadowCamera.far - shadowCamera.near);
+
+    if (shadowHelper) shadowHelper.update();
+    if (lightHelper) lightHelper.update();
 }
 
 function releaseUserControl() {
@@ -2305,6 +3167,7 @@ function releaseUserControl() {
 function focusOnObject(mesh, data, { returnFocusTo = null } = {}) {
     sidebarReturnFocus = returnFocusTo;
     pendingLanderFocus = null;
+    clearShownHolder();
 
     // A lander whose body hasn't loaded yet is parked off-scene (at the Sun's centre). Show its
     // details now, make sure its body loads, and fly there once it lands (see attemptToLand).
@@ -2368,6 +3231,7 @@ function announce(message) {
 
 function closeUI() {
     pendingLanderFocus = null;
+    clearShownHolder();
     const sb = document.getElementById('sidebar');
     const focusWasInside = sb.contains(document.activeElement);
     releaseUserControl();
@@ -2378,12 +3242,13 @@ function closeUI() {
     sb.classList.remove('active');
     sb.inert = true;
     document.getElementById('controls').classList.remove('shifted');
+    syncMenuCurrent(null);
 
     // Don't strand keyboard focus inside a panel that just went inert.
     if (focusWasInside) {
         const back = sidebarReturnFocus && sidebarReturnFocus.isConnected
             ? sidebarReturnFocus
-            : document.getElementById('mission-list')?.querySelector('button');
+            : document.getElementById('system-btn');
         back?.focus({ preventScroll: true });
     }
     sidebarReturnFocus = null;
@@ -2397,49 +3262,146 @@ function getWebImagePath(url) {
     return url.replace(/^(\/?images\/)([^/]+)\.[^./]+$/, '$1web/$2.webp');
 }
 
+// The portal O from the OU brand forms (a square with a tilted-ellipse cut-out), in the OU
+// green to light-blue gradient: marks the OU's own content.
+const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><defs><linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DFFD3"/><stop offset="1" stop-color="#66EEFA"/></linearGradient><mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask></defs><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></svg>`;
+
+// One status vocabulary for the menu and the sidebar.
+function statusTone(status) {
+    if (status === 'Planned') return 'planned';
+    if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
+    if (status === 'Active' || status === 'Launched' || status === 'En Route' || status === 'Operational') return 'active';
+    return 'neutral';
+}
+
+function formatType(type) {
+    const words = type.replace(/_/g, ' ');
+    return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 function updateUI(data) {
     const sb = document.getElementById('sidebar');
     const controls = document.getElementById('controls');
-    let statusColor = '#222';
-    if (data.status === 'Active' || data.status === 'Launched' || data.status === 'En Route' || data.status === 'Operational') statusColor = '#006622';
-    if (data.status === 'Planned') statusColor = '#004466';
-    if (data.status === 'Crashed' || data.status === 'Landed' || data.status === 'Decommissioned') statusColor = '#662200';
-    let launchTag = '';
-    if (data.launch_year) {
-        const prefix = (data.status === 'Planned') ? 'Planned Launch' : 'Launched';
-        launchTag = `<span class="badge" style="background:#555">${prefix}: ${data.launch_year}</span>`;
-    }
-    let imageHtml = '';
-    if (data.image_url) {
-        imageHtml = `<div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 1px solid #444;">
-            <img src="${fixPath(getWebImagePath(data.image_url))}" data-original="${fixPath(data.image_url)}" style="width:100%; display:block;" alt="${data.name} Science Image" decoding="async"
+
+    const meta = [formatType(data.type)];
+    if (data.status) meta.push(`<span class="info-status info-status--${statusTone(data.status)}">${data.status}</span>`);
+    if (data.launch_year) meta.push(`${data.status === 'Planned' ? 'Planned launch' : 'Launched'} ${data.launch_year}`);
+
+    // The OU's role is the point of the product, so it leads.
+    const ouHtml = data.ou_involvement ? `
+        <section class="ou-involvement" aria-labelledby="ou-title">
+            <h3 id="ou-title">${OU_MARK}Open University Involvement</h3>
+            <div>${data.ou_involvement}</div>
+        </section>` : '';
+    const imageHtml = data.image_url ? `
+        <figure class="info-image">
+            <img src="${fixPath(getWebImagePath(data.image_url))}" data-original="${fixPath(data.image_url)}" alt="${data.name} Science Image" decoding="async"
                 onerror="if (this.dataset.original && this.getAttribute('src') !== this.dataset.original) { this.src = this.dataset.original; } else { this.parentElement.remove(); }"/>
-        </div>`;
-    }
-    let ceiHtml = '';
-    if (data.ou_involvement) {
-        ceiHtml = `
-        <div style="background: rgba(0, 100, 255, 0.1); border-left: 4px solid #00aaff; padding: 10px; margin-top: 15px; font-size: 0.9em;">
-            <strong style="color: #00aaff; display:block; margin-bottom:5px;">Open University Involvement</strong>
-            ${data.ou_involvement}
-        </div>`;
-    }
-    let html = `
-        <h2 id="info-title" tabindex="-1" style="margin-top:0">${data.name}</h2>
-        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;">
-            <span class="badge" style="background:#444">${data.type.toUpperCase()}</span>
-            <span class="badge" style="background:${statusColor}; color:${data.status === 'Planned' ? '#000' : '#fff'}">${data.status}</span>
-            ${launchTag}
-        </div>
+        </figure>` : '';
+
+    document.getElementById('info-content').innerHTML = `
+        <h2 id="info-title" tabindex="-1">${data.name}</h2>
+        <p class="info-meta">${meta.join('<span aria-hidden="true"> · </span>')}</p>
+        ${ouHtml}
         ${imageHtml}
-        <p style="line-height: 1.5; margin-bottom: 10px;">${data.description || 'No description available.'}</p>
-        ${ceiHtml}
+        <p class="info-description">${data.description || 'No description available.'}</p>
     `;
-    document.getElementById('info-content').innerHTML = html;
     sb.scrollTop = 0;
     sb.inert = false;
     sb.classList.add('active');
     controls.classList.add('shifted');
+    syncMenuCurrent(data.name);
+}
+
+// --- CREDITS ---
+// The content lives in data.json (the entry with "type": "credits"), so credits can be
+// edited without touching code. Items with an empty credit are left out.
+const LICENCE_URLS = {
+    'CC BY 4.0': 'https://creativecommons.org/licenses/by/4.0/',
+    'CC BY 3.0': 'https://creativecommons.org/licenses/by/3.0/',
+    'CC BY-SA 4.0': 'https://creativecommons.org/licenses/by-sa/4.0/',
+    'CC BY-SA 3.0 IGO': 'https://creativecommons.org/licenses/by-sa/3.0/igo/',
+    'MIT': 'https://opensource.org/license/mit',
+};
+
+function externalLink(text, href) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.textContent = text;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+}
+
+function setupCredits(credits) {
+    const sections = (credits?.sections || [])
+        .map(section => ({ ...section, items: (section.items || []).filter(item => item.credit) }))
+        .filter(section => section.items.length);
+    if (!sections.length) return;
+
+    const dialog = document.getElementById('credits-dialog');
+    const content = document.getElementById('credits-content');
+    if (credits.title) document.getElementById('credits-title').textContent = credits.title;
+    content.replaceChildren();
+
+    if (credits.intro) {
+        const p = document.createElement('p');
+        p.className = 'credits-intro';
+        p.textContent = credits.intro;
+        content.appendChild(p);
+    }
+    for (const section of sections) {
+        const el = document.createElement('section');
+        const h = document.createElement('h3');
+        h.textContent = section.heading;
+        const list = document.createElement('dl');
+        list.className = 'credits-list';
+        for (const item of section.items) {
+            const row = document.createElement('div');
+            const dt = document.createElement('dt');
+            dt.textContent = item.subject;
+            const dd = document.createElement('dd');
+            dd.append(item.credit);
+            if (item.licence) {
+                dd.append(' · ');
+                const href = LICENCE_URLS[item.licence];
+                dd.append(href ? externalLink(item.licence, href) : item.licence);
+            }
+            if (item.url) {
+                dd.append(' · ');
+                dd.append(externalLink('Source', item.url));
+            }
+            row.append(dt, dd);
+            list.appendChild(row);
+        }
+        el.append(h, list);
+        content.appendChild(el);
+    }
+    if (credits.footer) {
+        const p = document.createElement('p');
+        p.className = 'credits-footer';
+        p.textContent = credits.footer;
+        content.appendChild(p);
+    }
+
+    let link = document.getElementById('credits-btn');
+    if (!link) {
+        link = document.createElement('button');
+        link.id = 'credits-btn';
+        link.type = 'button';
+        link.textContent = 'Credits';
+        link.setAttribute('aria-haspopup', 'dialog');
+        link.addEventListener('click', () => {
+            dialog.showModal();
+            content.scrollTop = 0;
+        });
+        document.getElementById('controls').appendChild(link);
+
+        document.getElementById('credits-close').addEventListener('click', () => dialog.close());
+        // A click on the dimmed backdrop lands on the dialog element itself.
+        dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+        dialog.addEventListener('close', () => link.focus());
+    }
 }
 
 // --- CINEMATIC MODE ---
@@ -2522,25 +3484,12 @@ function animate() {
     const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
     if (currentSimulatedSeconds !== lastSimulatedSeconds) {
         lastSimulatedSeconds = currentSimulatedSeconds;
-        if (clockElement) {
-            clockElement.textContent = simulatedDate.toUTCString();
-        }
+        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
     }
 
     const days = getDaysSinceJ2000(simulatedDate);
 
     if (pendingLanders.length > 0) attemptToLand();
-
-    if (sunUniforms) sunUniforms.uTime.value = elapsedTime;
-
-    celestialMap.forEach(obj => {
-        if (obj.data.type === 'star' && obj.mesh.children[0].userData.flares) {
-            obj.mesh.children[0].userData.flares.forEach(flare => {
-                flare.rotation.z += flare.userData.speed * dt * 10;
-                flare.material.uniforms.uTime.value = elapsedTime;
-            });
-        }
-    });
 
     plannedMaterials.forEach(mat => { mat.uniforms.uTime.value = elapsedTime; });
 
@@ -2559,15 +3508,9 @@ function animate() {
         }
 
         let localPos;
-        if (data.type === 'trajectory') {
-            localPos = getTrajectoryPosition(data.waypoints, simulatedDate);
-            group.position.set(localPos.x, localPos.y, localPos.z);
-
-            _scratchDate.setTime(simulatedDate.getTime() + 1000 * 60 * 60);
-            const nextPos = getTrajectoryPosition(data.waypoints, _scratchDate);
-
-            _tempVec1.set(nextPos.x, nextPos.y, nextPos.z);
-            group.lookAt(_tempVec1);
+        if (data.orbit_type === 'trajectory') {
+            const arrived = getTrajectoryPosition(obj, days, group.position);
+            updateTrajectoryLines(obj, arrived);
         } else if (data.orbit_type === 'lissajous') {
             const p = celestialMap.get(data.parent);
             if (p) {
@@ -2614,7 +3557,8 @@ function animate() {
                 group.position.set(localPos.x, localPos.y, localPos.z);
             }
         }
-        if (data.name === 'Earth') {
+        if (data.rotation_mode === 'utc') {
+            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC.
             const sunAngle = Math.atan2(-group.position.x, -group.position.z);
             const hours = simulatedDate.getUTCHours();
             const mins = simulatedDate.getUTCMinutes();
@@ -2636,7 +3580,7 @@ function animate() {
             meshGroup.rotation.y = theta + offset;
         }
         else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
-            meshGroup.rotation.y += dt * 0.2;
+            updateMissionAttitude(obj, elapsedTime, dt, days);
         }
     });
 
@@ -2679,39 +3623,6 @@ function animate() {
 
         controls.target.lerpVectors(transitionStartTarget, destTarget, tLook);
         controls.update();
-
-        let systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
-        let distToSystem = systemObj ? camera.position.distanceTo(systemObj.group.position) : Infinity;
-        const baseSystemRad = systemObj ? (systemObj.data.radius || 1) : 1;
-        const SHADOW_CULL_DISTANCE = Math.max(baseSystemRad * 20, 100);
-
-        if (systemObj && distToSystem < SHADOW_CULL_DISTANCE) {
-            sunLight.intensity = 0;
-            shadowLight.intensity = 3;
-            shadowLight.shadow.autoUpdate = true;
-            _viewCenter.copy(controls.target);
-            _vecToSun.subVectors(_sunPos, _viewCenter).normalize();
-            _lightPos.copy(_viewCenter).addScaledVector(_vecToSun, 500);
-            shadowLight.position.copy(_lightPos);
-            shadowLight.target.position.copy(_viewCenter);
-
-            const baseRad = systemObj.data.radius || 1;
-            const shadowBoxSize = Math.max(baseRad * 30, camera.position.distanceTo(controls.target) * 0.5);
-            shadowLight.shadow.camera.left = -shadowBoxSize;
-            shadowLight.shadow.camera.right = shadowBoxSize;
-            shadowLight.shadow.camera.top = shadowBoxSize;
-            shadowLight.shadow.camera.bottom = -shadowBoxSize;
-            shadowLight.shadow.camera.near = 1;
-            shadowLight.shadow.camera.far = 1000;
-            shadowLight.shadow.camera.updateProjectionMatrix();
-
-            if (shadowHelper) shadowHelper.update();
-            if (lightHelper) lightHelper.update();
-        } else {
-            sunLight.intensity = 2.5;
-            shadowLight.intensity = 0;
-            shadowLight.shadow.autoUpdate = false; // Light is off: skip the shadow pass
-        }
     }
     else if (selectedObject && isTracking) {
         getFocusPoint(selectedObject, _targetWorldPos);
@@ -2856,43 +3767,6 @@ function animate() {
             camera.position.lerp(_idealCamPos, frameFlyLerp);
             controls.update();
         }
-
-        let systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
-        let distToSystem = systemObj ? camera.position.distanceTo(systemObj.group.position) : Infinity;
-
-        const baseSystemRad = systemObj ? (systemObj.data.radius || 1) : 1;
-        const SHADOW_CULL_DISTANCE = Math.max(baseSystemRad * 20, 100);
-
-        if (systemObj && distToSystem < SHADOW_CULL_DISTANCE) {
-            sunLight.intensity = 0;
-            shadowLight.intensity = 3;
-            shadowLight.shadow.autoUpdate = true;
-
-            _viewCenter.copy(controls.target);
-
-            _vecToSun.subVectors(_sunPos, _viewCenter).normalize();
-
-            _lightPos.copy(_viewCenter).addScaledVector(_vecToSun, 500);
-            shadowLight.position.copy(_lightPos);
-            shadowLight.target.position.copy(_viewCenter);
-
-            const baseRad = systemObj.data.radius || 1;
-            const shadowBoxSize = Math.max(baseRad * 30, camera.position.distanceTo(controls.target) * 0.5);
-            shadowLight.shadow.camera.left = -shadowBoxSize;
-            shadowLight.shadow.camera.right = shadowBoxSize;
-            shadowLight.shadow.camera.top = shadowBoxSize;
-            shadowLight.shadow.camera.bottom = -shadowBoxSize;
-            shadowLight.shadow.camera.near = 1;
-            shadowLight.shadow.camera.far = 1000;
-            shadowLight.shadow.camera.updateProjectionMatrix();
-
-            if (shadowHelper) shadowHelper.update();
-            if (lightHelper) lightHelper.update();
-        } else {
-            sunLight.intensity = 2.5;
-            shadowLight.intensity = 0;
-            shadowLight.shadow.autoUpdate = false; // Light is off: skip the shadow pass
-        }
     }
     else if (solarSystemView) {
         if (userHasControl) {
@@ -2910,8 +3784,11 @@ function animate() {
 
     updateModelDetail();
     updateViewOffset(dt);
+    updateSunShadow();
     updateSelectionSpot(dt);
-    updateTargetBoxOverlay(dt);
+    updateReticles(dt);
+    // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
+    if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
     renderer.render(scene, camera);
 }
 
@@ -2958,7 +3835,7 @@ function getSolarSystemView(outPos, outTarget) {
     return outPos.copy(dir).multiplyScalar(far);
 }
 
-// "Solar System" in the menu (and Reset View): deselect and show every planet's orbit.
+// "Solar System" pinned atop the menu: deselect and show every planet's orbit.
 // animate: false jumps straight there, for the view on load.
 function showSolarSystem({ animate = true } = {}) {
     closeUI();
@@ -2969,6 +3846,7 @@ function showSolarSystem({ animate = true } = {}) {
     isTracking = false;
     updateOrbitLineHighlights();
     solarSystemView = true;
+    syncMenuCurrent('Solar System');
     solarSystemSpin = 0;
 
     getSolarSystemView(transitionEndPos, transitionEndTarget);
@@ -2982,8 +3860,6 @@ function showSolarSystem({ animate = true } = {}) {
         controls.update();
     }
 }
-
-document.getElementById('reset-btn').onclick = () => showSolarSystem();
 
 // Only clicks on the 3D view itself select or deselect. Listening on the canvas
 // (not window) keeps clicks in the sidebar and menus from reaching the scene.
@@ -3081,6 +3957,8 @@ document.getElementById('sidebar').addEventListener('pointerdown', stopCinematic
 
 window.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    // The credits dialog closes itself on Escape; leave the scene alone.
+    if (document.getElementById('credits-dialog').open) return;
     hurryTransition();
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
@@ -3100,11 +3978,12 @@ window.addEventListener('resize', () => {
     });
 });
 
-// Dev-only hook for automated checks (camera paths, lander placement); stripped from builds.
+// Dev-only hook for automated checks (camera paths, lander placement, model orientation); stripped from builds.
 if (import.meta.env.DEV) {
-    window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene,
+    window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
+        loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
         get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
-        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster };
+        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; } };
 }
 
 loadSystem();

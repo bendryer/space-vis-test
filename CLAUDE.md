@@ -18,11 +18,13 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 
 `npm run build` opens a bundle report in the browser (`rollup-plugin-visualizer` with `open: true`).
 
-Design work happens in the sibling `../space-vis-design` sandbox, which shares this `public/` folder; finished changes to `index.html`, `src/main.js` and `src/style.css` are copied back here.
+Design work happens in the sibling `../space-vis-design` sandbox, which shares this `public/` folder; finished changes to `index.html`, `src/main.js`, `src/style.css`, `src/sun.js` and `src/sun/*.glsl` are copied back here, with `DATA.md`.
 
 ## Data files
 
 `public/data.json` is the canonical mission/celestial-body dataset — treat it as the source of truth. `public/data_pippa.json` is a colleague's variant that added descriptions for each object; `data.json` is intended to be the merged result pulling in that work, but the merge should be double-checked rather than assumed complete for any given entry. The two things this data concentrates on per mission/body are the **Open University's involvement** and the **science that OU academics are interested in** — prioritize getting those fields right over other content.
+
+`DATA.md` documents every field the code reads. Objects, their models, orbits (including a mission's cruise `trajectory`), spacecraft motion and menu placement are all driven from `data.json`; adding or changing an object shouldn't need a code change.
 
 ## Deploy path gotcha
 
@@ -38,7 +40,7 @@ Web-ready derivatives live beside the sources, and a changed source needs its de
 - `public/models/*.glb` (and `*-low.glb`) were simplified with gltf-transform. The untouched originals are in `model-originals/` (outside `public/`).
 - `public/draco/` and `public/basis/` are decoders copied from three's `examples/jsm/libs`; update them when `three` is upgraded. Lint ignores them.
 
-`USE_NAMED_ASTEROID_MODELS` in `main.js` is a deliberate privacy toggle: when `false`, it swaps custom OU-researcher-named asteroid models (e.g. `Grady.glb`, `Pillinger.glb`) for generic ones. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
+`USE_NAMED_ASTEROID_MODELS` in `main.js` is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
 
 ## Workflow
 
