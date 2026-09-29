@@ -9,9 +9,11 @@
     <!-- Poppins is the OU brand typeface; Arial is its approved fallback. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
-    <script type="module" crossorigin src="/space-vis-test/assets/index-CJiTLROa.js"></script>
-    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/index-BwLOaSQz.css">
+    <!-- Loaded without blocking first paint: the page shows in Arial and swaps to Poppins on arrival. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" /></noscript>
+    <script type="module" crossorigin src="/space-vis-test/assets/index-DoPAD7g4.js"></script>
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/index-SmdoKyl_.css">
   </head>
   <body>
     <div id="app"></div>
@@ -53,7 +55,7 @@
       </div>
 
       <div class="splash-copy">
-        <h2 id="splash-title">Explore the OUniverse</h2>
+        <h1 id="splash-title">Explore the OUniverse</h1>
         <p class="splash-lede">Since Colin Pillinger’s appointment in 1983, the Open University’s School of Physical Sciences has built a heritage in space instrumentation and science.</p>
         <p class="splash-facts">From rovers and landers on other worlds to telescopes imaging distant planets, stars and galaxies, and satellites monitoring our Earth, the OU has played a part in a wide range of spacecraft. <strong id="splash-explore" hidden>Explore <span id="splash-count"></span> of them in the OUniverse.</strong></p>
 
