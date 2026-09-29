@@ -262,6 +262,12 @@
   }
   .ou-block.empty strong { color: #ffb020; }
 
+  .facts { font-size: 0.75rem; color: var(--text-dim); border-top: 1px solid var(--panel-border); padding-top: 8px; }
+  .facts summary { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.66rem; }
+  .facts dl { display: grid; grid-template-columns: max-content 1fr; gap: 3px 12px; margin: 8px 0 0; }
+  .facts dt { color: var(--text-dim); }
+  .facts dd { margin: 0; color: var(--text); overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: 0.72rem; }
+
   footer {
     text-align: center;
     color: var(--text-dim);
@@ -298,8 +304,8 @@
   <h1>OUniverse — Mission &amp; Object Guide</h1>
   <p class="sub">
     A single-page reference covering every body and mission in the OUniverse interactive: description,
-    Open University involvement, and an interactive 3D preview of each model. Content is pulled live from
-    <code>data.json</code> — edit that file and reload this page to see updates, no rebuild required.
+    Open University involvement, the data behind it, and an interactive 3D preview of each model. Content is
+    pulled live from <code>data.json</code> — edit that file and reload this page to see updates, no rebuild required.
   </p>
   <div class="controls-row">
     <input id="search" type="search" placeholder="Search by name, description or OU involvement…" />
@@ -318,7 +324,8 @@
 <footer id="footer" hidden>
   Generated as a companion to the OUniverse 3D explorer. Data source: <code>data.json</code> —
   the app's own "single source of truth" per the project's asset conventions. 3D previews load lazily
-  as you scroll and use the same generic-model substitution as the main app for named-asteroid privacy.
+  as you scroll and follow the same named-asteroid privacy rule as the main app (the generic model is shown unless
+  <code>USE_NAMED_ASTEROID_MODELS</code> is on there).
   <br />This page needs to be hosted alongside the site's <code>models/</code>, <code>textures/</code> and
   <code>images/</code> folders (i.e. served from the same place as the main app) for previews and images to load.
 </footer>
@@ -339,10 +346,6 @@ const GENERIC_ASTEROID_MODELS = [
   '/models/Asteroid1.glb', '/models/Asteroid2.glb', '/models/Asteroid3.glb',
   '/models/Asteroid4.glb', '/models/Asteroid5.glb'
 ];
-const NAMED_ASTEROID_MODELS = [
-  '/models/Grady.glb', '/models/Franchi.glb', '/models/Greenwood.glb', '/models/Rider-Stokes.glb',
-  '/models/OU.glb', '/models/Norton.glb', '/models/Green.glb', '/models/Pillinger.glb', '/models/Zarnecki.glb'
-];
 
 function getHash(str) {
   let hash = 0;
@@ -353,18 +356,13 @@ function getHash(str) {
   return Math.abs(hash);
 }
 
+// Mirrors getEffectiveModel in src/main.js: a named asteroid's private model (`model_named`) is used
+// only when the toggle is on; otherwise its public generic `model`. Never load model_named otherwise.
 function getEffectiveModelPath(item) {
-  let modelPath = item.model;
-  if (!modelPath && item.type === 'asteroid') {
-    return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
-  }
-  if (!modelPath) return null;
-  const base = modelPath.split('/').pop().toLowerCase();
-  const isNamed = NAMED_ASTEROID_MODELS.some(m => m.split('/').pop().toLowerCase() === base);
-  if (isNamed && !USE_NAMED_ASTEROID_MODELS) {
-    return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
-  }
-  return modelPath;
+  if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
+  if (item.model) return item.model;
+  if (item.type === 'asteroid') return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
+  return null;
 }
 
 // Resolve a data.json root-relative path ("/models/x.glb") against this document's own location,
@@ -392,19 +390,21 @@ const TYPE_META = {
 };
 function typeMeta(t) { return TYPE_META[t] || { icon: '•', color: '#888', label: t || 'Object' }; }
 
-// Mirrors updateUI()'s status colour logic in src/main.js, so badges read the same as the live app.
-function statusColor(status) {
-  if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return '#006622';
-  if (status === 'Planned') return '#004466';
-  if (['Crashed', 'Landed', 'Decommissioned'].includes(status)) return '#662200';
-  return '#333';
+// Mirrors statusTone() in src/main.js, so badges read the same as the live app.
+function statusTone(status) {
+  if (status === 'Planned') return 'planned';
+  if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
+  if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return 'active';
+  return 'neutral';
 }
-function statusTextColor(status) { return status === 'Planned' ? '#000' : '#fff'; }
+const TONE_COLOR = { active: '#7DFFD3', planned: '#FFF488', ended: '#FFB4FF', neutral: '#555' };
+function statusColor(status) { return TONE_COLOR[statusTone(status)]; }
+function statusTextColor(status) { return statusTone(status) === 'neutral' ? '#fff' : '#05053E'; }
 
 // --- Shared three.js loaders/caches (kept outside the per-card lifecycle) ---
 THREE.Cache.enabled = true;
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.181.2/examples/jsm/libs/draco/');
+dracoLoader.setDecoderPath('draco/'); // the app's own copy, next to this page
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 const textureLoader = new THREE.TextureLoader();
@@ -585,6 +585,45 @@ function wireLazyPreviews(root, byName) {
 
 // --- Data loading, tree building, rendering ---
 
+function fmt(n, digits = 2) { return typeof n === 'number' ? +n.toFixed(digits) : n; }
+
+// The fields the app reads for an object, gathered as label/value pairs so each can be checked
+// against what's on screen. Only what's present is listed.
+function factsFor(item) {
+  const rows = [];
+  const add = (label, value) => { if (value !== undefined && value !== null && value !== '' && value !== false) rows.push([label, value]); };
+  const model = getEffectiveModelPath(item);
+  add('Model', model && `${model}${item.model_scale ? ` (scale ${item.model_scale})` : ''}`);
+  if (item.model_named) add('Named model', `${item.model_named} (private: not shown)`);
+  add('Texture', item.texture);
+  add('Radius', item.radius !== undefined ? `${item.radius} (scene units)` : undefined);
+  add('Tilt', item.tilt !== undefined ? `${item.tilt}°` : undefined);
+  add('Rotation period', item.rot_period !== undefined ? `${item.rot_period} days` : undefined);
+  add('Ring', item.ring && `${item.ring.inner_radius}–${item.ring.outer_radius} × radius, opacity ${item.ring.opacity ?? 1}`);
+  if (item.orbit_type === 'landed') {
+    const c = item.landed_coords;
+    add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}` : `on ${item.parent} (no coordinates)`);
+  } else if (item.orbit_type === 'trajectory') {
+    const t = item.trajectory || {};
+    add('Trajectory', `${(t.waypoints || []).length} waypoints${t.arrival_orbit ? ', then an arrival orbit' : ''}`);
+  } else if (item.orbit) {
+    const o = item.orbit;
+    add('Orbit', [item.orbit_type, o.a !== undefined && `a ${fmt(o.a)}`, o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}°`].filter(Boolean).join(' · '));
+  }
+  if (item.motion) add('Attitude', [item.motion.mode, item.motion.axis && `axis ${item.motion.axis}`, item.motion.rate !== undefined && `rate ${item.motion.rate}`].filter(Boolean).join(' · '));
+  add('Menu', [item.menu_parent && `under ${item.menu_parent}`, item.menu_order !== undefined && `order ${item.menu_order}`, item.menu_top_level && 'own group'].filter(Boolean).join(' · '));
+  add('Loading', [item.preload && 'preloaded', item.system && `system ${item.system}`].filter(Boolean).join(' · '));
+  add('Image', item.image_url);
+  return rows;
+}
+
+function factsHtml(item) {
+  const rows = factsFor(item);
+  if (!rows.length) return '';
+  return `<details class="facts"><summary>Data (${rows.length} fields)</summary><dl>${
+    rows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join('')}</dl></details>`;
+}
+
 function cardHtml(item) {
   const meta = typeMeta(item.type);
   const hasVisual = !!(getEffectiveModelPath(item) || item.texture);
@@ -634,6 +673,7 @@ function cardHtml(item) {
         ${descHtml}
         ${scienceImg}
         ${ouHtml}
+        ${factsHtml(item)}
       </div>
     </article>`;
 }
@@ -644,7 +684,7 @@ async function main() {
   try {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(res.statusText);
-    data = await res.json();
+    data = (await res.json()).filter(d => d.type !== 'credits'); // the credits dialog's content, not an object
   } catch (err) {
     app.innerHTML = `<div id="load-error">Could not load data.json (${escapeHtml(err.message)}).<br/>Make sure this page is hosted alongside data.json.</div>`;
     return;
