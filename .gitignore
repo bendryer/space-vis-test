@@ -31,7 +31,6 @@ stats.html
 # Source material and reference files the app never loads
 OUniverse-Content.docx
 public/data_pippa.json
-public/mission-guide.html
 public/vite.svg
 # Models with no data.json entry (the Moon is a textured sphere)
 public/models/apollo.glb
