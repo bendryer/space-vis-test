@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { createSun } from './sun.js';
 
 // --- CONFIGURATION ---
@@ -278,6 +279,9 @@ let fatalErrorShown = false;
 function markSceneReady() {
     if (splashReady || fatalErrorShown) return;
     splashReady = true;
+    performance.mark('scene-ready'); // read by the performance checks
+    startSky();
+    startPreloads();
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     if (!overlay || splashDismissed) return;
@@ -309,6 +313,8 @@ const SPLASH_ARRIVE_MS = 2450;
 function dismissSplash({ fromKeyboard = false } = {}) {
     if (splashDismissed || fatalErrorShown) return;
     splashDismissed = true;
+    startSky(); // going in early ("Explore now"): don't wait for the scene to be ready
+    startPreloads();
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     const ui = document.getElementById('ui-layer');
@@ -494,7 +500,8 @@ try {
 }
 
 // Sweet spot for integrated GPUs: 1.25x pixel ratio + Hardware MSAA gives crisp Retina anti-aliasing while keeping fill-rate low
-renderer.setPixelRatio(Math.min(pixelRatio, 1.25));
+const BASE_PIXEL_RATIO = Math.min(pixelRatio, 1.25);
+renderer.setPixelRatio(BASE_PIXEL_RATIO);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap; // Efficient PCF shadow filtering for integrated GPUs
@@ -502,12 +509,86 @@ renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 1.2;
 
 
+// --- ADAPTIVE RESOLUTION ---
+// Where the GPU can't draw the scene in time (a low-power laptop, or one driving a 4K screen), draw
+// fewer pixels rather than drop frames. Hardware that keeps up never leaves full resolution. The
+// scene is timed on the GPU itself where the browser allows (timer queries), so a capped frame
+// rate (a battery saver's 30 fps) or a busy CPU isn't mistaken for a slow GPU, and the resolution
+// comes back once there's room. Without GPU timing it only steps down, for sustained slow frames.
+const RESOLUTION_STEPS = [1, 0.85, 0.72];
+const GPU_BUDGET_MS = 13; // median GPU time per frame above which a step down is taken
+const GPU_HEADROOM_MS = 9; // the next step up must be predicted to cost less than this
+const SLOW_FRAME_MS = 40; // without GPU timing: median frame interval (under 25 fps) to step down
+const RESOLUTION_HOLD_MS = 3000; // wait after a change before judging again
+const resolution = {
+    step: 0, changedAt: 0, lastFrame: 0, gpu: [], intervals: [],
+    timer: (() => {
+        const gl = renderer.getContext();
+        const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+        return ext ? { gl, ext, pending: [], query: null } : null;
+    })(),
+};
+
+function beginFrameTiming(now) {
+    // A long gap is a hidden tab or a load stall, not the steady cost of drawing.
+    if (resolution.lastFrame && now - resolution.lastFrame < 250) pushSample(resolution.intervals, now - resolution.lastFrame);
+    resolution.lastFrame = now;
+    const t = resolution.timer;
+    if (!t) return;
+    const { gl, ext } = t;
+    const disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+    while (t.pending.length && gl.getQueryParameter(t.pending[0], gl.QUERY_RESULT_AVAILABLE)) {
+        const q = t.pending.shift();
+        if (!disjoint) pushSample(resolution.gpu, gl.getQueryParameter(q, gl.QUERY_RESULT) / 1e6);
+        gl.deleteQuery(q);
+    }
+    if (t.pending.length < 4) {
+        t.query = gl.createQuery();
+        gl.beginQuery(ext.TIME_ELAPSED_EXT, t.query);
+    }
+}
+
+function endFrameTiming(now) {
+    const t = resolution.timer;
+    if (t && t.query) {
+        t.gl.endQuery(t.ext.TIME_ELAPSED_EXT);
+        t.pending.push(t.query);
+        t.query = null;
+    }
+    if (now - resolution.changedAt < RESOLUTION_HOLD_MS) return;
+    const median = samples => [...samples].sort((a, b) => a - b)[samples.length >> 1];
+    let next = resolution.step;
+    if (t) {
+        if (resolution.gpu.length < 90) return;
+        const gpu = median(resolution.gpu);
+        const up = resolution.step > 0 ? (RESOLUTION_STEPS[resolution.step - 1] / RESOLUTION_STEPS[resolution.step]) ** 2 : 0;
+        if (gpu > GPU_BUDGET_MS && resolution.step < RESOLUTION_STEPS.length - 1) next++;
+        else if (up && gpu * up < GPU_HEADROOM_MS) next--;
+    } else {
+        if (resolution.intervals.length < 90) return;
+        if (median(resolution.intervals) > SLOW_FRAME_MS && resolution.step < RESOLUTION_STEPS.length - 1) next++;
+    }
+    if (next === resolution.step) return;
+    resolution.step = next;
+    resolution.changedAt = now;
+    resolution.gpu.length = 0;
+    resolution.intervals.length = 0;
+    renderer.setPixelRatio(BASE_PIXEL_RATIO * RESOLUTION_STEPS[next]);
+}
+
+function pushSample(samples, value) {
+    samples.push(value);
+    if (samples.length > 120) samples.shift();
+}
+
 // Reading shader logs on a shader's first use blocks until the driver finishes compiling
 // it; measured as the main arrival stall (100-300ms per new model). Keep it in dev only.
 renderer.debug.checkShaderErrors = import.meta.env.DEV;
 
-renderer.domElement.setAttribute('role', 'img');
-renderer.domElement.setAttribute('aria-label', 'Interactive 3D view of the Solar System. Use the mission list to visit each object.');
+renderer.domElement.setAttribute('role', 'application');
+renderer.domElement.setAttribute('aria-roledescription', '3D view');
+renderer.domElement.setAttribute('aria-label', 'Interactive 3D view of the Solar System. Arrow keys turn the view, plus and minus zoom. The mission list visits each object.');
+renderer.domElement.tabIndex = 0;
 renderer.domElement.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
     showFatalError('The 3D graphics stopped responding, which can happen when a device is low on memory. Reloading usually fixes it.');
@@ -519,6 +600,7 @@ document.body.appendChild(renderer.domElement);
 // JPEG at the same angular resolution. It stays GPU-compressed (BC7/ASTC, ~25MB) where the
 // JPEG decoded to ~128MB of raw RGBA. If KTX2 can't load, fall back to the JPEG.
 const SKY_FACES = ['px', 'nx', 'py', 'ny', 'pz', 'nz']; // three.js cube face order
+const SKY_FADE_SECONDS = 1;
 const ktx2Loader = new KTX2Loader().setTranscoderPath('basis/').detectSupport(renderer);
 
 function useEquirectSky() {
@@ -531,9 +613,41 @@ function useEquirectSky() {
     scene.background = sky;
 }
 
-// Holds the loading screen until the faces are transcoded, not just downloaded.
-loadingManager.itemStart('sky');
-Promise.all(SKY_FACES.map(face => ktx2Loader.loadAsync(`textures/milky_way_${face}.ktx2`)))
+// The sky doesn't hold up the loading screen: transcoding the six faces took ~3s after
+// everything the opening view needs was ready (~0.8s). It arrives behind the splash almost
+// always; if the visitor has already gone in, it fades up rather than popping in.
+function showSky(sky) {
+    try { renderer.initTexture(sky); } catch (e) { console.warn('Sky upload failed', e); }
+    scene.background = sky;
+    const splash = document.getElementById('loading-overlay');
+    if (prefersReducedMotion.matches || (splash && !splash.hidden)) return;
+    const start = performance.now();
+    scene.backgroundIntensity = 0;
+    const fade = () => {
+        scene.backgroundIntensity = Math.min(1, (performance.now() - start) / (SKY_FADE_SECONDS * 1000));
+        if (scene.backgroundIntensity < 1) requestAnimationFrame(fade);
+    };
+    requestAnimationFrame(fade);
+}
+
+// Preloaded models (~9MB for Earth's system and Comet 67P, none of it in the opening view) wait
+// until the scene is ready too, so on a slow connection they don't share bandwidth with the
+// textures the opening view needs. They still arrive while the splash is up.
+const preloadQueue = [];
+let preloadsStarted = false;
+function startPreloads() {
+    if (preloadsStarted) return;
+    preloadsStarted = true;
+    preloadQueue.forEach(data => loadModelForItem(data, true));
+}
+
+// Transcoding competes with the shader warm-up for the CPU (it slowed the warm-up from 0.1s to
+// 0.8s), so it starts once the scene is ready, or as soon as the visitor goes in, whichever is first.
+let skyStarted = false;
+function startSky() {
+    if (skyStarted) return;
+    skyStarted = true;
+    Promise.all(SKY_FACES.map(face => ktx2Loader.loadAsync(`textures/milky_way_${face}.ktx2`)))
     .then(faces => {
         const sky = new THREE.CompressedCubeTexture(
             faces.map(t => ({ width: t.image.width, height: t.image.height, mipmaps: t.mipmaps })),
@@ -543,13 +657,16 @@ Promise.all(SKY_FACES.map(face => ktx2Loader.loadAsync(`textures/milky_way_${fac
         sky.magFilter = THREE.LinearFilter;
         sky.generateMipmaps = false;
         sky.needsUpdate = true;
-        scene.background = sky;
+        showSky(sky);
+        performance.mark('sky-ready'); // read by the performance checks
     })
     .catch(err => {
         console.warn('Compressed sky unavailable, using the JPEG', err);
         useEquirectSky();
-    })
-    .finally(() => loadingManager.itemEnd('sky'));
+    });
+}
+// Fetch the faces now (they download in parallel with everything else); only the transcoding waits.
+SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
 
 // --- GPU WARM-UP ---
 // The first frame that draws a new texture or material stalls while the texture
@@ -1836,11 +1953,125 @@ function getAreaCentroid(root) {
     return totalArea > 0 ? sum.divideScalar(totalArea) : null;
 }
 
+// Every mesh costs a draw call in each pass (the view and up to two shadow maps), and on slower
+// CPUs that per-object overhead is what limits the frame rate, not the GPU. Some models arrive as
+// hundreds of meshes sharing a few dozen materials (Perseverance: 252 meshes, 47 materials,
+// every one skinned though nothing animates them). Since models never move their parts, bake each
+// into the model's own frame (skinned ones in the pose they're drawn in) and merge those that
+// share a material. The result draws exactly as before, in a fraction of the calls.
+const FLATTEN_SKIP_ATTRIBUTES = new Set(['skinIndex', 'skinWeight']);
+function flattenModel(model) {
+    // Meshes can merge when they share a material, the flags that set how they're drawn, and the
+    // same set of vertex attributes.
+    const attributeSignature = geometry => Object.keys(geometry.attributes).filter(n => !FLATTEN_SKIP_ATTRIBUTES.has(n))
+        .sort().map(n => n + geometry.attributes[n].itemSize).join();
+    const mergeKey = (mesh, shown) => [mesh.material.uuid, mesh.castShadow, mesh.receiveShadow, mesh.renderOrder, shown,
+        mesh.frustumCulled, mesh.layers.mask, attributeSignature(mesh.geometry)].join('|');
+    let meshes = 0, skinned = false, unsupported = false;
+    const keys = new Set();
+    model.traverse(o => {
+        if (o.isMesh) {
+            meshes++;
+            skinned ||= o.isSkinnedMesh;
+            if (o.isInstancedMesh || o.isBatchedMesh || Array.isArray(o.material)
+                || Object.keys(o.geometry.morphAttributes).length) unsupported = true;
+            else keys.add(mergeKey(o, o.visible));
+        } else if (o.isLight || o.isCamera || o.isLine || o.isPoints || o.isSprite) unsupported = true;
+    });
+    // Nothing to merge and nothing skinned (a model already flattened in its file, say): leave
+    // it exactly as it came.
+    if (unsupported || meshes < 2 || (keys.size === meshes && !skinned)) return;
+
+    model.updateMatrixWorld(true);
+    const toModel = new THREE.Matrix4().copy(model.matrixWorld).invert();
+    const groups = new Map();
+    const m = new THREE.Matrix4(), normalMatrix = new THREE.Matrix3();
+    const skin = new THREE.Matrix4(), bone = new THREE.Matrix4(), v = new THREE.Vector3();
+    model.traverse(mesh => {
+        if (!mesh.isMesh) return;
+        const src = mesh.geometry;
+        const geometry = new THREE.BufferGeometry();
+        for (const [name, attribute] of Object.entries(src.attributes)) {
+            if (FLATTEN_SKIP_ATTRIBUTES.has(name)) continue;
+            // Plain floats: merging needs matching array types, and some arrive quantised.
+            const array = new Float32Array(attribute.count * attribute.itemSize);
+            for (let i = 0; i < attribute.count; i++) {
+                for (let c = 0; c < attribute.itemSize; c++) array[i * attribute.itemSize + c] = attribute.getComponent(i, c);
+            }
+            geometry.setAttribute(name, new THREE.BufferAttribute(array, attribute.itemSize));
+        }
+        const count = geometry.attributes.position.count;
+        const index = src.index ? Array.from({ length: src.index.count }, (_, i) => src.index.getX(i))
+            : Array.from({ length: count }, (_, i) => i);
+        m.multiplyMatrices(toModel, mesh.matrixWorld);
+        let shown = true;
+        for (let p = mesh; p && p !== model; p = p.parent) shown &&= p.visible;
+
+        if (mesh.isSkinnedMesh) {
+            // As the vertex shader does: the skin matrix (bindMatrixInverse · Σ weight · bone ·
+            // boneInverse · bindMatrix) moves positions, normals and tangents alike; then the
+            // mesh's own transform (its normal matrix, for normals).
+            const { bones, boneInverses } = mesh.skeleton;
+            const skinIndex = src.attributes.skinIndex, skinWeight = src.attributes.skinWeight;
+            const { position, normal, tangent } = geometry.attributes;
+            normalMatrix.getNormalMatrix(m);
+            for (let i = 0; i < count; i++) {
+                skin.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                for (let k = 0; k < 4; k++) {
+                    const w = skinWeight.getComponent(i, k);
+                    if (!w) continue;
+                    const b = skinIndex.getComponent(i, k);
+                    bone.multiplyMatrices(bones[b].matrixWorld, boneInverses[b]);
+                    for (let e = 0; e < 16; e++) skin.elements[e] += bone.elements[e] * w;
+                }
+                skin.premultiply(mesh.bindMatrixInverse).multiply(mesh.bindMatrix);
+                v.fromBufferAttribute(position, i).applyMatrix4(skin).applyMatrix4(m);
+                position.setXYZ(i, v.x, v.y, v.z);
+                if (normal) {
+                    v.fromBufferAttribute(normal, i).transformDirection(skin).applyMatrix3(normalMatrix).normalize();
+                    normal.setXYZ(i, v.x, v.y, v.z);
+                }
+                if (tangent) {
+                    v.set(tangent.getX(i), tangent.getY(i), tangent.getZ(i)).transformDirection(skin).transformDirection(m);
+                    tangent.setXYZ(i, v.x, v.y, v.z);
+                }
+            }
+        } else {
+            geometry.applyMatrix4(m);
+        }
+        // A mirrored transform flips the triangles' winding; the renderer allows for it per
+        // object, so once baked in the triangles have to be turned back.
+        if (m.determinant() < 0) {
+            for (let i = 0; i < index.length; i += 3) [index[i + 1], index[i + 2]] = [index[i + 2], index[i + 1]];
+        }
+        geometry.setIndex(index);
+
+        const key = mergeKey(mesh, shown);
+        if (!groups.has(key)) groups.set(key, { mesh, shown, geometries: [] });
+        groups.get(key).geometries.push(geometry);
+    });
+
+    const merged = [];
+    for (const { mesh, shown, geometries } of groups.values()) {
+        const geometry = geometries.length > 1 ? mergeGeometries(geometries) : geometries[0];
+        if (!geometry) return; // Incompatible after all: leave the model as it came
+        const out = new THREE.Mesh(geometry, mesh.material);
+        out.name = mesh.name;
+        out.castShadow = mesh.castShadow; out.receiveShadow = mesh.receiveShadow;
+        out.renderOrder = mesh.renderOrder; out.visible = shown;
+        out.frustumCulled = mesh.frustumCulled; out.layers.mask = mesh.layers.mask;
+        merged.push(out);
+    }
+    model.clear();
+    merged.forEach(out => model.add(out));
+}
+
 // Centres a loaded glTF scene and scales it to unit size, ready to be one of the object's detail levels.
 // It's centred on its area-weighted centroid, not its bounding box: a boom or panel on one side
 // drags the box centre off the craft (Cassini's by 28% of its size), which left spacecraft and
 // comets visibly off their orbit lines. Landers keep their base at the origin.
 function buildModelLevel(item, effectiveModel, model) {
+    flattenModel(model);
     const wrapper = new THREE.Group();
     wrapper.add(model);
 
@@ -2141,18 +2372,20 @@ async function loadSystem() {
                 ring.rotation.x = -Math.PI / 2;
                 ring.receiveShadow = true; ring.castShadow = true;
                 meshGroup.add(ring);
+                // Kept for getSunOcclusion, which needs to know where a ring's shadow falls.
+                celestialMap.get(item.name).ring = { mesh: ring, innerRadius, outerRadius, opacity: item.ring.opacity || 0.9 };
             }
         });
 
         // PASS 2: Link & Orbits & Landers
         celestialMap.forEach((obj) => {
             const { group, data } = obj;
-            // Models load up front for the Sun and any system data.json marks "preload" (Earth's,
-            // the opening view; Comet 67P's, which Philae lands on); the rest as they come into
-            // view. Decided here, once every object exists, so the order of data.json doesn't matter.
+            // Models load early for the Sun and any system data.json marks "preload" (Earth's, the
+            // most visited; Comet 67P's, which Philae lands on); the rest as they come into view.
+            // Decided here, once every object exists, so the order of data.json doesn't matter.
             if (getEffectiveModel(data)) {
                 const system = getSystemRoot(data.name);
-                if (system === 'Sun' || data.preload || celestialMap.get(system)?.data.preload) loadModelForItem(data, true);
+                if (system === 'Sun' || data.preload || celestialMap.get(system)?.data.preload) preloadQueue.push(data);
             }
             if (data.orbit_type === 'landed') {
                 pendingLanders.push({ group: group, data: data });
@@ -2222,6 +2455,7 @@ async function loadSystem() {
         attemptToLand(); // landers on plain spheres can land right away
         showSolarSystem({ animate: false }); // open on the whole Solar System
         systemReady = true;
+        performance.mark('system-ready'); // read by the performance checks
 
     } catch (e) {
         console.error("Loading System Failed:", e);
@@ -2267,15 +2501,28 @@ function isSidebarBesideScene() {
     return window.innerWidth >= SIDEBAR_BESIDE_MIN_WIDTH;
 }
 
-// Width of the scene left visible beside the sidebar. Selections always open the sidebar, so
-// framing assumes it's there.
-function getSelectionViewWidth() {
+// The part of the screen a selection is framed in: between the menu and the sidebar when the
+// sidebar sits beside the scene, else the whole width (a sidebar over the scene is closed to look
+// round, and centring beside the menu alone would push the selection under it). Selections always
+// open the sidebar, so framing assumes it's there. The menu counts only while shown (cinematic
+// mode hides it). Returns the span's left and right edges in CSS pixels.
+function getSelectionViewSpan() {
+    const w = window.innerWidth;
+    if (!isSidebarBesideScene()) return { left: 0, right: w };
     const sidebar = document.getElementById('sidebar');
-    return isSidebarBesideScene() ? window.innerWidth - sidebar.offsetWidth : window.innerWidth;
+    const menu = document.getElementById('mission-menu');
+    const menuShown = menu && !menu.classList.contains('ui-hidden');
+    const left = menuShown ? menu.offsetLeft + menu.offsetWidth : 0;
+    return { left, right: w - sidebar.offsetWidth };
+}
+
+function getSelectionViewWidth() {
+    const span = getSelectionViewSpan();
+    return span.right - span.left;
 }
 
 // Narrower of the vertical and horizontal fields of view (over the visible area), so framing
-// fits portrait screens and the space beside the sidebar.
+// fits portrait screens and the space between the menu and the sidebar.
 function getMinFov() {
     const vfov = camera.fov * (Math.PI / 180);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * getSelectionViewWidth() / window.innerHeight);
@@ -2283,11 +2530,16 @@ function getMinFov() {
 }
 
 // While the sidebar is open beside the scene, shift the view so the selection sits in the middle
-// of the visible part rather than behind the sidebar. Eased so it glides with the sidebar.
+// of the visible part (between the menu and the sidebar) rather than behind either. Eased so it
+// glides with the sidebar and with the menu hiding or returning.
 let viewOffsetX = 0;
 function updateViewOffset(dt) {
     const sidebar = document.getElementById('sidebar');
-    const goal = sidebar.classList.contains('active') && isSidebarBesideScene() ? sidebar.offsetWidth / 2 : 0;
+    let goal = 0;
+    if (sidebar.classList.contains('active') && isSidebarBesideScene()) {
+        const span = getSelectionViewSpan();
+        goal = window.innerWidth / 2 - (span.left + span.right) / 2;
+    }
     viewOffsetX += (goal - viewOffsetX) * (1 - Math.exp(-dt * 6));
     if (goal === 0 && Math.abs(viewOffsetX) < 0.5) {
         viewOffsetX = 0;
@@ -3018,6 +3270,51 @@ function hurryTransition() {
     transitionDuration = Math.min(transitionDuration, HURRY_FLIGHT_SECONDS / remaining);
 }
 
+// How much of the Sun a point can't see: 0 in sunlight, 1 in the shadow of a planet, moon,
+// asteroid or comet (edges soft, over 10% of the body's radius), or as dark as a planet's ring
+// is opaque in the shadow of its rings. So a craft on the Moon's day side
+// during a lunar eclipse counts as in the dark, like one on the night side. `toSun` is the unit
+// vector to the Sun; `skip` is a body to ignore, such as the one a lander stands on, whose own
+// night side the caller already judges from the ground's tilt.
+const _occCentre = new THREE.Vector3();
+const _occOffset = new THREE.Vector3();
+const _occRingInverse = new THREE.Matrix4();
+const _occRingPoint = new THREE.Vector3();
+const _occRingDir = new THREE.Vector3();
+function getSunOcclusion(point, toSun, skip = null) {
+    let occlusion = 0;
+    celestialMap.forEach(obj => {
+        if (obj.ring) {
+            // Look along the sunward ray in the ring's own frame (its disc is the z = 0 plane)
+            // for where it crosses the disc, and whether that lands on the ring.
+            const { mesh, innerRadius, outerRadius, opacity } = obj.ring;
+            mesh.updateWorldMatrix(true, false);
+            _occRingInverse.copy(mesh.matrixWorld).invert();
+            _occRingPoint.copy(point).applyMatrix4(_occRingInverse);
+            _occRingDir.copy(toSun).transformDirection(_occRingInverse);
+            if (Math.abs(_occRingDir.z) > 1e-6) {
+                const t = -_occRingPoint.z / _occRingDir.z;
+                if (t > 1e-6) { // the disc lies between the point and the Sun
+                    const hit = Math.hypot(_occRingPoint.x + t * _occRingDir.x, _occRingPoint.y + t * _occRingDir.y);
+                    const edge = (outerRadius - innerRadius) * 0.02;
+                    const on = THREE.MathUtils.smoothstep(hit, innerRadius - edge, innerRadius + edge)
+                        * (1 - THREE.MathUtils.smoothstep(hit, outerRadius - edge, outerRadius + edge));
+                    occlusion = Math.max(occlusion, opacity * on);
+                }
+            }
+        }
+        if (obj === skip || !SURFACE_TYPES.has(obj.data.type)) return;
+        obj.group.getWorldPosition(_occCentre);
+        _occOffset.subVectors(_occCentre, point);
+        const along = _occOffset.dot(toSun);
+        if (along <= 0) return; // not between the point and the Sun
+        const radius = getVisualRadius(obj);
+        const across = _occOffset.addScaledVector(toSun, -along).length();
+        occlusion = Math.max(occlusion, 1 - THREE.MathUtils.smoothstep(across, radius * 0.95, radius * 1.05));
+    });
+    return occlusion;
+}
+
 function updateSelectionSpot(dt) {
     // Planned missions are holograms that glow by themselves, so they get no light.
     const arrived = selectedObject && isTracking && !isTransitioning
@@ -3036,19 +3333,16 @@ function updateSelectionSpot(dt) {
     _spotToSun.subVectors(_sunPos, selectionSpot.target.position).normalize();
     if (spotSubject.userData.orbit_type === 'landed' && parent) {
         // A lander: from straight above, away from the body it sits on. Brightest at night,
-        // fading to a faint fill as its ground turns to face the Sun.
+        // fading to a faint fill as its ground turns to face the Sun, and full strength again
+        // when another body (Earth in a lunar eclipse) shades it.
         _spotUp.subVectors(selectionSpot.target.position, _spotParent).normalize();
-        const daylight = THREE.MathUtils.smoothstep(_spotUp.dot(_spotToSun), -0.1, 0.3);
+        let daylight = THREE.MathUtils.smoothstep(_spotUp.dot(_spotToSun), -0.1, 0.3);
+        daylight *= 1 - getSunOcclusion(selectionSpot.target.position, _spotToSun, parent);
         spotGoal = THREE.MathUtils.lerp(SPOT_INTENSITY_NIGHT, SPOT_INTENSITY_DAY, daylight);
     } else {
-        // An orbiter: a faint fill in sunlight, full strength inside its body's shadow.
-        spotGoal = SPOT_INTENSITY_DAY;
-        if (parent && SURFACE_TYPES.has(parent.data.type)) {
-            _spotToParent.subVectors(selectionSpot.target.position, _spotParent); // body centre to craft
-            const along = _spotToParent.dot(_spotToSun);
-            const across = _spotToParent.addScaledVector(_spotToSun, -along).length();
-            if (along < 0 && across < getVisualRadius(parent)) spotGoal = SPOT_INTENSITY_NIGHT;
-        }
+        // An orbiter: a faint fill in sunlight, full strength inside a body's shadow.
+        spotGoal = THREE.MathUtils.lerp(SPOT_INTENSITY_DAY, SPOT_INTENSITY_NIGHT,
+            getSunOcclusion(selectionSpot.target.position, _spotToSun));
         // An orbiter: from its side away from the Sun...
         _spotUp.subVectors(selectionSpot.target.position, _sunPos).normalize();
         if (parent && SURFACE_TYPES.has(parent.data.type)) {
@@ -3093,6 +3387,15 @@ function updateSelectionSpot(dt) {
 // the view centre, not the whole system, so a lander's shadow is as sharp as a moon's; it moves
 // only in whole texels and resizes in steps, so shadow edges don't crawl as the camera orbits.
 const SUN_SHADOW_SIZE_STEP = 2 ** 0.25; // the covered area changes in ~19% steps
+// Within this many of a system's radii, the Sun's point light hands over to the shadow-casting
+// light. The handover takes a fixed time, not a band of distance: flights cross that range fast,
+// and shadows should deepen in, not snap on. Both lights shine from the Sun, so the blend only
+// changes how dark the shadows are.
+const SUN_SHADOW_REACH = 36;
+const SUN_SHADOW_FADE_S = 1;
+const SUN_POINT_INTENSITY = 2.5;
+const SUN_SHADOW_INTENSITY = 3;
+let sunShadowBlend = 0;
 const _shadowBasis = new THREE.Matrix4();
 const _shadowX = new THREE.Vector3();
 const _shadowY = new THREE.Vector3();
@@ -3101,22 +3404,29 @@ const _ORIGIN = new THREE.Vector3();
 let shadowSystem = null;
 let shadowSystemReach = 0;
 
-function updateSunShadow() {
+function updateSunShadow(dt) {
     const systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
     const baseRad = systemObj ? (systemObj.data.radius || 1) : 1;
-    if (!systemObj || camera.position.distanceTo(systemObj.group.position) >= Math.max(baseRad * 20, 100)) {
-        sunLight.intensity = 2.5;
+    const inReach = systemObj
+        && camera.position.distanceTo(systemObj.group.position) < Math.max(baseRad * SUN_SHADOW_REACH, 180);
+    // A new system starts dark: the light is aimed at it, so it can't keep lighting the last one.
+    if (systemObj !== shadowSystem) {
+        sunShadowBlend = 0;
+        shadowSystem = systemObj;
+        shadowSystemReach = systemObj ? getSystemRadius(systemObj) : 0;
+    }
+    const step = dt / SUN_SHADOW_FADE_S;
+    sunShadowBlend = THREE.MathUtils.clamp(sunShadowBlend + (inReach ? step : -step), 0, 1);
+    const blend = THREE.MathUtils.smoothstep(sunShadowBlend, 0, 1);
+    if (!systemObj || blend <= 0) {
+        sunLight.intensity = SUN_POINT_INTENSITY;
         shadowLight.intensity = 0;
         shadowLight.shadow.autoUpdate = false; // Light is off: skip the shadow pass
         return;
     }
-    sunLight.intensity = 0;
-    shadowLight.intensity = 3;
+    sunLight.intensity = SUN_POINT_INTENSITY * (1 - blend);
+    shadowLight.intensity = SUN_SHADOW_INTENSITY * blend;
     shadowLight.shadow.autoUpdate = true;
-    if (shadowSystem !== systemObj) {
-        shadowSystem = systemObj;
-        shadowSystemReach = getSystemRadius(systemObj);
-    }
 
     // Cover the view at the target's distance (the circle round the screen, as the map's square
     // turns with the Sun's direction), never less than the object on show.
@@ -3241,6 +3551,7 @@ function closeUI() {
     controls.enabled = true;
     sb.classList.remove('active');
     sb.inert = true;
+    syncMenuInert();
     document.getElementById('controls').classList.remove('shifted');
     syncMenuCurrent(null);
 
@@ -3309,6 +3620,7 @@ function updateUI(data) {
     sb.scrollTop = 0;
     sb.inert = false;
     sb.classList.add('active');
+    syncMenuInert();
     controls.classList.add('shifted');
     syncMenuCurrent(data.name);
 }
@@ -3425,12 +3737,23 @@ function syncCinematicButton() {
     btn.setAttribute('aria-pressed', String(cinematicActive));
 }
 
+// The menu is out of reach when the tour hides it, and when the sidebar has slid over it on a
+// narrow screen: it stays out of the tab order too, so focus never lands on something unseen.
+function syncMenuInert() {
+    const menu = document.getElementById('mission-menu');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarLeft = window.innerWidth - Math.min(sidebar.offsetWidth, window.innerWidth);
+    const covered = sidebar.classList.contains('active') && sidebarLeft < menu.offsetLeft + menu.offsetWidth;
+    menu.inert = cinematicActive || covered;
+}
+window.addEventListener('resize', syncMenuInert);
+
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
     const menu = document.getElementById('mission-menu');
     menu.classList.add('ui-hidden');
-    menu.inert = true;
+    syncMenuInert();
     syncCinematicButton();
     announce('Cinematic Mode on. The camera will visit a new mission every 30 seconds.');
     cycleCinematic();
@@ -3442,7 +3765,7 @@ function stopCinematicMode() {
     cinematicActive = false;
     const menu = document.getElementById('mission-menu');
     menu.classList.remove('ui-hidden');
-    menu.inert = false;
+    syncMenuInert();
     if (cinematicTimer) clearInterval(cinematicTimer);
     cinematicTimer = null;
     syncCinematicButton();
@@ -3464,6 +3787,46 @@ function cycleCinematic() {
     if (nextObj) {
         focusOnObject(nextObj.mesh, nextObj.data);
     }
+}
+
+// Which way is up for the viewer. Cruising between worlds the Solar System's plane stays level
+// (+Y), so long flights never roll. Only on the final approach to a lander or rover does the view
+// turn so its own ground is below it, and it turns back as the camera leaves. The turn is tied
+// to the camera's distance from the lander, so it happens during the last stretch of the approach
+// and no earlier.
+const UP_TURN_FAR = 12;  // no turn beyond this many focus distances from the lander
+const UP_TURN_NEAR = 3;  // fully turned inside this many
+const CAMERA_UP_EASE = 3; // per second: smooths a jump, e.g. going from one lander to another
+const _wantUp = new THREE.Vector3();
+const _upFocus = new THREE.Vector3();
+const _upTurn = new THREE.Quaternion();
+const _upIdentity = new THREE.Quaternion();
+function updateCameraUp(dt) {
+    _wantUp.copy(_UP);
+    if (selectedObject && selectedObject.userData.orbit_type === 'landed' && isInScene(selectedObject)) {
+        selectedObject.updateWorldMatrix(true, false);
+        _wantUp.set(0, 1, 0).transformDirection(selectedObject.matrixWorld);
+        getFocusPoint(selectedObject, _upFocus);
+        const range = camera.position.distanceTo(_upFocus) / calculateFocusDistance(selectedObject);
+        let w = (UP_TURN_FAR - range) / (UP_TURN_FAR - UP_TURN_NEAR);
+        w = Math.min(Math.max(w, 0), 1);
+        w = w * w * (3 - 2 * w);
+        _upTurn.setFromUnitVectors(_UP, _wantUp);
+        _wantUp.copy(_UP).applyQuaternion(_upTurn.slerp(_upIdentity, 1 - w)).normalize();
+    }
+    if (camera.up.dot(_wantUp) > 0.99999) {
+        if (camera.up.equals(_wantUp)) return;
+        camera.up.copy(_wantUp);
+    } else {
+        camera.up.lerp(_wantUp, 1 - Math.exp(-dt * CAMERA_UP_EASE));
+        // Exactly opposite up vectors would lerp through zero.
+        if (camera.up.lengthSq() < 1e-6) camera.up.copy(_wantUp);
+        camera.up.normalize();
+    }
+    // OrbitControls works in a frame where up is +Y and only sets that frame up at construction,
+    // so tell it when up changes or its steering would turn about the wrong axis.
+    controls._quat.setFromUnitVectors(camera.up, _UP);
+    controls._quatInverse.copy(controls._quat).invert();
 }
 
 // --- ANIMATION LOOP ---
@@ -3583,6 +3946,8 @@ function animate() {
             updateMissionAttitude(obj, elapsedTime, dt, days);
         }
     });
+
+    updateCameraUp(dt);
 
     if (isTransitioning) {
         transitionProgress += dt / transitionDuration;
@@ -3784,12 +4149,15 @@ function animate() {
 
     updateModelDetail();
     updateViewOffset(dt);
-    updateSunShadow();
+    updateSunShadow(dt);
     updateSelectionSpot(dt);
     updateReticles(dt);
     // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
     if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
+    const frameStart = performance.now();
+    beginFrameTiming(frameStart);
     renderer.render(scene, camera);
+    endFrameTiming(frameStart);
 }
 
 // EVENTS
@@ -3890,6 +4258,37 @@ controls.addEventListener('end', () => {
         if (userHasControl && (isTracking || solarSystemView)) controls.autoRotate = true;
     }, AUTO_ORBIT_RESUME_MS);
 });
+// Keyboard steering for the 3D view (the canvas is focusable): arrows turn the view about what
+// it's looking at, plus and minus move in and out. It goes through the same path as a drag, so
+// it ends the tour and hands steering to the visitor.
+const KEY_TURN_STEP = 6 * Math.PI / 180;
+const KEY_ZOOM_STEP = 1.15;
+const KEY_POLE_MARGIN = 0.05; // radians kept clear of straight up and down
+const _keyOffset = new THREE.Vector3();
+const _keyRight = new THREE.Vector3();
+renderer.domElement.addEventListener('keydown', (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    const turn = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+    const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
+    if (!turn && !zoom) return;
+    e.preventDefault();
+    hurryTransition();
+    controls.dispatchEvent({ type: 'start' });
+    _keyOffset.subVectors(camera.position, controls.target);
+    if (turn) {
+        _keyOffset.applyAxisAngle(camera.up, -turn[0] * KEY_TURN_STEP);
+        _keyRight.crossVectors(camera.up, _keyOffset).normalize();
+        const polar = _keyOffset.angleTo(camera.up);
+        const next = Math.min(Math.max(polar - turn[1] * KEY_TURN_STEP, KEY_POLE_MARGIN), Math.PI - KEY_POLE_MARGIN);
+        _keyOffset.applyAxisAngle(_keyRight, next - polar);
+    } else {
+        const dist = Math.min(Math.max(_keyOffset.length() * zoom, controls.minDistance), controls.maxDistance);
+        _keyOffset.setLength(dist);
+    }
+    camera.position.copy(controls.target).add(_keyOffset);
+    controls.dispatchEvent({ type: 'end' });
+});
+
 // Negative: OrbitControls' auto-rotate turns the opposite way to the scripted orbit, so without
 // this the view reversed direction when it resumed after the visitor let go.
 controls.autoRotateSpeed = -AUTO_ORBIT_SPEED;
@@ -3983,7 +4382,7 @@ if (import.meta.env.DEV) {
     window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
         loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
         get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
-        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; } };
+        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; }, get simulatedDate() { return simulatedDate; }, getSunOcclusion, resolution, flattenModel };
 }
 
 loadSystem();
