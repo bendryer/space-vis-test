@@ -4,6 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>OUniverse — Mission &amp; Object Guide</title>
+<!-- Poppins is the OU brand typeface; loaded without blocking first paint, Arial until it arrives. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" /></noscript>
 <script type="importmap">
 {
   "imports": {
@@ -13,324 +18,270 @@
 }
 </script>
 <style>
-  :root {
-    --bg: #05070d;
-    --panel: rgba(15, 20, 35, 0.85);
-    --panel-border: rgba(255, 255, 255, 0.08);
-    --accent: #00aaff;
-    --accent-dim: rgba(0, 170, 255, 0.1);
-    --text: #e8ecf5;
-    --text-dim: #9aa4bb;
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
+/* The OUniverse design system (DESIGN.md) on a reading page: Core blue plates edged with hairlines,
+   one light-blue accent, Poppins, the shield's squared top-left corner on every plate. */
+:root {
+    --ou-core: #060645;
+    --ou-light: #66EEFA;
+    --ou-green: #7DFFD3;
+    --ou-yellow: #FFF488;
+    --ou-pink: #FFB4FF;
+    --ground: #060645;                     /* the page: Core blue, like the splash */
+    --plate: #05053E;                      /* the opaque plate */
+    --space: #000;                         /* the 3D preview's ground */
+    --line: rgba(166, 181, 248, 0.2);      /* Core blue tint #A6B5F8 */
+    --text: #fff;
+    --text-muted: rgba(255, 255, 255, 0.78);
+    --text-faint: rgba(255, 255, 255, 0.6);
+    --accent: var(--ou-light);
+    --accent-wash: rgba(102, 238, 250, 0.12);
+    --accent-current: rgba(102, 238, 250, 0.22);
+    --status-neutral: rgba(255, 255, 255, 0.5);
+    --font: 'Poppins', Arial, sans-serif;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --radius: 10px;
+    --radius-shield: 2px;
+    --plate-radius: var(--radius-shield) var(--radius) var(--radius) var(--radius);
+    --inset: 20px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: radial-gradient(ellipse at top, #0b1020 0%, #05070d 60%);
-    color: var(--text);
-    min-height: 100vh;
-  }
-  a { color: var(--accent); }
-
-  /* --- HEADER --- */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(6, 9, 18, 0.92);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--panel-border);
-    padding: 18px 24px;
-  }
-  header h1 {
-    margin: 0 0 4px;
-    font-size: 1.4rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
-  }
-  header p.sub {
-    margin: 0 0 14px;
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    max-width: 800px;
-    line-height: 1.5;
-  }
-  .controls-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-  #search {
-    flex: 1 1 220px;
-    background: #0d1220;
-    border: 1px solid var(--panel-border);
-    color: var(--text);
-    padding: 9px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    outline: none;
-  }
-  #search:focus { border-color: var(--accent); }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #10182b;
-    border: 1px solid var(--panel-border);
-    color: var(--text-dim);
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .chip.active {
-    color: #fff;
-    border-color: var(--accent);
-    background: var(--accent-dim);
-  }
-  .chip.warn.active { border-color: #ffb020; background: rgba(255,176,32,0.12); color: #ffd580; }
-  #result-count { color: var(--text-dim); font-size: 0.78rem; margin-left: auto; white-space: nowrap; }
-  #toc {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 10px 24px 0;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-  #toc a {
-    text-decoration: none;
-    color: var(--text-dim);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--panel-border);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.72rem;
-    white-space: nowrap;
-  }
-  #toc a:hover { color: #fff; border-color: var(--accent); }
-
-  main { padding: 20px 24px 60px; max-width: 1500px; margin: 0 auto; }
-
-  #loading, #load-error {
-    text-align: center;
-    color: var(--text-dim);
-    padding: 80px 20px;
-    font-size: 1rem;
-    letter-spacing: 1px;
-  }
-
-  section.system { margin-bottom: 44px; }
-  section.system h2 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-    font-weight: 300;
-    font-size: 1.3rem;
-    margin: 0 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--panel-border);
-  }
-  section.system h2 .icon { font-size: 1.2rem; }
-  section.system .intro {
-    color: var(--text-dim);
-    font-size: 0.82rem;
-    margin: -8px 0 14px;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 18px;
-  }
-
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    scroll-margin-top: 140px;
-  }
-  .card.root-card { border-color: rgba(0,170,255,0.35); }
-  .card.incomplete { outline: 1px solid rgba(255,176,32,0.4); }
-
-  .card-head { padding: 14px 16px 0; }
-  .card-head h3 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 500; }
-  .badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-  .badge.orbits { background: transparent; border-style: dashed; color: var(--text-dim); text-transform: none; letter-spacing: 0; font-size: 0.7rem; }
-  .badge.warn { background: rgba(255,176,32,0.15); border-color: #ffb020; color: #ffd580; }
-
-  .preview-wrap {
-    position: relative;
-    margin: 10px 16px 0;
-    height: 200px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: radial-gradient(circle at 50% 40%, #131a2c 0%, #060810 75%);
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .preview-wrap canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
-  .preview-status {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dim);
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    text-align: center;
-    padding: 10px;
-    pointer-events: none;
-  }
-  .spinner {
-    width: 20px; height: 20px;
-    border: 2px solid rgba(255,255,255,0.15);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .preview-hint {
-    position: absolute;
-    bottom: 6px;
-    right: 8px;
-    font-size: 0.62rem;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 0.5px;
-    pointer-events: none;
-  }
-  .preview-static {
-    margin: 10px 16px 0;
-    height: 120px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.03);
-    border: 1px dashed var(--panel-border);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dim);
-    font-size: 0.75rem;
-    gap: 6px;
-    text-align: center;
-    padding: 10px;
-  }
-  .preview-static .icon { font-size: 1.6rem; }
-
-  .card-body { padding: 12px 16px 16px; font-size: 0.86rem; line-height: 1.5; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-  .card-body p { margin: 0; color: #d6dbe8; }
-  .card-body p.missing { color: var(--text-dim); font-style: italic; }
-  .science-img { border-radius: 8px; overflow: hidden; border: 1px solid #444; }
-  .science-img img { width: 100%; display: block; max-height: 150px; object-fit: cover; }
-  .science-img figcaption { font-size: 0.65rem; color: var(--text-dim); text-align: center; padding: 4px 0 0; text-transform: uppercase; letter-spacing: 0.5px; }
-  .ou-block {
-    background: var(--accent-dim);
-    border-left: 3px solid var(--accent);
-    padding: 10px 12px;
-    border-radius: 0 6px 6px 0;
-    font-size: 0.83rem;
-    line-height: 1.5;
-  }
-  .ou-block strong { color: var(--accent); display: block; margin-bottom: 4px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
-  .ou-block.empty {
-    background: rgba(255,176,32,0.06);
-    border-left-color: #ffb020;
-    color: var(--text-dim);
-    font-style: italic;
-  }
-  .ou-block.empty strong { color: #ffb020; }
-
-  .facts { font-size: 0.75rem; color: var(--text-dim); border-top: 1px solid var(--panel-border); padding-top: 8px; }
-  .facts summary { cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.66rem; }
-  .facts dl { display: grid; grid-template-columns: max-content 1fr; gap: 3px 12px; margin: 8px 0 0; }
-  .facts dt { color: var(--text-dim); }
-  .facts dd { margin: 0; color: var(--text); overflow-wrap: anywhere; font-family: Consolas, monospace; font-size: 0.72rem; }
-
-  footer {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.75rem;
-    padding: 30px 20px 50px;
-    max-width: 700px;
-    margin: 0 auto;
+    font-family: var(--font);
+    font-size: 0.90625rem;
     line-height: 1.6;
-  }
+    background: var(--ground);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: var(--space); }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { color: var(--text); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.visually-hidden {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+svg.icon {
+    flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor;
+    stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+}
 
-  #back-to-top {
-    position: fixed;
-    bottom: 22px;
-    right: 22px;
-    background: rgba(0,170,255,0.15);
-    border: 1px solid var(--accent);
-    color: #fff;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.1rem;
-    display: none;
-    z-index: 60;
-  }
-  #back-to-top:hover { background: rgba(0,170,255,0.3); }
+.page { max-width: 1680px; margin: 0 auto; padding: var(--inset); }
 
-  [hidden] { display: none !important; }
+/* --- HEADER --- */
+.top { padding: 4px 0 20px; max-width: 46rem; }
+.top .name { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; color: var(--text-muted); }
+.top h1 { margin: 2px 0 8px; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; }
+.top h1:focus { outline: none; }
+.top p { margin: 0 0 6px; color: var(--text-muted); text-wrap: pretty; }
+.top .data-line { color: var(--text-faint); font-size: 0.78125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+code { font-family: inherit; font-weight: 500; color: var(--text); }
+
+/* --- CONTENTS (the app's Explore menu, fully open) --- */
+.toc {
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: var(--plate-radius);
+    margin-bottom: 32px;
+    scroll-margin-top: var(--inset);
+}
+.toc-head { padding: 12px 0 8px; border-bottom: 1px solid var(--line); }
+.toc-head h2 { margin: 0 16px 10px; font-size: 0.875rem; font-weight: 600; }
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 12px 4px; }
+.search { position: relative; flex: 1 1 260px; max-width: 360px; }
+.search .icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); stroke: var(--text-faint); pointer-events: none; }
+#search {
+    width: 100%; min-height: 36px; padding: 7px 10px 7px 34px;
+    background: rgba(166, 181, 248, 0.08); border: 1px solid var(--line); border-radius: 8px;
+    color: var(--text); font: inherit; font-size: 0.84375rem; caret-color: var(--accent);
+}
+#search::placeholder { color: var(--text-faint); opacity: 1; }
+#search:hover { border-color: rgba(166, 181, 248, 0.4); }
+#search:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+    min-height: 36px; padding: 6px 14px; background: transparent; color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 999px;
+    font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.chip:hover { background: var(--accent-wash); border-color: rgba(255, 255, 255, 0.7); color: var(--text); }
+.chip[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--text); }
+.chip .n { color: var(--text-faint); font-variant-numeric: tabular-nums; margin-left: 4px; }
+.result-count { margin: 6px 16px 4px; color: var(--text-faint); font-size: 0.78125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.toc-body { padding: 6px 0 10px; columns: 256px auto; column-gap: 0; }
+.toc-list { list-style: none; margin: 0; padding: 0; }
+.toc-body > .toc-list > li { break-inside: avoid; }
+.toc-group { border-top: 1px solid var(--line); }
+.toc-body > .toc-list > li:first-child { border-top: none; }
+.toc-head-row { display: flex; align-items: stretch; }
+.toc-head-row .toc-row { flex: 1 1 auto; min-width: 0; }
+.toc-count { flex: none; display: flex; align-items: center; padding: 0 16px 0 6px; color: var(--text-faint); font-size: 0.78125rem; font-variant-numeric: tabular-nums; }
+.toc-row {
+    --depth: 0;
+    display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 36px;
+    padding: 9px 16px 9px calc(16px + var(--depth) * 16px);
+    color: var(--text); text-decoration: none; overflow-wrap: anywhere;
+    font-size: 0.84375rem; line-height: 1.35;
+    transition: background-color 0.15s, color 0.15s;
+}
+.toc-row--mission { color: var(--text-muted); }
+.toc-row:hover { color: var(--text); background: var(--accent-wash); }
+.toc-row:focus-visible { outline-offset: -2px; }
+.toc-row .icon { margin-top: 0.1em; opacity: 0.6; transition: opacity 0.15s; }
+.toc-row:hover .icon, .toc-row:focus-visible .icon { opacity: 1; }
+.toc-row .icon.tinted { opacity: 0.9; }
+.toc-row .label { min-width: 0; }
+.toc-empty { margin: 0; padding: 14px 16px; color: var(--text-muted); }
+
+/* --- SECTIONS AND CARDS --- */
+.system { margin-bottom: 40px; }
+.system-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); scroll-margin-top: var(--inset); }
+.system-head h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+.system-head .icon { width: 18px; height: 18px; }
+.system-head .count { color: var(--text-faint); font-size: 0.78125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.to-contents { display: inline-flex; align-items: center; gap: 4px; padding: 6px 8px; margin: -6px -8px; font-size: 0.78125rem; font-weight: 500; color: var(--text-faint); text-decoration: none; border-radius: 6px; }
+.to-contents:hover { color: var(--text); background: var(--accent-wash); }
+.system .intro { margin: -6px 0 14px; color: var(--text-muted); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 16px; }
+.card {
+    display: flex; flex-direction: column; min-width: 0;
+    background: var(--plate); border: 1px solid var(--line); border-radius: var(--plate-radius);
+    scroll-margin-top: var(--inset);
+}
+.card:target { border-color: var(--accent); }
+.card-head { padding: 16px 16px 0; }
+.card-head h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.meta { margin: 4px 0 0; color: var(--text-muted); font-size: 0.78125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.meta .dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--status-neutral); vertical-align: 0.05em; }
+.meta .dot--active { background: var(--ou-green); }
+.meta .dot--planned { background: var(--ou-yellow); }
+.meta .dot--ended { background: var(--ou-pink); }
+.meta .sep { color: var(--text-faint); }
+
+.preview-wrap {
+    position: relative; margin: 12px 16px 0; height: 200px; overflow: hidden;
+    background: var(--space); border: 1px solid var(--line); border-radius: 8px;
+}
+.preview-wrap canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.preview-status {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 10px; color: var(--text-faint); font-size: 0.78125rem; text-align: center; pointer-events: none;
+}
+.spinner {
+    width: 18px; height: 18px; margin-right: 8px; border-radius: 50%;
+    border: 2px solid rgba(166, 181, 248, 0.25); border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+.preview-hint { position: absolute; right: 8px; bottom: 6px; color: var(--text-faint); font-size: 0.78125rem; pointer-events: none; }
+.preview-static {
+    margin: 12px 16px 0; min-height: 96px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    color: var(--text-faint); font-size: 0.78125rem; text-align: center;
+    border: 1px dashed var(--line); border-radius: 8px;
+}
+
+.card-body { display: flex; flex: 1; flex-direction: column; gap: 14px; padding: 14px 16px 16px; }
+.ou-block h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; color: var(--accent); font-size: 0.875rem; font-weight: 600; line-height: 1.6; }
+.ou-mark { flex: none; width: 14px; height: 14px; }
+.ou-block p, .desc { margin: 0; text-wrap: pretty; }
+.ou-block p { color: var(--text); }
+.desc { color: var(--text-muted); }
+.missing { color: var(--text-faint); font-style: italic; }
+.gap-note { display: inline-block; margin: 0; padding: 1px 8px; border: 1px dashed rgba(166, 181, 248, 0.5); border-radius: 4px; color: var(--text-muted); font-size: 0.78125rem; font-weight: 500; }
+.science-img { margin: 0; overflow: hidden; border-radius: 8px; }
+.science-img img { display: block; width: 100%; max-height: 170px; object-fit: cover; }
+.science-img figcaption { padding: 4px 0 0; color: var(--text-faint); font-size: 0.78125rem; }
+
+.facts { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); }
+.facts summary { cursor: pointer; color: var(--text-muted); font-size: 0.78125rem; font-weight: 500; }
+.facts summary:hover { color: var(--text); }
+.facts dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0 0; font-size: 0.78125rem; font-variant-numeric: tabular-nums; }
+.facts dt { color: var(--text-faint); font-weight: 500; }
+.facts dd { margin: 0; color: var(--text-muted); overflow-wrap: anywhere; }
+
+/* --- FOOTER: the OU logo signs off bottom-left --- */
+.foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; padding: 24px 0 8px; border-top: 1px solid var(--line); }
+.foot img { display: block; height: 40px; width: auto; }
+.foot p { margin: 0; max-width: 40rem; color: var(--text-faint); font-size: 0.78125rem; text-wrap: pretty; }
+
+/* --- BACK TO TOP --- */
+.to-top {
+    position: fixed; right: var(--inset); bottom: var(--inset); z-index: 10;
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 18px;
+    background: var(--plate); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 999px;
+    font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer;
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out), visibility 0.2s, background-color 0.15s, border-color 0.15s;
+}
+.to-top.is-shown { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { background: #0c0c58; border-color: rgba(255, 255, 255, 0.7); }
+@media (prefers-reduced-motion: reduce) { .to-top { transition: none; transform: none; } }
+
+@media (max-width: 560px) {
+    :root { --inset: 16px; }
+    .to-top { padding: 8px 14px; }
+    .to-top .label { display: none; }
+    .foot img { height: 32px; }
+}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DFFD3"/><stop offset="1" stop-color="#66EEFA"/></linearGradient>
+    <mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask>
+    <symbol id="ou-mark" viewBox="0 0 16 16"><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></symbol>
+  </defs>
+</svg>
 
-<header>
-  <h1>OUniverse — Mission &amp; Object Guide</h1>
-  <p class="sub">
-    A single-page reference covering every body and mission in the OUniverse interactive: description,
-    Open University involvement, the data behind it, and an interactive 3D preview of each model. Content is
-    pulled live from <code>data.json</code> — edit that file and reload this page to see updates, no rebuild required.
-  </p>
-  <div class="controls-row">
-    <input id="search" type="search" placeholder="Search by name, description or OU involvement…" />
-    <div id="type-filters"></div>
-    <span class="chip warn" id="incomplete-toggle" title="Show only entries missing a description or OU-involvement writeup">⚠ Incomplete only</span>
-    <span id="result-count"></span>
-  </div>
-</header>
+<div class="page" id="top">
+  <header class="top">
+    <p class="name">OUniverse</p>
+    <h1 id="page-title" tabindex="-1">Mission and object guide</h1>
+    <p>Every body and mission in the explorer, with its Open University involvement, the data behind it and a
+       3D preview of its model. It reads <code>data.json</code> live: edit that file and reload to see the change.</p>
+    <p class="data-line" id="data-line" aria-live="polite">Loading the data…</p>
+  </header>
 
-<nav id="toc"></nav>
+  <nav class="toc" id="toc" aria-labelledby="toc-title">
+    <div class="toc-head">
+      <h2 id="toc-title">Contents</h2>
+      <div class="filters">
+        <div class="search">
+          <label for="search" class="visually-hidden">Find an object by name, description or Open University involvement</label>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+          <input id="search" type="search" placeholder="Find a mission or body" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="chips" id="type-filters" role="group" aria-label="Show only these kinds of object"></div>
+        <button class="chip" id="incomplete-toggle" type="button" aria-pressed="false" title="Only entries missing a description or Open University involvement">Incomplete only</button>
+      </div>
+      <p class="result-count" id="result-count" role="status"></p>
+    </div>
+    <div class="toc-body" id="toc-body"><p class="toc-empty">Loading…</p></div>
+  </nav>
 
-<main id="app">
-  <div id="loading">Loading mission data…</div>
-</main>
+  <main id="app"></main>
 
-<footer id="footer" hidden>
-  Generated as a companion to the OUniverse 3D explorer. Data source: <code>data.json</code> —
-  the app's own "single source of truth" per the project's asset conventions. 3D previews load lazily
-  as you scroll and follow the same named-asteroid privacy rule as the main app (the generic model is shown unless
-  <code>USE_NAMED_ASTEROID_MODELS</code> is on there).
-  <br />This page needs to be hosted alongside the site's <code>models/</code>, <code>textures/</code> and
-  <code>images/</code> folders (i.e. served from the same place as the main app) for previews and images to load.
-</footer>
+  <footer class="foot">
+    <img src="images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192" />
+    <p>Companion to the OUniverse 3D explorer. Data comes from <code>data.json</code>, the app's single source of truth.
+       Previews load as you scroll and follow the app's rule for named asteroids: the generic model is shown unless
+       <code>USE_NAMED_ASTEROID_MODELS</code> is turned on there.</p>
+  </footer>
+</div>
 
-<button id="back-to-top" title="Back to top">↑</button>
+<button class="to-top" id="back-to-top" type="button">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5l0 14"/><path d="M18 11l-6 -6"/><path d="M6 11l6 -6"/></svg>
+  <span class="label">Back to top</span><span class="visually-hidden"> of the page</span>
+</button>
 
 <script type="module">
 import * as THREE from 'three';
@@ -378,28 +329,6 @@ function escapeHtml(str) {
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
-
-const TYPE_META = {
-  star: { icon: '☀️', color: '#ffcc00', label: 'Star' },
-  planet: { icon: '🪐', color: '#00aaff', label: 'Planet' },
-  moon: { icon: '🌕', color: '#9aa4bb', label: 'Moon' },
-  mission: { icon: '🛰️', color: '#00e0c0', label: 'Mission' },
-  asteroid: { icon: '🪨', color: '#c9975f', label: 'Asteroid' },
-  comet: { icon: '☄️', color: '#7fd4ff', label: 'Comet' },
-  reference_point: { icon: '📍', color: '#b57edc', label: 'Reference Point' }
-};
-function typeMeta(t) { return TYPE_META[t] || { icon: '•', color: '#888', label: t || 'Object' }; }
-
-// Mirrors statusTone() in src/main.js, so badges read the same as the live app.
-function statusTone(status) {
-  if (status === 'Planned') return 'planned';
-  if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
-  if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return 'active';
-  return 'neutral';
-}
-const TONE_COLOR = { active: '#7DFFD3', planned: '#FFF488', ended: '#FFB4FF', neutral: '#555' };
-function statusColor(status) { return TONE_COLOR[statusTone(status)]; }
-function statusTextColor(status) { return statusTone(status) === 'neutral' ? '#fff' : '#05053E'; }
 
 // --- Shared three.js loaders/caches (kept outside the per-card lifecycle) ---
 THREE.Cache.enabled = true;
@@ -583,12 +512,159 @@ function wireLazyPreviews(root, byName) {
   root.querySelectorAll('.preview-wrap[data-name]').forEach(el => io.observe(el));
 }
 
-// --- Data loading, tree building, rendering ---
+// --- Labels, status and icons: kept in step with src/main.js ---
+
+const TYPE_LABEL = {
+  star: 'Star', planet: 'Planet', moon: 'Moon', mission: 'Mission',
+  asteroid: 'Asteroid', comet: 'Comet', reference_point: 'Reference point'
+};
+const TYPE_PLURAL = {
+  star: 'Stars', planet: 'Planets', moon: 'Moons', mission: 'Missions',
+  asteroid: 'Asteroids', comet: 'Comets', reference_point: 'Reference points'
+};
+function typeLabel(t) { return TYPE_LABEL[t] || (t ? t.charAt(0).toUpperCase() + t.slice(1).replace(/_/g, ' ') : 'Object'); }
+function typePlural(t) { return TYPE_PLURAL[t] || typeLabel(t); }
+
+// Mirrors statusTone() in src/main.js, so a status reads the same here as in the app.
+function statusTone(status) {
+  if (status === 'Planned') return 'planned';
+  if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
+  if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return 'active';
+  return 'neutral';
+}
+
+// Menu icons: Tabler outline set (MIT), the same drawings the app's Explore menu uses.
+const MENU_ICONS = {
+    galaxy: '<path d="M12 3c-1.333 1 -2 2.5 -2 4.5c0 3 2 4.5 2 4.5s2 1.5 2 4.5c0 2 -.667 3.5 -2 4.5"/><path d="M19.794 16.5c-.2 -1.655 -1.165 -2.982 -2.897 -3.982c-2.597 -1.5 -4.897 -.518 -4.897 -.518s-2.299 .982 -4.897 -.518c-1.732 -1 -2.698 -2.327 -2.897 -3.982"/><path d="M19.794 7.5c-1.532 -.655 -3.165 -.482 -4.897 .518c-2.597 1.5 -2.897 3.982 -2.897 3.982s-.299 2.482 -2.897 3.982c-1.732 1 -3.365 1.173 -4.897 .518"/>',
+    sun: '<path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',
+    planet: '<path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805"/><path d="M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/>',
+    moon: '<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008"/>',
+    point: '<path d="M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M4 12a8 8 0 1 0 16 0a8 8 0 1 0 -16 0"/><path d="M12 2l0 2"/><path d="M12 20l0 2"/><path d="M20 12l2 0"/><path d="M2 12l2 0"/>',
+    comet: '<path d="M21 3l-5 9h5l-6.891 7.086a6.5 6.5 0 1 1 -8.855 -9.506l7.746 -6.58l-1 5l9 -5"/><path d="M7 14.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0"/>',
+    asteroid: '<path d="M8 4.6c2.6 -1.5 6 -1.2 8.6 .5c2.8 1.8 4.5 4.8 4 7.9c-.5 3.3 -3 5.8 -6.3 6.6c-2.4 .6 -4.3 1.8 -6.9 1.1c-2.9 -.8 -4.2 -3.5 -3.9 -6.3c.2 -2 1.1 -3.3 1.6 -5.2c.5 -2 1.4 -3.4 2.9 -4.6z"/><path d="M8.5 10a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0"/><path d="M13.5 15a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+    satellite: '<path d="M3.707 6.293l2.586 -2.586a1 1 0 0 1 1.414 0l5.586 5.586a1 1 0 0 1 0 1.414l-2.586 2.586a1 1 0 0 1 -1.414 0l-5.586 -5.586a1 1 0 0 1 0 -1.414"/><path d="M6 10l-3 3l3 3l3 -3"/><path d="M10 6l3 -3l3 3l-3 3"/><path d="M12 12l1.5 1.5"/><path d="M14.5 17a2.5 2.5 0 0 0 2.5 -2.5"/><path d="M15 21a6 6 0 0 0 6 -6"/>',
+    // Drawn to match Tabler's grid and stroke: Tabler has no lander or planetary rover.
+    lander: '<path d="M8 13l1 -5h6l1 5z"/><path d="M12 8v-2"/><path d="M9.5 4a2.5 2.5 0 0 0 5 0"/><path d="M8 13l-3.5 6"/><path d="M16 13l3.5 6"/><path d="M2.5 19h4"/><path d="M17.5 19h4"/>',
+    rover: '<path d="M4 11a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z"/><path d="M7 10v-4"/><path d="M5.5 5h3"/><path d="M20 12l2 -2"/><path d="M5 14v2"/><path d="M12 14v2"/><path d="M19 14v2"/><path d="M3 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M10 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>',
+    rocket: '<path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3"/><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3"/><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+    facility: '<path d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8"/><path d="M13 7l0 .01"/><path d="M17 7l0 .01"/><path d="M17 11l0 .01"/><path d="M17 15l0 .01"/>',
+};
+
+// Mirrors menuIconName / menuIconColor in src/main.js.
+function menuIconName(data) {
+  if (MENU_ICONS[data.icon]) return data.icon;
+  switch (data.type) {
+    case 'star': return 'sun';
+    case 'planet': return 'planet';
+    case 'moon': return 'moon';
+    case 'reference_point': return 'point';
+    case 'comet': return 'comet';
+    case 'asteroid': return 'asteroid';
+  }
+  if (data.orbit_type === 'suborbital') return 'rocket';
+  if (data.orbit_type === 'landed') return data.parent === 'Earth' ? 'facility' : 'lander';
+  return 'satellite';
+}
+function menuIconColor(data) {
+  if (data.type === 'star') return data.color || '#ffcc00';
+  if (data.type === 'planet') return data.orbit_color || data.color || '#4a90e2';
+  if (data.type === 'asteroid') return data.orbit_color || '#888888';
+  return null;
+}
+function iconSvg(name, color = null, extra = '') {
+  const tint = color ? ' tinted' : '';
+  const style = color ? ` style="color:${escapeHtml(color)}"` : '';
+  return `<svg class="icon${tint}${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"${style}>${MENU_ICONS[name]}</svg>`;
+}
+
+// --- The contents tree: the Explore menu's order and grouping (populateMenu in src/main.js) ---
+// Missions first, alphabetically, then bodies by "menu_order" or orbit size. Objects under their
+// "menu_parent" (else their parent); "menu_top_level" objects (the Moon) leave their parent for a
+// group of their own just after it; asteroids and comets gather into holders.
+
+const MENU_HOLDERS = [
+  { name: 'Asteroids', icon: 'asteroid', after: 'Mars', holds: d => d.type === 'asteroid' },
+  { name: 'Comets', icon: 'comet', after: 'Asteroids', holds: d => d.type === 'comet' },
+];
+
+function buildTree(data) {
+  const byName = new Map(data.map(d => [d.name, d]));
+  const sortKey = d => d.menu_order ?? (d.orbit ? (d.orbit.a || 0) : 0);
+  const typeScore = t => ({ star: 0, planet: 1, moon: 2, reference_point: 3 }[t] ?? 4);
+  const compare = (a, b) => {
+    const ma = a.type === 'mission', mb = b.type === 'mission';
+    if (ma !== mb) return ma ? -1 : 1;
+    if (ma) return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    const ka = sortKey(a), kb = sortKey(b);
+    if (ka !== kb) return ka - kb;
+    return typeScore(a.type) - typeScore(b.type);
+  };
+  const systemRoot = name => {
+    if (!name || name === 'Sun') return 'Sun';
+    const d = byName.get(name);
+    if (!d) return 'Sun';
+    if (d.system) return d.system;
+    if (d.parent === 'Sun') return name;
+    return systemRoot(d.parent);
+  };
+
+  const childrenMap = new Map();
+  const lifted = [];
+  data.forEach(d => {
+    if (d.menu_top_level && d.parent) { lifted.push(d); return; }
+    const parent = d.menu_parent || d.parent || 'root';
+    if (!childrenMap.has(parent)) childrenMap.set(parent, []);
+    childrenMap.get(parent).push(d);
+  });
+  childrenMap.forEach(arr => arr.sort(compare));
+
+  // level: how far in the row sits under its group; indent: a lifted group's extra step.
+  const node = (d, level, indent, leaf = false) => ({
+    data: d, level, indent,
+    children: leaf ? [] : (childrenMap.get(d.name) || []).map(c => node(c, level + 1, indent))
+  });
+
+  const top = [];
+  (childrenMap.get('root') || []).forEach(root => {
+    const orbiting = childrenMap.get(root.name) || [];
+    const own = orbiting.filter(d => d.menu_parent === root.name);
+    let entries = orbiting.filter(d => !own.includes(d)).map(d => ({ d }));
+    MENU_HOLDERS.forEach(holder => {
+      const members = entries.filter(e => e.d && holder.holds(e.d)).map(e => e.d);
+      if (!members.length) return;
+      entries = entries.filter(e => !e.d || !members.includes(e.d));
+      const after = entries.findIndex(e => (e.d ? e.d.name : e.holder.name) === holder.after);
+      entries.splice(after === -1 ? entries.length : after + 1, 0, { holder, members });
+    });
+    [...lifted].sort((a, b) => sortKey(a) - sortKey(b)).forEach(d => {
+      const system = systemRoot(d.name);
+      let at = entries.findIndex(e => e.d && e.d.name === system);
+      if (at === -1) { entries.push({ d, indent: 1 }); return; }
+      while (entries[at + 1] && entries[at + 1].indent && systemRoot(entries[at + 1].d.name) === system) at++;
+      entries.splice(at + 1, 0, { d, indent: 1 });
+    });
+    childrenMap.set(root.name, own);
+    top.push(node(root, 0, 0, !own.length));
+    entries.forEach(e => top.push(e.holder
+      ? { holder: e.holder, level: 0, indent: 0, children: e.members.map(m => node(m, 1, 0)) }
+      : node(e.d, 0, e.indent || 0)));
+  });
+  return top;
+}
+
+function flatten(n, out = []) {
+  if (n.data) out.push(n);
+  n.children.forEach(c => flatten(c, out));
+  return out;
+}
+function countBelow(n) { return n.children.reduce((sum, c) => sum + 1 + countBelow(c), 0); }
+
+// --- Card ---
 
 function fmt(n, digits = 2) { return typeof n === 'number' ? +n.toFixed(digits) : n; }
 
-// The fields the app reads for an object, gathered as label/value pairs so each can be checked
-// against what's on screen. Only what's present is listed.
+// The fields the app reads for an object, as label/value pairs so each can be checked against
+// what's on screen. Only what's present is listed.
 function factsFor(item) {
   const rows = [];
   const add = (label, value) => { if (value !== undefined && value !== null && value !== '' && value !== false) rows.push([label, value]); };
@@ -624,58 +700,97 @@ function factsHtml(item) {
     rows.map(([k, v]) => `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join('')}</dl></details>`;
 }
 
+// "Mission · • Operational · Launched 2020": the details panel's data line, status as dot and word.
+function metaHtml(item) {
+  const parts = [escapeHtml(typeLabel(item.type))];
+  if (item.status) parts.push(`<span class="dot dot--${statusTone(item.status)}" aria-hidden="true"></span>${escapeHtml(item.status)}`);
+  if (item.launch_year) parts.push(`${item.status === 'Planned' ? 'Planned launch' : 'Launched'} ${escapeHtml(item.launch_year)}`);
+  if (item.parent) parts.push(`Orbits ${escapeHtml(item.parent)}`);
+  return parts.join('<span class="sep" aria-hidden="true"> · </span>');
+}
+
 function cardHtml(item) {
-  const meta = typeMeta(item.type);
   const hasVisual = !!(getEffectiveModelPath(item) || item.texture);
-  const missingDesc = !item.description;
-  const missingOu = !item.ou_involvement;
-  const incomplete = missingDesc || missingOu;
+  const incomplete = !item.description || !item.ou_involvement;
   const slug = slugify(item.name);
 
-  const badges = [
-    `<span class="badge" style="background:${meta.color}22;border-color:${meta.color}">${meta.icon} ${escapeHtml(meta.label)}</span>`,
-    `<span class="badge" style="background:${statusColor(item.status)};color:${statusTextColor(item.status)}">${escapeHtml(item.status || 'Unknown')}</span>`
-  ];
-  if (item.launch_year) {
-    const prefix = item.status === 'Planned' ? 'Planned launch' : 'Launched';
-    badges.push(`<span class="badge" style="background:#555">${prefix}: ${escapeHtml(item.launch_year)}</span>`);
-  }
-  if (item.parent) badges.push(`<span class="badge orbits">↳ orbits ${escapeHtml(item.parent)}</span>`);
-  if (incomplete) badges.push(`<span class="badge warn">⚠ incomplete</span>`);
-
   const preview = hasVisual
-    ? `<div class="preview-wrap" data-name="${escapeHtml(item.name)}"><div class="preview-hint">drag to rotate</div></div>`
-    : `<div class="preview-static"><span class="icon">${meta.icon}</span>No 3D model — ${escapeHtml(meta.label.toLowerCase())}</div>`;
+    ? `<div class="preview-wrap" data-name="${escapeHtml(item.name)}"><div class="preview-hint">Drag to turn</div></div>`
+    : `<div class="preview-static">No 3D model for this ${escapeHtml(typeLabel(item.type).toLowerCase())}</div>`;
 
-  const scienceImg = item.image_url
-    ? `<figure class="science-img"><img src="${fixPath(item.image_url)}" alt="${escapeHtml(item.name)} mission image" loading="lazy" onerror="this.closest('figure').remove()"/><figcaption>Mission imagery</figcaption></figure>`
+  const ou = item.ou_involvement
+    ? `<p>${escapeHtml(item.ou_involvement)}</p>`
+    : `<p class="gap-note">Nothing recorded yet</p>`;
+  const desc = item.description
+    ? `<p class="desc">${escapeHtml(item.description)}</p>`
+    : `<p class="desc"><span class="gap-note">No description recorded yet</span></p>`;
+  const img = item.image_url
+    ? `<figure class="science-img"><img src="${fixPath(item.image_url)}" alt="" loading="lazy" onerror="this.closest('figure').remove()"/><figcaption>Science image · ${escapeHtml(item.image_url.split('/').pop())}</figcaption></figure>`
     : '';
 
-  const descHtml = item.description
-    ? `<p>${escapeHtml(item.description)}</p>`
-    : `<p class="missing">No description recorded yet.</p>`;
-
-  const ouHtml = item.ou_involvement
-    ? `<div class="ou-block"><strong>Open University Involvement</strong>${escapeHtml(item.ou_involvement)}</div>`
-    : `<div class="ou-block empty"><strong>Open University Involvement</strong>No specific OU involvement recorded yet.</div>`;
-
-  const searchText = escapeHtml(`${item.name} ${item.description || ''} ${item.ou_involvement || ''}`.toLowerCase());
-
+  const searchText = normaliseForSearch(`${item.name} ${item.description || ''} ${item.ou_involvement || ''}`);
   return `
-    <article class="card${item.parent ? '' : ' root-card'}${incomplete ? ' incomplete' : ''}"
-      id="obj-${slug}" data-type="${item.type}" data-incomplete="${incomplete}" data-search="${searchText}">
+    <article class="card" id="obj-${slug}" aria-labelledby="h-${slug}" data-name="${escapeHtml(item.name)}" data-type="${escapeHtml(item.type)}" data-incomplete="${incomplete}" data-search="${escapeHtml(searchText)}">
       <div class="card-head">
-        <h3>${escapeHtml(item.name)}</h3>
-        <div class="badges">${badges.join('')}</div>
+        <h3 id="h-${slug}">${escapeHtml(item.name)}</h3>
+        <p class="meta">${metaHtml(item)}</p>
       </div>
       ${preview}
       <div class="card-body">
-        ${descHtml}
-        ${scienceImg}
-        ${ouHtml}
+        <section class="ou-block" aria-label="Open University involvement">
+          <h4><svg class="ou-mark" aria-hidden="true" focusable="false"><use href="#ou-mark"/></svg>Open University Involvement</h4>
+          ${ou}
+        </section>
+        ${desc}
+        ${img}
         ${factsHtml(item)}
       </div>
     </article>`;
+}
+
+// Case-, accent- and punctuation-insensitive, as the app's menu search is.
+function normaliseForSearch(text) {
+  return String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+}
+
+// --- Contents list ---
+
+function tocRow(n) {
+  const cls = `toc-row${n.data && n.data.type === 'mission' ? ' toc-row--mission' : ''}`;
+  const depth = n.level + n.indent;
+  if (n.holder) {
+    return `<a class="${cls}" style="--depth:${depth}" href="#sec-${slugify(n.holder.name)}">${iconSvg(n.holder.icon)}<span class="label">${escapeHtml(n.holder.name)}</span></a>`;
+  }
+  const d = n.data;
+  return `<a class="${cls}" style="--depth:${depth}" href="#obj-${slugify(d.name)}">${iconSvg(menuIconName(d), menuIconColor(d))}<span class="label">${escapeHtml(d.name)}</span></a>`;
+}
+
+function tocItem(n) {
+  const name = n.holder ? n.holder.name : n.data.name;
+  const kids = n.children.length ? `<ul class="toc-list">${n.children.map(tocItem).join('')}</ul>` : '';
+  if (n.level === 0 && n.children.length) {
+    return `<li class="toc-group" data-name="${escapeHtml(name)}"><div class="toc-head-row">${tocRow(n)}<span class="toc-count" aria-hidden="true">${countBelow(n)}</span></div>${kids}</li>`;
+  }
+  return `<li data-name="${escapeHtml(name)}">${tocRow(n)}${kids}</li>`;
+}
+
+// --- Page ---
+
+function sectionHtml(n) {
+  const id = slugify(n.holder ? n.holder.name : n.data.name);
+  const cards = n.holder ? n.children.flatMap(c => flatten(c)) : flatten(n);
+  const icon = n.holder ? iconSvg(n.holder.icon) : iconSvg(menuIconName(n.data), menuIconColor(n.data));
+  const title = n.holder ? n.holder.name : n.data.name;
+  const intro = n.holder && n.holder.name === 'Asteroids'
+    ? '<p class="intro">Near-Earth and main-belt asteroids, including those named in honour of Open University planetary scientists.</p>' : '';
+  return `<section class="system" id="sec-${id}" aria-labelledby="sh-${id}">
+    <div class="system-head">
+      <h2 id="sh-${id}">${icon}${escapeHtml(title)}</h2>
+      <span><span class="count">${cards.length} ${cards.length === 1 ? 'object' : 'objects'}</span> <a class="to-contents" href="#toc"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5l0 14"/><path d="M18 11l-6 -6"/><path d="M6 11l6 -6"/></svg>Contents</a></span>
+    </div>
+    ${intro}
+    <div class="grid">${cards.map(c => cardHtml(c.data)).join('')}</div>
+  </section>`;
 }
 
 async function main() {
@@ -686,127 +801,104 @@ async function main() {
     if (!res.ok) throw new Error(res.statusText);
     data = (await res.json()).filter(d => d.type !== 'credits'); // the credits dialog's content, not an object
   } catch (err) {
-    app.innerHTML = `<div id="load-error">Could not load data.json (${escapeHtml(err.message)}).<br/>Make sure this page is hosted alongside data.json.</div>`;
+    app.innerHTML = `<p class="toc-empty">Could not load data.json (${escapeHtml(err.message)}). This page needs to be served next to it.</p>`;
+    document.getElementById('toc-body').innerHTML = '';
     return;
   }
 
   const byName = new Map(data.map(d => [d.name, d]));
-  const childrenOf = new Map();
-  data.forEach(d => {
-    if (d.parent) {
-      if (!childrenOf.has(d.parent)) childrenOf.set(d.parent, []);
-      childrenOf.get(d.parent).push(d);
-    }
-  });
+  const tree = buildTree(data);
 
-  function descendantsOf(name, acc = []) {
-    (childrenOf.get(name) || []).forEach(child => {
-      acc.push(child);
-      descendantsOf(child.name, acc);
-    });
-    return acc;
-  }
+  document.getElementById('toc-body').innerHTML = `<ul class="toc-list">${tree.map(tocItem).join('')}</ul>`;
+  app.innerHTML = tree.map(sectionHtml).join('');
 
-  const root = data.find(d => !d.parent);
-  const topLevel = childrenOf.get(root.name) || [];
-  const soloAsteroids = topLevel.filter(d => d.type === 'asteroid' && !(childrenOf.get(d.name) || []).length);
-  const soloNames = new Set(soloAsteroids.map(d => d.name));
-  const branches = topLevel.filter(d => !soloNames.has(d.name));
-
-  const toc = [];
-  let html = '';
-
-  // Hero: the root body (the Sun)
-  html += `<section class="system" id="sec-${slugify(root.name)}">
-    <h2><span class="icon">${typeMeta(root.type).icon}</span>${escapeHtml(root.name)}</h2>
-    <div class="grid">${cardHtml(root)}</div>
-  </section>`;
-  toc.push({ id: slugify(root.name), label: root.name });
-
-  branches.forEach(branch => {
-    const meta = typeMeta(branch.type);
-    const desc = descendantsOf(branch.name);
-    const id = slugify(branch.name);
-    toc.push({ id, label: branch.name });
-    html += `<section class="system" id="sec-${id}">
-      <h2><span class="icon">${meta.icon}</span>${escapeHtml(branch.name)} <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400;text-transform:uppercase;letter-spacing:0.5px;">${escapeHtml(meta.label)}</span></h2>
-      <div class="grid">${cardHtml(branch)}${desc.map(cardHtml).join('')}</div>
-    </section>`;
-  });
-
-  if (soloAsteroids.length) {
-    const id = 'named-asteroids';
-    toc.push({ id, label: 'Named Asteroids' });
-    html += `<section class="system" id="sec-${id}">
-      <h2><span class="icon">🪨</span>Named Asteroids</h2>
-      <p class="intro">Minor planets named in honour of Open University planetary scientists.</p>
-      <div class="grid">${soloAsteroids.map(cardHtml).join('')}</div>
-    </section>`;
-  }
-
-  app.innerHTML = html;
-  document.getElementById('toc').innerHTML = toc.map(t => `<a href="#sec-${t.id}">${escapeHtml(t.label)}</a>`).join('');
-  document.getElementById('footer').hidden = false;
+  const missions = data.filter(d => d.type === 'mission').length;
+  const gaps = data.filter(d => !d.description || !d.ou_involvement).length;
+  document.getElementById('data-line').textContent =
+    `${data.length} objects · ${missions} missions · ${gaps} with something still to write`;
 
   wireLazyPreviews(app, byName);
   setupFilters(data.length);
+  if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
 }
 
 function setupFilters(total) {
   const typeCounts = {};
-  document.querySelectorAll('.card').forEach(c => {
-    typeCounts[c.dataset.type] = (typeCounts[c.dataset.type] || 0) + 1;
-  });
+  document.querySelectorAll('.card').forEach(c => { typeCounts[c.dataset.type] = (typeCounts[c.dataset.type] || 0) + 1; });
+  const order = ['star', 'planet', 'moon', 'mission', 'asteroid', 'comet', 'reference_point'];
+  const rank = t => (order.includes(t) ? order.indexOf(t) : order.length);
+  const types = Object.keys(typeCounts).sort((a, b) => rank(a) - rank(b));
+  const activeTypes = new Set(); // none chosen means every kind
   const typeFilterEl = document.getElementById('type-filters');
-  const activeTypes = new Set(Object.keys(typeCounts));
-  typeFilterEl.innerHTML = Object.keys(typeCounts).map(t => {
-    const meta = typeMeta(t);
-    return `<span class="chip active" data-type="${t}">${meta.icon} ${meta.label} (${typeCounts[t]})</span>`;
-  }).join('');
+  typeFilterEl.innerHTML = types.map(t =>
+    `<button class="chip" type="button" data-type="${escapeHtml(t)}" aria-pressed="false">${escapeHtml(typePlural(t))}<span class="n">${typeCounts[t]}</span></button>`).join('');
 
   let incompleteOnly = false;
   const searchEl = document.getElementById('search');
   const countEl = document.getElementById('result-count');
+  const incompleteEl = document.getElementById('incomplete-toggle');
 
   function applyFilters() {
-    const q = searchEl.value.trim().toLowerCase();
+    const q = normaliseForSearch(searchEl.value);
     let visible = 0;
     document.querySelectorAll('.card').forEach(card => {
-      const matchesType = activeTypes.has(card.dataset.type);
-      const matchesSearch = !q || card.dataset.search.includes(q);
-      const matchesIncomplete = !incompleteOnly || card.dataset.incomplete === 'true';
-      const show = matchesType && matchesSearch && matchesIncomplete;
+      const show = (!activeTypes.size || activeTypes.has(card.dataset.type))
+        && (!q || card.dataset.search.includes(q))
+        && (!incompleteOnly || card.dataset.incomplete === 'true');
       card.hidden = !show;
       if (show) visible++;
     });
     document.querySelectorAll('section.system').forEach(section => {
       section.hidden = !section.querySelector('.card:not([hidden])');
     });
-    countEl.textContent = `Showing ${visible} of ${total} objects`;
+    // A contents row stays while its object, or anything nested under it, is showing.
+    const cardsByName = new Map([...document.querySelectorAll('.card')].map(c => [c.dataset.name, c]));
+    const sync = li => {
+      const kids = [...li.querySelectorAll(':scope > .toc-list > li')].map(sync);
+      const card = cardsByName.get(li.dataset.name);
+      const shown = (card ? !card.hidden : false) || kids.some(Boolean);
+      li.hidden = !shown;
+      return shown;
+    };
+    document.querySelectorAll('#toc-body > .toc-list > li').forEach(sync);
+    countEl.textContent = visible === total ? `Showing all ${total} objects` : `Showing ${visible} of ${total} objects`;
+    let empty = document.getElementById('toc-none');
+    if (!visible && !empty) {
+      empty = document.createElement('p');
+      empty.id = 'toc-none'; empty.className = 'toc-empty';
+      empty.textContent = "Nothing matches. Clear the search or the kinds you chose.";
+      document.getElementById('toc-body').appendChild(empty);
+    } else if (visible && empty) empty.remove();
   }
 
   typeFilterEl.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
     const t = chip.dataset.type;
-    if (activeTypes.has(t)) { activeTypes.delete(t); chip.classList.remove('active'); }
-    else { activeTypes.add(t); chip.classList.add('active'); }
+    const on = !activeTypes.has(t);
+    if (on) activeTypes.add(t); else activeTypes.delete(t);
+    chip.setAttribute('aria-pressed', String(on));
     applyFilters();
   });
-
-  document.getElementById('incomplete-toggle').addEventListener('click', e => {
+  incompleteEl.addEventListener('click', () => {
     incompleteOnly = !incompleteOnly;
-    e.target.classList.toggle('active', incompleteOnly);
+    incompleteEl.setAttribute('aria-pressed', String(incompleteOnly));
     applyFilters();
   });
-
   searchEl.addEventListener('input', applyFilters);
   applyFilters();
 }
 
+// --- Back to top ---
 const backToTop = document.getElementById('back-to-top');
-window.addEventListener('scroll', () => { backToTop.style.display = window.scrollY > 500 ? 'block' : 'none'; });
-backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+function syncBackToTop() { backToTop.classList.toggle('is-shown', window.scrollY > 600); }
+window.addEventListener('scroll', syncBackToTop, { passive: true });
+syncBackToTop();
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+  document.getElementById('page-title').focus({ preventScroll: true }); // so keyboard users start at the top too
+});
 
 main();
 </script>
