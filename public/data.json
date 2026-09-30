@@ -30,7 +30,7 @@
     "tilt": 0.03,
     "rot_period": 58.6,
     "orbit": {
-      "a": 400,
+      "a_au": 0.38709927,
       "e": 0.205,
       "i": 7,
       "M0": 174.7,
@@ -47,7 +47,7 @@
     "launch_year": "2018",
     "image_url": "/images/bepicolumbo_science.jpg",
     "description": "BepiColombo is a joint mission between ESA and JAXA that is due to enter orbit around Mercury on 21 November 2026. The mission utilizes two separate orbiters to perform the most comprehensive study of the planet's surface, composition, and magnetic field to date. By mapping the planet at various wavelengths, scientists aim to solve the mystery of Mercury's oversized core and its unique geological evolution.",
-    "ou_involvement": "OU academics are members of BepiColombo's M-CAM monitoring camera team, analysing images returned during the spacecraft's Mercury flybys. The Open University was also a development partner — alongside instrument lead the University of Leicester — in building the Mercury Imaging X-ray Spectrometer (MIXS).",
+    "ou_involvement": "OU academics are members of BepiColombo's M-CAM monitoring camera team, analysing images returned during the spacecraft's Mercury flybys. The Open University was also a development partner, alongside instrument lead the University of Leicester, in building the Mercury Imaging X-ray Spectrometer (MIXS).",
     "model": "/models/bepicolombo.glb",
     "motion": {"mode": "sun", "axis": "+x"},
     "model_scale": 2.5,
@@ -79,7 +79,7 @@
     "tilt": 177.3,
     "rot_period": -243,
     "orbit": {
-      "a": 700,
+      "a_au": 0.72333566,
       "e": 0.007,
       "i": 3.4,
       "M0": 50.1,
@@ -105,7 +105,7 @@
     "rot_period": 0.997,
     "rotation_mode": "utc",
     "orbit": {
-      "a": 1000,
+      "a_au": 1.00000261,
       "e": 0.017,
       "i": 0,
       "M0": 357.5,
@@ -122,7 +122,7 @@
     "launch_year": "1998",
     "image_url": "/images/ISS_science.webp",
     "description": "The International Space Station is a modular research laboratory that orbits the Earth and serves as a home for international crews. It provides a unique microgravity environment where scientists can conduct experiments that would be impossible on the ground. The station is a symbol of international cooperation, involving space agencies from the United States, Russia, Europe, Japan, and Canada.",
-    "ou_involvement": "OU scientists took part in the DLR-led BIOlogy and Mars Experiment (BIOMEX) aboard the ISS's EXPOSE-R2 facility, mounted outside the Zvezda module, exposing bacteria, algae, lichens and fungi to the vacuum, UV radiation and temperature extremes of space for about 18 months. The samples returned to Earth with British astronaut Tim Peake in June 2016, and results helped assess whether such organisms — and by extension life on Mars — could survive interplanetary transfer.",
+    "ou_involvement": "OU scientists took part in the DLR-led BIOlogy and Mars Experiment (BIOMEX) aboard the ISS's EXPOSE-R2 facility, mounted outside the Zvezda module, exposing bacteria, algae, lichens and fungi to the vacuum, UV radiation and temperature extremes of space for about 18 months. The samples returned to Earth with British astronaut Tim Peake in June 2016, and results helped assess whether such organisms (and, by extension, life on Mars) could survive interplanetary transfer.",
     "model": "/models/iss.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.2,
@@ -252,7 +252,7 @@
     "launch_year": "2026",
     "image_url": "/images/smile_science.jpg",
     "description": "The Solar wind Magnetosphere Ionosphere Link Explorer is a collaborative mission between ESA and CAS that launched on 19 May 2026. It is designed to provide the first global images of the Earth's magnetosphere and its dynamic interaction with the solar wind. By observing X-ray emissions, the mission aims to reveal how solar activity impacts our planet's magnetic shield and atmosphere.",
-    "ou_involvement": "The Centre for Electronic Imaging developed and tested the twin CCD370 detectors — 4510×4510-pixel, 18-micron-pixel sensors derived from the CCD270s developed for PLATO — that form the focal plane of SMILE's Soft X-ray Imager (SXI), running noise, charge-transfer-inefficiency and defect-mapping tests before flight. The OU is now part of the mission's operations team, working closely with the SXI team to get the most science from the detectors.",
+    "ou_involvement": "The Centre for Electronic Imaging developed and tested the twin CCD370 detectors (4510×4510-pixel, 18-micron-pixel sensors derived from the CCD270s developed for PLATO) that form the focal plane of SMILE's Soft X-ray Imager (SXI), running noise, charge-transfer-inefficiency and defect-mapping tests before flight. The OU is now part of the mission's operations team, working closely with the SXI team to get the most science from the detectors.",
     "model": "/models/smile.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -301,7 +301,7 @@
     "launch_year": "2014",
     "image_url": "/images/ukube_science.jpeg",
     "description": "UKube-1 was the first mission commissioned by the UK Space Agency to demonstrate advanced CubeSat technologies in orbit. It served as a way maker for the UK small satellite industry by testing payloads for space weather monitoring and secure communications. The mission provided invaluable hands-on experience for researchers and students across multiple British universities.",
-    "ou_involvement": "The CEI's Compact CMOS Camera Demonstrator (C3D) flew on UKube-1, the UK Space Agency's first CubeSat, after CEI won one of only three science payload slots. Launched in July 2014, its three cameras achieved the first in-orbit demonstration of a European 0.18-micron CMOS imaging technology, and radiation testing showed the sensor suffered dark-current and flatband-voltage degradation similar to CCDs while also revealing CMOS-specific effects like single-event upsets — data that has since informed the design of more radiation-tolerant space CMOS sensors.",
+    "ou_involvement": "The CEI's Compact CMOS Camera Demonstrator (C3D) flew on UKube-1, the UK Space Agency's first CubeSat, after CEI won one of only three science payload slots. Launched in July 2014, its three cameras achieved the first in-orbit demonstration of a European 0.18-micron CMOS imaging technology, and radiation testing showed the sensor suffered dark-current and flatband-voltage degradation similar to CCDs while also revealing CMOS-specific effects like single-event upsets. This data has since informed the design of more radiation-tolerant space CMOS sensors.",
     "model": "/models/ukube.glb",
     "motion": {"mode": "tumble"},
     "model_scale": 0.8,
@@ -467,7 +467,7 @@
     "launch_year": "2013",
     "image_url": "/images/gaia_science.png",
     "description": "Gaia is an ambitious ESA mission designed to create the largest and most precise three-dimensional map of our galaxy. By surveying nearly two billion stars, it provides data on their positions, distances, and motions with incredible accuracy. This massive dataset allows astronomers to reconstruct the history and future of the Milky Way across billions of years.",
-    "ou_involvement": "The CEI modelled the charge-trapping effects of radiation damage in Gaia's CCD detectors ahead of launch, and has since analysed in-flight data from the BP/RP and RVS radiation campaigns, feeding directly into the mission's data-processing pipeline. In-orbit measurements showed Gaia's detectors accumulating less radiation damage than ground-based testing had predicted — a discrepancy the CEI is still investigating to improve how future missions are radiation-tested before launch. OU PhD students separately use Gaia's vast catalogues to study stellar clusters and binary star systems, and OU researchers use Gaia's science alerts to find transient objects. Gaia is a core case study in the OU's S818 Space Science module, where students use Gaia data to make follow-up observations with the OU's remote telescope in Tenerife.",
+    "ou_involvement": "The CEI modelled the charge-trapping effects of radiation damage in Gaia's CCD detectors ahead of launch, and has since analysed in-flight data from the BP/RP and RVS radiation campaigns, feeding directly into the mission's data-processing pipeline. In-orbit measurements showed Gaia's detectors accumulating less radiation damage than ground-based testing had predicted, a discrepancy the CEI is still investigating to improve how future missions are radiation-tested before launch. OU PhD students separately use Gaia's vast catalogues to study stellar clusters and binary star systems, and OU researchers use Gaia's science alerts to find transient objects. Gaia is a core case study in the OU's S818 Space Science module, where students use Gaia data to make follow-up observations with the OU's remote telescope in Tenerife.",
     "model": "/models/gaia.glb",
     "motion": {"mode": "sun", "axis": "-y", "rate": 4, "wobble": 45, "period": 90},
     "model_scale": 2,
@@ -559,7 +559,7 @@
     "launch_year": "2027",
     "image_url": "/images/plato_science.jpg",
     "description": "PLATO is an upcoming ESA mission designed to detect and characterize Earth-sized exoplanets orbiting bright, Sun-like stars. It will use 26 separate cameras to monitor hundreds of thousands of stars for the tiny dip in brightness caused by a planet passing in front. The mission aims to find worlds in the habitable zone where liquid water could exist on the surface.",
-    "ou_involvement": "Open University researchers lead population studies to identify and filter out astrophysical false positives — such as blended eclipsing binaries — that could otherwise be mistaken for planets in PLATO's target fields, work supported by UK Space Agency funding for the mission's Development Phase. The team also contributes detector performance, calibration, and radiation-tolerance studies through the university's Centre for Electronic Imaging. The OU's own robotic telescopes could provide follow-up observations of candidate stars once the mission is flying.",
+    "ou_involvement": "Open University researchers lead population studies to identify and filter out astrophysical false positives (such as blended eclipsing binaries) that could otherwise be mistaken for planets in PLATO's target fields, work supported by UK Space Agency funding for the mission's Development Phase. The team also contributes detector performance, calibration, and radiation-tolerance studies through the university's Centre for Electronic Imaging. The OU's own robotic telescopes could provide follow-up observations of candidate stars once the mission is flying.",
     "model": "/models/plato.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
     "model_scale": 2,
@@ -582,7 +582,7 @@
     "launch_year": "2026",
     "image_url": "/images/roman_science.jpg",
     "description": "The Nancy Grace Roman Space Telescope will provide a field of view 100 times larger than Hubble's while maintaining the same high-resolution quality. It is designed to perform massive surveys that will help scientists understand dark energy and the distribution of exoplanets in our galaxy. The mission also carries a technology demonstration coronagraph to test new ways of directly imaging planets around other stars.",
-    "ou_involvement": "CEI researchers at the Open University worked under contract to JPL from 2014 to 2019 to characterise, design and test the EM-CCD sensor for Roman's coronagraph instrument, resulting in the CCD311 — a customised, radiation-hardened variant of the CCD201 selected for flight. The team continues to refine the 'trap-pumping' calibration techniques developed for Euclid to mitigate the effects of cosmic radiation on these sensors throughout the mission.",
+    "ou_involvement": "CEI researchers at the Open University worked under contract to JPL from 2014 to 2019 to characterise, design and test the EM-CCD sensor for Roman's coronagraph instrument, resulting in the CCD311, a customised, radiation-hardened variant of the CCD201 selected for flight. The team continues to refine the 'trap-pumping' calibration techniques developed for Euclid to mitigate the effects of cosmic radiation on these sensors throughout the mission.",
     "model": "/models/roman.glb",
     "motion": {"mode": "spin", "axis": "+x", "tilt": 45},
     "model_scale": 2,
@@ -609,7 +609,7 @@
     "tilt": 25.2,
     "rot_period": 1.03,
     "orbit": {
-      "a": 1600,
+      "a_au": 1.52371034,
       "e": 0.094,
       "i": 1.9,
       "M0": 19.4,
@@ -626,7 +626,7 @@
     "launch_year": "2016",
     "image_url": "/images/tgo_science.jpg",
     "description": "The ExoMars Trace Gas Orbiter is an ESA-led mission designed to map the presence of trace gases, like methane, in the Martian atmosphere. It orbits the planet to identify potential biological or geological sources of these gases while studying the atmosphere's composition and structure. The orbiter also serves as a vital communications relay for rovers on the surface, including NASA's Perseverance and Curiosity.",
-    "ou_involvement": "The Open University designed and led the development of the UVIS ultraviolet channel of the NOMAD spectrometer suite, and an OU planetary scientist serves as a Co-Principal Investigator for NOMAD. Researchers at the university use the UVIS data to track ozone, water vapour, and trace gases including methane in the Martian atmosphere, helping to understand how water escapes into space. This work involves international collaboration to validate atmospheric models and support the search for life on the Red Planet.",
+    "ou_involvement": "The Open University designed and led the development of the UVIS ultraviolet channel of the NOMAD spectrometer suite, and an OU planetary scientist serves as a Co-Principal Investigator for NOMAD. The OU also helps operate the CaSSIS stereo imager aboard ExoMars TGO. Researchers at the university use the UVIS data to track ozone, water vapour, and trace gases including methane in the Martian atmosphere, helping to understand how water escapes into space. This work involves international collaboration to validate atmospheric models and support the search for life on the Red Planet.",
     "model": "/models/tgo.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 2,
@@ -653,7 +653,7 @@
     },
     "image_url": "/images/beagle2_science.jpg",
     "description": "Beagle 2 was a UK-led Mars lander that was deployed from the Mars Express spacecraft in 2003 but failed to transmit data after landing. The spacecraft was thought to be lost until 2015, when high-resolution images from NASA's MRO showed the lander had partially deployed on the Martian surface. It was designed to search for signs of past life by analysing the isotopic composition of carbon in Martian rocks.",
-    "ou_involvement": "The Beagle 2 mission was conceived and led by an Open University professor, who designed the lander's Gas Analysis Package (GAP) — a miniaturised, twelve-oven stepped-combustion mass spectrometer built to detect isotopic signatures of past life in Martian soil. Fitting a laboratory-scale instrument into a probe the size of a dinner plate required major feats of miniaturisation. Though contact with the lander was lost after its 2003 touchdown, the technical lessons learned went on to inform later international planetary landers, including ExoMars.",
+    "ou_involvement": "The Beagle 2 mission was conceived and led by an Open University professor, who designed the lander's Gas Analysis Package (GAP): a miniaturised, twelve-oven stepped-combustion mass spectrometer built to detect isotopic signatures of past life in Martian soil. Fitting a laboratory-scale instrument into a probe the size of a dinner plate required major feats of miniaturisation. The OU also led the Environmental Sensor Suite (ESS), designed to measure the weather at the surface of Mars and the presence of dust devils. Though contact with the lander was lost after its 2003 touchdown, the technical lessons learned went on to inform later international planetary landers, including ExoMars.",
     "model": "/models/beagle2.glb",
     "model_scale": 0.2,
     "radius": 0.1,
@@ -693,7 +693,7 @@
     },
     "image_url": "/images/exomars_science.jpg",
     "description": "The Rosalind Franklin rover is a major ESA mission designed to search for signs of life in the Martian subsurface at Oxia Planum. It features a unique drill that can reach up to two meters underground to collect samples protected from harsh surface radiation. The rover will carry a suite of scientific instruments to analyse the geology, mineralogy, and chemistry of these ancient samples.",
-    "ou_involvement": "Open University researchers are members of the science team for the rover's PanCam camera system.",
+    "ou_involvement": "Open University researchers are members of the science team for the rover's PanCam camera system and the Enfys spectrometer. Operations for PanCam and Enfys are also supported from the OU.",
     "model": "/models/exomars_rover.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -731,7 +731,7 @@
     "tilt": 3.1,
     "rot_period": 0.41,
     "orbit": {
-      "a": 3200,
+      "a_au": 5.202887,
       "e": 0.049,
       "i": 1.3,
       "M0": 20,
@@ -825,14 +825,14 @@
           "revs": 1,
           "at": "Earth",
           "label": "Lunar-Earth flyby",
-          "extreme": 1250
+          "extreme": 1.25
         },
         {
           "date": "2025-08-31",
           "revs": 1,
           "at": "Venus",
           "label": "Venus flyby",
-          "extreme": 640
+          "extreme": 0.64
         },
         {
           "date": "2026-09-28",
@@ -841,11 +841,11 @@
           "label": "Earth flyby"
         },
         {
-          "date": "2029-01-18",
+          "date": "2029-01-17",
           "revs": 1,
           "at": "Earth",
           "label": "Earth flyby",
-          "extreme": 2200
+          "extreme": 2.2
         },
         {
           "date": "2031-07-21",
@@ -868,19 +868,12 @@
     "launch_year": "2023",
     "image_url": "/images/juice_science.jpg",
     "description": "The JUpiter ICy moons Explorer is a major ESA mission launched in 2023 to investigate the habitability of Jupiter's large moons. It is currently cruising through the solar system and will arrive at Jupiter in 2031 to perform detailed studies of Ganymede, Europa, and Callisto. The mission aims to understand how habitable environments could arise around gas giant planets in the outer Solar System.",
-    "ou_involvement": "The Open University's Centre for Electronic Imaging, working with detector manufacturer Teledyne e2v, developed and characterised the CIS115 CMOS image sensor at the heart of the JANUS camera system, testing it against the intense radiation, vibration and thermal extremes of the journey to Jupiter.",
+    "ou_involvement": "The Open University's Centre for Electronic Imaging, working with detector manufacturer Teledyne e2v, developed and characterised the CIS115 CMOS image sensor at the heart of the JANUS camera system, testing it against the intense radiation, vibration and thermal extremes of the journey to Jupiter. The OU is the UK National Lead for the JANUS instrument.",
     "model": "/models/juice.glb",
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 2.5,
     "radius": 1.5,
-    "color": "#00AAFF",
-    "orbit": {
-      "a": 2100,
-      "e": 0.52,
-      "i": 2,
-      "M0": 15,
-      "rate": 0.25
-    }
+    "color": "#00AAFF"
   },
   {
     "name": "Saturn",
@@ -901,7 +894,7 @@
       "emissive": 0.2
     },
     "orbit": {
-      "a": 4500,
+      "a_au": 9.53667594,
       "e": 0.054,
       "i": 2.49,
       "M0": 317,
@@ -963,7 +956,7 @@
     "launch_year": "1997",
     "image_url": "/images/huygens_science.jpg",
     "description": "The Huygens probe was an ESA spacecraft that performed the first and only landing in the outer Solar System on Saturn's moon Titan in 2005. It successfully transmitted data and images during its two-hour descent through the moon's thick nitrogen-rich atmosphere. The landing revealed a world of riverbeds and rounded pebbles that were shaped by the flow of liquid methane.",
-    "ou_involvement": "The Open University provided the Principal Investigator for the Surface Science Package (SSP), which recorded the first-ever in-situ data from the surface of Titan, measuring its density, temperature and physical state on impact. OU academics have continued to lead analysis of this historic dataset to understand Titan's surface properties and organic chemistry.",
+    "ou_involvement": "The Open University was the Principal Investigator for the Surface Science Package (SSP), which recorded the first-ever in situ data from the surface of Titan, measuring its density, temperature and physical state on impact. OU academics have continued to lead analysis of this historic dataset to understand Titan's surface properties and organic chemistry.",
     "model": "/models/huygens.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -981,7 +974,7 @@
     "tilt": 97.8,
     "rot_period": -0.72,
     "orbit": {
-      "a": 6000,
+      "a_au": 19.18916464,
       "e": 0.046,
       "i": 0.77,
       "M0": 141,
@@ -1001,7 +994,7 @@
     "tilt": 28.3,
     "rot_period": 0.67,
     "orbit": {
-      "a": 7000,
+      "a_au": 30.06992276,
       "e": 0.011,
       "i": 1.77,
       "M0": 256,
@@ -1052,6 +1045,34 @@
   {
     "name": "Hera",
     "parent": "Sun",
+    "orbit_type": "trajectory",
+    "trajectory": {
+      "waypoints": [
+        {
+          "date": "2024-10-07",
+          "at": "Earth",
+          "label": "Launch"
+        },
+        {
+          "date": "2025-03-12",
+          "at": "Mars",
+          "label": "Mars flyby"
+        },
+        {
+          "date": "2026-10-12",
+          "at": "Didymos",
+          "label": "Rendezvous with Didymos",
+          "extreme": 2.4
+        }
+      ],
+      "arrival_orbit": {
+        "a": 3,
+        "e": 0.1,
+        "i": 10,
+        "M0": 0,
+        "rate": 6
+      }
+    },
     "menu_parent": "Sun",
     "type": "mission",
     "status": "En Route",
@@ -1063,14 +1084,7 @@
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 1.5,
     "radius": 0.5,
-    "color": "#ff8800",
-    "orbit": {
-      "a": 350,
-      "e": 0.2,
-      "i": 2,
-      "M0": 100,
-      "rate": 0.5
-    }
+    "color": "#ff8800"
   },
   {
     "name": "AKARI",
@@ -1110,7 +1124,7 @@
     "radius": 0.6,
     "color": "#8844ff",
     "orbit": {
-      "a": 1010,
+      "a_au": 1.025,
       "e": 0.01,
       "i": 1,
       "M0": 340,
@@ -1228,28 +1242,6 @@
     }
   },
   {
-    "name": "ZefERO",
-    "parent": "Mars",
-    "type": "mission",
-    "status": "Planned",
-    "launch_year": "2032",
-    "image_url": "/images/zefero_science.jpg",
-    "description": "ZefERO is a proposed ESA mission that would repurpose the Earth Return Orbiter from the Mars Sample Return program. This dedicated European orbiter aims to study Martian winds, perform deep geological surveys, and serve as a crucial high-bandwidth communications relay for future Mars rovers.",
-    "ou_involvement": "The Open University's long-standing expertise in Martian science and atmospheric modeling positions it perfectly to utilize ZefERO data. Researchers plan to use the orbiter’s high-resolution datasets to expand their models of Mars' complex atmospheric dynamics and volatile cycles.",
-    "model": "/models/zefero.glb",
-    "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
-    "model_scale": 1.5,
-    "radius": 0.6,
-    "color": "#ff8800",
-    "orbit": {
-      "a": 6.8,
-      "e": 0.05,
-      "i": 80,
-      "M0": 50,
-      "rate": 80
-    }
-  },
-  {
     "name": "LightShip-1",
     "parent": "Mars",
     "type": "mission",
@@ -1257,7 +1249,7 @@
     "launch_year": "2032",
     "image_url": "/images/lightship1_science.jpg",
     "description": "ESA’s LightShip-1 is an innovative electric-propulsion tug designed to deliver spacecraft directly into Mars orbit. Once its primary delivery mission is complete, the spacecraft will establish the Mars Communication and Navigation Infrastructure (MARCONI) while also engaging in exploration science through its onboard instruments.",
-    "ou_involvement": "The Open University’s Atmospheric Research and Space Exploration group is leading the design phase for the High-Resolution Imager for Mars Exploration (HiRIME) telescope carried by LightShip. The OU’s work is critical to delivering high-resolution imagery of the Martian surface for planetary geology.",
+    "ou_involvement": "The Open University’s Atmospheric Research and Space Exploration group is leading the design phase for the High-Resolution Imager for Mars Exploration (HiRIME) telescope carried by LightShip. The OU’s work is critical to delivering high-resolution imagery of the Martian surface for planetary geology. The same group also leads the Dust Environment Spectral Imager instrument on LightShip, which will take global images of Mars about every 10 minutes to monitor the global atmosphere and dust storms.",
     "model": "/models/lightship1.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -1376,7 +1368,7 @@
     "color": "#444444",
     "rot_period": 4.3,
     "orbit": {
-      "a": 1126.39,
+      "a_au": 1.12639,
       "e": 0.2037,
       "i": 6.03,
       "M0": 101.7,
@@ -1397,7 +1389,7 @@
     "color": "#555555",
     "rot_period": 7.6,
     "orbit": {
-      "a": 1190.92,
+      "a_au": 1.19092,
       "e": 0.191,
       "i": 5.87,
       "M0": 62.34,
@@ -1406,6 +1398,27 @@
       "peri": 211.61
     },
     "description": "Ryugu is a dark, diamond-shaped asteroid that has an orbit that crosses Earth's and is composed primarily of carbon-rich material. Its low density and porous structure indicate that it is a rubble-pile asteroid with significant void spaces in its interior. The asteroid's surface features a mix of large boulders and fine dust, recording a complex history of impacts and space weathering."
+  },
+  {
+    "name": "Didymos",
+    "parent": "Sun",
+    "type": "asteroid",
+    "status": "Natural",
+    "model": "/models/Asteroid3.glb",
+    "model_scale": 1,
+    "radius": 16,
+    "color": "#8a8175",
+    "rot_period": 0.0941,
+    "orbit": {
+      "a_au": 1.64271,
+      "e": 0.383123,
+      "i": 3.414,
+      "M0": 60.869,
+      "rate": 0.468126,
+      "node": 72.986,
+      "peri": 319.581
+    },
+    "description": "Didymos is a near-Earth asteroid about 780 metres across, orbited by a moonlet about 150 metres across called Dimorphos. In September 2022 NASA's DART spacecraft deliberately crashed into Dimorphos and shortened its orbit around Didymos by about 33 minutes, the first test of moving an asteroid. ESA's Hera mission arrives in late 2026 to measure exactly what the impact did."
   },
   {
     "name": "Comet Wild 2",
@@ -1417,7 +1430,7 @@
     "radius": 24,
     "color": "#aaaaaa",
     "orbit": {
-      "a": 3449.75,
+      "a_au": 3.44975,
       "e": 0.537,
       "i": 3.24,
       "M0": 187.6,
@@ -1445,7 +1458,7 @@
     "tilt": 0,
     "rot_period": 0.5,
     "orbit": {
-      "a": 3462.25,
+      "a_au": 3.46225,
       "e": 0.641,
       "i": 7.04,
       "M0": 8.86,
@@ -1464,7 +1477,7 @@
     "radius": 0.8,
     "color": "#777777",
     "orbit": {
-      "a": 3113.26,
+      "a_au": 3.11326,
       "e": 0.278,
       "i": 5.85,
       "M0": 166.21,
@@ -1486,7 +1499,7 @@
     "radius": 0.7,
     "color": "#888888",
     "orbit": {
-      "a": 2847.66,
+      "a_au": 2.84766,
       "e": 0.075,
       "i": 14.57,
       "M0": 47.99,
@@ -1508,7 +1521,7 @@
     "radius": 0.7,
     "color": "#666666",
     "orbit": {
-      "a": 3230.93,
+      "a_au": 3.23093,
       "e": 0.059,
       "i": 21.41,
       "M0": 126.93,
@@ -1530,7 +1543,7 @@
     "radius": 0.6,
     "color": "#999999",
     "orbit": {
-      "a": 2239.58,
+      "a_au": 2.23958,
       "e": 0.229,
       "i": 5.97,
       "M0": 55.68,
@@ -1552,7 +1565,7 @@
     "radius": 0.9,
     "color": "#0055ff",
     "orbit": {
-      "a": 2523.39,
+      "a_au": 2.52339,
       "e": 0.065,
       "i": 16.49,
       "M0": 154.71,
@@ -1574,7 +1587,7 @@
     "radius": 0.7,
     "color": "#777777",
     "orbit": {
-      "a": 2883.4,
+      "a_au": 2.8834,
       "e": 0.012,
       "i": 1.61,
       "M0": 146.43,
@@ -1596,7 +1609,7 @@
     "radius": 0.8,
     "color": "#888888",
     "orbit": {
-      "a": 2416.38,
+      "a_au": 2.41638,
       "e": 0.211,
       "i": 2.41,
       "M0": 145.81,
@@ -1618,7 +1631,7 @@
     "radius": 0.8,
     "color": "#555555",
     "orbit": {
-      "a": 2988.62,
+      "a_au": 2.98862,
       "e": 0.057,
       "i": 10.26,
       "M0": 302.52,
@@ -1641,7 +1654,7 @@
     "model": "/models/Asteroid4.glb",
     "color": "#666666",
     "orbit": {
-      "a": 3188.59,
+      "a_au": 3.18859,
       "e": 0.039,
       "i": 13.87,
       "M0": 322.04,
@@ -1660,7 +1673,7 @@
     "radius": 0.8,
     "color": "#777777",
     "orbit": {
-      "a": 2360.08,
+      "a_au": 2.36008,
       "e": 0.095,
       "i": 6.4,
       "M0": 147.5,
@@ -1677,6 +1690,7 @@
     "name": "Earth-Sun L1",
     "parent": "Sun",
     "menu_top_level": true,
+    "show_orbit": false,
     "type": "reference_point",
     "system": "Earth",
     "status": "Natural",

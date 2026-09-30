@@ -589,7 +589,8 @@ const MENU_HOLDERS = [
 
 function buildTree(data) {
   const byName = new Map(data.map(d => [d.name, d]));
-  const sortKey = d => d.menu_order ?? (d.orbit ? (d.orbit.a || 0) : 0);
+  // Orbits round the Sun give their size in AU ("a_au"); others in scene units. Either sorts by size.
+  const sortKey = d => d.menu_order ?? (d.orbit ? (d.orbit.a_au ?? d.orbit.a ?? 0) * (d.orbit.a_au !== undefined ? 1000 : 1) : 0);
   const typeScore = t => ({ star: 0, planet: 1, moon: 2, reference_point: 3 }[t] ?? 4);
   const compare = (a, b) => {
     const ma = a.type === 'mission', mb = b.type === 'mission';
@@ -684,7 +685,7 @@ function factsFor(item) {
     add('Trajectory', `${(t.waypoints || []).length} waypoints${t.arrival_orbit ? ', then an arrival orbit' : ''}`);
   } else if (item.orbit) {
     const o = item.orbit;
-    add('Orbit', [item.orbit_type, o.a !== undefined && `a ${fmt(o.a)}`, o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}°`].filter(Boolean).join(' · '));
+    add('Orbit', [item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a !== undefined && `a ${fmt(o.a)}`, o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}°`].filter(Boolean).join(' · '));
   }
   if (item.motion) add('Attitude', [item.motion.mode, item.motion.axis && `axis ${item.motion.axis}`, item.motion.rate !== undefined && `rate ${item.motion.rate}`].filter(Boolean).join(' · '));
   add('Menu', [item.menu_parent && `under ${item.menu_parent}`, item.menu_order !== undefined && `order ${item.menu_order}`, item.menu_top_level && 'own group'].filter(Boolean).join(' · '));

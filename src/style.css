@@ -82,15 +82,14 @@ canvas:focus-visible {
     font-family: 'Poppins', Arial, sans-serif;
 }
 .splash[hidden] { display: none; }
-/* The Core blue ground is its own layer, so leaving can cut a hole in it onto the scene. */
+/* The Core blue ground. The drawing carries its own copy with a hole under the world (.splash-ground),
+   which takes over when the world opens onto the scene. */
 .splash::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: -1;
     background: var(--ou-core);
-    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.5px));
-    mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 0.5px));
 }
 .splash ::selection { background: var(--ou-light); color: var(--ou-core); }
 
@@ -112,6 +111,7 @@ canvas:focus-visible {
     max-height: calc(100vh - 2 * var(--pad));
     overflow: visible;
 }
+.splash-ground { fill: var(--ou-core); }
 .splash-world {
     fill: url(#splash-world-grad);
     stroke: #000;
@@ -254,15 +254,10 @@ canvas:focus-visible {
 
 /* Leaving, in one continuous move (timed in dismissSplash): the copy fades into the blue; the
    world and its orbit glide to the centre, the craft still going round; the world turns
-   see-through, a hole in the ground behind it showing the scene, as its rim, the orbit and the
-   craft turn black; then hole and orbit grow together, speeding up, as if the camera flies
-   through, while the scene beyond scales up to meet it. */
-@property --hole {
-    syntax: '<length>';
-    inherits: true;
-    initial-value: 0px;
-}
-.splash { --hole: 0px; }
+   see-through, the hole in the drawing's ground showing the scene, as its rim, the orbit and the
+   craft turn black; then the whole drawing grows, speeding up, as if the camera flies through,
+   while the scene beyond scales up to meet it. Only transforms move (translate, scale), so the
+   browser's compositor runs the flight and a busy main thread can't stall part of it. */
 .splash.is-leaving { overflow: hidden; pointer-events: none; }
 .splash.is-leaving .splash-copy,
 .splash.is-leaving .splash-logo {
@@ -273,7 +268,8 @@ canvas:focus-visible {
     translate: var(--to-centre-x) var(--to-centre-y);
     transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.15s;
 }
-.splash.is-open { --hole: var(--hole-start); }
+/* From here the drawing's own ground (with its hole) is the only blue. */
+.splash.is-open::before { visibility: hidden; }
 .splash.is-open .splash-world {
     fill-opacity: 0;
     stroke-opacity: 1;
@@ -283,14 +279,15 @@ canvas:focus-visible {
 .splash.is-open #splash-signal-grad stop { stop-color: #000; transition: stop-color 0.45s ease-in-out; }
 .splash.is-open .splash-orbit-track { stroke: #000; transition: stroke 0.45s ease-in-out; }
 .splash.is-open .splash-craft { fill: #000; transition: fill 0.45s ease-in-out; }
-.splash.is-through {
-    --hole: var(--hole-end);
-    transition: --hole 1s cubic-bezier(0.6, 0, 0.9, 0.4);
-}
 .splash.is-through .splash-orbit {
     scale: var(--fly-scale);
+    transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1), scale 1s cubic-bezier(0.6, 0, 0.9, 0.4);
+}
+/* The rim, orbit and craft fade near the end; the ground stays solid until the hole has cleared the screen. */
+.splash.is-through .splash-orbit > g,
+.splash.is-through .splash-world {
     opacity: 0;
-    transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1), scale 1s cubic-bezier(0.6, 0, 0.9, 0.4), opacity 0.4s ease-in 0.6s;
+    transition: opacity 0.4s ease-in 0.6s;
 }
 /* The scene waits a little smaller behind the ground and grows as the hole opens. */
 body > canvas { transition: scale 1s cubic-bezier(0.6, 0, 0.9, 0.4); }

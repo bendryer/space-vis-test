@@ -332,16 +332,15 @@ function dismissSplash({ fromKeyboard = false } = {}) {
     const art = overlay.querySelector('.splash-orbit');
     if (prefersReducedMotion.matches || !art) { arrive(); return; }
 
-    // The world sits at the centre of the drawing (400,400 in a 680-wide view box, r = 150).
+    // The world sits at the centre of the drawing (400,400 in a 680-wide view box), and the hole in
+    // the drawing's ground under it has r = 149. The drawing scales until that hole clears the screen.
     const box = art.getBoundingClientRect();
     const w = window.innerWidth, h = window.innerHeight;
-    const worldR = box.width * 150 / 680;
+    const holeR = box.width * 149 / 680;
     const reach = Math.hypot(w, h) / 2 + 2; // a hole this wide from the centre clears every corner
     overlay.style.setProperty('--to-centre-x', `${(w / 2 - (box.left + box.width / 2)).toFixed(1)}px`);
     overlay.style.setProperty('--to-centre-y', `${(h / 2 - (box.top + box.height / 2)).toFixed(1)}px`);
-    overlay.style.setProperty('--hole-start', `${worldR.toFixed(1)}px`);
-    overlay.style.setProperty('--hole-end', `${reach.toFixed(1)}px`);
-    overlay.style.setProperty('--fly-scale', (reach / worldR).toFixed(3));
+    overlay.style.setProperty('--fly-scale', (reach / holeR).toFixed(3));
 
     document.body.classList.add('is-arriving');
     overlay.classList.add('is-leaving');
@@ -839,6 +838,23 @@ function fixPath(path) {
 // --- PHYSICS HELPER FUNCTIONS ---
 function getDaysSinceJ2000(date) { return (date - J2000_DATE) / 86400000; }
 
+// --- DISTANCE SCALE ROUND THE SUN ---
+// Everything that orbits the Sun on a real orbit gives its size in AU ("a_au") and is placed on one
+// shared scale: a smooth compression of distance from the Sun, so the planets, the asteroid belt and
+// the comets all sit in their true order and relative place while Neptune stays within reach.
+// Earth's 1 AU maps to 1,000 scene units. Orbits round a planet, and the Earth-Sun L1/L2 points,
+// stay illustrative: they give "a" in scene units and are not rescaled.
+const SUN_SCALE_KNEE = 2.1;                                         // AU; below this, nearly proportional
+const SUN_SCALE_UNITS = 1000 / Math.log(1 + 1 / SUN_SCALE_KNEE);    // so that 1 AU = 1,000 units
+const auToScene = au => SUN_SCALE_UNITS * Math.log(1 + au / SUN_SCALE_KNEE);
+const sceneToAu = units => SUN_SCALE_KNEE * (Math.exp(units / SUN_SCALE_UNITS) - 1);
+// The farthest the orbit reaches from its parent, in scene units.
+const orbitFarthest = o => (o.a_au !== undefined ? auToScene(o.a_au * (1 + (o.e || 0))) : (o.a || 0) * (1 + (o.e || 0)));
+// An orbit in AU gets a scene-unit "a" too (its scaled size), for sorting, framing and culling.
+function applySunScale(item) {
+    if (item.orbit?.a_au !== undefined) item.orbit.a = auToScene(item.orbit.a_au);
+}
+
 function getKeplerPosition(orbitData, days) {
     if (!orbitData || orbitData.a === 0) return { x: 0, y: 0, z: 0 };
     let M = (orbitData.M0 + (orbitData.rate * days)) % 360;
@@ -847,13 +863,18 @@ function getKeplerPosition(orbitData, days) {
     let E = M_rad;
     for (let k = 0; k < 5; k++) E = M_rad + e * Math.sin(E);
 
-    const x_orb = orbitData.a * (Math.cos(E) - e);
-    const z_orb = orbitData.a * Math.sqrt(1 - e * e) * Math.sin(E);
+    // A real orbit round the Sun is worked out in AU, then its distance from the Sun is rescaled.
+    const inAu = orbitData.a_au !== undefined;
+    const a = inAu ? orbitData.a_au : orbitData.a;
+    const x_orb = a * (Math.cos(E) - e);
+    const z_orb = a * Math.sqrt(1 - e * e) * Math.sin(E);
+    const r = Math.hypot(x_orb, z_orb);
+    const k = inAu && r > 0 ? auToScene(r) / r : 1;
 
     // Fallback for simple 2D orbits that lack advanced parameters
     if (orbitData.node === undefined || orbitData.peri === undefined) {
         const i_rad = (orbitData.i || 0) * (Math.PI / 180);
-        return { x: x_orb, y: z_orb * Math.sin(i_rad), z: z_orb * Math.cos(i_rad) };
+        return { x: x_orb * k, y: z_orb * Math.sin(i_rad) * k, z: z_orb * Math.cos(i_rad) * k };
     }
 
     // Full 3D Keplerian Rotation
@@ -866,6 +887,7 @@ function getKeplerPosition(orbitData, days) {
     _keplerPos.applyAxisAngle(_keplerAxisY, -peri_rad);
     _keplerPos.applyAxisAngle(_keplerAxisX, inc_rad);
     _keplerPos.applyAxisAngle(_keplerAxisY, -node_rad);
+    _keplerPos.multiplyScalar(k);
 
     return { x: _keplerPos.x, y: _keplerPos.y, z: _keplerPos.z };
 }
@@ -876,10 +898,10 @@ function getKeplerPosition(orbitData, days) {
 // then, just outside it. Between waypoints it loops round the Sun: the angle advances faster
 // close in and slower far out (as a real orbit's does), with as many loops as the time allows
 // (or "revs", if a waypoint gives it), through an optional farthest or nearest distance from
-// the Sun ("extreme"). After the last waypoint it's on "arrival_orbit" round that body.
+// the Sun ("extreme", in AU, on the same scale as the planets). After the last waypoint it's on
+// "arrival_orbit" round that body.
 const TRAJECTORY_STEP_DAYS = 1;        // path resolution
 const FLYBY_OFFSET_RADII = 2.5;        // passes this many of the body's radii outside its centre
-const AU = 1000;                       // scene units per astronomical unit (Earth's orbit)
 
 // Where a body is (its orbit about its parent, and its parent's about the Sun) on a given day.
 function bodyPositionAt(name, days) {
@@ -947,12 +969,12 @@ function getTrajectoryPlan(obj) {
         let turn = Math.atan2(A.x, A.z) - Math.atan2(B.x, B.z);
         while (turn < 0) turn += Math.PI * 2;
         if (span < 30 && turn > Math.PI * 11 / 6) turn -= Math.PI * 2; // a short hop slightly back, not a lap
-        const bump = wB.extreme !== undefined ? wB.extreme - (rA + rB) / 2 : 0;
+        const bump = wB.extreme !== undefined ? auToScene(wB.extreme) - (rA + rB) / 2 : 0;
         const radiusAt = s => rA + (rB - rA) * s + bump * Math.sin(Math.PI * s);
         // Angular rate falls off with distance, as in an orbit: ~r^-1.5.
         const N = Math.max(8, Math.ceil(span / TRAJECTORY_STEP_DAYS));
         const cum = [0];
-        for (let k = 1; k <= N; k++) cum.push(cum[k - 1] + Math.pow(radiusAt((k - 0.5) / N) / AU, -1.5));
+        for (let k = 1; k <= N; k++) cum.push(cum[k - 1] + Math.pow(sceneToAu(radiusAt((k - 0.5) / N)), -1.5));
         // Loops: as given, or as many as a real orbit at these distances would make in the time.
         const expected = (0.9856 * span / N) * cum[N] * (Math.PI / 180);
         const revs = wB.revs ?? Math.max(0, Math.round((expected - turn) / (Math.PI * 2)));
@@ -1019,11 +1041,11 @@ function getStandardizedOrbitColor(item) {
 
 function getStandardizedOrbitOpacity(item) {
     if (!item) return 0.35;
-    if (item.type === 'asteroid') return 0.18; // Subtle transparent grey for asteroids
+    // Asteroids, comets and missions share one faint line until hovered or selected, so the
+    // planets' orbits lead the eye.
+    if (item.type === 'asteroid' || item.type === 'comet' || item.type === 'mission') return 0.18;
     if (item.type === 'planet') return 0.65;   // Bright vivid planetary orbits
-    if (item.type === 'comet') return 0.75;    // Bright glowing white cometary orbits
     if (item.type === 'moon') return 0.4;
-    if (item.type === 'mission') return 0.35;  // Subtle grey for spacecraft until selected/hovered
     return 0.35;
 }
 
@@ -1434,19 +1456,15 @@ function updateTrajectoryLines(obj, arrived) {
     }
 }
 
-// The cruise drawn as a line through the sampled path, with a dot at each flyby.
+// The cruise drawn as a line through the sampled path. The flyby waypoints shape the path but
+// aren't marked on it: a marker sits where the planet was on the flyby date, which on its own
+// reads as a stray object.
 function createTrajectoryLine(obj, color, opacity) {
     const plan = getTrajectoryPlan(obj);
     if (plan.samples.length < 2) return null;
     const geometry = new THREE.BufferGeometry().setFromPoints(plan.samples.map(s => s.pos));
     const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity, depthWrite: false }));
     line.userData = { baseColor: color, baseOpacity: opacity };
-    const flybys = plan.points.slice(1, plan.arrival ? -1 : undefined);
-    if (flybys.length) {
-        const dots = new THREE.Points(new THREE.BufferGeometry().setFromPoints(flybys),
-            new THREE.PointsMaterial({ color: new THREE.Color(color), size: 5, sizeAttenuation: false, transparent: true, opacity: Math.min(1, opacity * 2), depthWrite: false }));
-        line.add(dots);
-    }
     return line;
 }
 
@@ -1458,7 +1476,7 @@ function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
     // which bunched them at aphelion; each is still placed by getKeplerPosition, exactly as
     // the object itself moves.
     const e = orbitData.e || 0;
-    const farthest = orbitData.a * (1 + e);
+    const farthest = orbitFarthest(orbitData);
     const segments = THREE.MathUtils.clamp(
         Math.ceil(2 * Math.PI * Math.sqrt(farthest / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
     const points = [];
@@ -1501,11 +1519,11 @@ function createLissajousLine(orbitData) {
     const material = new THREE.LineBasicMaterial({
         color: new THREE.Color('#888888'),
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.18, // as faint as other mission lines (getStandardizedOrbitOpacity)
         depthWrite: false
     });
     const line = new THREE.LineLoop(geometry, material);
-    line.userData = { baseColor: '#888888', baseOpacity: 0.35 };
+    line.userData = { baseColor: '#888888', baseOpacity: 0.18 };
     return line;
 }
 
@@ -2288,6 +2306,7 @@ async function loadSystem() {
         const credits = entries.find(item => item.type === 'credits');
         const data = entries.filter(item => item.type !== 'credits');
         data.forEach(applyStatusTimeline);
+        data.forEach(applySunScale);
         fillSplashFacts(data);
         data.forEach(item => {
             const group = new THREE.Group();
@@ -2609,7 +2628,7 @@ function getSystemRadius(obj) {
         if (c.orbit_type === 'landed') reach = bodyRadius + childRadius * 2;
         else if (c.orbit_type === 'suborbital') reach = bodyRadius + (c.suborbital?.apogee || 1.5) + childRadius;
         else if (c.orbit_type === 'lissajous') reach = (c.orbit?.a || 0) * 2.5 + childRadius; // widest axis of the path
-        else if (c.orbit) reach = c.orbit.a * (1 + (c.orbit.e || 0)) + childRadius; // farthest point of the orbit
+        else if (c.orbit) reach = orbitFarthest(c.orbit) + childRadius; // farthest point of the orbit
         radius = Math.max(radius, reach);
     });
     return radius;
