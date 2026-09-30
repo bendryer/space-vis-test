@@ -31,6 +31,7 @@ Removing an object: delete its entry, and those of anything whose `parent` it is
 | `type` | `star`, `planet`, `moon`, `asteroid`, `comet`, `mission` or `reference_point` (an invisible point such as a Lagrange point). |
 | `parent` | Name of the body it orbits or sits on. The Sun's children are the top level. |
 | `status` | Shown in the details panel, with a coloured dot: `Planned`; ended (`Crashed`, `Landed`, `Decommissioned`, `Complete`, `Lost`); active (`Active`, `Launched`, `En Route`, `Operational`). Any other word is shown as it is. A `Planned` mission is drawn as a glowing hologram. |
+| `status_timeline` | Optional dated status changes, e.g. `[{ "from": "2026-11-21", "status": "Operational" }]`. On load, the last step whose date has passed (by the visitor's clock) replaces `status`. Use it for known future events (an orbit insertion, an expected re-entry) so the status changes without another edit. `Re-entered` counts as an ended status. |
 | `launch_year` | Shown in the details panel. |
 | `description` | General text for the details panel. |
 | `ou_involvement` | The Open University's role, led with in the details panel. |

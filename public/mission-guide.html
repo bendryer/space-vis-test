@@ -528,7 +528,7 @@ function typePlural(t) { return TYPE_PLURAL[t] || typeLabel(t); }
 // Mirrors statusTone() in src/main.js, so a status reads the same here as in the app.
 function statusTone(status) {
   if (status === 'Planned') return 'planned';
-  if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
+  if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost', 'Re-entered'].includes(status)) return 'ended';
   if (['Active', 'Launched', 'En Route', 'Operational'].includes(status)) return 'active';
   return 'neutral';
 }
@@ -800,6 +800,9 @@ async function main() {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(res.statusText);
     data = (await res.json()).filter(d => d.type !== 'credits'); // the credits dialog's content, not an object
+    // Mirrors applyStatusTimeline() in src/main.js: a dated status replaces `status` once its day has come.
+    const today = new Date().toISOString().slice(0, 10);
+    data.forEach(d => (d.status_timeline || []).forEach(s => { if (s.from && s.status && s.from <= today) d.status = s.status; }));
   } catch (err) {
     app.innerHTML = `<p class="toc-empty">Could not load data.json (${escapeHtml(err.message)}). This page needs to be served next to it.</p>`;
     document.getElementById('toc-body').innerHTML = '';

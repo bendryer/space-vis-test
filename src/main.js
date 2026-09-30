@@ -2287,6 +2287,7 @@ async function loadSystem() {
         // The credits entry holds the credits page text, not a body to draw.
         const credits = entries.find(item => item.type === 'credits');
         const data = entries.filter(item => item.type !== 'credits');
+        data.forEach(applyStatusTimeline);
         fillSplashFacts(data);
         data.forEach(item => {
             const group = new THREE.Group();
@@ -3578,9 +3579,20 @@ function getWebImagePath(url) {
 const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><defs><linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DFFD3"/><stop offset="1" stop-color="#66EEFA"/></linearGradient><mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask></defs><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></svg>`;
 
 // One status vocabulary for the menu and the sidebar.
+// `status_timeline` lets a status change on a known date without editing data.json again:
+// [{ "from": "YYYY-MM-DD", "status": "..." }, ...]. The last entry whose date has passed
+// (by the visitor's clock) replaces `status`; before the first date, `status` stands.
+function applyStatusTimeline(item) {
+    if (!Array.isArray(item.status_timeline)) return;
+    const today = new Date().toISOString().slice(0, 10);
+    for (const step of item.status_timeline) {
+        if (step.from && step.status && step.from <= today) item.status = step.status;
+    }
+}
+
 function statusTone(status) {
     if (status === 'Planned') return 'planned';
-    if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost'].includes(status)) return 'ended';
+    if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost', 'Re-entered'].includes(status)) return 'ended';
     if (status === 'Active' || status === 'Launched' || status === 'En Route' || status === 'Operational') return 'active';
     return 'neutral';
 }
