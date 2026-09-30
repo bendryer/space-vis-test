@@ -12,8 +12,8 @@
     <!-- Loaded without blocking first paint: the page shows in Arial and swaps to Poppins on arrival. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" /></noscript>
-    <script type="module" crossorigin src="/space-vis-test/assets/index-fdpNTLjn.js"></script>
-    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/index-SmdoKyl_.css">
+    <script type="module" crossorigin src="/space-vis-test/assets/index-Codh4XzH.js"></script>
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/index-D1mf133O.css">
   </head>
   <body>
     <div id="app"></div>
@@ -23,8 +23,12 @@
       <div class="splash-art" aria-hidden="true">
       <!-- Cropped to the drawing so it centres truly. The orbit and craft are drawn twice:
            once behind the world, and again in front clipped to the near (lower) half, so
-           the craft passes behind the world on the far side. -->
+           the craft passes behind the world on the far side.
+           The blue ground is drawn here too, far past the edges, with a hole where the world is
+           (a touch smaller, so the world always covers its edge). Leaving scales this one drawing,
+           so the hole, rim and orbit grow as one and can't drift apart if a frame is late. -->
       <svg class="splash-orbit" viewBox="60 200 680 400" aria-hidden="true" focusable="false">
+        <path class="splash-ground" fill-rule="evenodd" d="M-8000 -8000H8800V8800H-8000Z M251 400a149 149 0 1 0 298 0a149 149 0 1 0 -298 0Z"/>
         <defs>
           <path id="splash-orbit-path" pathLength="1" d="M110 400a290 118 0 1 0 580 0a290 118 0 1 0 -580 0"/>
           <!-- OU colour-to-colour gradients: mid blue to lilac (the world), green to light blue (the orbit) -->
