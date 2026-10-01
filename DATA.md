@@ -66,7 +66,7 @@ Removing an object: delete its entry, and those of anything whose `parent` it is
 | `landed_coords` | For `landed`: `{ "lat", "lon" }` on the parent. The lander is dropped onto the parent's surface (sphere or model) at that point. |
 | `suborbital` | For `suborbital`: `{ "start_coords", "end_coords", "apogee", "duration", "progress" }`. |
 | `rot_period` | Spin period in days. `rot_offset` shifts its starting angle (°). |
-| `rotation_mode` | `"utc"`: spin to the real time of day instead of `rot_period` (Earth: longitude 0 faces the Sun at 12:00 UTC). |
+| `rotation_mode` | `"utc"`: spin to the real time of day instead of `rot_period` (Earth: longitude 0 faces the Sun at 12:00 UTC). `"spin"`: an asteroid or comet turns steadily on `rot_period` (negative = backwards) instead of tumbling (Didymos). `"locked"`: tidally locked, keeping its +X face towards its parent and +Y along its orbit's normal (Dimorphos). |
 | `show_orbit` | `false` hides the orbit line. |
 
 Asteroids and comets tumble, and missions turn slowly, with no field needed.

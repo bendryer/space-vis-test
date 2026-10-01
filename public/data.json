@@ -1073,7 +1073,7 @@
         "rate": 6
       }
     },
-    "menu_parent": "Sun",
+    "menu_parent": "Didymos",
     "type": "mission",
     "status": "En Route",
     "launch_year": "2024",
@@ -1404,11 +1404,11 @@
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
-    "model": "/models/Asteroid3.glb",
+    "model": "/models/didymos.glb",
     "model_scale": 1,
     "radius": 16,
     "color": "#8a8175",
-    "rot_period": 0.0941,
+    "rot_period": -0.094139,
     "orbit": {
       "a_au": 1.64271,
       "e": 0.383123,
@@ -1418,7 +1418,27 @@
       "node": 72.986,
       "peri": 319.581
     },
-    "description": "Didymos is a near-Earth asteroid about 780 metres across, orbited by a moonlet about 150 metres across called Dimorphos. In September 2022 NASA's DART spacecraft deliberately crashed into Dimorphos and shortened its orbit around Didymos by about 33 minutes, the first test of moving an asteroid. ESA's Hera mission arrives in late 2026 to measure exactly what the impact did."
+    "description": "Didymos is a near-Earth asteroid about 800 metres across, shaped like a spinning top, that turns once every 2.26 hours. It has a small moon, Dimorphos. In September 2022 NASA's DART spacecraft deliberately crashed into Dimorphos and shortened its orbit around Didymos by about 33 minutes, the first test of moving an asteroid. ESA's Hera mission arrives in late 2026 to measure exactly what the impact did. The shapes shown here are the models DART's team built from the spacecraft's images.",
+    "rotation_mode": "spin"
+  },
+  {
+    "name": "Dimorphos",
+    "parent": "Didymos",
+    "type": "moon",
+    "status": "Natural",
+    "model": "/models/dimorphos.glb",
+    "model_scale": 0.217,
+    "radius": 3.5,
+    "color": "#857d74",
+    "rotation_mode": "locked",
+    "orbit": {
+      "a": 1.398,
+      "e": 0.0274,
+      "i": 170.7,
+      "M0": 0,
+      "rate": 760.07
+    },
+    "description": "Dimorphos is Didymos's small moon, about 177 metres across, circling it about 1.1 kilometres away every 11 hours 22 minutes. On 26 September 2022 NASA's DART spacecraft hit it at about 6 kilometres per second, shortening its orbit by about 33 minutes and throwing out a long trail of debris. Before the impact it kept the same face towards Didymos; Hera will find out whether the impact has left it wobbling. The shape shown is DART's model from the images taken in the spacecraft's final minutes."
   },
   {
     "name": "Comet Wild 2",
@@ -2230,6 +2250,13 @@
             "credit": "",
             "licence": "",
             "url": "",
+            "confirmed": true
+          },
+          {
+            "subject": "Didymos and Dimorphos",
+            "credit": "NASA/Johns Hopkins APL (DART); shape models by Daly et al., DART Shapemodel Archive Bundle, NASA PDS Small Bodies Node, 2023",
+            "licence": "",
+            "url": "https://doi.org/10.26007/96fn-p578",
             "confirmed": true
           },
           {

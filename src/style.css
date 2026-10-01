@@ -171,6 +171,15 @@ canvas:focus-visible {
     text-wrap: pretty;
 }
 .splash-facts strong { color: var(--text); font-weight: 600; }
+/* The thank-you to every mission's partners: a quieter line under the facts. */
+.splash-together {
+    margin: 0.85em 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+.splash-together strong { color: var(--text); font-weight: 600; }
 
 .splash-start {
     display: flex;
@@ -218,29 +227,8 @@ canvas:focus-visible {
 }
 .splash-retry { margin-top: 1rem; }
 
-.splash-hints {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 24px;
-    margin: clamp(1.25rem, 4vh, 2.5rem) 0 0;
-    padding: 0;
-    list-style: none;
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 0.875rem;
-}
-.splash-hints li { display: flex; align-items: center; gap: 8px; }
-.splash-hints svg {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: var(--ou-light);
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.splash.is-error .splash-hints,
-.splash.is-error .splash-facts { display: none; }
+.splash.is-error .splash-facts,
+.splash.is-error .splash-together { display: none; }
 
 /* The logo signs off bottom left, as the brand places it. */
 .splash-logo {
@@ -301,14 +289,33 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
     .splash-copy { grid-row: 2; align-self: end; padding-top: 8px; padding-bottom: 0; }
     /* Small screens scroll, so the logo joins the flow instead of pinning over the copy. */
     .splash-logo { grid-row: 3; position: relative; left: auto; bottom: auto; margin: 28px var(--pad) var(--pad); }
+    /* The copy runs past the fold on a phone, so the start button rides the bottom edge until
+       the copy scrolls up to meet it, over a short fade of the blue ground. */
+    .splash-start {
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        margin: 0 calc(var(--pad) * -1);
+        padding: 28px var(--pad) calc(16px + env(safe-area-inset-bottom, 0px));
+        background: linear-gradient(to bottom, rgba(6, 6, 69, 0), var(--ou-core) 26px);
+    }
 }
 
-/* Laptop-height screens: tighten the vertical rhythm so everything fits without scrolling. */
-@media (min-width: 721px) and (max-height: 820px) {
-    .splash-copy { padding-top: calc(var(--pad) * 0.5); padding-bottom: calc(var(--logo-h) + var(--pad)); }
-    .splash-copy h1 { font-size: clamp(2.5rem, min(6.5vw, 9.5vh), 5.75rem); }
+/* Laptop-height screens (up to 900px tall, e.g. 1536×864 at 125% scaling): tighten the vertical rhythm so everything fits without scrolling. */
+@media (min-width: 721px) and (max-height: 900px) {
+    .splash-copy { padding-top: calc(var(--pad) * 0.4); padding-bottom: calc(var(--logo-h) + var(--pad)); }
+    .splash-copy h1 { font-size: clamp(2.5rem, min(6.5vw, 9vh), 5.75rem); }
     .splash-lede { margin-bottom: 0.75em; }
+    .splash-together { margin-top: 0.6em; }
+    .splash-start { margin-top: clamp(1rem, 2.6vh, 1.5rem); }
     .splash-logo { bottom: calc(var(--pad) * 0.5); }
+}
+
+/* Short browser windows (a 768px screen once toolbars are counted): a little smaller still. */
+@media (min-width: 721px) and (max-height: 720px) {
+    .splash-copy h1 { font-size: clamp(2.5rem, min(6.5vw, 8.5vh), 5.75rem); }
+    .splash-lede { font-size: 1rem; margin-bottom: 0.6em; }
+    .splash-facts, .splash-together { font-size: 0.9375rem; line-height: 1.5; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -419,7 +426,10 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 }
 
 .menu-list { list-style: none; margin: 0; padding: 0; }
-.menu-group { border-top: 1px solid var(--line); }
+/* Every top-level row gets a hairline, group or not, so a planet with nothing under it yet
+   (Uranus, Neptune) still reads as one of the set. */
+.menu-group,
+.menu-tree > .menu-item { border-top: 1px solid var(--line); }
 .menu-tree > .menu-item:first-child { border-top: none; }
 
 /* A group's heading row sticks to the top of the list while its contents scroll under it. */
@@ -439,23 +449,39 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     align-items: center;
     gap: 2px;
     min-width: 52px;
-    padding: 0 12px 0 6px;
+    padding: 0 10px 0 4px;
     justify-content: flex-end;
     background: transparent;
     border: none;
-    color: var(--text-faint);
-    font-size: 0.78125rem;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
 }
-.menu-toggle:hover { color: var(--text); background: var(--accent-wash); }
-.menu-toggle:focus-visible { outline-offset: -2px; }
+.menu-toggle:focus-visible { outline: none; }
+.menu-toggle:focus-visible .menu-chip { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* The toggle reads as a control, not a footnote: a pill holding the count and a light-blue
+   chevron, so a visitor can see that a planet opens to show its missions and moons. */
+.menu-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    height: 22px;
+    padding: 0 3px 0 8px;
+    border: 1px solid rgba(166, 181, 248, 0.38);
+    border-radius: 999px;
+    background: rgba(166, 181, 248, 0.08);
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+.menu-toggle:hover .menu-chip { color: var(--text); border-color: var(--accent); background: var(--accent-wash); }
+.menu-toggle[aria-expanded="true"] .menu-chip { border-color: rgba(102, 238, 250, 0.5); background: var(--accent-wash); }
 .menu-chevron {
     width: 16px;
     height: 16px;
     fill: none;
-    stroke: currentColor;
+    stroke: var(--accent);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -550,7 +576,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 /* Fingers need 44px targets; the compact 36px rows are for a mouse. */
 @media (pointer: coarse) {
     #menu-filter, .mission-btn, .menu-toggle, #cinematic-btn { min-height: 44px; }
-    #credits-btn { min-height: 44px; padding: 2px 12px; }
+    #credits-btn, #coach-btn { min-height: 44px; padding: 2px 12px; }
 }
 
 #cinematic-btn {
@@ -802,9 +828,120 @@ button:focus-visible {
     .reticle-mark, .reticle-mark.is-leaving, .reticle-leader.is-leaving, .reticle-tab.is-leaving { transition: none; }
 }
 
+/* --- FIRST-RUN COACH (bottom centre) --- */
+/* One small plate of three things to try. Each ticks off as the visitor does it; picking
+   something (the point of the app) completes it. Same plate as the menu and controls. */
+.coach {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    translate: -50% 0; /* centring, kept apart from the transitioned transform so a move never slides */
+    width: max-content;
+    max-width: min(640px, calc(100% - 2 * 240px));
+    box-sizing: border-box;
+    pointer-events: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--plate-radius);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    padding: 10px 10px 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out), visibility 0.4s;
+}
+.coach[hidden] { display: flex; visibility: hidden; opacity: 0; transform: translateY(12px); pointer-events: none; }
+/* With the details panel open, bottom centre is under the shifted controls plate, so the coach
+   sits just above that plate instead, aligned to its right edge. */
+body:has(#sidebar.active) .coach {
+    left: auto;
+    right: 380px;
+    translate: none;
+    bottom: calc(var(--controls-h, 96px) + 32px);
+    max-width: min(640px, calc(100% - 380px - 296px));
+}
+.coach-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.coach-head h2 { margin: 0; font-size: 0.875rem; font-weight: 600; letter-spacing: -0.005em; }
+.coach-close {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    margin: -2px 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+.coach-close:hover { background: var(--accent-wash); color: var(--text); }
+.coach-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.coach-steps { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; padding: 0 8px 0 0; list-style: none; }
+.coach-step { display: flex; align-items: center; gap: 9px; min-height: 28px; font-size: 0.84375rem; line-height: 1.35; color: var(--text-muted); }
+.coach-icon { position: relative; flex: none; width: 20px; height: 20px; }
+.coach-icon svg {
+    position: absolute;
+    inset: 0;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 0.3s var(--ease-out), transform 0.45s var(--ease-out);
+}
+.coach-tick { opacity: 0; transform: scale(0.6); stroke-width: 2.25; }
+.coach-step.is-done .coach-glyph { opacity: 0; transform: scale(0.6); }
+.coach-step.is-done .coach-tick { opacity: 1; transform: none; }
+.coach-step.is-done .coach-text { color: var(--text-faint); }
+/* "Pick a mission" is also a shortcut to the Explore search. */
+.coach-pick {
+    background: none;
+    border: none;
+    padding: 2px 0;
+    color: var(--text);
+    font-size: inherit;
+    line-height: inherit;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: rgba(102, 238, 250, 0.5);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: text-decoration-color 0.15s;
+}
+.coach-pick:hover { text-decoration-color: var(--accent); }
+.coach-step.is-done .coach-pick { text-decoration: none; cursor: default; }
+/* Fingers need 44px targets. */
+@media (pointer: coarse) {
+    .coach-close { width: 44px; height: 44px; margin: -8px -4px; }
+    .coach-step, .coach-pick { min-height: 44px; }
+}
+/* Narrow screens: full width above the controls plate, steps stacked. */
+@media (max-width: 899px) {
+    .coach { left: 20px; right: 20px; width: auto; max-width: none; translate: none; bottom: calc(var(--controls-h, 96px) + 32px); }
+    /* Here the details panel covers the scene and the controls wait for it to close; so does the coach. */
+    body:has(#sidebar.active) .coach { visibility: hidden; opacity: 0; pointer-events: none; }
+    body.coach-open #mission-menu {
+        max-height: min(68dvh, calc(100dvh - 84px - var(--controls-h, 96px) - var(--coach-h, 160px) - 56px));
+    }
+}
+@media (max-width: 560px) {
+    .coach-steps { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .coach, .coach-icon svg { transition-duration: 0.01s; }
+}
+
+/* "How to explore" sits with Credits: quiet, there for anyone who wants the tips back. */
+.controls-links { display: flex; align-items: center; gap: 2px; }
+
 /* --- CREDITS --- */
 /* Deliberately quiet: there for anyone who looks for it, not part of the show. */
-#credits-btn {
+#credits-btn,
+#coach-btn {
     background: none;
     border: none;
     padding: 2px 6px;
@@ -816,7 +953,8 @@ button:focus-visible {
     cursor: pointer;
     transition: color 0.15s, text-decoration-color 0.15s;
 }
-#credits-btn:hover { color: var(--text); text-decoration-color: currentColor; }
+#credits-btn:hover,
+#coach-btn:hover { color: var(--text); text-decoration-color: currentColor; }
 
 #credits-dialog {
     width: min(640px, calc(100% - 32px));
@@ -836,8 +974,10 @@ button:focus-visible {
 #credits-title {
     margin: 0;
     padding: 26px 76px 14px 28px;
+    font-size: 1.5rem;
     font-weight: 600;
-    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
 }
 
 #credits-content {

@@ -263,7 +263,7 @@ loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
     const loadingText = document.getElementById('loading-text');
     if (loadingText) {
         // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
-        loadingText.textContent = progress < 1 ? `Loading the Solar System… ${Math.round(progress * 100)}%` : 'Preparing the view…';
+        loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
     }
 };
 
@@ -326,6 +326,7 @@ function dismissSplash({ fromKeyboard = false } = {}) {
         overlay.hidden = true;
         ui.inert = false;
         ui.classList.remove('is-waiting');
+        setTimeout(() => showCoach(), 700); // once the controls have faded up
         // Keyboard visitors carry on from the menu's search; pointer visitors go to the scene.
         if (fromKeyboard) document.getElementById('menu-filter')?.focus({ preventScroll: true });
     };
@@ -853,6 +854,17 @@ const orbitFarthest = o => (o.a_au !== undefined ? auToScene(o.a_au * (1 + (o.e 
 // An orbit in AU gets a scene-unit "a" too (its scaled size), for sorting, framing and culling.
 function applySunScale(item) {
     if (item.orbit?.a_au !== undefined) item.orbit.a = auToScene(item.orbit.a_au);
+}
+
+// Tidal locking ("rotation_mode": "locked"): the body keeps its +X face towards its parent, with
+// +Y along its orbit's normal, as Dimorphos does round Didymos.
+const _lockX = new THREE.Vector3(), _lockY = new THREE.Vector3(), _lockZ = new THREE.Vector3(), _lockM = new THREE.Matrix4();
+function faceParent(meshGroup, orbit, days) {
+    const a = getKeplerPosition(orbit, days), b = getKeplerPosition(orbit, days + 0.001);
+    _lockX.set(-a.x, -a.y, -a.z).normalize();                                     // towards the parent
+    _lockY.set(a.x, a.y, a.z).cross(_lockZ.set(b.x - a.x, b.y - a.y, b.z - a.z)).normalize(); // orbit normal
+    _lockZ.crossVectors(_lockX, _lockY);
+    meshGroup.quaternion.setFromRotationMatrix(_lockM.makeBasis(_lockX, _lockY, _lockZ));
 }
 
 function getKeplerPosition(orbitData, days) {
@@ -2854,8 +2866,12 @@ function populateMenu() {
         toggle.setAttribute('aria-expanded', 'false');
         toggle.setAttribute('aria-controls', ul.id);
         toggle.setAttribute('aria-label', `${label}: ${count} ${count === 1 ? 'object' : 'objects'}`);
-        toggle.innerHTML = `<span class="menu-count" aria-hidden="true">${count}</span>${uiIcon('chevron', 'menu-chevron')}`;
-        toggle.onclick = () => setGroupExpanded(li, toggle.getAttribute('aria-expanded') !== 'true');
+        toggle.title = `Show or hide what's at ${label}`;
+        toggle.innerHTML = `<span class="menu-chip"><span class="menu-count" aria-hidden="true">${count}</span>${uiIcon('chevron', 'menu-chevron')}</span>`;
+        toggle.onclick = () => {
+            if (autoOpenedGroup === li) autoOpenedGroup = null; // the visitor's choice now
+            setGroupExpanded(li, toggle.getAttribute('aria-expanded') !== 'true', { animate: true });
+        };
         toggle.onmouseenter = toggle.onfocus = () => clearHoveredObject();
         head.append(row, toggle);
         li.appendChild(head);
@@ -2972,16 +2988,70 @@ function getMenuFilter() {
     return document.getElementById('menu-filter')?.value.trim() || '';
 }
 
-function setGroupExpanded(li, expanded, { remember = true } = {}) {
+function setGroupExpanded(li, expanded, { remember = true, animate = false } = {}) {
     const toggle = li.querySelector(':scope > .menu-group-head > .menu-toggle');
     const ul = li.querySelector(':scope > .menu-list');
     if (!toggle || !ul) return;
+    const changed = toggle.getAttribute('aria-expanded') !== String(expanded);
     toggle.setAttribute('aria-expanded', String(expanded));
-    ul.hidden = !expanded;
+    if (animate && changed) animateGroup(ul, expanded);
+    else {
+        groupAnimations.get(ul)?.cancel();
+        ul.hidden = !expanded;
+    }
     if (remember && !getMenuFilter()) {
         if (expanded) expandedGroups.add(li.dataset.name);
         else expandedGroups.delete(li.dataset.name);
     }
+}
+
+// A group unfolds from under its heading: the list grows to its height while its rows drop in
+// one after another, and folds back up a little faster. Interrupting (a quick second click)
+// carries on from wherever the fold has got to. With reduced motion the rows only fade in.
+const groupAnimations = new WeakMap();
+const GROUP_OPEN_MS = 280;
+const GROUP_CLOSE_MS = 200;
+const GROUP_ROW_STAGGER_MS = 22;
+const GROUP_ROW_STAGGER_MAX = 8;
+const MENU_EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
+function animateGroup(ul, expanded) {
+    const running = groupAnimations.get(ul);
+    const from = running ? ul.getBoundingClientRect().height : (expanded ? 0 : ul.offsetHeight);
+    running?.cancel();
+    ul.getAnimations({ subtree: true }).forEach(a => a.cancel());
+
+    if (prefersReducedMotion.matches) {
+        ul.hidden = !expanded;
+        if (expanded) ul.animate({ opacity: [0, 1] }, { duration: 150, easing: 'ease-out' });
+        return;
+    }
+
+    ul.hidden = false;
+    const to = expanded ? ul.scrollHeight : 0;
+    const duration = expanded ? GROUP_OPEN_MS : GROUP_CLOSE_MS;
+    const fold = ul.animate(
+        { height: [`${from}px`, `${to}px`], opacity: expanded ? [1, 1] : [1, 0.4] },
+        { duration, easing: expanded ? MENU_EASE_OUT : 'cubic-bezier(0.4, 0, 1, 1)' },
+    );
+    ul.style.overflow = 'clip';
+    groupAnimations.set(ul, fold);
+
+    if (expanded) {
+        [...ul.children].filter(row => !row.hidden).slice(0, GROUP_ROW_STAGGER_MAX).forEach((row, i) => {
+            row.animate(
+                { opacity: [0, 1], transform: ['translateY(-6px)', 'none'] },
+                { duration: 240, delay: 40 + i * GROUP_ROW_STAGGER_MS, easing: MENU_EASE_OUT, fill: 'backwards' },
+            );
+        });
+    }
+
+    fold.onfinish = fold.oncancel = () => {
+        if (groupAnimations.get(ul) !== fold) return;
+        groupAnimations.delete(ul);
+        ul.style.overflow = '';
+        if (fold.playState === 'finished') ul.hidden = !expanded;
+    };
 }
 
 // Case-, accent- and punctuation-insensitive, so "change5" and "chang'e" both find Chang'e-5.
@@ -3062,6 +3132,7 @@ function setupMenuFilter() {
 // Marks the object on show (null for none, 'Solar System' for the overview). An object chosen
 // elsewhere (a scene click, the tour) gets its group opened and is scrolled into view.
 let menuCurrentName = null;
+let autoOpenedGroup = null;
 function syncMenuCurrent(name) {
     menuCurrentName = name;
     document.querySelectorAll('#mission-menu [aria-current]').forEach(el => el.removeAttribute('aria-current'));
@@ -3075,8 +3146,23 @@ function syncMenuCurrent(name) {
     const btn = menuRowOf(li);
     if (!btn) return;
     btn.setAttribute('aria-current', 'true');
-    const group = li.closest('.menu-group');
-    if (group && group !== li && !getMenuFilter()) setGroupExpanded(group, true);
+    if (!getMenuFilter()) {
+        // Choosing a planet opens its group, so its missions and moons appear beneath it (that is
+        // how most visitors find out a group opens). A group opened this way folds again when the
+        // visitor moves on elsewhere, unless they opened it themselves.
+        const opens = !li.classList.contains('menu-group--holder') && li.classList.contains('menu-group')
+            && li.querySelector(':scope > .menu-group-head > .menu-toggle')?.getAttribute('aria-expanded') === 'false';
+        if (autoOpenedGroup && autoOpenedGroup !== li && !autoOpenedGroup.contains(li)) {
+            setGroupExpanded(autoOpenedGroup, false, { animate: true });
+            autoOpenedGroup = null;
+        }
+        if (opens) {
+            setGroupExpanded(li, true, { animate: true });
+            autoOpenedGroup = li;
+        }
+        const group = li.parentElement.closest('.menu-group');
+        if (group) setGroupExpanded(group, true, { animate: true });
+    }
     if (btn.offsetParent !== null) btn.scrollIntoView({ block: 'nearest' });
 }
 
@@ -3495,6 +3581,7 @@ function releaseUserControl() {
 }
 
 function focusOnObject(mesh, data, { returnFocusTo = null } = {}) {
+    if (!cinematicActive) coachStep('pick');
     sidebarReturnFocus = returnFocusTo;
     pendingLanderFocus = null;
     clearShownHolder();
@@ -3738,7 +3825,7 @@ function setupCredits(credits) {
             dialog.showModal();
             content.scrollTop = 0;
         });
-        document.getElementById('controls').appendChild(link);
+        (document.querySelector('#controls .controls-links') || document.getElementById('controls')).appendChild(link);
 
         document.getElementById('credits-close').addEventListener('click', () => dialog.close());
         // A click on the dimmed backdrop lands on the dialog element itself.
@@ -3758,7 +3845,116 @@ function setupCinematicControls() {
         btn.onclick = () => (cinematicActive ? stopCinematicMode() : startCinematicMode());
         controlsDiv.appendChild(btn);
     }
+    // The quiet links under the button: "How to explore" (the coach again) and Credits.
+    if (!controlsDiv.querySelector('.controls-links')) {
+        const links = document.createElement('div');
+        links.className = 'controls-links';
+        const help = document.createElement('button');
+        help.id = 'coach-btn';
+        help.type = 'button';
+        help.textContent = 'How to explore';
+        help.setAttribute('aria-controls', 'coach');
+        help.addEventListener('click', () => showCoach({ replay: true }));
+        links.appendChild(help);
+        controlsDiv.appendChild(links);
+        setupCoach();
+    }
     syncCinematicButton();
+}
+
+// --- FIRST-RUN COACH ---
+// After the way in, a small plate offers three things to try: turn the view, zoom, and pick
+// something to fly to. Each ticks off when the visitor actually does it; picking something (the
+// point of the app: fly there and read what the OU did) completes it. It shows once per browser
+// (remembered in localStorage), steps aside for Cinematic Mode, and "How to explore" in the
+// controls brings it back. Its words follow the visitor's input: mouse, touch or keyboard.
+const COACH_KEY = 'ouniverse-coach-done';
+const COACH_STEPS = ['turn', 'zoom', 'pick'];
+const COACH_DONE_LINGER_MS = 1800;
+const coachDone = new Set();
+let coachShown = false;
+let coachHideTimer = null;
+const coachSeen = () => { try { return localStorage.getItem(COACH_KEY) === '1'; } catch { return false; } };
+const rememberCoach = () => { try { localStorage.setItem(COACH_KEY, '1'); } catch { /* private mode: show again next time */ } };
+
+function coachWords() {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+        return { turn: 'Drag to turn the view', zoom: 'Pinch to zoom', pick: 'Tap a mission in Explore' };
+    }
+    if (lastInputWasKeyboard) {
+        return { turn: 'Arrow keys turn the scene', zoom: '+ and − zoom in and out', pick: 'Pick a mission in Explore' };
+    }
+    return { turn: 'Drag to turn the view', zoom: 'Scroll to zoom', pick: 'Pick a mission in Explore' };
+}
+
+function showCoach({ replay = false } = {}) {
+    const coach = document.getElementById('coach');
+    if (!coach || cinematicActive) return;
+    if (!replay && coachSeen()) return;
+    clearTimeout(coachHideTimer);
+    if (replay) coachDone.clear();
+    const words = coachWords();
+    coach.querySelectorAll('.coach-step').forEach(li => {
+        const step = li.dataset.step;
+        li.querySelector('.coach-text').textContent = words[step];
+        li.classList.toggle('is-done', coachDone.has(step));
+    });
+    // On narrow screens the coach sits above the controls and the menu stops short of it.
+    const root = document.documentElement;
+    const controls = document.getElementById('controls');
+    if (controls) root.style.setProperty('--controls-h', `${controls.offsetHeight}px`);
+    coach.hidden = false;
+    root.style.setProperty('--coach-h', `${coach.offsetHeight}px`);
+    document.body.classList.add('coach-open');
+    coachShown = true;
+    announce(`Tip: ${words.pick.toLowerCase()} to fly there and see what the Open University did.`);
+}
+
+function hideCoach({ remember = true } = {}) {
+    const coach = document.getElementById('coach');
+    clearTimeout(coachHideTimer);
+    if (!coach || coach.hidden) { coachShown = false; return; }
+    if (coach.contains(document.activeElement)) document.getElementById('coach-btn')?.focus({ preventScroll: true });
+    coach.hidden = true;
+    document.body.classList.remove('coach-open');
+    coachShown = false;
+    if (remember) rememberCoach();
+}
+
+// The visitor did one of the three: tick it off. Picking something, or doing all three, finishes.
+function coachStep(step) {
+    if (!coachShown || coachDone.has(step)) return;
+    coachDone.add(step);
+    const li = document.querySelector(`#coach .coach-step[data-step="${step}"]`);
+    li?.classList.add('is-done');
+    if (step === 'pick' || COACH_STEPS.every(s => coachDone.has(s))) {
+        rememberCoach();
+        clearTimeout(coachHideTimer);
+        coachHideTimer = setTimeout(() => hideCoach(), COACH_DONE_LINGER_MS);
+    }
+}
+
+function setupCoach() {
+    document.getElementById('coach-close')?.addEventListener('click', () => hideCoach());
+    // "Pick a mission" opens the way: it puts the visitor in the Explore search.
+    document.getElementById('coach-pick')?.addEventListener('click', () => {
+        const filter = document.getElementById('menu-filter');
+        if (filter && !document.getElementById('mission-menu')?.inert) filter.focus();
+    });
+    // Two fingers on the scene at once is a pinch.
+    const pointers = new Set();
+    renderer.domElement.addEventListener('pointerdown', (e) => { pointers.add(e.pointerId); if (pointers.size > 1) coachStep('zoom'); });
+    const lift = (e) => pointers.delete(e.pointerId);
+    renderer.domElement.addEventListener('pointerup', lift);
+    renderer.domElement.addEventListener('pointercancel', lift);
+    renderer.domElement.addEventListener('pointermove', (e) => {
+        if (pointers.size === 1 && pointerDownPos && Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y) > DRAG_THRESHOLD_PX) coachStep('turn');
+    });
+    renderer.domElement.addEventListener('wheel', () => coachStep('zoom'), { passive: true });
+    renderer.domElement.addEventListener('keydown', (e) => {
+        if (e.key.startsWith('Arrow')) coachStep('turn');
+        else if ('+=-_'.includes(e.key)) coachStep('zoom');
+    });
 }
 
 function syncCinematicButton() {
@@ -3782,6 +3978,7 @@ window.addEventListener('resize', syncMenuInert);
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
+    hideCoach({ remember: false });
     const menu = document.getElementById('mission-menu');
     menu.classList.add('ui-hidden');
     syncMenuInert();
@@ -3801,6 +3998,7 @@ function stopCinematicMode() {
     cinematicTimer = null;
     syncCinematicButton();
     announce('Cinematic Mode off.');
+    showCoach(); // back if the visitor hasn't finished it (showCoach checks)
 }
 
 function cycleCinematic() {
@@ -3961,7 +4159,9 @@ function animate() {
             const timeFraction = (hours + mins / 60 + secs / 3600 + ms / 3600000) / 24.0;
             const timeRotation = (timeFraction - 0.5) * Math.PI * 2;
             meshGroup.rotation.y = (sunAngle - Math.PI / 2) + timeRotation;
-        } else if (data.type === 'asteroid' || data.type === 'comet') {
+        } else if (data.rotation_mode === 'locked' && data.orbit) {
+            faceParent(meshGroup, data.orbit, days);
+        } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
             if (!obj.tumbleSpeed) {
                 obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
             }
