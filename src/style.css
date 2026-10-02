@@ -318,6 +318,18 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
     .splash-facts, .splash-together { font-size: 0.9375rem; line-height: 1.5; }
 }
 
+/* A phone on its side (about 390px tall): the copy scrolls, so the logo joins the flow under it
+   instead of pinning over the start button, and the drawing stays beside it. */
+@media (min-width: 721px) and (max-height: 500px) {
+    .splash { grid-template-rows: auto auto; }
+    .splash-art { grid-row: 1 / span 2; position: sticky; top: 0; height: 100vh; height: 100dvh; }
+    .splash-copy { padding-top: 20px; padding-bottom: 16px; }
+    .splash-copy h1 { font-size: clamp(2rem, 11vh, 3rem); }
+    .splash-logo { grid-column: 1; grid-row: 2; position: relative; left: auto; bottom: auto; margin: 0 var(--pad) 20px; height: 36px; }
+    /* In the app the menu may run down to just above the logo, not stop at two rows. */
+    body #mission-menu { max-height: calc(100vh - 84px - 76px); max-height: calc(100dvh - 84px - 76px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .splash-orbit-progress, #ui-layer { transition-duration: 0.01s; }
     .splash-craft { display: none; }
@@ -1015,4 +1027,277 @@ body:has(#sidebar.active) .coach {
     .credits-list > div { grid-template-columns: 1fr; gap: 0; }
     #credits-title { padding: 20px 70px 12px 20px; }
     #credits-content { padding: 0 20px 20px; }
+}
+
+/* --- PHONES (up to 720px wide; isPhone() in main.js) --- */
+/* The chrome regroups round the thumb. The controls become a dock along the bottom edge beside
+   the logo; the Explore menu is a sheet that rises from the dock over a dimmed scene; the details
+   are a sheet resting at half height, the selection framed in the scene above it, with a grip to
+   open it to nearly full height (tap or drag) or drag it away. In Cinematic Mode the details
+   shrink to a caption card above the dock, which keeps its stop button. Same plates, hairlines
+   and shield corner as everywhere else; type steps up to 15-16px for reading in the hand. */
+#explore-btn, .btn-icon, #menu-close, .sheet-grip, .sheet-handle, .sheet-scrim, .menu-foot { display: none; }
+.menu-title { display: flex; align-items: center; justify-content: space-between; }
+#mission-menu-title:focus { outline: none; }
+
+@media (max-width: 720px) {
+    #ui-layer {
+        padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));
+    }
+
+    /* The dock: Explore (the main way in), Cinematic Mode and the tips, as one plate. */
+    #controls,
+    #controls.shifted {
+        right: max(16px, env(safe-area-inset-right, 0px));
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        flex-direction: row;
+        gap: 6px;
+        padding: 6px;
+        transition: opacity 0.3s var(--ease-out), visibility 0.3s;
+    }
+    .controls-links { display: contents; }
+    #credits-btn { display: none; } /* at the foot of the Explore sheet instead */
+    .btn-icon {
+        display: block;
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.75;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    #explore-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px 0 15px;
+        background: var(--ou-light);
+        border: none;
+        border-radius: 999px;
+        color: var(--ou-core);
+        font: inherit;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.15s;
+    }
+    #explore-btn .btn-icon { stroke-width: 2.25; }
+    #explore-btn:active { background: var(--text); }
+    #explore-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+    #cinematic-btn,
+    #coach-btn {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
+        padding: 0;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 50%;
+        color: var(--text);
+        text-decoration: none;
+    }
+    #coach-btn:active, #cinematic-btn:active { background: var(--accent-wash); }
+    #cinematic-btn .btn-label,
+    #coach-btn .btn-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+    #cinematic-btn .btn-icon--stop,
+    #cinematic-btn[aria-pressed="true"] .btn-icon--start { display: none; }
+    #cinematic-btn[aria-pressed="true"] .btn-icon--stop { display: block; }
+    #cinematic-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+    /* The logo signs off bottom left, level with the dock. */
+    #app-logo {
+        left: max(16px, env(safe-area-inset-left, 0px));
+        bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+        height: 32px;
+    }
+    /* The dock waits under an open details sheet, except in Cinematic Mode, where it holds stop. */
+    body.is-cinematic #controls.shifted { visibility: visible; opacity: 1; }
+
+    /* The coach rests just above the dock. */
+    .coach {
+        left: max(16px, env(safe-area-inset-left, 0px));
+        right: max(16px, env(safe-area-inset-right, 0px));
+        bottom: calc(12px + var(--controls-h, 56px) + 12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* The Explore sheet. */
+    .sheet-scrim {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1002;
+        background: rgba(0, 0, 0, 0.55);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: auto;
+        transition: opacity 0.3s var(--ease-out), visibility 0s linear 0.3s;
+    }
+    body.menu-sheet-open .sheet-scrim { opacity: 1; visibility: visible; transition: opacity 0.3s var(--ease-out); }
+    #mission-menu,
+    body.coach-open #mission-menu {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1003;
+        width: auto;
+        height: min(78vh, calc(100vh - 64px));
+        height: min(78dvh, calc(100dvh - 64px));
+        max-height: none;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        border-width: 1px 0 0;
+        border-radius: var(--radius-shield) var(--radius) 0 0;
+        box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
+        transform: translateY(calc(100% + 16px));
+        visibility: hidden;
+        transition: transform 0.42s var(--ease-out), visibility 0s linear 0.42s;
+    }
+    body.menu-sheet-open #mission-menu {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.42s var(--ease-out);
+    }
+    #mission-menu.is-dragging { transition: none; }
+    .menu-head { padding-top: 8px; touch-action: none; }
+    .sheet-grip {
+        display: block;
+        width: 36px;
+        height: 4px;
+        margin: 0 auto 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.35);
+    }
+    .menu-title { padding: 0 6px 4px 20px; }
+    #mission-menu h2 { margin: 0; font-size: 1.0625rem; }
+    #menu-close {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        border-radius: 50%;
+        color: var(--text-muted);
+        cursor: pointer;
+    }
+    .sheet-close:active { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+    .sheet-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .menu-search { margin: 0 16px 8px; }
+    #menu-filter { min-height: 44px; font-size: 1rem; } /* 16px, so iOS doesn't zoom into the field */
+    .mission-btn { min-height: 44px; font-size: 0.9375rem; padding-top: 11px; padding-bottom: 11px; }
+    .menu-toggle { min-height: 44px; min-width: 60px; }
+    .menu-foot { display: block; flex: none; padding: 4px 12px; border-top: 1px solid var(--line); }
+    .menu-foot[hidden] { display: none; }
+    #menu-credits {
+        min-height: 44px;
+        padding: 0 8px;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font: inherit;
+        font-size: 0.875rem;
+        text-decoration: underline;
+        text-decoration-color: rgba(255, 255, 255, 0.3);
+        text-underline-offset: 3px;
+        cursor: pointer;
+    }
+
+    /* The details sheet. */
+    #sidebar {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1004;
+        width: auto;
+        /* Always its full height; at rest it slides down to show the top 46% of the screen
+           (PHONE_PEEK_SHARE in main.js), so opening and closing it only moves it. */
+        --sheet-h: min(90vh, calc(100vh - 48px));
+        --sheet-h: min(90dvh, calc(100dvh - 48px));
+        --peek-drop: calc(var(--sheet-h) - 46vh);
+        --peek-drop: calc(var(--sheet-h) - 46dvh);
+        height: var(--sheet-h);
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-left: none;
+        border-top: 1px solid var(--line);
+        border-radius: var(--radius-shield) var(--radius) 0 0;
+        box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
+        transform: translateY(calc(100% + 120px));
+        transition: transform 0.45s var(--ease-out);
+    }
+    #sidebar.active { right: 0; transform: translateY(var(--peek-drop)); }
+    #sidebar.active.is-full { transform: none; }
+    #sidebar.is-dragging { transition: none; }
+    .sheet-handle {
+        display: block;
+        flex: none;
+        position: relative;
+        width: 100%;
+        height: 30px;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: grab;
+        touch-action: none;
+    }
+    .sheet-handle::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        width: 36px;
+        height: 4px;
+        margin-left: -18px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.35);
+    }
+    .sheet-handle:focus-visible { outline-offset: -4px; }
+    #sidebar-close { top: 12px; right: 8px; }
+    #info-content {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 2px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+    #sidebar h2 { padding-right: 44px; font-size: 1.375rem; }
+    .info-description { font-size: 0.9375rem; }
+
+    /* Cinematic Mode: the details are a caption card above the dock. A tap stops the tour and
+       opens the sheet, as reading does everywhere else. */
+    body.is-cinematic #sidebar,
+    body.is-cinematic #sidebar.is-full {
+        left: max(16px, env(safe-area-inset-left, 0px));
+        right: max(16px, env(safe-area-inset-right, 0px));
+        bottom: calc(12px + var(--controls-h, 56px) + 12px + env(safe-area-inset-bottom, 0px));
+        height: auto;
+        border: 1px solid var(--line);
+        border-radius: var(--plate-radius);
+        background: var(--surface);
+    }
+    body.is-cinematic #sidebar.active { transform: none; }
+    body.is-cinematic .sheet-handle,
+    body.is-cinematic #sidebar-close,
+    body.is-cinematic #info-content > :not(#info-title, .info-meta) { display: none; }
+    body.is-cinematic #info-content { padding: 12px 16px; overflow: hidden; }
+    body.is-cinematic #sidebar h2 { margin-bottom: 2px; padding-right: 0; font-size: 1.0625rem; }
+    body.is-cinematic .info-meta { margin: 0; }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+    #mission-menu, body.menu-sheet-open #mission-menu, #sidebar, .sheet-scrim { transition-duration: 0.01s; }
 }

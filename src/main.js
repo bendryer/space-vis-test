@@ -31,6 +31,10 @@ const SOLAR_SYSTEM_VIEW_ELEVATION = 25 * Math.PI / 180;
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
 // the view is then shifted so selections are centred in the part of the screen still visible.
 const SIDEBAR_BESIDE_MIN_WIDTH = 900;
+// Below this the phone layout takes over (see PHONE LAYOUT); matches style.css.
+const phoneQuery = window.matchMedia('(max-width: 720px)');
+const isPhone = () => phoneQuery.matches;
+let menuSheetOpen = false;
 // Orbit lines may cut inside the true orbit by at most this much (world units, 1% of a craft).
 const ORBIT_LINE_MAX_SAG = 0.003;
 // Landers are viewed from this angle off their surface normal (0 = straight down).
@@ -2553,32 +2557,56 @@ function getSelectionViewWidth() {
     return span.right - span.left;
 }
 
+// On a phone the details are a sheet over the bottom of the scene, so a selection is framed in
+// the band between the header and the sheet's resting edge (its half-height peek, or the small
+// caption card in Cinematic Mode). Elsewhere the whole height. Top and bottom in CSS pixels.
+const PHONE_PEEK_SHARE = 0.46;    // matches the sheet's 46dvh in style.css
+const PHONE_CAPTION_SHARE = 0.26; // the caption card plus the dock under it
+function getSelectionViewVSpan() {
+    const h = window.innerHeight;
+    if (!isPhone()) return { top: 0, bottom: h };
+    const header = document.getElementById('header');
+    const top = header ? header.getBoundingClientRect().bottom + 8 : 0;
+    return { top, bottom: h * (1 - (cinematicActive ? PHONE_CAPTION_SHARE : PHONE_PEEK_SHARE)) };
+}
+
 // Narrower of the vertical and horizontal fields of view (over the visible area), so framing
-// fits portrait screens and the space between the menu and the sidebar.
+// fits portrait screens and the space between the menu and the sidebar (or above a phone's sheet).
 function getMinFov() {
     const vfov = camera.fov * (Math.PI / 180);
+    const vspan = getSelectionViewVSpan();
+    const visibleVfov = 2 * Math.atan(Math.tan(vfov / 2) * (vspan.bottom - vspan.top) / window.innerHeight);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * getSelectionViewWidth() / window.innerHeight);
-    return Math.min(vfov, hfov);
+    return Math.min(visibleVfov, hfov);
 }
 
 // While the sidebar is open beside the scene, shift the view so the selection sits in the middle
 // of the visible part (between the menu and the sidebar) rather than behind either. Eased so it
 // glides with the sidebar and with the menu hiding or returning.
+// On a phone the same lifts the selection above the details sheet.
 let viewOffsetX = 0;
+let viewOffsetY = 0;
 function updateViewOffset(dt) {
     const sidebar = document.getElementById('sidebar');
     let goal = 0;
+    let goalY = 0;
     if (sidebar.classList.contains('active') && isSidebarBesideScene()) {
         const span = getSelectionViewSpan();
         goal = window.innerWidth / 2 - (span.left + span.right) / 2;
+    } else if (sidebar.classList.contains('active') && isPhone()) {
+        const vspan = getSelectionViewVSpan();
+        goalY = window.innerHeight / 2 - (vspan.top + vspan.bottom) / 2;
     }
-    viewOffsetX += (goal - viewOffsetX) * (1 - Math.exp(-dt * 6));
-    if (goal === 0 && Math.abs(viewOffsetX) < 0.5) {
+    const ease = 1 - Math.exp(-dt * 6);
+    viewOffsetX += (goal - viewOffsetX) * ease;
+    viewOffsetY += (goalY - viewOffsetY) * ease;
+    if (goal === 0 && goalY === 0 && Math.abs(viewOffsetX) < 0.5 && Math.abs(viewOffsetY) < 0.5) {
         viewOffsetX = 0;
+        viewOffsetY = 0;
         if (camera.view && camera.view.enabled) camera.clearViewOffset();
         return;
     }
-    camera.setViewOffset(window.innerWidth, window.innerHeight, viewOffsetX, 0, window.innerWidth, window.innerHeight);
+    camera.setViewOffset(window.innerWidth, window.innerHeight, viewOffsetX, viewOffsetY, window.innerWidth, window.innerHeight);
 }
 
 const _focusScale = new THREE.Vector3();
@@ -2942,6 +2970,9 @@ function populateMenu() {
 const UI_ICONS = {
     chevron: '<path d="M6 9l6 6l6 -6"/>',
     search: '<path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/>',
+    movie: '<path d="M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M8 4v16"/><path d="M16 4v16"/><path d="M4 8h4"/><path d="M4 16h4"/><path d="M4 12h16"/><path d="M16 8h4"/><path d="M16 16h4"/>',
+    stop: '<path d="M5 7a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/>',
+    help: '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 17v.01"/><path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4"/>',
 };
 
 function uiIcon(name, className) {
@@ -3657,6 +3688,7 @@ function closeUI() {
     isTransitioning = false;
     controls.enabled = true;
     sb.classList.remove('active');
+    setDetailsExpanded(false);
     sb.inert = true;
     syncMenuInert();
     document.getElementById('controls').classList.remove('shifted');
@@ -3664,9 +3696,10 @@ function closeUI() {
 
     // Don't strand keyboard focus inside a panel that just went inert.
     if (focusWasInside) {
-        const back = sidebarReturnFocus && sidebarReturnFocus.isConnected
+        // (On a phone the row that opened it is in the closed Explore sheet: the dock's button instead.)
+        const back = sidebarReturnFocus && sidebarReturnFocus.isConnected && !sidebarReturnFocus.closest('[inert]')
             ? sidebarReturnFocus
-            : document.getElementById('system-btn');
+            : document.getElementById(isPhone() ? 'explore-btn' : 'system-btn');
         back?.focus({ preventScroll: true });
     }
     sidebarReturnFocus = null;
@@ -3736,6 +3769,8 @@ function updateUI(data) {
         <p class="info-description">${data.description || 'No description available.'}</p>
     `;
     sb.scrollTop = 0;
+    document.getElementById('info-content').scrollTop = 0;
+    setDetailsExpanded(false);
     sb.inert = false;
     sb.classList.add('active');
     syncMenuInert();
@@ -3816,32 +3851,211 @@ function setupCredits(credits) {
 
     let link = document.getElementById('credits-btn');
     if (!link) {
+        // Focus goes back to whichever button opened it: the controls' link, or on a phone the
+        // one at the foot of the Explore sheet.
+        let opener = null;
+        const open = (from) => {
+            opener = from;
+            dialog.showModal();
+            content.scrollTop = 0;
+        };
         link = document.createElement('button');
         link.id = 'credits-btn';
         link.type = 'button';
         link.textContent = 'Credits';
         link.setAttribute('aria-haspopup', 'dialog');
-        link.addEventListener('click', () => {
-            dialog.showModal();
-            content.scrollTop = 0;
-        });
+        link.addEventListener('click', () => open(link));
         (document.querySelector('#controls .controls-links') || document.getElementById('controls')).appendChild(link);
+        const menuCredits = document.getElementById('menu-credits');
+        if (menuCredits) {
+            menuCredits.closest('.menu-foot').hidden = false;
+            menuCredits.addEventListener('click', () => open(menuCredits));
+        }
 
         document.getElementById('credits-close').addEventListener('click', () => dialog.close());
         // A click on the dimmed backdrop lands on the dialog element itself.
         dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
-        dialog.addEventListener('close', () => link.focus());
+        dialog.addEventListener('close', () => opener?.focus());
     }
+}
+
+// --- PHONE LAYOUT ---
+// Below 721px wide the chrome rearranges round the thumb: the controls become a dock along the
+// bottom edge, the Explore menu a sheet that rises from it, and the details a sheet that rests
+// at half height (the selection framed above it) and opens to nearly full height. Both sheets
+// follow a drag on their grip and settle on release; a tap on the grip does the same as a drag.
+// (phoneQuery, isPhone and menuSheetOpen are declared at the top, with the other layout limits.)
+
+function openMenuSheet() {
+    if (!isPhone() || menuSheetOpen) return;
+    menuSheetOpen = true;
+    document.body.classList.add('menu-sheet-open');
+    document.getElementById('explore-btn')?.setAttribute('aria-expanded', 'true');
+    syncMenuInert();
+    // Focus the heading, not the search: a keyboard would cover half the list.
+    document.getElementById('mission-menu-title')?.focus({ preventScroll: true });
+}
+
+function closeMenuSheet({ returnFocus = false } = {}) {
+    if (!menuSheetOpen) return;
+    const menu = document.getElementById('mission-menu');
+    const focusWasInside = menu.contains(document.activeElement);
+    menuSheetOpen = false;
+    document.body.classList.remove('menu-sheet-open');
+    menu.style.transform = '';
+    document.getElementById('explore-btn')?.setAttribute('aria-expanded', 'false');
+    syncMenuInert();
+    if (focusWasInside || returnFocus) document.getElementById('explore-btn')?.focus({ preventScroll: true });
+}
+
+function setDetailsExpanded(full) {
+    const sb = document.getElementById('sidebar');
+    const handle = document.getElementById('sidebar-handle');
+    sb.classList.toggle('is-full', full);
+    sb.style.transform = '';
+    handle?.setAttribute('aria-expanded', String(full));
+    handle?.setAttribute('aria-label', full ? 'Show fewer details' : 'Show more details');
+}
+
+// A vertical drag on `grip`: `onMove(dy)` while the finger moves (dy > 0 is down), then
+// `onEnd(dy, velocity)` on release. A movement under the tap slop is left to the click.
+const SHEET_TAP_SLOP_PX = 6;
+function attachSheetDrag(grip, { onStart, onMove, onEnd }) {
+    let startY = 0;
+    let lastY = 0;
+    let lastT = 0;
+    let velocity = 0;
+    let dragging = false;
+    let pointerId = null;
+    grip.addEventListener('pointerdown', (e) => {
+        if (!isPhone() || e.button !== 0) return;
+        if (e.target.closest('input') || (e.target.closest('button') && e.target.closest('button') !== grip)) return;
+        pointerId = e.pointerId;
+        startY = lastY = e.clientY;
+        lastT = e.timeStamp;
+        velocity = 0;
+        dragging = false;
+    });
+    grip.addEventListener('pointermove', (e) => {
+        if (e.pointerId !== pointerId) return;
+        const dy = e.clientY - startY;
+        if (!dragging && Math.abs(dy) < SHEET_TAP_SLOP_PX) return;
+        if (!dragging) {
+            dragging = true;
+            grip.setPointerCapture(pointerId);
+            onStart?.();
+        }
+        const dt = Math.max(1, e.timeStamp - lastT);
+        velocity = (e.clientY - lastY) / dt; // px per ms, down is positive
+        lastY = e.clientY;
+        lastT = e.timeStamp;
+        onMove(dy);
+    });
+    const finish = (e) => {
+        if (e.pointerId !== pointerId) return;
+        pointerId = null;
+        if (!dragging) return;
+        dragging = false;
+        // Swallow the click that follows a drag, so it doesn't toggle as well.
+        grip.addEventListener('click', (c) => { c.stopPropagation(); c.preventDefault(); }, { capture: true, once: true });
+        onEnd(e.clientY - startY, velocity);
+    };
+    grip.addEventListener('pointerup', finish);
+    grip.addEventListener('pointercancel', finish);
+}
+
+function setupPhoneSheets() {
+    const menu = document.getElementById('mission-menu');
+    const sidebar = document.getElementById('sidebar');
+    const handle = document.getElementById('sidebar-handle');
+
+    document.getElementById('sheet-scrim')?.addEventListener('click', () => closeMenuSheet({ returnFocus: true }));
+    document.getElementById('menu-close')?.addEventListener('click', () => closeMenuSheet({ returnFocus: true }));
+    // Choosing something flies there, so the sheet gets out of the way (folding a group doesn't).
+    menu.addEventListener('click', (e) => {
+        if (isPhone() && e.target.closest('.mission-btn')) closeMenuSheet();
+    });
+
+    // The Explore sheet follows a drag down from its head and closes past a quarter of its
+    // height, or on a flick.
+    attachSheetDrag(menu.querySelector('.menu-head'), {
+        onStart: () => menu.classList.add('is-dragging'),
+        onMove: (dy) => { menu.style.transform = `translateY(${Math.max(0, dy)}px)`; },
+        onEnd: (dy, v) => {
+            menu.classList.remove('is-dragging');
+            if (dy > menu.offsetHeight * 0.25 || v > 0.6) closeMenuSheet({ returnFocus: true });
+            else menu.style.transform = '';
+        },
+    });
+
+    // The details sheet: its grip toggles between half and nearly full height and follows a
+    // drag; dragged well below its half height, or flicked down from it, it closes.
+    if (handle) {
+        handle.addEventListener('click', () => setDetailsExpanded(!sidebar.classList.contains('is-full')));
+        // The sheet is always full height and moves by transform: `drop` is how far it sits
+        // below fully open (its peek drops it by its height less the peek share).
+        let startDrop = 0;
+        const peekDrop = () => sidebar.offsetHeight - window.innerHeight * PHONE_PEEK_SHARE;
+        attachSheetDrag(handle, {
+            onStart: () => {
+                startDrop = sidebar.classList.contains('is-full') ? 0 : peekDrop();
+                sidebar.classList.add('is-dragging');
+            },
+            onMove: (dy) => {
+                const drop = Math.max(0, Math.min(sidebar.offsetHeight - 60, startDrop + dy));
+                sidebar.style.transform = `translateY(${drop}px)`;
+            },
+            onEnd: (dy, v) => {
+                sidebar.classList.remove('is-dragging');
+                const shown = sidebar.offsetHeight - Math.max(0, startDrop + dy);
+                const peek = window.innerHeight * PHONE_PEEK_SHARE;
+                if (shown < peek * 0.6 || (v > 0.8 && !sidebar.classList.contains('is-full'))) {
+                    stopCinematicMode();
+                    closeUI();
+                    updateOrbitLineHighlights();
+                    document.getElementById('explore-btn')?.focus({ preventScroll: true });
+                    return;
+                }
+                const full = v < -0.5 ? true : v > 0.5 ? false : shown > (peek + sidebar.offsetHeight) / 2;
+                setDetailsExpanded(full);
+            },
+        });
+        // At rest the sheet's lower part is off screen, so reading on (scrolling the text) opens it.
+        document.getElementById('info-content').addEventListener('scroll', (e) => {
+            if (isPhone() && !cinematicActive && e.target.scrollTop > 4 && !sidebar.classList.contains('is-full')) setDetailsExpanded(true);
+        }, { passive: true });
+    }
+
+    // Turning a phone or resizing across the line: drop sheet state the other layout lacks.
+    phoneQuery.addEventListener('change', () => {
+        closeMenuSheet();
+        setDetailsExpanded(false);
+        syncMenuInert();
+    });
+    syncMenuInert();
 }
 
 // --- CINEMATIC MODE ---
 function setupCinematicControls() {
     const controlsDiv = document.getElementById('controls');
     if (!controlsDiv) return;
+    // Phones only: the dock's way into the Explore sheet.
+    if (!document.getElementById('explore-btn')) {
+        const explore = document.createElement('button');
+        explore.id = 'explore-btn';
+        explore.type = 'button';
+        explore.setAttribute('aria-controls', 'mission-menu');
+        explore.setAttribute('aria-expanded', 'false');
+        explore.innerHTML = `${uiIcon('search', 'btn-icon')}<span>Explore</span>`;
+        explore.onclick = () => openMenuSheet();
+        controlsDiv.appendChild(explore);
+    }
+    // A full label on larger screens; on a phone an icon, its label kept for screen readers.
     if (!document.getElementById('cinematic-btn')) {
         const btn = document.createElement('button');
         btn.id = 'cinematic-btn';
         btn.type = 'button';
+        btn.innerHTML = `${uiIcon('movie', 'btn-icon btn-icon--start')}${uiIcon('stop', 'btn-icon btn-icon--stop')}<span class="btn-label"></span>`;
         btn.onclick = () => (cinematicActive ? stopCinematicMode() : startCinematicMode());
         controlsDiv.appendChild(btn);
     }
@@ -3852,12 +4066,13 @@ function setupCinematicControls() {
         const help = document.createElement('button');
         help.id = 'coach-btn';
         help.type = 'button';
-        help.textContent = 'How to explore';
+        help.innerHTML = `${uiIcon('help', 'btn-icon')}<span class="btn-label">How to explore</span>`;
         help.setAttribute('aria-controls', 'coach');
         help.addEventListener('click', () => showCoach({ replay: true }));
         links.appendChild(help);
         controlsDiv.appendChild(links);
         setupCoach();
+        setupPhoneSheets();
     }
     syncCinematicButton();
 }
@@ -3938,6 +4153,7 @@ function setupCoach() {
     document.getElementById('coach-close')?.addEventListener('click', () => hideCoach());
     // "Pick a mission" opens the way: it puts the visitor in the Explore search.
     document.getElementById('coach-pick')?.addEventListener('click', () => {
+        if (isPhone()) { openMenuSheet(); return; }
         const filter = document.getElementById('menu-filter');
         if (filter && !document.getElementById('mission-menu')?.inert) filter.focus();
     });
@@ -3960,7 +4176,8 @@ function setupCoach() {
 function syncCinematicButton() {
     const btn = document.getElementById('cinematic-btn');
     if (!btn) return;
-    btn.textContent = cinematicActive ? 'Stop Cinematic Mode' : 'Start Cinematic Mode';
+    const label = btn.querySelector('.btn-label') || btn;
+    label.textContent = cinematicActive ? 'Stop Cinematic Mode' : 'Start Cinematic Mode';
     btn.setAttribute('aria-pressed', String(cinematicActive));
 }
 
@@ -3969,6 +4186,11 @@ function syncCinematicButton() {
 function syncMenuInert() {
     const menu = document.getElementById('mission-menu');
     const sidebar = document.getElementById('sidebar');
+    // On a phone the menu is a sheet: reachable only while it's up.
+    if (isPhone()) {
+        menu.inert = cinematicActive || !menuSheetOpen;
+        return;
+    }
     const sidebarLeft = window.innerWidth - Math.min(sidebar.offsetWidth, window.innerWidth);
     const covered = sidebar.classList.contains('active') && sidebarLeft < menu.offsetLeft + menu.offsetWidth;
     menu.inert = cinematicActive || covered;
@@ -3978,6 +4200,8 @@ window.addEventListener('resize', syncMenuInert);
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
+    document.body.classList.add('is-cinematic');
+    closeMenuSheet();
     hideCoach({ remember: false });
     const menu = document.getElementById('mission-menu');
     menu.classList.add('ui-hidden');
@@ -3991,12 +4215,18 @@ function startCinematicMode() {
 function stopCinematicMode() {
     if (!cinematicActive) return;
     cinematicActive = false;
+    document.body.classList.remove('is-cinematic');
     const menu = document.getElementById('mission-menu');
     menu.classList.remove('ui-hidden');
     syncMenuInert();
     if (cinematicTimer) clearInterval(cinematicTimer);
     cinematicTimer = null;
     syncCinematicButton();
+    // On a phone the dock steps back under the details sheet when the tour ends: follow it there.
+    if (isPhone() && document.getElementById('controls').contains(document.activeElement)
+        && document.getElementById('sidebar').classList.contains('active')) {
+        document.getElementById('info-title')?.focus({ preventScroll: true });
+    }
     announce('Cinematic Mode off.');
     showCoach(); // back if the visitor hasn't finished it (showCoach checks)
 }
@@ -4589,6 +4819,7 @@ window.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     // The credits dialog closes itself on Escape; leave the scene alone.
     if (document.getElementById('credits-dialog').open) return;
+    if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
     hurryTransition();
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
