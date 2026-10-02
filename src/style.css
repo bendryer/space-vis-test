@@ -188,6 +188,34 @@ canvas:focus-visible {
     gap: 12px 20px;
     margin-top: clamp(1.25rem, 3.5vh, 2rem);
 }
+/* The quieter twin of the start button, for touch screens that can go full screen. */
+.splash-fullscreen {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 22px 0 18px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.splash-fullscreen[hidden] { display: none; }
+.splash-fullscreen:active { background: var(--accent-wash); }
+.splash-fullscreen:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.fs-icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
 #splash-start,
 .splash-retry {
     min-height: 52px;
@@ -298,6 +326,16 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
         margin: 0 calc(var(--pad) * -1);
         padding: 28px var(--pad) calc(16px + env(safe-area-inset-bottom, 0px));
         background: linear-gradient(to bottom, rgba(6, 6, 69, 0), var(--ou-core) 26px);
+    }
+    /* With the full screen choice, the two buttons share one row. */
+    .splash-start:has(.splash-fullscreen:not([hidden])) { flex-wrap: nowrap; gap: 10px; }
+    .splash-start:has(.splash-fullscreen:not([hidden])) > button {
+        flex: 1 1 0;
+        justify-content: center;
+        min-width: 0;
+        padding: 0 12px;
+        font-size: 1rem;
+        white-space: nowrap;
     }
 }
 
@@ -1197,7 +1235,22 @@ body:has(#sidebar.active) .coach {
     #menu-filter { min-height: 44px; font-size: 1rem; } /* 16px, so iOS doesn't zoom into the field */
     .mission-btn { min-height: 44px; font-size: 0.9375rem; padding-top: 11px; padding-bottom: 11px; }
     .menu-toggle { min-height: 44px; min-width: 60px; }
-    .menu-foot { display: block; flex: none; padding: 4px 12px; border-top: 1px solid var(--line); }
+    .menu-foot { display: flex; align-items: center; justify-content: space-between; flex: none; padding: 4px 12px; border-top: 1px solid var(--line); }
+    #menu-fullscreen {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 8px;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font: inherit;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+    #menu-fullscreen[hidden] { display: none; }
+    #menu-fullscreen .fs-icon { width: 18px; height: 18px; stroke-width: 1.75; color: var(--accent); }
     .menu-foot[hidden] { display: none; }
     #menu-credits {
         min-height: 44px;

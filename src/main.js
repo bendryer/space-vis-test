@@ -299,6 +299,7 @@ function markSceneReady() {
     const start = document.getElementById('splash-start');
     start.disabled = false;
     start.textContent = 'Start exploring';
+    offerFullscreenStart();
     // Keyboard visitors get the button focused; pointer visitors aren't shown a ring on load.
     if (lastInputWasKeyboard && (!document.activeElement || document.activeElement === document.body)) start.focus({ preventScroll: true });
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -376,6 +377,7 @@ const slowLoadTimer = setTimeout(() => {
     if (start) {
         start.disabled = false;
         start.textContent = 'Explore now';
+        offerFullscreenStart();
     }
 }, SLOW_LOAD_NOTICE_MS);
 
@@ -392,6 +394,8 @@ function showFatalError(message) {
     overlay.classList.add('is-error');
     const start = document.getElementById('splash-start');
     if (start) start.hidden = true;
+    const fullscreenStart = document.getElementById('splash-fullscreen');
+    if (fullscreenStart) fullscreenStart.hidden = true;
     const text = document.getElementById('loading-text');
     if (text) text.textContent = 'OUniverse couldn’t start';
     const note = document.getElementById('loading-note');
@@ -411,6 +415,63 @@ function fillSplashFacts(items) {
     document.getElementById('splash-count').textContent = count;
     document.getElementById('splash-explore').hidden = false;
 }
+
+// --- FULL SCREEN ---
+// On a phone the browser's address bar and the system's navigation bar take a good share of the
+// screen, so touch devices that allow it get "Start full screen" on the splash, and a Full screen
+// switch at the foot of the Explore sheet to go back in after leaving (a back swipe leaves).
+// Desktop browsers have their own (F11), and iPhones don't allow it for pages, so neither shows.
+const fullscreenSupported = Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled)
+    && window.matchMedia('(pointer: coarse)').matches;
+const isFullscreen = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+
+function enterFullscreen() {
+    const root = document.documentElement;
+    try {
+        const request = root.requestFullscreen
+            ? root.requestFullscreen({ navigationUI: 'hide' })
+            : root.webkitRequestFullscreen?.();
+        request?.catch?.(() => { /* refused: carry on in the browser window */ });
+    } catch { /* refused: carry on in the browser window */ }
+}
+
+function exitFullscreen() {
+    try {
+        const exit = document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen?.();
+        exit?.catch?.(() => {});
+    } catch { /* already out */ }
+}
+
+function offerFullscreenStart() {
+    const btn = document.getElementById('splash-fullscreen');
+    if (btn && fullscreenSupported && !isFullscreen()) btn.hidden = false;
+}
+
+function syncFullscreenButtons() {
+    const on = isFullscreen();
+    const toggle = document.getElementById('menu-fullscreen');
+    if (toggle) {
+        toggle.setAttribute('aria-pressed', String(on));
+        toggle.querySelector('span').textContent = on ? 'Exit full screen' : 'Full screen';
+    }
+}
+
+(function setupFullscreen() {
+    if (!fullscreenSupported) return;
+    const toggle = document.getElementById('menu-fullscreen');
+    if (toggle) {
+        toggle.hidden = false;
+        toggle.closest('.menu-foot').hidden = false;
+        toggle.addEventListener('click', () => (isFullscreen() ? exitFullscreen() : enterFullscreen()));
+    }
+    document.addEventListener('fullscreenchange', syncFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', syncFullscreenButtons);
+    // Asked for from inside the click, as browsers require, then in we go as usual.
+    document.getElementById('splash-fullscreen')?.addEventListener('click', (e) => {
+        enterFullscreen();
+        dismissSplash({ fromKeyboard: e.detail === 0 });
+    });
+})();
 
 (function setupSplash() {
     const start = document.getElementById('splash-start');
