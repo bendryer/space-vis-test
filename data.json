@@ -406,8 +406,8 @@
     "launch_year": "In Dev",
     "orbit_type": "landed",
     "landed_coords": {
-      "lat": -89,
-      "lon": 0
+      "lat": -77,
+      "lon": -148.5
     },
     "image_url": "/images/lupex_science.jpg",
     "description": "The Lunar Polar Exploration mission is a joint project between ISRO and JAXA designed to search for water ice and other volatiles at the lunar south pole. It will deploy a rover capable of drilling into the lunar surface to collect samples for analysis. The mission is critical for identifying resources that could support future long-term lunar habitation and exploration.",
@@ -1493,6 +1493,7 @@
     "parent": "Sun",
     "menu_order": 4731,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.8,
     "color": "#777777",
@@ -1515,6 +1516,7 @@
     "parent": "Sun",
     "menu_order": 20386,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.7,
     "color": "#888888",
@@ -1537,6 +1539,7 @@
     "parent": "Sun",
     "menu_order": 20617,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.7,
     "color": "#666666",
@@ -1559,6 +1562,7 @@
     "parent": "Sun",
     "menu_order": 20626,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.6,
     "color": "#999999",
@@ -1577,10 +1581,34 @@
     "model_scale": 1
   },
   {
+    "name": "25275 Jocelynbell",
+    "parent": "Sun",
+    "menu_order": 25275,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius": 0.7,
+    "color": "#707070",
+    "orbit": {
+      "a_au": 2.36542,
+      "e": 0.1099,
+      "i": 7.98,
+      "M0": 84.64,
+      "rate": 0.2709,
+      "node": 97.4,
+      "peri": 320.82
+    },
+    "description": "A main-belt asteroid named after British astrophysicist Susan Jocelyn Bell Burnell (b. 1943). Jocelyn discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Antony Hewish. She served as Head of Physics at the Open University (1991–2001) and has been President of the Royal Astronomical Society (2002–2004), the Institute of Physics (2008–2010) and the Royal Society of Edinburgh (2014–2018). In August 2006 she presided over the IAU’s adoption of resolutions defining the terms “planet” and “dwarf planet”. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid1.glb",
+    "model_named": "/models/Bell.glb",
+    "model_scale": 1
+  },
+  {
     "name": "69423 OpenUni",
     "parent": "Sun",
     "menu_order": 69423,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.9,
     "color": "#0055ff",
@@ -1603,6 +1631,7 @@
     "parent": "Sun",
     "menu_order": 10230,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.7,
     "color": "#777777",
@@ -1625,6 +1654,7 @@
     "parent": "Sun",
     "menu_order": 9831,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.8,
     "color": "#888888",
@@ -1647,6 +1677,7 @@
     "parent": "Sun",
     "menu_order": 15614,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.8,
     "color": "#555555",
@@ -1669,6 +1700,7 @@
     "parent": "Sun",
     "menu_order": 20594,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.7,
     "model": "/models/Asteroid4.glb",
@@ -1689,6 +1721,7 @@
     "parent": "Sun",
     "menu_order": 17920,
     "type": "asteroid",
+    "menu_holder": "named",
     "status": "Natural",
     "radius": 0.8,
     "color": "#777777",
@@ -1813,9 +1846,27 @@
     "color": "#dd4422"
   },
   {
-    "name": "Credits",
     "type": "credits",
-    "title": "Image credits",
+    "title": "Credits",
+    "crew": {
+      "heading": "Mission crew",
+      "items": [
+        {
+          "name": "Ben Dryer",
+          "role": "Flight Director"
+        },
+        {
+          "name": "Philippa Downton",
+          "role": "Mission Wrangler"
+        },
+        {
+          "name": "Members of the OU space science community",
+          "role": "Ground crew: tireless feedback and contributions"
+        }
+      ],
+      "note": "This resource would not exist without AI. Its content was largely written and reviewed by OU researchers, with LLMs helping to pull it all together and check it against published sources. The app itself was built in tandem with an LLM coding assistant, and some of the spacecraft and small-body models were made by a generative 3D AI from public reference images. People guided and checked every step."
+    },
+    "name": "Credits",
     "intro": "OUniverse is built from images, maps and 3D models shared by space agencies, scientists and artists. Thank you to all of them.",
     "footer": "Spotted a missing or incorrect credit? Please let us know.",
     "sections": [
