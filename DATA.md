@@ -6,7 +6,9 @@ that file and add any files it points to. No code changes are needed unless the 
 kind of motion or rendering that doesn't exist yet (see the last section).
 
 The file is one JSON array. Each entry is an object, except the single `"type": "credits"`
-entry, which holds the image credits page.
+entry, which holds the credits page: `title`, `crew` (`heading`, `items` of `{ "name", "role" }` and an optional quiet `note`,
+shown first, above the rest), `intro`, `sections` (`heading` plus `items` of `{ "subject", "credit",
+"licence", "url", "confirmed" }`; items without a `credit` are left out) and `footer`.
 
 ## Adding an object
 
@@ -81,9 +83,12 @@ Asteroids and comets tumble, and missions turn slowly, with no field needed.
 | `menu_parent` | Lists it under another object than its `parent`: JUICE under Jupiter, Spitzer under Earth. `"Sun"` puts it inside the Sun's own group instead of the top level. |
 | `menu_top_level` | `true` gives a body or point its own group at the top level, after the planet whose system it belongs to, nearest first and indented a step (the Moon, then Earth-Sun L1 and L2, after Earth). Its own children come with it. |
 | `menu_order` | Sort key among a group's natural bodies, in place of orbit size (`orbit.a`); the numbered asteroids use their catalogue number. Missions are always listed first in a group, alphabetically, then its bodies. |
+| `menu_holder` | `"named"` puts an asteroid in the Honorary asteroids group instead of Mission asteroids. |
 | `icon` | Menu icon, overriding the one chosen by type: `rover`, `lander`, `satellite`, `rocket`, `facility`, `planet`, `moon`, `sun`, `comet`, `asteroid`, `point`, `galaxy`. |
 
-Asteroids and comets are gathered into the Asteroids and Comets groups by `type`. Anything
+Asteroids and comets are gathered into groups by `type`: comets into Comets, asteroids into
+Mission asteroids (the ones spacecraft visit), except those with `"menu_holder": "named"`, which go
+into Honorary asteroids (asteroids named in honour of the OU and its people). Anything
 landed on Earth is shown as a ground facility and isn't counted as a spacecraft on the splash.
 
 ## What still needs code

@@ -1195,7 +1195,7 @@ function showHolder(holder) {
     updateOrbitLineHighlights();
     syncMenuCurrent(holder.name);
     const count = holderMembers(holder).length;
-    announce(`Showing ${count} ${holder.name.toLowerCase()} and their orbits`);
+    announce(`Showing ${count} ${holder.spoken || holder.name.toLowerCase()} and their orbits`);
 }
 
 function clearShownHolder() {
@@ -1795,8 +1795,12 @@ function settleOnSupports(landerObj, frame, surface, point, normal) {
     n.normalize();
     if (n.dot(normal) < 0) n.negate();
     if (n.dot(normal) < SETTLE_MAX_TILT) return null; // implausibly steep: keep the simple placement
-    const seat = supports.centre.clone().applyQuaternion(new THREE.Quaternion().setFromUnitVectors(_UP, n));
-    return { position: centre.sub(seat), normal: n };
+    // Keep the lander over its own landing point and only raise or lower it (along the surface
+    // normal) until its feet meet that plane. Centring its feet instead slid it sideways whenever a
+    // detail level with a slightly different footprint arrived: LUPEX visibly jumped as it loaded.
+    const base = n.clone().multiplyScalar(supports.points[0].y); // its feet, all at the model's bottom
+    const lift = centre.clone().sub(point).sub(base).dot(n) / normal.dot(n);
+    return { position: point.clone().addScaledVector(normal, lift), normal: n };
 }
 
 // Lands again the landers on `obj` (and `obj` itself, if it's one) that are already down: called
@@ -2857,9 +2861,15 @@ function menuIcon(name, color = null) {
 // Where an object sits otherwise comes from data.json: under its "menu_parent" if it has one
 // (JUICE under Jupiter, Spitzer under Earth; "Sun" nests it in the Sun's own group), else its
 // parent, ordered by "menu_order" if given, else by orbit size.
+// Asteroids come in two kinds: the ones spacecraft have gone to (Bennu, Ryugu, Didymos), and the
+// ones named in honour of the OU and its scientists ("menu_holder": "named" in data.json).
+// `spoken` is the phrase read out when a group is shown; `search` adds words a search should find it by.
 const MENU_HOLDERS = [
-    { name: 'Asteroids', icon: 'asteroid', after: 'Mars', holds: data => data.type === 'asteroid' },
-    { name: 'Comets', icon: 'comet', after: 'Asteroids', holds: data => data.type === 'comet' },
+    { name: 'Mission asteroids', spoken: 'mission asteroids', search: 'asteroids explored visited targets', icon: 'asteroid', after: 'Mars',
+        holds: data => data.type === 'asteroid' && data.menu_holder !== 'named' },
+    { name: 'Honorary asteroids', spoken: 'honorary asteroids, named in honour of OU people,', search: 'asteroids named honour', icon: 'asteroid', after: 'Mission asteroids',
+        holds: data => data.type === 'asteroid' && data.menu_holder === 'named' },
+    { name: 'Comets', spoken: 'comets', icon: 'comet', after: 'Honorary asteroids', holds: data => data.type === 'comet' },
 ];
 
 function populateMenu() {
@@ -2970,6 +2980,7 @@ function populateMenu() {
         const li = document.createElement('li');
         li.className = 'menu-item menu-group--holder';
         li.dataset.name = holder.name;
+        if (holder.search) li.dataset.search = `${holder.name} ${holder.search}`;
         const ul = document.createElement('ul');
         ul.className = 'menu-list';
         const count = members.reduce((n, obj) => n + 1 + countDescendants(obj.data.name), 0);
@@ -3094,6 +3105,17 @@ function setGroupExpanded(li, expanded, { remember = true, animate = false } = {
     if (remember && !getMenuFilter()) {
         if (expanded) expandedGroups.add(li.dataset.name);
         else expandedGroups.delete(li.dataset.name);
+        // One group open at a time: opening one folds the others, except the groups it sits in
+        // (Didymos inside Mission asteroids) and any open inside it. A search opens as many as
+        // it needs, so this only applies outside one.
+        if (expanded && changed) {
+            document.querySelectorAll('#mission-list .menu-group').forEach(other => {
+                if (other === li || other.contains(li) || li.contains(other)) return;
+                if (other.querySelector(':scope > .menu-group-head > .menu-toggle')?.getAttribute('aria-expanded') !== 'true') return;
+                if (autoOpenedGroup === other) autoOpenedGroup = null;
+                setGroupExpanded(other, false, { animate });
+            });
+        }
     }
 }
 
@@ -3164,7 +3186,7 @@ function applyMenuFilter() {
     // A holder that matches ("comets", "asteroids") shows everything it holds.
     const walk = (li, forced = false) => {
         const holder = li.classList.contains('menu-group--holder');
-        const self = !needle || forced || normaliseForSearch(li.dataset.name).includes(needle);
+        const self = !needle || forced || normaliseForSearch(li.dataset.search || li.dataset.name).includes(needle);
         li.classList.toggle('is-match', Boolean(needle) && self && !holder);
         if (self && needle && !holder) matches++;
         const forceChildren = forced || (holder && self && Boolean(needle));
@@ -3869,6 +3891,35 @@ function setupCredits(credits) {
     const content = document.getElementById('credits-content');
     if (credits.title) document.getElementById('credits-title').textContent = credits.title;
     content.replaceChildren();
+
+    // The people who made it come first, set apart from the thanks for images and software.
+    const crew = (credits.crew?.items || []).filter(person => person.name && person.role);
+    if (crew.length) {
+        const el = document.createElement('section');
+        el.className = 'credits-crew';
+        const h = document.createElement('h3');
+        h.textContent = credits.crew.heading || 'Crew';
+        const list = document.createElement('dl');
+        list.className = 'credits-list';
+        for (const person of crew) {
+            const row = document.createElement('div');
+            const dt = document.createElement('dt');
+            dt.textContent = person.name;
+            const dd = document.createElement('dd');
+            dd.textContent = person.role;
+            row.append(dt, dd);
+            list.appendChild(row);
+        }
+        el.append(h, list);
+        // A quiet line under the crew, e.g. how AI was used to make it.
+        if (credits.crew.note) {
+            const note = document.createElement('p');
+            note.className = 'credits-note';
+            note.textContent = credits.crew.note;
+            el.appendChild(note);
+        }
+        content.appendChild(el);
+    }
 
     if (credits.intro) {
         const p = document.createElement('p');
