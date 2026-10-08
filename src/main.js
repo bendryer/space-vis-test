@@ -3811,16 +3811,23 @@ function announce(message) {
     requestAnimationFrame(() => { el.textContent = message; });
 }
 
-function closeUI() {
+// Let go of the selection (and any flight to it). Emits "deselect".
+function deselect() {
     pendingLanderFocus = null;
     clearShownHolder();
-    const sb = document.getElementById('sidebar');
-    const focusWasInside = sb.contains(document.activeElement);
     releaseUserControl();
     selectedObject = null;
     isTracking = false;
     isTransitioning = false;
     controls.enabled = true;
+    settleArrival(false);
+    emitEngine('deselect');
+}
+
+// Showcase: close the details and put keyboard focus somewhere sensible.
+onEngine('deselect', () => {
+    const sb = document.getElementById('sidebar');
+    const focusWasInside = sb.contains(document.activeElement);
     sb.classList.remove('active');
     setDetailsExpanded(false);
     sb.inert = true;
@@ -3837,7 +3844,7 @@ function closeUI() {
         back?.focus({ preventScroll: true });
     }
     sidebarReturnFocus = null;
-}
+});
 
 // Science images are served from web-sized WebP copies in images/web/ (the originals run
 // to 10000px and 13MB, and decoding one stalled the page). If a copy is missing, the
@@ -4174,7 +4181,7 @@ function setupPhoneSheets() {
                 const peek = window.innerHeight * PHONE_PEEK_SHARE;
                 if (shown < peek * 0.6 || (v > 0.8 && !sidebar.classList.contains('is-full'))) {
                     stopCinematicMode();
-                    closeUI();
+                    deselect();
                     updateOrbitLineHighlights();
                     document.getElementById('explore-btn')?.focus({ preventScroll: true });
                     return;
@@ -4834,7 +4841,7 @@ function getSolarSystemView(outPos, outTarget) {
 // "Solar System" pinned atop the menu: deselect and show every planet's orbit.
 // animate: false jumps straight there, for the view on load.
 function showSolarSystem({ animate = true } = {}) {
-    closeUI();
+    deselect();
     stopCinematicMode();
     releaseUserControl();
 
@@ -4964,13 +4971,13 @@ renderer.domElement.addEventListener('click', (e) => {
     } else {
         selectedObject = null;
         updateOrbitLineHighlights();
-        closeUI();
+        deselect();
     }
 });
 
 document.getElementById('sidebar-close').addEventListener('click', () => {
     stopCinematicMode();
-    closeUI();
+    deselect();
     updateOrbitLineHighlights();
 });
 
@@ -4985,7 +4992,7 @@ window.addEventListener('keydown', (e) => {
     hurryTransition();
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
-        closeUI();
+        deselect();
         updateOrbitLineHighlights();
     }
 });
