@@ -1923,9 +1923,9 @@ function attemptToLand() {
 
             // Someone picked this lander before it had landed: fly there now.
             if (pendingLanderFocus && pendingLanderFocus.data === request.data) {
-                const { mesh, data, options } = pendingLanderFocus;
+                const { mesh, data } = pendingLanderFocus;
                 pendingLanderFocus = null;
-                focusOnObject(mesh, data, options);
+                startFlight(mesh, data);
             }
         }
     }
@@ -3086,7 +3086,7 @@ function createMenuRow(obj) {
 
     btn.onclick = () => {
         stopCinematicMode();
-        focusOnObject(obj.mesh, obj.data, { returnFocusTo: btn });
+        selectObject(obj.data.name, { returnFocusTo: btn });
     };
     btn.onmouseenter = btn.onfocus = () => setHoveredObject(obj);
     btn.onmouseleave = btn.onblur = () => clearHoveredObject();
@@ -3704,25 +3704,52 @@ function releaseUserControl() {
     clearTimeout(autoOrbitResumeTimer);
 }
 
-function focusOnObject(mesh, data, { returnFocusTo = null } = {}) {
-    if (!cinematicActive) coachStep('pick');
-    sidebarReturnFocus = returnFocusTo;
+// --- ENGINE EVENTS ---
+// Things that happen now and then (a selection, an arrival) go out as events, so the app round
+// the engine can follow them without the engine knowing about its panels. The per-frame loop
+// never goes through these. Events: select, arrive, deselect.
+const engineListeners = new Map();
+function onEngine(type, listener) {
+    if (!engineListeners.has(type)) engineListeners.set(type, []);
+    engineListeners.get(type).push(listener);
+}
+function emitEngine(type, detail) {
+    engineListeners.get(type)?.forEach(listener => listener(detail));
+}
+
+// Settles the promise flyTo returned: true on arrival, false if something else was chosen first.
+let arrivalWaiter = null;
+function settleArrival(arrived) {
+    const resolve = arrivalWaiter;
+    arrivalWaiter = null;
+    resolve?.(arrived);
+}
+
+// Fly to an object by name. Emits "select" straight away (with `waiting` while a lander's body
+// loads) and "arrive" when the camera gets there; the promise resolves true on arrival, or false
+// if another selection or a deselect comes first.
+function flyTo(name) {
+    const obj = celestialMap.get(name);
+    if (!obj) return Promise.resolve(false);
+    settleArrival(false);
+    const arrival = new Promise(resolve => { arrivalWaiter = resolve; });
+    startFlight(obj.mesh, obj.data);
+    return arrival;
+}
+
+function startFlight(mesh, data) {
     pendingLanderFocus = null;
     clearShownHolder();
 
     // A lander whose body hasn't loaded yet is parked off-scene (at the Sun's centre). Show its
     // details now, make sure its body loads, and fly there once it lands (see attemptToLand).
     if (data && data.orbit_type === 'landed' && !isInScene(mesh)) {
-        pendingLanderFocus = { mesh, data, options: { returnFocusTo } };
+        pendingLanderFocus = { mesh, data };
         const parent = celestialMap.get(data.parent);
         if (parent) loadModelForItem(parent.data, true);
         if (!data.isModelLoaded) loadModelForItem(data, true);
         attemptToLand();
-        if (pendingLanderFocus) {
-            updateUI(data);
-            if (returnFocusTo) document.getElementById('info-title')?.focus({ preventScroll: true });
-            announce(`Loading ${data.name}`);
-        }
+        if (pendingLanderFocus) emitEngine('select', { data, waiting: true });
         return;
     }
 
@@ -3751,16 +3778,30 @@ function focusOnObject(mesh, data, { returnFocusTo = null } = {}) {
     getFocusPoint(mesh, initTarget);
 
     initiateTransition(initIdealPos, arrivalTime);
-    updateUI(data);
+    emitEngine('select', { data, waiting: false });
+}
 
-    if (returnFocusTo) {
+// Showcase: choose an object. Chosen from the menu (returnFocusTo is its row), the details take
+// keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
+function selectObject(name, { returnFocusTo = null } = {}) {
+    sidebarReturnFocus = returnFocusTo;
+    return flyTo(name);
+}
+
+onEngine('select', ({ data, waiting }) => {
+    if (!cinematicActive) coachStep('pick');
+    updateUI(data);
+    if (waiting) {
+        if (sidebarReturnFocus) document.getElementById('info-title')?.focus({ preventScroll: true });
+        announce(`Loading ${data.name}`);
+    } else if (sidebarReturnFocus) {
         // Visitor chose this from the menu: take them to the details.
         document.getElementById('info-title')?.focus({ preventScroll: true });
     } else {
         // Chosen by a canvas click or the tour: announce without moving focus.
         announce(`Now showing ${data ? data.name : 'selection'}`);
     }
-}
+});
 
 function announce(message) {
     const el = document.getElementById('announcer');
@@ -4366,7 +4407,7 @@ function cycleCinematic() {
     }
     const nextObj = cinematicQueue.pop();
     if (nextObj) {
-        focusOnObject(nextObj.mesh, nextObj.data);
+        selectObject(nextObj.data.name);
     }
 }
 
@@ -4544,6 +4585,8 @@ function animate() {
                 isTracking = true;
                 getFocusPoint(selectedObject, _lastTrackedPos);
                 selectedObject.getWorldQuaternion(_lastTrackedQuat);
+                emitEngine('arrive', { data: selectedObject.userData });
+                settleArrival(true);
             }
         }
 
@@ -4916,12 +4959,7 @@ renderer.domElement.addEventListener('click', (e) => {
         let safeCount = 0;
         while (target && !target.userData.name && safeCount < 10) { target = target.parent; safeCount++; }
         if (target && target.userData && target.userData.name) {
-            const systemObj = celestialMap.get(target.userData.name);
-            if (systemObj) {
-                focusOnObject(systemObj.mesh, systemObj.data);
-            } else {
-                focusOnObject(target, target.userData);
-            }
+            selectObject(target.userData.name);
         }
     } else {
         selectedObject = null;
