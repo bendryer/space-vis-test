@@ -8,7 +8,8 @@
 // with the simulation date pinned (?date=) and the motion clock held (__ouniverse.holdMotion), and
 // screenshots each one. Records console errors, GPU time per stop and the load marks, then runs
 // Cinematic Mode for two cycles. Fails on a console error, a flight that doesn't finish, or a
-// screenshot that differs from the baseline by more than DIFF_LIMIT.
+// screenshot that differs from the baseline by more than DIFF_LIMIT, or a stop whose keyboard
+// focus, announcement, details panel or current menu row differs from the baseline's.
 import { createServer } from 'vite';
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
@@ -121,6 +122,13 @@ try {
             return s.length ? +s[s.length >> 1].toFixed(2) : null;
         });
         stop.file = `${String(report.stops.length + 1).padStart(2, '0')}-${name.toLowerCase().replace(/\W+/g, '-')}.png`;
+        // What a screenshot can't show: where keyboard focus is and what was announced.
+        stop.state = await app(() => ({
+            focus: document.activeElement?.id || document.activeElement?.className || null,
+            announced: document.getElementById('announcer')?.textContent ?? null,
+            sidebar: document.getElementById('sidebar')?.classList.contains('active') ?? null,
+            menuCurrent: document.querySelector('#mission-list [aria-current]')?.textContent?.trim() ?? null,
+        }));
         await page.screenshot({ path: path.join(outDir, stop.file) });
         // Where the menu list lands when it scrolls to the selection depends on whether a group is
         // still opening, so its area is left out of the comparison (it stays in the screenshot).
@@ -159,7 +167,12 @@ try {
 // Compare with the baseline in the browser (no image libraries needed).
 if (!saveBaseline && fs.existsSync(baselineDir)) {
     const cmp = await browser.newPage();
+    const baseReport = JSON.parse(fs.readFileSync(path.join(baselineDir, 'report.json'), 'utf8'));
     for (const stop of report.stops) {
+        const baseState = baseReport.stops.find(s => s.name === stop.name)?.state;
+        if (baseState && JSON.stringify(baseState) !== JSON.stringify(stop.state)) {
+            failures.push(`${stop.name}: state differs from the baseline: ${JSON.stringify(stop.state)}, was ${JSON.stringify(baseState)}`);
+        }
         const ref = path.join(baselineDir, stop.file ?? '');
         const cur = path.join(outDir, stop.file ?? '');
         if (!stop.file || !fs.existsSync(ref) || !fs.existsSync(cur)) continue;
