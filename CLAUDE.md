@@ -16,7 +16,8 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 - `npm run build`: production build into `dist/`. `ANALYZE=1 npm run build` also writes and opens a bundle report (`stats.html`).
 - `npm run preview`: serve the production build (`/space-vis-test/`)
 - `npm run deploy`: check, build and publish `dist/` to GitHub Pages (see Workflow)
-- `npm run lint`: ESLint (flat config). There are no tests yet (a smoke test is Phase 0 of `ENGINE-PLAN.md`).
+- `npm run lint`: ESLint (flat config).
+- `npm run smoke`: smoke test (`tools/smoke.mjs`). Starts its own dev server on port 5199, opens system Chrome on the GPU, flies to nine stops, runs Cinematic Mode for two cycles, and compares each screenshot with `smoke/baseline/`. It fails on a console error, a flight that doesn't finish, or a stop where more than 0.5% of pixels change. `npm run smoke -- --baseline` saves a new baseline, and `--only=Sun,Earth` runs just those stops. Output goes in `smoke/`, which is gitignored, so each machine keeps its own baseline. Take it from `main` before starting work that should change nothing visible.
 
 ## Workflow
 
@@ -79,7 +80,7 @@ Web-ready derivatives live beside the sources, and a changed source needs its de
 
 ## Testing and debugging
 
-- **Dev hook:** in dev builds `window.__ouniverse` exposes `camera`, `controls`, `scene`, `celestialMap`, `renderer`, `THREE`, `loadGltf`, `buildModelLevel`, `getEffectiveModel`, `isTransitioning`, `selectedObject`, `sunEffect`, etc. It is stripped from production builds.
+- **Dev hook:** in dev builds `window.__ouniverse` exposes `camera`, `controls`, `scene`, `celestialMap`, `renderer`, `THREE`, `loadGltf`, `buildModelLevel`, `getEffectiveModel`, `isTransitioning`, `selectedObject`, `sunEffect`, etc., and `holdMotion(t)`, which holds the motion clock at `t` (camera orbit, craft attitude and tumbles, Sun surface) and puts the camera where that clock says (`holdMotion()` releases it). `?date=2026-10-08T12:00:00Z` starts the simulated clock at that moment and stops it there. All of this is stripped from production builds.
 - **Performance marks:** `system-ready`, `warmup-start`, `warmup-shaders-ready`, `scene-ready` (start button ready), `sky-ready`. Read them with `performance.getEntriesByType('mark')`.
 - **Chrome (claude-in-chrome):** the app only animates while its tab is visible. If `document.visibilityState` is `hidden`, rAF is paused and flights stall; ask the user to bring the window forward. To hurry a flight without deselecting, dispatch a `wheel` event on `renderer.domElement` (Escape deselects).
 - **Headless (Playwright):** the default swiftshader renders about 3 fps. Instead launch system Chrome (`executablePath: C:/Program Files/Google/Chrome/Application/chrome.exe`) with `--enable-gpu --ignore-gpu-blocklist --use-angle=d3d11`: that renders on the real GPU at 60 fps, visible, and is the reliable way to time things (the claude-in-chrome tab is often hidden). In Git Bash, prefix commands passing `/models/...` arguments with `MSYS_NO_PATHCONV=1`.

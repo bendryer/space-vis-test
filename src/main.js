@@ -207,8 +207,15 @@ function getEffectiveModel(item) {
 
 
 // --- TIME STATE ---
-const timeScale = 1;
-let simulatedDate = new Date();
+// Dev builds take ?date=2026-10-08T12:00:00Z to start the clock at a fixed moment and hold it
+// there, so the smoke test's screenshots repeat (tools/smoke.mjs). Ignored in production builds.
+const PINNED_DATE = import.meta.env.DEV ? (() => {
+    const param = new URLSearchParams(location.search).get('date');
+    const date = param ? new Date(param) : null;
+    return date && !isNaN(date) ? date : null;
+})() : null;
+const timeScale = PINNED_DATE ? 0 : 1;
+let simulatedDate = PINNED_DATE ? new Date(PINNED_DATE) : new Date();
 const clock = new THREE.Clock();
 
 // --- STATE ---
@@ -240,6 +247,9 @@ const SOLAR_SYSTEM_SPIN_EASE_SECONDS = 2;
 let userHasControl = false;
 let autoOrbitResumeTimer = null;
 let motionTime = 0; // Clamped clock for camera motion, so hitches don't cause jumps
+// Dev only: the smoke test holds the motion clock at a set time so the camera's orbit, the
+// craft and the Sun come to rest in the same place on every run (window.__ouniverse.holdMotion).
+let heldMotionTime = null;
 
 // --- TRANSITION STATE ---
 const transitionStartPos = new THREE.Vector3();
@@ -3806,7 +3816,7 @@ const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" foc
 // (by the visitor's clock) replaces `status`; before the first date, `status` stands.
 function applyStatusTimeline(item) {
     if (!Array.isArray(item.status_timeline)) return;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = (PINNED_DATE || new Date()).toISOString().slice(0, 10);
     for (const step of item.status_timeline) {
         if (step.from && step.status && step.from <= today) item.status = step.status;
     }
@@ -4407,7 +4417,9 @@ function animate() {
     // Motion uses a clamped step so one slow frame can't make the camera leap;
     // the simulated clock keeps real time.
     const dt = Math.min(realDt, MAX_MOTION_DT);
-    motionTime += dt;
+    motionTime = heldMotionTime ?? motionTime + dt;
+    // Tumbles turn by the step, not the clock, so a held clock stops them too.
+    const turnDt = heldMotionTime === null ? dt : 0;
     const elapsedTime = motionTime;
 
     uploadNextTexture();
@@ -4507,16 +4519,16 @@ function animate() {
             if (!obj.tumbleSpeed) {
                 obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
             }
-            meshGroup.rotateX(obj.tumbleSpeed.x * dt);
-            meshGroup.rotateY(obj.tumbleSpeed.y * dt);
-            meshGroup.rotateZ(obj.tumbleSpeed.z * dt);
+            meshGroup.rotateX(obj.tumbleSpeed.x * turnDt);
+            meshGroup.rotateY(obj.tumbleSpeed.y * turnDt);
+            meshGroup.rotateZ(obj.tumbleSpeed.z * turnDt);
         } else if (data.rot_period) {
             const theta = (days / data.rot_period) * Math.PI * 2;
             const offset = (data.rot_offset || 0) * (Math.PI / 180);
             meshGroup.rotation.y = theta + offset;
         }
         else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
-            updateMissionAttitude(obj, elapsedTime, dt, days);
+            updateMissionAttitude(obj, elapsedTime, turnDt, days);
         }
     });
 
@@ -4713,7 +4725,7 @@ function animate() {
             // Turn the whole view about the Sun's axis at the same rate as the orbit around a
             // selected object, easing in after arrival.
             solarSystemSpin = Math.min(1, solarSystemSpin + dt / SOLAR_SYSTEM_SPIN_EASE_SECONDS);
-            const angle = CAMERA_ORBIT_SPEED * dt * solarSystemSpin * solarSystemSpin;
+            const angle = heldMotionTime === null ? CAMERA_ORBIT_SPEED * dt * solarSystemSpin * solarSystemSpin : 0;
             camera.position.applyAxisAngle(_UP, angle);
             controls.target.applyAxisAngle(_UP, angle);
             controls.update();
@@ -4956,7 +4968,21 @@ if (import.meta.env.DEV) {
     window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
         loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
         get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
-        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; }, get simulatedDate() { return simulatedDate; }, getSunOcclusion, resolution, flattenModel };
+        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; }, get simulatedDate() { return simulatedDate; }, getSunOcclusion, resolution, flattenModel,
+        // Hold the motion clock (null releases it) and put the camera straight where the held
+        // clock says, so it has nothing left to ease.
+        holdMotion(time = null) {
+            heldMotionTime = time;
+            if (time !== null) sunEffect?.setNoiseTime(time);
+            if (time === null || isTransitioning || userHasControl) return;
+            if (isTracking && selectedObject) {
+                getIdealCameraPosition(selectedObject, time, camera.position);
+                getFocusPoint(selectedObject, controls.target);
+            } else if (solarSystemView) {
+                getSolarSystemView(camera.position, controls.target);
+            }
+            controls.update();
+        } };
 }
 
 loadSystem();

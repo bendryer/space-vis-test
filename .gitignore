@@ -58,3 +58,5 @@ src/javascript.svg
 .impeccable/review/
 .impeccable/questions/
 .impeccable/ds-artifact/
+# Smoke test output (tools/smoke.mjs): screenshots and reports, kept on disk
+smoke/

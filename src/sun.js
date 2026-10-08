@@ -354,5 +354,8 @@ export function createSun({ radius, renderer }) {
         }
     }
 
-    return { group, update, noiseMaterial }; // noiseMaterial exposed for dev timing checks
+    // Sets the plasma's clock; the smoke test uses it so the surface matches between runs.
+    function setNoiseTime(time) { noiseTime = time; }
+
+    return { group, update, setNoiseTime, noiseMaterial }; // noiseMaterial exposed for dev timing checks
 }
