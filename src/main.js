@@ -4973,11 +4973,25 @@ if (import.meta.env.DEV) {
         // clock says, so it has nothing left to ease.
         holdMotion(time = null) {
             heldMotionTime = time;
-            if (time !== null) sunEffect?.setNoiseTime(time);
-            if (time === null || isTransitioning || userHasControl) return;
+            if (time === null) return;
+            sunEffect?.setNoiseTime(time);
+            // Tumbles add up frame by frame, so how far one has turned depends on how long loading
+            // took: set each to a turn that depends only on the held time.
+            celestialMap.forEach(obj => {
+                if (!obj.tumbleSpeed) return;
+                obj.meshGroup.rotation.set(0, 0, (obj.data.tilt || 0) * Math.PI / 180);
+                obj.meshGroup.rotateX(obj.tumbleSpeed.x * time);
+                obj.meshGroup.rotateY(obj.tumbleSpeed.y * time);
+                obj.meshGroup.rotateZ(obj.tumbleSpeed.z * time);
+            });
+            scene.updateMatrixWorld(true);
+            if (isTransitioning || userHasControl) return;
             if (isTracking && selectedObject) {
                 getIdealCameraPosition(selectedObject, time, camera.position);
                 getFocusPoint(selectedObject, controls.target);
+                // The tracking step follows the target's movement from here, not from before the jump.
+                _lastTrackedPos.copy(controls.target);
+                selectedObject.getWorldQuaternion(_lastTrackedQuat);
             } else if (solarSystemView) {
                 getSolarSystemView(camera.position, controls.target);
             }

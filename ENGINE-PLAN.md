@@ -29,7 +29,7 @@ The `../space-vis-design` sandbox is retired. Its docs (`PRODUCT.md`, `DESIGN.md
 
 ## Phase 0: Safety net ✅ (2026-10-08)
 
-Done on `refactor/engine-split`: `npm run smoke` (see `CLAUDE.md`), the dev-only `?date=` pin, and `__ouniverse.holdMotion`, which makes the screenshots repeat: 0.00% of pixels change between runs, except Philae at about 0.1% (Comet 67P's tumble turns by the frame step, so its angle depends on how long loading took). The test also marks the coach as seen and parks the pointer on the title, since both otherwise change the picture. Baseline taken from `main` plus these test hooks.
+Done on `refactor/engine-split`: `npm run smoke` (see `CLAUDE.md`), the dev-only `?date=` pin, and `__ouniverse.holdMotion`, which makes the screenshots repeat: 0.00% of pixels change between runs. It also sets each tumbling body (Comet 67P under Philae) to the turn it would have at the held time, since tumbles add up frame by frame and would otherwise depend on how long loading took. The test also marks the coach as seen and parks the pointer on the title, since both otherwise change the picture. Baseline taken from `main` plus these test hooks.
 
 - Branch `refactor/engine-split` from `main`.
 - **Smoke test:** `tools/smoke.mjs`, `playwright-core` as a dev dependency, `npm run smoke`. System Chrome on the GPU (`--enable-gpu --ignore-gpu-blocklist --use-angle=d3d11`). It:
