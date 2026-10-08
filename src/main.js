@@ -3469,8 +3469,12 @@ function planFlightPath(from, to) {
     return curve;
 }
 
+// How unhurried flights are (a multiple of the base duration); the tour flies slower.
+let flightPace = USER_FLIGHT_SCALE;
+function setFlightPace(scale) { flightPace = scale; }
+
 function estimateFlightDuration(travelDist) {
-    const flightScale = prefersReducedMotion.matches ? 0 : (cinematicActive ? CINEMATIC_FLIGHT_SCALE : USER_FLIGHT_SCALE);
+    const flightScale = prefersReducedMotion.matches ? 0 : flightPace;
     return Math.max((1.5 + Math.min(travelDist / 15000, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
 }
 
@@ -3723,6 +3727,11 @@ function settleArrival(arrived) {
     const resolve = arrivalWaiter;
     arrivalWaiter = null;
     resolve?.(arrived);
+}
+
+// Every object's data.json entry, in load order.
+function listObjects() {
+    return [...celestialMap.values()].map(obj => obj.data);
 }
 
 // Fly to an object by name. Emits "select" straight away (with `waiting` while a lander's body
@@ -4370,6 +4379,7 @@ window.addEventListener('resize', syncMenuInert);
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
+    setFlightPace(CINEMATIC_FLIGHT_SCALE);
     document.body.classList.add('is-cinematic');
     closeMenuSheet();
     hideCoach({ remember: false });
@@ -4385,6 +4395,7 @@ function startCinematicMode() {
 function stopCinematicMode() {
     if (!cinematicActive) return;
     cinematicActive = false;
+    setFlightPace(USER_FLIGHT_SCALE);
     document.body.classList.remove('is-cinematic');
     const menu = document.getElementById('mission-menu');
     menu.classList.remove('ui-hidden');
@@ -4404,18 +4415,14 @@ function stopCinematicMode() {
 function cycleCinematic() {
     if (!cinematicActive) return;
     if (cinematicQueue.length === 0) {
-        celestialMap.forEach(obj => {
-            if (obj.data.type === 'mission') cinematicQueue.push(obj);
-        });
+        cinematicQueue = listObjects().filter(data => data.type === 'mission').map(data => data.name);
         for (let i = cinematicQueue.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cinematicQueue[i], cinematicQueue[j]] = [cinematicQueue[j], cinematicQueue[i]];
         }
     }
-    const nextObj = cinematicQueue.pop();
-    if (nextObj) {
-        selectObject(nextObj.data.name);
-    }
+    const next = cinematicQueue.pop();
+    if (next) selectObject(next);
 }
 
 // Which way is up for the viewer. Cruising between worlds the Solar System's plane stays level

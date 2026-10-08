@@ -41,7 +41,9 @@ Done on `refactor/engine-split`: `npm run smoke` (see `CLAUDE.md`), the dev-only
 - **Dev-only date pin**, so screenshots repeat and can be compared pixel by pixel.
 - **Baseline:** reference screenshots and timings from `main` before any refactor commit.
 
-## Phase 1: Separate engine from UI inside `main.js` (no file moves)
+## Phase 1: Separate engine from UI inside `main.js` (no file moves) ✅ (2026-10-08)
+
+Done: `onEngine` / `emitEngine` with `select`, `arrive` and `deselect`; `flyTo(name)` (promise: true on arrival, false if replaced or deselected) and the showcase's `selectObject` and `select` listener; `deselect()` and its listener; `listObjects()`; `setFlightPace(scale)`, so the engine no longer reads `cinematicActive` for flight speed. Cinematic Mode now uses only these. `hover`, `model-loaded` and `ready` are left until something listens for them. The engine still reads `cinematicActive` for the phone insets, which `setViewInsets` (Phase 2) replaces.
 
 - A small event emitter: `select`, `arrive`, `deselect`, `hover`, `model-loaded`, `ready`.
 - Split `focusOnObject` into the engine's `flyTo(name, opts)` (flight, loading, landers; returns a promise that resolves on arrival) and a showcase listener (details panel, focus, announcements, coach).
