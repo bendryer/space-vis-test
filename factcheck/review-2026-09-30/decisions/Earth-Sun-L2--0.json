@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“A gravitational stable point.”",
+  "field": "description",
+  "id": "Earth-Sun-L2--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Earth-Sun L2",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Lagrange Point 2 is a gravitational stable point located",
+      "to": "Lagrange Point 2 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:15:28.638Z",
+  "verdict": "bad"
+}

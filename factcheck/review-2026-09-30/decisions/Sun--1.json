@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU researches solar physics, internal structure and space weather, models the solar wind and its interaction with planetary atmospheres.",
+  "field": "ou_involvement",
+  "id": "Sun--1",
+  "kind": "claim",
+  "note": "I like the suggested change, but add something that the solar wind interaction and damage to the cameras is the core research of the CEI.",
+  "object": "Sun",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The Open University studies how the solar wind interacts with Earth's magnetic field through the ESA–CAS SMILE mission, whose X-ray camera detectors were developed and tested at the OU's Centre for Electronic Imaging."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:56:10.304Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "OU research on why 67P’s jets follow a day–night cycle.",
+  "field": "ou_involvement",
+  "id": "Rosetta--4",
+  "kind": "claim",
+  "note": "",
+  "object": "Rosetta",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:25:49.512Z",
+  "verdict": "unv"
+}

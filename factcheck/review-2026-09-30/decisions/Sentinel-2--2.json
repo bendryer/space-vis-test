@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU machine learning for soil moisture, forest fire evolution and desertification risk, and student training.",
+  "field": "ou_involvement",
+  "id": "Sentinel-2--2",
+  "kind": "claim",
+  "note": "For now, lets remove the OU involvement, so it flags as missing and we can address later.",
+  "object": "Sentinel-2",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:06:42.687Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU has worked with ESA since conception on science cases and targets, and the Tenerife telescopes monitor Ariel targets.",
+  "field": "ou_involvement",
+  "id": "Ariel--1",
+  "kind": "claim",
+  "note": "remove for now",
+  "object": "Ariel",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:31:39.189Z",
+  "verdict": "unv"
+}

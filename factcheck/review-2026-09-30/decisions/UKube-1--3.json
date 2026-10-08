@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "The data “has since informed the design of more radiation-tolerant space CMOS sensors”.",
+  "field": "ou_involvement",
+  "id": "UKube-1--3",
+  "kind": "claim",
+  "note": "",
+  "object": "UKube-1",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:11:16.656Z",
+  "verdict": "unv"
+}

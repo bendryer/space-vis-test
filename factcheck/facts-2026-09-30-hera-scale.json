@@ -1,0 +1,20 @@
+[
+ { "object": "Hera", "field": "trajectory", "fact": "Launched 7 October 2024 (Falcon 9); Mars swingby 12 March 2025 at about 5,000 km altitude, also imaging Deimos.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Wikipedia: Hera (space mission)", "u": "https://en.wikipedia.org/wiki/Hera_(space_mission)" }, { "t": "ESA: Hera operations", "u": "https://www.esa.int/Enabling_Support/Operations/Hera_operations" } ] },
+ { "object": "Hera", "field": "trajectory", "fact": "ESA trajectory design: impulsive rendezvous with Didymos on 12 October 2026, then a two-month rendezvous phase of braking manoeuvres; DSM-2 in February 2026. Hera needs a wider orbit (farther aphelion) than Didymos to phase with it.", "quote": "Didymos rendezvous phase (RDV) lasts two months", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Muñoz, Acedo & Khan, Hera Trajectory Design (ISSFD 2024)", "u": "https://issfd.org/ISSFD_2024/ISSFD2024_18-4.pdf" } ] },
+ { "object": "Hera", "field": "trajectory", "fact": "Hera is on track to arrive at Didymos in November 2026, a month earlier than planned; farthest point from the Sun in late November 2025.", "quote": "Hera is on track to arrive at Didymos in November 2026 – a month earlier than originally planned.", "checked": "2026-09-30", "volatile": true,
+   "sources": [ { "t": "ESA: Hera targets early arrival at Didymos asteroids (7 Oct 2025)", "u": "https://www.esa.int/Space_Safety/Hera/ESA_s_Hera_targets_early_arrival_at_Didymos_asteroids" } ] },
+ { "object": "Hera", "field": "trajectory", "fact": "No public figure found for Hera's farthest distance from the Sun (late November 2025); data.json uses an estimate of 2.4 AU (wider than Didymos's 2.27 AU aphelion).", "status": "not-found", "checked": "2026-09-30", "volatile": false,
+   "searched": ["Hera cruise aphelion distance from Sun AU late November 2025", "ISSFD 2024 Hera trajectory paper (figure only, no aphelion value in text)"] },
+ { "object": "Didymos", "field": "orbit", "fact": "JPL SBDB (epoch JD 2461200.5): a 1.64271 AU, e 0.38312, i 3.414°, node 72.986°, peri 319.581°, mean motion 0.46813°/day; perihelion 1.013 AU, aphelion 2.272 AU. Diameter 0.78 km, rotation 2.2593 h.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "JPL SBDB: 65803 Didymos", "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=65803&full-prec=1" } ] },
+ { "object": "Didymos", "field": "description", "fact": "DART struck Dimorphos on 26 September 2022; Didymos's closest approach to Earth was 4 October 2022 at about 0.071 AU.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Muñoz, Acedo & Khan, Hera Trajectory Design (ISSFD 2024)", "u": "https://issfd.org/ISSFD_2024/ISSFD2024_18-4.pdf" } ] },
+ { "object": "Didymos", "field": "description", "fact": "Dimorphos is about 150–160 m across; DART shortened its orbit around Didymos by about 33 minutes.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "eoPortal: Hera", "u": "https://www.eoportal.org/satellite-missions/hera" }, { "t": "NASA: DART", "u": "https://science.nasa.gov/mission/dart/" } ] },
+ { "object": "JUICE", "field": "trajectory", "fact": "The final Earth flyby is on 17 January 2029, putting JUICE on course for Jupiter in July 2031.", "checked": "2026-09-30", "volatile": true,
+   "sources": [ { "t": "ESA: Juice to fly past Earth for third gravity assist", "u": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist" } ] },
+ { "object": "Solar System", "field": "orbit", "fact": "Planet semi-major axes (J2000, AU): Mercury 0.38709927, Venus 0.72333566, Earth-Moon barycentre 1.00000261, Mars 1.52371034, Jupiter 5.20288700, Saturn 9.53667594, Uranus 19.18916464, Neptune 30.06992276.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "JPL: Approximate positions of the planets (table 1)", "u": "https://ssd.jpl.nasa.gov/planets/approx_pos.html" } ] }
+]

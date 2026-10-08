@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Emeritus Proffesor at the Open University.”",
+  "field": "description",
+  "id": "4731-MonicaGrady--2",
+  "kind": "claim",
+  "note": "",
+  "object": "4731 MonicaGrady",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Emeritus Proffesor",
+      "to": "Emeritus Professor"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:29:22.861Z",
+  "verdict": "unv"
+}

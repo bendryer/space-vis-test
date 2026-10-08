@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "“The university is now analysing the mission’s early X-ray images.”",
+  "field": "ou_involvement",
+  "id": "SMILE--5",
+  "kind": "claim",
+  "note": "We are on the operations team, working closely with the SXI team to maximise science return from the detectors.",
+  "object": "SMILE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The university is now analysing the mission's early X-ray images of how the solar wind interacts with Earth's magnetosphere.",
+      "to": "The team is now using modelling and experiments to get the best performance from the detectors in flight."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:10:05.042Z",
+  "verdict": "unv"
+}

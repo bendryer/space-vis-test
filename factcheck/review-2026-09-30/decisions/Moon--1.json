@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "“The OU leads international efforts in lunar research, focusing on the extraction of water and oxygen from regolith … mass spectrometers … permanently shadowed craters.”",
+  "field": "ou_involvement",
+  "id": "Moon--1",
+  "kind": "claim",
+  "note": "dont mention prospa - talk about analysis of apollo samples leading to the realisation that the moon contains water, and summarise recent efforts of using heratige from missions such as beagle, rosetta, to analyse the moon composition. Also mention in-situ resource utlisation for exploring how to use regolith to extract water, fuel and how to build with it.",
+  "object": "Moon",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU leads international efforts in lunar research, focusing on the extraction of water and oxygen from the moon's regolith.",
+      "to": "The OU leads the development of instruments that search for water and oxygen in the Moon's regolith, including ProSPA, the analytical laboratory of ESA's PROSPECT package."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:12:58.381Z",
+  "verdict": "fix"
+}

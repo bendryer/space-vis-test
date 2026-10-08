@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import { visualizer } from "rollup-plugin-visualizer";
 
+// ANALYZE=1 npm run build writes a bundle report (stats.html) and opens it.
+const analyze = Boolean(process.env.ANALYZE);
+
 export default defineConfig({
-  // REPLACE 'solar-system-explorer' WITH YOUR REPO NAME
-  // Example: If your repo is at https://github.com/bendryer/solar-system-explorer
-  // the base should be '/solar-system-explorer/'
+  // The GitHub Pages repo name: https://bendryer.github.io/space-vis-test/
   base: '/space-vis-test/',
-  plugins: [visualizer({ open: true, gzipSize: true })]
+  plugins: analyze ? [visualizer({ open: true, gzipSize: true })] : []
 })

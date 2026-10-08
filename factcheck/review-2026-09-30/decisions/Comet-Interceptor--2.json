@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU is “a lead Co-Investigator institution” for DISC.",
+  "field": "ou_involvement",
+  "id": "Comet-Interceptor--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Comet Interceptor",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "is a lead Co-Investigator institution for the DISC dust impact instrument",
+      "to": "is a Co-Investigator institution for the DISC dust impact instrument"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:27:47.344Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU PhD students use Gaia catalogues for clusters and binaries.",
+  "field": "ou_involvement",
+  "id": "Gaia--2",
+  "kind": "claim",
+  "note": "Keep this - also talk about using Gaia alerts to find transient objects, and that Gaia is a core casestudy in the module S818:Space Science where students use Gaia data to perform follow up observations from our remote telescope on tenerife.",
+  "object": "Gaia",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:18:31.177Z",
+  "verdict": "unv"
+}

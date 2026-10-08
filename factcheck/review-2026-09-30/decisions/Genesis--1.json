@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU ion microprobe facilities helped measure the solar-wind oxygen isotopes.",
+  "field": "ou_involvement",
+  "id": "Genesis--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Genesis",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Genesis showed that the Sun is richer in oxygen-16 than the Earth, Moon, Mars and meteorites. This is a key reference point for OU research on oxygen isotopes in meteorites and returned samples."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:31:22.712Z",
+  "verdict": "bad"
+}

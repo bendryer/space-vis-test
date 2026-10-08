@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU contribution to L 98-59 d and WASP-107b.",
+  "field": "ou_involvement",
+  "id": "JWST--2",
+  "kind": "claim",
+  "note": "This is too technical - summarise it in plain language so that stakeholders can understand the contribution.",
+  "object": "JWST",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "WASP-39b, WASP-107b and L 98-59 d",
+      "to": "WASP-39b and L 98-59 d"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:16:27.310Z",
+  "verdict": "fix"
+}

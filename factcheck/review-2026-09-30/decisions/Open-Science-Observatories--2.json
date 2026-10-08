@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "launch_year 2010.",
+  "field": "launch_year",
+  "id": "Open-Science-Observatories--2",
+  "kind": "claim",
+  "note": "change to 2008 for now",
+  "object": "Open Science Observatories",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:31:57.213Z",
+  "verdict": "unv"
+}

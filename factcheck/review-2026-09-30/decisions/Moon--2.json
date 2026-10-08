@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Work is essential for Artemis missions.",
+  "field": "ou_involvement",
+  "id": "Moon--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Moon",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "This work is essential for the success of future sustainable lunar bases and the upcoming Artemis missions.",
+      "to": "This work supports plans for sustainable future exploration of the Moon."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:13:12.979Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Used to test autonomous navigation and train future mission operators.",
+  "field": "description",
+  "id": "Mars-Yard--2",
+  "kind": "claim",
+  "note": "also add that it's used for autonomous rover testing",
+  "object": "Mars Yard",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:32:24.642Z",
+  "verdict": "unv"
+}

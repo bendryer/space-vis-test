@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Possesses a surprisingly strong magnetic field.”",
+  "field": "description",
+  "id": "Mercury--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Mercury",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Despite its small size, it possesses a surprisingly strong magnetic field and a high density that suggests a massive metallic core.",
+      "to": "Despite its small size, it has a global magnetic field, which is surprising for such a small planet, and a high density that suggests a massive metallic core."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:56:31.330Z",
+  "verdict": "fix"
+}

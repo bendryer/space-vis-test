@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The Centre for Electronic Imaging is testing … VenSpec-U detectors. The OU leads a £2.3 million ESA-funded contribution, heading the science preparation team.”",
+  "field": "ou_involvement",
+  "id": "EnVision--1",
+  "kind": "claim",
+  "note": "",
+  "object": "EnVision",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The Open University's Atmospheric Research and Space Exploration group leads the testing and characterisation of the UV detectors for the VenSpec-U instrument, part of the VenSpec suite, funded by a £2.3 million ESA grant. The team also takes part in science preparations for the mission ahead of launch in the early 2030s."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:02.358Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,555 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-28T18:51:15.714Z",
+  "title": "Design System: OUniverse",
+  "extensions": {
+    "colorMeta": {
+      "core-blue": {
+        "role": "primary",
+        "displayName": "OU Core Blue",
+        "canonical": "#060645",
+        "oklch": "oklch(19.3% 0.111 269.5)",
+        "tonalRamp": [
+          "#030034",
+          "#111C5A",
+          "#2B3C7C",
+          "#485CA0",
+          "#687EC5",
+          "#89A2EB",
+          "#B4C8FE",
+          "#E8EEFF"
+        ]
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Core Blue Plate",
+        "canonical": "rgba(6, 6, 69, 0.9)",
+        "oklch": "oklch(19.3% 0.111 269.5 / 0.9)",
+        "tonalRamp": [
+          "#030034",
+          "#111C5A",
+          "#2B3C7C",
+          "#485CA0",
+          "#687EC5",
+          "#89A2EB",
+          "#B4C8FE",
+          "#E8EEFF"
+        ]
+      },
+      "plate-solid": {
+        "role": "neutral",
+        "displayName": "Solid Plate",
+        "canonical": "#05053E",
+        "oklch": "oklch(18.0% 0.103 269.6)",
+        "tonalRamp": [
+          "#030034",
+          "#131D56",
+          "#2D3D78",
+          "#4A5D9C",
+          "#6A7FC1",
+          "#8BA2E6",
+          "#B4C7FE",
+          "#E8EEFF"
+        ]
+      },
+      "space": {
+        "role": "neutral",
+        "displayName": "Space",
+        "canonical": "#000000",
+        "oklch": "oklch(0.0% 0.000 0.0)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Core Blue Hairline",
+        "canonical": "rgba(166, 181, 248, 0.2)",
+        "oklch": "oklch(78.6% 0.097 274.2 / 0.2)",
+        "tonalRamp": [
+          "#060032",
+          "#191D53",
+          "#333C75",
+          "#515C98",
+          "#707EBD",
+          "#92A1E2",
+          "#B9C6FF",
+          "#E9EEFF"
+        ]
+      },
+      "mid-blue": {
+        "role": "tertiary",
+        "displayName": "OU Mid Blue",
+        "canonical": "#1C46C0",
+        "oklch": "oklch(45.1% 0.196 264.7)",
+        "tonalRamp": [
+          "#000036",
+          "#02007B",
+          "#0A2DA8",
+          "#2754CE",
+          "#4678F6",
+          "#78A2FE",
+          "#AFC9FE",
+          "#E7EFFE"
+        ]
+      },
+      "lilac": {
+        "role": "tertiary",
+        "displayName": "Lilac",
+        "canonical": "#6A68C0",
+        "oklch": "oklch(56.1% 0.134 282.2)",
+        "tonalRamp": [
+          "#0A002F",
+          "#210F62",
+          "#3A3385",
+          "#5754AA",
+          "#7776CF",
+          "#9999F6",
+          "#C0C3FF",
+          "#ECEDFE"
+        ]
+      },
+      "light-blue": {
+        "role": "primary",
+        "displayName": "OU Light Blue",
+        "canonical": "#66EEFA",
+        "oklch": "oklch(87.9% 0.119 203.3)",
+        "tonalRamp": [
+          "#000E10",
+          "#002B2F",
+          "#054B51",
+          "#066F76",
+          "#05949E",
+          "#1DBAC6",
+          "#55E0EC",
+          "#C4FAFF"
+        ]
+      },
+      "accent-wash": {
+        "role": "primary",
+        "displayName": "Accent Wash",
+        "canonical": "rgba(102, 238, 250, 0.12)",
+        "oklch": "oklch(87.9% 0.119 203.3 / 0.12)",
+        "tonalRamp": [
+          "#000E10",
+          "#002B2F",
+          "#054B51",
+          "#066F76",
+          "#05949E",
+          "#1DBAC6",
+          "#55E0EC",
+          "#C4FAFF"
+        ]
+      },
+      "accent-current": {
+        "role": "primary",
+        "displayName": "Accent Current",
+        "canonical": "rgba(102, 238, 250, 0.22)",
+        "oklch": "oklch(87.9% 0.119 203.3 / 0.22)",
+        "tonalRamp": [
+          "#000E10",
+          "#002B2F",
+          "#054B51",
+          "#066F76",
+          "#05949E",
+          "#1DBAC6",
+          "#55E0EC",
+          "#C4FAFF"
+        ]
+      },
+      "green": {
+        "role": "secondary",
+        "displayName": "OU Green",
+        "canonical": "#7DFFD3",
+        "oklch": "oklch(91.4% 0.132 168.7)",
+        "tonalRamp": [
+          "#000F09",
+          "#012D20",
+          "#044E3B",
+          "#037357",
+          "#0A9975",
+          "#31BF96",
+          "#61E5BA",
+          "#BFFFE6"
+        ]
+      },
+      "yellow": {
+        "role": "secondary",
+        "displayName": "OU Yellow",
+        "canonical": "#FFF488",
+        "oklch": "oklch(95.4% 0.130 103.4)",
+        "tonalRamp": [
+          "#0E0C00",
+          "#2A2601",
+          "#4A4302",
+          "#6C6304",
+          "#908507",
+          "#B4A839",
+          "#D8CD61",
+          "#FEF387"
+        ]
+      },
+      "pink": {
+        "role": "secondary",
+        "displayName": "OU Pink",
+        "canonical": "#FFB4FF",
+        "oklch": "oklch(86.4% 0.129 326.6)",
+        "tonalRamp": [
+          "#19001A",
+          "#410043",
+          "#632265",
+          "#864387",
+          "#AA65AB",
+          "#CF87CF",
+          "#F5ABF5",
+          "#FFE5FE"
+        ]
+      },
+      "status-neutral": {
+        "role": "neutral",
+        "displayName": "Status Neutral",
+        "canonical": "rgba(255, 255, 255, 0.5)",
+        "oklch": "oklch(100.0% 0.000 89.9 / 0.5)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "rgba(255, 255, 255, 0.78)",
+        "oklch": "oklch(100.0% 0.000 89.9 / 0.78)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Ink Faint",
+        "canonical": "rgba(255, 255, 255, 0.6)",
+        "oklch": "oklch(100.0% 0.000 89.9 / 0.6)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display-splash": {
+        "displayName": "Display splash",
+        "purpose": "Splash title only (fluid 40px to 92px). The one large moment."
+      },
+      "title-panel": {
+        "displayName": "Title panel",
+        "purpose": "Object name at the head of the details panel."
+      },
+      "lockup-name": {
+        "displayName": "Lockup name",
+        "purpose": "Product name in the header, top-left."
+      },
+      "heading-section": {
+        "displayName": "Heading section",
+        "purpose": "\"Open University Involvement\" in light blue beside the portal-O mark."
+      },
+      "heading-menu": {
+        "displayName": "Heading menu",
+        "purpose": "The Explore menu title."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "OU involvement (ink) and descriptions (ink-muted)."
+      },
+      "row": {
+        "displayName": "Row",
+        "purpose": "Explore menu rows and the search field; the current row at 600."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Clock, data line and counts. Always tabular numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Status words in the menu and the reticle name tab."
+      }
+    },
+    "gradients": [
+      {
+        "name": "grad-signal",
+        "value": "linear-gradient(135deg, #7DFFD3, #66EEFA)",
+        "purpose": "OU green to light blue: the 14px portal-O mark, the reticle's exit flash, the splash orbit as it draws."
+      },
+      {
+        "name": "grad-world",
+        "value": "linear-gradient(135deg, #1C46C0, #6A68C0)",
+        "purpose": "OU mid blue to lilac: the splash world disc only."
+      }
+    ],
+    "strokes": [
+      {
+        "name": "stroke-hairline",
+        "value": "1px",
+        "purpose": "Plate edges, separators, the idle reticle leader."
+      },
+      {
+        "name": "stroke-ring",
+        "value": "1.5px",
+        "purpose": "Reticle ring and the exit flash."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "modal-lift",
+        "value": "0 20px 60px rgba(0, 0, 0, 0.6)",
+        "purpose": "The credits dialog only. Plates are otherwise flat."
+      },
+      {
+        "name": "sticky-edge",
+        "value": "0 1px 0 rgba(166, 181, 248, 0.2)",
+        "purpose": "Hairline under a stuck menu group head."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Standard easing: panel slide, controls shift, chevron, splash exit, reticle swipe-out. No overshoot."
+      },
+      {
+        "name": "panel-slide",
+        "value": "0.45s",
+        "purpose": "Details panel in and out, and the controls plate shift."
+      },
+      {
+        "name": "hover",
+        "value": "0.15s",
+        "purpose": "Row, button and link colour changes."
+      },
+      {
+        "name": "leader-draw",
+        "value": "0.6s after 0.15s",
+        "purpose": "The reticle swiping out when its object is chosen."
+      },
+      {
+        "name": "splash-exit",
+        "value": "0.7s",
+        "purpose": "The splash fades out and scales to 1.02."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01s",
+        "purpose": "Transitions collapse; the splash craft is hidden; the leader appears drawn."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "credits-stack",
+        "value": "560px"
+      },
+      {
+        "name": "splash-single-column",
+        "value": "720px"
+      },
+      {
+        "name": "panel-beside-scene",
+        "value": "900px"
+      },
+      {
+        "name": "laptop-height",
+        "value": "820px (max-height, from 721px wide)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The splash's \"Start exploring\" pill: the one large button, shown only on the splash.",
+      "html": "<div style=\"background:#060645;padding:24px\"><button class=\"ds-btn-primary\" type=\"button\">Start exploring</button></div>",
+      "css": ".ds-btn-primary { min-height: 52px; padding: 0 28px; background: #66EEFA; border: none; border-radius: 999px; color: #060645; font-family: var(--font, 'Poppins', Arial, sans-serif); font-size: 1.0625rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s, transform 0.2s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)); } .ds-btn-primary:hover { background: #fff; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Cinematic Mode toggle in the controls plate; its edge turns light blue when pressed.",
+      "html": "<div style=\"background:#060645;padding:24px\"><button class=\"ds-btn-ghost\" type=\"button\" aria-pressed=\"false\">Start Cinematic Mode</button></div>",
+      "css": ".ds-btn-ghost { min-height: 36px; padding: 8px 16px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 18px; color: #fff; font-family: var(--font, 'Poppins', Arial, sans-serif); font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: background-color 0.15s, border-color 0.15s; } .ds-btn-ghost:hover { background: var(--accent-wash, rgba(102, 238, 250, 0.12)); border-color: rgba(255, 255, 255, 0.7); } .ds-btn-ghost[aria-pressed=\"true\"] { background: var(--accent-wash, rgba(102, 238, 250, 0.12)); border-color: var(--accent, #66EEFA); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--accent, #66EEFA); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "The Explore menu's find field: 36px, hairline edge, light-blue focus ring.",
+      "html": "<div class=\"ds-search\"><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M21 21l-6 -6\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"Find a mission or body\" aria-label=\"Find a mission or body\"></div>",
+      "css": ".ds-search { position: relative; width: 232px; padding: 12px; background: var(--surface-solid, #05053E); } .ds-search-icon { position: absolute; left: 22px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); fill: none; stroke: var(--text-faint, rgba(255, 255, 255, 0.6)); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; } .ds-search-input { box-sizing: border-box; width: 100%; min-height: 36px; padding: 7px 10px 7px 34px; background: rgba(166, 181, 248, 0.08); border: 1px solid var(--line, rgba(166, 181, 248, 0.2)); border-radius: 8px; color: #fff; font-family: var(--font, 'Poppins', Arial, sans-serif); font-size: 0.84375rem; caret-color: var(--accent, #66EEFA); } .ds-search-input::placeholder { color: var(--text-faint, rgba(255, 255, 255, 0.6)); opacity: 1; } .ds-search-input:hover { border-color: rgba(166, 181, 248, 0.4); } .ds-search-input:focus-visible { outline: 2px solid var(--accent, #66EEFA); outline-offset: 1px; border-color: transparent; }"
+    },
+    {
+      "name": "Explore Menu",
+      "kind": "nav",
+      "refersTo": "plate-menu",
+      "description": "The 256px Explore plate: shield corner, 36px rows, the current row in accent-current, planned and ended status words.",
+      "html": "<nav class=\"ds-menu\" aria-label=\"Explore\"><h2 class=\"ds-menu-title\">Explore</h2><button class=\"ds-row\" type=\"button\"><svg class=\"ds-row-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/></svg><span>Mars</span></button><button class=\"ds-row ds-row--mission\" type=\"button\" aria-current=\"true\"><svg class=\"ds-row-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/></svg><span>Perseverance</span></button><button class=\"ds-row ds-row--mission\" type=\"button\"><svg class=\"ds-row-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/></svg><span>Beagle 2 <span class=\"ds-status ds-status--ended\">Lost</span></span></button><button class=\"ds-row ds-row--mission\" type=\"button\"><svg class=\"ds-row-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/></svg><span>Rosalind Franklin <span class=\"ds-status ds-status--planned\">Planned</span></span></button></nav>",
+      "css": ".ds-menu { width: 256px; padding: 12px 0 6px; background: var(--surface-solid, #05053E); border: 1px solid var(--line, rgba(166, 181, 248, 0.2)); border-radius: var(--plate-radius, 2px 10px 10px 10px); font-family: var(--font, 'Poppins', Arial, sans-serif); color: #fff; } .ds-menu-title { margin: 0 16px 10px; font-size: 0.875rem; font-weight: 600; } .ds-row { display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 36px; padding: 9px 16px; background: transparent; border: none; color: #fff; text-align: left; font-family: inherit; font-size: 0.84375rem; line-height: 1.35; cursor: pointer; transition: background-color 0.15s, color 0.15s; } .ds-row--mission { color: var(--text-muted, rgba(255, 255, 255, 0.78)); } .ds-row:hover { color: #fff; background: var(--accent-wash, rgba(102, 238, 250, 0.12)); } .ds-row[aria-current] { color: #fff; background: var(--accent-current, rgba(102, 238, 250, 0.22)); font-weight: 600; } .ds-row:focus-visible { outline: 2px solid var(--accent, #66EEFA); outline-offset: -2px; } .ds-row-icon { flex: none; width: 16px; height: 16px; margin-top: 0.1em; fill: none; stroke: currentColor; stroke-width: 1.75; opacity: 0.6; transition: opacity 0.15s; } .ds-row:hover .ds-row-icon, .ds-row[aria-current] .ds-row-icon { opacity: 1; } .ds-status { margin-left: 6px; color: var(--text-muted, rgba(255, 255, 255, 0.78)); font-size: 0.71875rem; font-weight: 500; white-space: nowrap; } .ds-status::before { content: ''; display: inline-block; width: 6px; height: 6px; margin: 0 4px 1px 0; border-radius: 50%; } .ds-status--planned::before { background: #FFF488; } .ds-status--ended::before { background: #FFB4FF; }"
+    },
+    {
+      "name": "Controls Plate",
+      "kind": "card",
+      "refersTo": "plate-controls",
+      "description": "Bottom-right Core blue plate at 90%, with the shield corner and 12px padding.",
+      "html": "<div class=\"ds-plate\"><button class=\"ds-plate-btn\" type=\"button\">Start Cinematic Mode</button><button class=\"ds-plate-link\" type=\"button\">Credits</button></div>",
+      "css": ".ds-plate { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px; background: var(--surface, rgba(6, 6, 69, 0.9)); border: 1px solid var(--line, rgba(166, 181, 248, 0.2)); border-radius: var(--plate-radius, 2px 10px 10px 10px); font-family: var(--font, 'Poppins', Arial, sans-serif); } .ds-plate-btn { min-height: 36px; padding: 8px 16px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 18px; color: #fff; font-family: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: background-color 0.15s, border-color 0.15s; } .ds-plate-btn:hover { background: var(--accent-wash, rgba(102, 238, 250, 0.12)); border-color: rgba(255, 255, 255, 0.7); } .ds-plate-link { background: none; border: none; padding: 2px 6px; color: var(--text-faint, rgba(255, 255, 255, 0.6)); font-family: inherit; font-size: 0.75rem; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.25); text-underline-offset: 3px; cursor: pointer; transition: color 0.15s, text-decoration-color 0.15s; } .ds-plate-link:hover { color: #fff; text-decoration-color: currentColor; } .ds-plate-btn:focus-visible, .ds-plate-link:focus-visible { outline: 2px solid var(--accent, #66EEFA); outline-offset: 2px; }"
+    },
+    {
+      "name": "Details Panel",
+      "kind": "custom",
+      "refersTo": "details-panel",
+      "description": "The 350px panel: name, data line with status dot and word, then Open University Involvement with the portal-O mark, then the description.",
+      "html": "<aside class=\"ds-panel\"><h2 class=\"ds-panel-title\">Rosetta</h2><p class=\"ds-panel-meta\">Mission · <span class=\"ds-dot ds-dot--ended\">Complete</span> · Launched 2004</p><section class=\"ds-ou\"><h3><svg class=\"ds-ou-mark\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-ou-grad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7DFFD3\"/><stop offset=\"1\" stop-color=\"#66EEFA\"/></linearGradient><mask id=\"ds-ou-cut\"><rect width=\"16\" height=\"16\" fill=\"#fff\"/><ellipse cx=\"8\" cy=\"8\" rx=\"3.4\" ry=\"5.2\" transform=\"rotate(22 8 8)\" fill=\"#000\"/></mask></defs><rect width=\"16\" height=\"16\" fill=\"url(#ds-ou-grad)\" mask=\"url(#ds-ou-cut)\"/></svg>Open University Involvement</h3><p>Sample OU involvement text sits here, in ink, before the image and description.</p></section><p class=\"ds-panel-desc\">Sample description text sits here, in muted ink.</p></aside>",
+      "css": ".ds-panel { box-sizing: border-box; width: 350px; padding: 28px; background: var(--surface-solid, #05053E); border-left: 1px solid var(--line, rgba(166, 181, 248, 0.2)); color: #fff; font-family: var(--font, 'Poppins', Arial, sans-serif); } .ds-panel-title { margin: 0 0 4px; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; } .ds-panel-meta { margin: 0 0 22px; color: var(--text-muted, rgba(255, 255, 255, 0.78)); font-size: 0.8125rem; font-weight: 500; font-variant-numeric: tabular-nums; } .ds-dot::before { content: ''; display: inline-block; width: 7px; height: 7px; margin: 0 6px 1px 0; border-radius: 50%; background: rgba(255, 255, 255, 0.5); } .ds-dot--active::before { background: #7DFFD3; } .ds-dot--planned::before { background: #FFF488; } .ds-dot--ended::before { background: #FFB4FF; } .ds-ou { margin: 0 0 22px; font-size: 0.90625rem; line-height: 1.6; } .ds-ou h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--accent, #66EEFA); font-size: 0.875rem; font-weight: 600; } .ds-ou p { margin: 0; } .ds-ou-mark { flex: none; width: 14px; height: 14px; } .ds-panel-desc { margin: 0; color: var(--text-muted, rgba(255, 255, 255, 0.78)); font-size: 0.90625rem; line-height: 1.6; }"
+    },
+    {
+      "name": "Reticle",
+      "kind": "custom",
+      "refersTo": "reticle-tab",
+      "description": "Instrument callout over the scene: a thin ring, a 45-degree hairline leader and a name tab on hover; the selection is stroked in the green-to-light-blue gradient.",
+      "html": "<div class=\"ds-reticle\"><svg viewBox=\"0 0 260 120\" width=\"260\" height=\"120\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-ret-grad\" x1=\"0\" y1=\"1\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#7DFFD3\"/><stop offset=\"1\" stop-color=\"#66EEFA\"/></linearGradient></defs><circle class=\"ds-ret-ring\" cx=\"40\" cy=\"80\" r=\"22\"/><path class=\"ds-ret-leader\" d=\"M55.6 64.4 l18 -18 H104\"/><circle class=\"ds-ret-ring ds-ret-ring--exit\" cx=\"200\" cy=\"70\" r=\"36\"/></svg><span class=\"ds-ret-tab\">Jupiter</span></div>",
+      "css": ".ds-reticle { position: relative; display: inline-block; background: #000; } .ds-ret-ring { fill: none; stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.5; } .ds-ret-leader { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 1; } .ds-ret-ring--exit { stroke: url(#ds-ret-grad); stroke-width: 2; opacity: 0.5; } .ds-ret-tab { position: absolute; left: 104px; top: 36px; padding: 3px 8px; background: var(--surface, rgba(6, 6, 69, 0.9)); border: 1px solid var(--line, rgba(166, 181, 248, 0.2)); border-radius: 3px; color: #fff; font-family: var(--font, 'Poppins', Arial, sans-serif); font-size: 0.71875rem; font-weight: 500; line-height: 1.3; white-space: nowrap; }"
+    },
+    {
+      "name": "Status",
+      "kind": "chip",
+      "refersTo": "status-dot-operating",
+      "description": "A coloured dot plus the data's own status word; never a dot alone.",
+      "html": "<p class=\"ds-statuses\"><span class=\"ds-st ds-st--active\">Active</span><span class=\"ds-st ds-st--planned\">Planned</span><span class=\"ds-st ds-st--ended\">Landed</span></p>",
+      "css": ".ds-statuses { display: flex; gap: 16px; margin: 0; padding: 12px; background: var(--surface-solid, #05053E); color: var(--text-muted, rgba(255, 255, 255, 0.78)); font-family: var(--font, 'Poppins', Arial, sans-serif); font-size: 0.8125rem; font-weight: 500; } .ds-st::before { content: ''; display: inline-block; width: 7px; height: 7px; margin: 0 6px 1px 0; border-radius: 50%; } .ds-st--active::before { background: #7DFFD3; } .ds-st--planned::before { background: #FFF488; } .ds-st--ended::before { background: #FFB4FF; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Plate",
+    "overview": "The Solar System is the specimen and the chrome is a small, precise OU plate laid over it. OUniverse keeps the compact, clean layout the app already had and dresses it in Open University identity: Core blue plates edged with Core blue tint hairlines, Poppins, one OU light-blue accent, OU gradients kept inside small forms and drawn lines, and the shield's squared top-left corner on every plate. The identity changes colour, type and form. It never changes size.\n\nDensity is deliberately tight: a 256px Explore menu of 36px rows, a 350px details panel, a 12px controls plate, and a full-bleed scene behind them all. The one large moment is the splash, where the title runs up to 92px and the portal-O world and its orbit draw while the scene loads. After that, the chrome recedes and the scene leads.\n\nThe system rejects two opposite pulls, both confirmed by the user: the larger, rounder \"OU website\" look (big type, fat padding, bubbly cards, brochure layout) and sci-fi HUD residue (neon glow, frosted glass, monospace costume, coloured side stripes, bounce). It also refuses anything that buries the OU's role: in the details panel, \"Open University Involvement\" comes straight after the name and data line.",
+    "keyCharacteristics": [
+      "Compact sizes are fixed: 256px menu, 36px rows at 13.5px, 350px details panel.",
+      "Core blue plates, never black and never blurred.",
+      "One accent: OU light blue.",
+      "OU gradients only in small forms and lines: the portal-O mark, the reticle's exit flash, the splash.",
+      "The shield's squared 2px top-left corner on every plate.",
+      "Poppins throughout, sentence case, tabular numerals for data.",
+      "The logo signs off bottom-left; the header carries the name and the simulated UTC clock."
+    ],
+    "rules": [
+      {
+        "name": "The Core Blue Plate Rule",
+        "body": "Every chrome surface is Core blue (plate or plate-solid) edged with a 1px line hairline. Never black, never grey, never blurred.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "Light blue marks only what matters: the OU heading, the current row, focus and the primary action. Nothing else is light blue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Small Gradient Rule",
+        "body": "OU gradients live only in small forms and drawn lines: the 14px portal-O mark beside \"Open University Involvement\" and the reticle's brief exit flash (green to light blue), and the splash (mid blue to lilac on the world, green to light blue on the orbit). Never on text, plates or buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dot-and-Word Rule",
+        "body": "Status is a coloured dot followed by the data's own status word: green for operating, yellow for planned, pink for ended. The dot never appears without its word. The menu shows only planned and ended; operating is the default and stays quiet. The details panel shows every status.",
+        "section": "colors"
+      },
+      {
+        "name": "The Poppins Only Rule",
+        "body": "Poppins at 400 to 700, with Arial as the only fallback. No monospace, no second display face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Data Rule",
+        "body": "Anything that counts or ticks (the clock, launch years, group counts, loading status) uses tabular numerals, so it never jitters.",
+        "section": "typography"
+      },
+      {
+        "name": "The Compact Size Rule",
+        "body": "OU identity changes colour, type and form, never size. The menu stays 256px, rows stay 36px at 13.5px, and the details panel stays 350px. If a change makes the chrome bigger, undo it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Sign-Off Rule",
+        "body": "The OU logo appears bottom-left only: the sign-off on the splash, and 20px from the bottom and left edges in the app. The header carries the product name and the simulated UTC clock, never a logo. Only one logo shows at a time, and it is never redrawn or recoloured.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Plate Rule",
+        "body": "Plates carry no shadow, blur or glow. Depth comes from the Core blue fill against the scene and from the hairline edge.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Shield Corner Rule",
+        "body": "Plates are rounded 2px at the top-left and 10px elsewhere. That squared corner is the OU signature; don't round it to match the others.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do keep the compact sizes exactly: 256px menu, 36px rows at 13.5px, 350px details panel, 12px controls padding.",
+      "Do make every plate Core blue with a 1px Core blue tint hairline and the shield corner (2px top-left, 10px elsewhere).",
+      "Do use light blue as the one accent, only for the OU heading, current row, focus and primary action.",
+      "Do show status as a coloured dot plus the data's own word: green for operating, yellow for planned, pink for ended. Show only planned and ended in the menu.",
+      "Do keep \"Open University Involvement\" directly after the name and data line in the details panel, with the portal-O mark beside it.",
+      "Do keep OU gradients to the portal-O mark, the reticle's exit flash and the splash.",
+      "Do put the OU logo bottom-left only, and keep the header to the product name and the simulated UTC clock.",
+      "Do set every number that counts or ticks in tabular numerals."
+    ],
+    "donts": [
+      "Don't make the chrome larger or rounder: no big type, fat padding, bubbly cards or brochure layout in the manner of the OU website.",
+      "Don't add bloat: extra boxes, title-block rules, keys or chrome the app doesn't need.",
+      "Don't bring back sci-fi HUD residue: neon glow, frosted glass, monospace, coloured side stripes or bounce.",
+      "Don't bury the OU role below the image or the description.",
+      "Don't put gradients on text, plates or buttons.",
+      "Don't show a status dot without its word, or invent a status word the data doesn't use.",
+      "Don't redraw, recolour or duplicate the OU logo, or place it in the header."
+    ]
+  }
+}

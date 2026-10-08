@@ -1,0 +1,24 @@
+{
+  "choice": "accept",
+  "claim": "Status “Planned”, launch_year 2027.",
+  "field": "status",
+  "id": "Roman--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Roman",
+  "suggestion": [
+    {
+      "f": "status",
+      "from": "Planned",
+      "to": "Launched"
+    },
+    {
+      "f": "launch_year",
+      "from": "2027",
+      "to": "2026"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:21:09.292Z",
+  "verdict": "bad"
+}

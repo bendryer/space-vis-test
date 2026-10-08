@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "The CIS120 is “being evaluated for TRUTHS”.",
+  "field": "ou_involvement",
+  "id": "TRUTHS--2",
+  "kind": "claim",
+  "note": "",
+  "object": "TRUTHS",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:08:43.187Z",
+  "verdict": "unv"
+}

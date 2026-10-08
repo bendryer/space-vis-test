@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Successfully entered orbit around Mercury in late 2025.”",
+  "field": "description",
+  "id": "BepiColombo--0",
+  "kind": "claim",
+  "note": "",
+  "object": "BepiColombo",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "successfully entered orbit around Mercury in late 2025",
+      "to": "is due to enter orbit around Mercury on 21 November 2026"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:56:59.813Z",
+  "verdict": "bad"
+}

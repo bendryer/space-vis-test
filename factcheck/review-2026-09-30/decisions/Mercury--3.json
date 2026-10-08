@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Research “helps explain how such a small planet could maintain a liquid outer core”.",
+  "field": "ou_involvement",
+  "id": "Mercury--3",
+  "kind": "claim",
+  "note": "",
+  "object": "Mercury",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "This ongoing research helps explain how such a small planet could maintain a liquid outer core so close to the Sun.",
+      "to": "An OU scientist is the UK lead for BepiColombo's MIXS X-ray spectrometer, which will map the elements on Mercury's surface."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:56:52.151Z",
+  "verdict": "unv"
+}

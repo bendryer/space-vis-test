@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Over £400,000 in UK Space Agency funding” for UK CMOS readiness.",
+  "field": "ou_involvement",
+  "id": "HWO--2",
+  "kind": "claim",
+  "note": "",
+  "object": "HWO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The team secured over £400,000 in UK Space Agency funding for a project raising the readiness of new UK CMOS detector technology for the telescope.",
+      "to": "The OU is also part of the UK consortium that received £3 million in 2026 to develop one of the telescope's core instruments."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:20:48.074Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“OU planetary scientists led the production of Titan’s first global geomorphological map.”",
+  "field": "ou_involvement",
+  "id": "Titan--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Titan",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "Open University planetary scientists led the production of Titan's first global geomorphological map, published in Nature Astronomy, using Cassini data to identify six major terrain types across the moon's surface, from methane-carved plains to dune fields.",
+      "to": "Titan's first global geomorphological map, published in Nature Astronomy in 2019, used Cassini data to identify six major terrain types across the moon's surface, from plains to dune fields."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:25:14.474Z",
+  "verdict": "bad"
+}

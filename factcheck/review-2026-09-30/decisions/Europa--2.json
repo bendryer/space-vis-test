@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Svalbard fieldwork, and cryo-analytical lab techniques and simulation facilities for icy surfaces.",
+  "field": "ou_involvement",
+  "id": "Europa--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Europa",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "Fieldwork in polar environments such as Svalbard and the Canadian High Arctic",
+      "to": "Fieldwork in polar environments such as the Canadian High Arctic"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:23:27.491Z",
+  "verdict": "unv"
+}

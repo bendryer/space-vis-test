@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Supported by RAL Space, Airbus, the Max Planck Institute and TU Munich.",
+  "field": "ou_involvement",
+  "id": "Luna-27--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Luna 27",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:15:22.086Z",
+  "verdict": "unv"
+}

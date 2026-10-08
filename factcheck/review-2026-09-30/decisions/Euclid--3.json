@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU astronomers “lead research groups” finding gravitational lenses in Euclid surveys.",
+  "field": "ou_involvement",
+  "id": "Euclid--3",
+  "kind": "claim",
+  "note": "Leave as is but keep it flagged for follow up",
+  "object": "Euclid",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "OU astronomers also lead research groups that use Euclid's wide-field surveys to identify rare gravitational lenses.",
+      "to": "OU astronomers also use machine learning to find rare gravitational lenses in Euclid's wide-field surveys."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:19:52.647Z",
+  "verdict": "fix"
+}

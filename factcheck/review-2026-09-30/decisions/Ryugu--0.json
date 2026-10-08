@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Orbits between Earth and Mars.”",
+  "field": "description",
+  "id": "Ryugu--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ryugu",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "orbits between Earth and Mars",
+      "to": "has an orbit that crosses Earth's"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:50.596Z",
+  "verdict": "fix"
+}

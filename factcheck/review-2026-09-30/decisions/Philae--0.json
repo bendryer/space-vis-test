@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "landed_coords −17°, −171°.",
+  "field": "landed_coords",
+  "id": "Philae--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Philae",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:26:10.677Z",
+  "verdict": "fix"
+}

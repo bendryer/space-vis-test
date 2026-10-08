@@ -1,0 +1,8 @@
+[
+ { "object": "Earth", "field": "ou_involvement", "fact": "No OU publication or project found for machine learning on satellite imagery (deforestation, urban growth, glacial retreat).", "status": "not-found", "checked": "2026-09-29", "volatile": false,
+   "searched": ["Open University Sentinel-2 soil moisture machine learning forest fire desertification", "\"Open University\" evapotranspiration forest Sentinel-3 Sentinel-2"] },
+ { "object": "HWO", "field": "ou_involvement", "fact": "No source found for a £400,000 UK Space Agency grant to the OU for HWO CMOS detectors.", "status": "not-found", "checked": "2026-09-29", "volatile": true,
+   "searched": ["Open University HWO UK Space Agency £400,000 CMOS detector", "Open University Centre for Electronic Imaging HWO \"£400\""] },
+ { "object": "Titan", "field": "ou_involvement", "fact": "The first global geomorphological map of Titan (Lopes et al. 2019, Nature Astronomy) was led by JPL; none of its 13 authors is at the OU.", "status": "correction", "checked": "2026-09-29", "volatile": false,
+   "sources": [ { "t": "Crossref: Lopes et al. 2019 author list", "u": "https://api.crossref.org/works/10.1038/s41550-019-0917-6" } ] }
+]

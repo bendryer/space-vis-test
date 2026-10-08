@@ -1,0 +1,19 @@
+{
+  "choice": "keep",
+  "claim": "start_coords 40.8° N, −77.8°.",
+  "field": "suborbital",
+  "id": "OGRE--0",
+  "kind": "claim",
+  "note": "",
+  "object": "OGRE",
+  "suggestion": [
+    {
+      "f": "suborbital.start_coords",
+      "from": "{\"lat\":40.8,\"lon\":-77.8}",
+      "to": "{\"lat\":37.94,\"lon\":-75.47}"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:28.840Z",
+  "verdict": "bad"
+}

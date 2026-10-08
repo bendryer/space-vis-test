@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "launch_year 2026.",
+  "field": "launch_year",
+  "id": "PLATO--0",
+  "kind": "claim",
+  "note": "",
+  "object": "PLATO",
+  "suggestion": [
+    {
+      "f": "launch_year",
+      "from": "2026",
+      "to": "2027"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:20:54.358Z",
+  "verdict": "bad"
+}

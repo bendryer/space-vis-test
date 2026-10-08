@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "“Research fellow at the Open University.”",
+  "field": "description",
+  "id": "20594-Pemartin--0",
+  "kind": "claim",
+  "note": "",
+  "object": "20594 Pemartin",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:29:39.107Z",
+  "verdict": "fix"
+}

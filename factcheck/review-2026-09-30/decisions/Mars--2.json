@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "OU supports agencies in selecting landing sites for future rovers and sample return.",
+  "field": "ou_involvement",
+  "id": "Mars--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Mars",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:21:33.453Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "OU uses the rover’s remote-sensing data to study delta mineralogy (clays, carbonates).",
+  "field": "ou_involvement",
+  "id": "Perseverance--3",
+  "kind": "claim",
+  "note": "",
+  "object": "Perseverance",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:21:56.913Z",
+  "verdict": "unv"
+}

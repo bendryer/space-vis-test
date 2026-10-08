@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU combines Sentinel-3 and Sentinel-2 data for high-resolution evapotranspiration in forests.",
+  "field": "ou_involvement",
+  "id": "Sentinel-3--1",
+  "kind": "claim",
+  "note": "remove OU involvement so I can check with internal teams",
+  "object": "Sentinel-3",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:07:28.982Z",
+  "verdict": "unv"
+}

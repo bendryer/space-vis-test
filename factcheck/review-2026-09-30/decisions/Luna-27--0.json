@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "ProSPA is attached to Luna 27.",
+  "field": "ou_involvement",
+  "id": "Luna-27--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Luna 27",
+  "suggestion": [
+    {
+      "f": "entry",
+      "from": "Luna 27 entry",
+      "to": "Replace with a PROSPECT entry for the Intuitive Machines IM-4 lander (see Missing missions): status Planned, launch_year 2027, landed_coords {lat:-84.5, lon:31.5}. Keep the ProSPA paragraph."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:14:48.122Z",
+  "verdict": "bad"
+}

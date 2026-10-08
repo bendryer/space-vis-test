@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Other OU researchers combine rover and TGO data to model dust and water cycles.",
+  "field": "ou_involvement",
+  "id": "MSL-Curiosity--3",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:22:51.060Z",
+  "verdict": "unv"
+}

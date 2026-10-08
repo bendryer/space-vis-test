@@ -1,0 +1,4408 @@
+{
+ "schema": 1,
+ "dataFile": "public/data.json",
+ "reviews": [
+  {
+   "date": "2026-09-30",
+   "dir": "review-2026-09-30",
+   "artifact": "https://claude.ai/artifact/XREXrsyxcdeXv9J7Tj8SK7"
+  }
+ ],
+ "objects": {
+  "PROSPECT": {
+   "renamedFrom": [
+    "Luna 27"
+   ],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "032a977cbe33",
+    "ou_involvement": "da4b5f531db5",
+    "status": "9cbe42aaff60",
+    "launch_year": "64e0cfdcb9cb",
+    "landed_coords": "41ab2183e90e",
+    "parent": "846b90266cab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "ou_involvement",
+     "claim": "ProSPA is attached to Luna 27.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: Prospect",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Prospect_searching_for_water_at_the_lunar_poles"
+      },
+      {
+       "t": "NSSDCA: IM-4 (CP-22)",
+       "u": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=TO-CP-22"
+      },
+      {
+       "t": "Heather et al., LPSC 2024 #1085",
+       "u": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1085.pdf"
+      }
+     ],
+     "note": "After 2022 ESA ended its Luna cooperation with Russia. PROSPECT (including the OU-led ProSPA) now flies on NASA CLPS CP-22, the Intuitive Machines IM-4 Nova-C lander, launching 2027 to about 84.5° S, 31.5° E. Consider renaming or replacing this entry (see the Missing missions tab).",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU leads development of ProSPA, which heats drilled samples and analyses them by mass spectrometry.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Prospect",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Prospect_searching_for_water_at_the_lunar_poles"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Supported by RAL Space, Airbus, the Max Planck Institute and TU Munich.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "ESA’s page mentions subcontractors in eight countries without naming them. TU Munich appears in the science team (Ulrich Walter). Ask the ProSPA team (Simeon Barber).",
+     "decision": "keep",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Luna 27 is a Russian robotic south-polar lander with a drill for volatiles.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Luna 27",
+       "u": "https://en.wikipedia.org/wiki/Luna_27"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "NewAthena": {
+   "renamedFrom": [
+    "Athena"
+   ],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "85683f2159c7",
+    "ou_involvement": "7621c47804ef",
+    "status": "9cbe42aaff60",
+    "launch_year": "96f13313ff6a",
+    "orbit": "493ed97f4654",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Name “Athena”.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: NewAthena factsheet",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet"
+      }
+     ],
+     "note": "Renamed NewAthena; launch about 2037.",
+     "decision": "custom",
+     "reviewerNote": "Let's rename it to NewAthena",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI “is leading the design and experimental testing of graded-Z shielding” for the WFI, using GEANT4 validated against detector tests.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "OU CEI mission page: athena",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/athena"
+      }
+     ],
+     "note": "The shielding, GEANT4 and validation work is confirmed. The CEI page says it works “closely with institutions around the world” and does not say it leads.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astronomers define science cases for black-hole growth and structure formation.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source found.",
+     "decision": "custom",
+     "reviewerNote": "take it out for now.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Sun": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "0dffd9917e41",
+    "ou_involvement": "641544f9dcab",
+    "status": "ea26876daa9a",
+    "orbit": "25ce7c37af89",
+    "tilt": "45aba1a14fda",
+    "rot_period": "bc33ea4e26e5",
+    "type": "4e3e01b9af84"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Yellow dwarf at the centre of the Solar System, holds it together by gravity, more than 99% of its mass.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Sun facts",
+       "u": "https://science.nasa.gov/sun/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU researches solar physics, internal structure and space weather, models the solar wind and its interaction with planetary atmospheres.",
+     "status": "corrected",
+     "sources": [],
+     "note": "Rewritten around SMILE and the CEI's radiation-damage research (both sourced on CEI mission pages).",
+     "decision": "custom",
+     "reviewerNote": "I like the suggested change, but add something that the solar wind interaction and damage to the cameras is the core research of the CEI.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Mercury": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b403622693b8",
+    "ou_involvement": "2b04d350a770",
+    "status": "ea26876daa9a",
+    "orbit": "8d33b572b35e",
+    "tilt": "9ba26e2adc0a",
+    "rot_period": "a3a8d3e1d0d1",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Smallest planet, closest to the Sun, heavily cratered, geologically quiet, high density and a large metallic core.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Mercury facts",
+       "u": "https://science.nasa.gov/mercury/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Possesses a surprisingly strong magnetic field.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: Mercury facts",
+       "u": "https://science.nasa.gov/mercury/facts/"
+      }
+     ],
+     "note": "The field is weak, about 1% of Earth’s. What surprised scientists is that it exists at all. Suggest “a magnetic field, which is surprising for such a small planet”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU scientists have studied Mercury’s surface composition and volcanic history for decades.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: David A. Rothery",
+       "u": "https://en.wikipedia.org/wiki/David_A._Rothery"
+      },
+      {
+       "t": "Rothery et al., ORO",
+       "u": "https://oro.open.ac.uk/12597/3/Microsoft_Word_-_2441CF12.pdf"
+      }
+     ],
+     "note": "David Rothery (OU) has been UK lead scientist for MIXS since 2006, leads ESA’s Mercury Surface & Composition Working Group, and publishes on Mercury volcanism.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Research “helps explain how such a small planet could maintain a liquid outer core”.",
+     "status": "corrected",
+     "sources": [],
+     "note": "No OU paper on Mercury’s core found. OU Mercury work is on surface composition and volcanism. Ask David Rothery.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "BepiColombo": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "289ba480d8c3",
+    "ou_involvement": "0b742fdb0bf1",
+    "status": "e86f931b9258",
+    "status_timeline": "56cc8527f5ff",
+    "launch_year": "66efd9eefecf",
+    "orbit": "0d1dd8af967a",
+    "parent": "606cb109e24d",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“Successfully entered orbit around Mercury in late 2025.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: BepiColombo’s arrival at Mercury",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Latest_updates_BepiColombo_s_arrival_at_Mercury"
+      },
+      {
+       "t": "Wikipedia: BepiColombo",
+       "u": "https://en.wikipedia.org/wiki/BepiColombo"
+      }
+     ],
+     "note": "Not yet. Orbit insertion is scheduled for 21 November 2026, and the two orbiters separate on 9 and 10 December 2026. Science starts in spring 2027. Suggest “arrives at Mercury in November 2026”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Joint ESA–JAXA mission with two orbiters (MPO and Mio) studying the surface, composition and magnetic field. Launched 2018.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: BepiColombo",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU academics are on the M-CAM monitoring camera team analysing flyby images.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Top three images from the sixth Mercury flyby",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/Top_three_images_from_BepiColombo_s_sixth_Mercury_flyby"
+      }
+     ],
+     "note": "ESA credits David Rothery (team member) and Jack Wright (M-CAM imaging team coordinator), both OU.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU was a development partner, with instrument lead the University of Leicester, on MIXS.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "University of Leicester: MIXS",
+       "u": "https://le.ac.uk/bepicolombo/mixs"
+      },
+      {
+       "t": "Bunce et al. 2020, Space Sci Rev",
+       "u": "https://link.springer.com/article/10.1007/s11214-020-00750-2"
+      }
+     ],
+     "note": "Leicester says MIXS was “jointly developed by the University of Leicester, the Open University, the University of Helsinki and partners”.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Live mission data is integrated into PhD projects and undergraduate teaching.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Teaching and PhD use removed pending confirmation.",
+     "decision": "custom",
+     "reviewerNote": "remove this part",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "status",
+     "claim": "Status “Operational”.",
+     "status": "verified",
+     "sources": [],
+     "note": "Correct for a working spacecraft, though it is still arriving. “En Route” would match JUICE and Hera until 21 November 2026.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Venus": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "37d2a7c6c6ab",
+    "ou_involvement": "8ac143b822a4",
+    "status": "ea26876daa9a",
+    "orbit": "d1a6a1e03ef5",
+    "tilt": "9f5578b7642e",
+    "rot_period": "394b6939f5e6",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Earth’s twin in size, thick CO₂ atmosphere and runaway greenhouse, retrograde rotation, surface hot enough to melt lead, sulfuric acid clouds.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Venus facts",
+       "u": "https://science.nasa.gov/venus/venus-facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The OU leads international research into the Martian-like volcanic history of Venus”, plus atmospheric models of Venus’s evolution.",
+     "status": "corrected",
+     "sources": [],
+     "note": "No source for OU leading Venus volcanism research, and “Martian-like” is unusual wording. The documented OU Venus work is EnVision’s VenSpec-U (Manish Patel’s group). Consider rewriting around that.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Earth": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "4df74a699747",
+    "ou_involvement": "9167fbbc58a7",
+    "status": "ea26876daa9a",
+    "orbit": "ddb5abf62d44",
+    "tilt": "6ba0e9ee1e6a",
+    "rot_period": "d651ebc5a4ee",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Only known planet with life, N₂–O₂ atmosphere, plate tectonics, liquid water in the habitable zone.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Earth facts",
+       "u": "https://science.nasa.gov/earth/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU develops machine learning for satellite imagery to track deforestation, urban growth and glacial retreat, and supports international climate efforts.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Kept at the reviewer's request; flag until an OU project or paper is found.",
+     "decision": "custom",
+     "reviewerNote": "keep as it is but still flag it as unverified on this system\n",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "ISS": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a1950124f870",
+    "ou_involvement": "b2e919e6732b",
+    "status": "8459f93535e3",
+    "launch_year": "3c4a80dbdfac",
+    "orbit": "162961d1ca61",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Modular microgravity laboratory. Partners are the US, Russia, Europe, Japan and Canada. First module launched 1998.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: International cooperation",
+       "u": "https://www.nasa.gov/international-space-station/space-station-international-cooperation/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The OU flew the BIOlogy and Mars Experiment (BIOMEX).”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "de Vera et al. 2019, Astrobiology 19(2)",
+       "u": "https://doi.org/10.1089/ast.2018.1897"
+      }
+     ],
+     "note": "BIOMEX was led by DLR (PI Jean-Pierre de Vera). The OU was a participant: Karen Olsson-Francis (OU) is a co-author of the mission paper. Suggest “OU scientists took part in BIOMEX”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Mounted outside Zvezda on EXPOSE-R2. Bacteria, algae, lichens and fungi exposed to vacuum, UV and temperature extremes.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Rabbow et al. 2017, Front. Microbiol.",
+       "u": "https://doi.org/10.3389/fmicb.2017.01533"
+      },
+      {
+       "t": "de Vera et al. 2019",
+       "u": "https://doi.org/10.1089/ast.2018.1897"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“For 533 days.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Rabbow et al. 2017",
+       "u": "https://doi.org/10.3389/fmicb.2017.01533"
+      }
+     ],
+     "note": "Published figures are 531 days in space for the biological samples (vacuum exposure about 532 days). The exposure period itself ran from 22 October 2014 to 3 February 2016 (469 days). Pick one figure and match it to a source.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Samples returned with Tim Peake in June 2016.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Expose-R2 samples back on Earth",
+       "u": "https://www.esa.int/ESA_Multimedia/Images/2016/07/Expose-R2_samples_back_on_Earth"
+      }
+     ],
+     "note": "18 June 2016, Soyuz TMA-19M.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Hubble": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "fd93e44e0153",
+    "ou_involvement": "556b5e18ae86",
+    "status": "8459f93535e3",
+    "launch_year": "bb3acf149db4",
+    "orbit": "c1af78dfa372",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Launched 1990, three decades of observations, contributed to the age of the universe and the discovery of dark energy.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Hubble",
+       "u": "https://science.nasa.gov/mission/hubble/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "WFC3’s CCDs are built by Teledyne e2v, which partners closely with the OU’s Centre for Electronic Imaging.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "STScI: WFC3 UVIS detectors",
+       "u": "https://hst-docs.stsci.edu/wfc3ihb/chapter-5-wfc3-detector-characteristics-and-performance/5-2-the-wfc3-uvis-channel-ccd-detectors"
+      },
+      {
+       "t": "OU: £1.5M CEI–Teledyne e2v collaboration",
+       "u": "https://research.open.ac.uk/news/ps15-million-grant-centre-electronic-imaging-collaboration"
+      }
+     ],
+     "note": "WFC3 UVIS uses two e2v CCD43 detectors. The CEI is a joint OU–Teledyne e2v centre.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astronomers use the Hubble archive to study stellar populations and galaxy evolution, and it feeds the astronomy curriculum.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Plausible but no specific project found. Ask the OU astronomy group.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Sentinel-2": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a4fb8e3406f6",
+    "status": "8459f93535e3",
+    "launch_year": "9cdda67ded3f",
+    "orbit": "3b0d927f14a6",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“A constellation of two satellites.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: Sentinel-2C launched",
+       "u": "https://blogs.esa.int/eolaunches/2024/09/05/sentinel-2c-launched-into-orbit/"
+      }
+     ],
+     "note": "Three now: Sentinel-2C launched 5 September 2024, and 2A continues in an extended campaign alongside 2B and 2C.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "High-resolution optical imaging for Copernicus: vegetation, soil, water, frequent revisits.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Sentinel-2",
+       "u": "https://en.wikipedia.org/wiki/Sentinel-2"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU machine learning for soil moisture, forest fire evolution and desertification risk, and student training.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU involvement removed so it shows as missing.",
+     "decision": "custom",
+     "reviewerNote": "For now, lets remove the OU involvement, so it flags as missing and we can address later.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": true
+  },
+  "Sentinel-3": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "30dbf4c20773",
+    "status": "8459f93535e3",
+    "launch_year": "ab39c5423911",
+    "orbit": "ec45f3883f48",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Ocean and land monitoring: sea-surface topography, temperature and colour.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Sentinel-3",
+       "u": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-3"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU combines Sentinel-3 and Sentinel-2 data for high-resolution evapotranspiration in forests.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "ESA SEN-ET project",
+       "u": "https://eo4society.esa.int/projects/sentinels-for-evapotranspiration-sen-et/"
+      }
+     ],
+     "note": "OU involvement removed; reviewer checking with internal teams.",
+     "decision": "custom",
+     "reviewerNote": "remove OU involvement so I can check with internal teams",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": true
+  },
+  "CASTOR": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "2ab6242492da",
+    "ou_involvement": "ad676c0d0594",
+    "status": "9cbe42aaff60",
+    "launch_year": "96f13313ff6a",
+    "orbit": "aaf6b7d8deb1",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Proposed Canadian-led UV and blue-optical space telescope with a field far wider than Hubble’s, for cosmology and galaxy formation.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "CASTOR mission team",
+       "u": "https://www.castormission.org/team"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI awarded £2.1 million for testing and space qualification of UV detectors for CASTOR, a Canadian-led 1 m telescope targeting about 2030.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU: £2.1M for next-generation UV telescopes",
+       "u": "https://research.open.ac.uk/news/ou-awarded-ps2m-develop-next-generation-uv-space-telescopes"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CIS303 and CIS120 detectors from Teledyne e2v. Electro-optical testing, space qualification, and comparison of UV coatings and enhancement.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI SPIE paper: path to CASTOR",
+       "u": "https://oro.open.ac.uk/99688/1/CASTOR_SPIE___Detector_and_UV_testing.pdf"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU helps define the telescope’s survey strategy.",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Survey strategy removed. Detector optimisation and UV-coating effectiveness and degradation added by the reviewer; coating comparison is in the OU SPIE paper, degradation is not.",
+     "decision": "custom",
+     "reviewerNote": "yes remove the survey strategy - it's more involvement in the detectors especially detector optimisation and measurements of effectiveness and degradation of UV coating.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "TRUTHS": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "c9543b19dc68",
+    "ou_involvement": "b7bdb706e677",
+    "status": "9cbe42aaff60",
+    "launch_year": "96f13313ff6a",
+    "orbit": "100c7265dbb3",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "UK-led, delivered by ESA, a “gold standard” climate calibration mission measuring incoming and reflected radiation.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: TRUTHS",
+       "u": "https://www.esa.int/Applications/Observing_the_Earth/FutureEO/TRUTHS"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI radiation-damage study of the Teledyne e2v CIS120: dark current, noise and QE before and after gamma and proton irradiation at several temperatures.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "SPIE 2026: Radiation damage in CIS120",
+       "u": "https://spie.org/astronomical-telescopes-instrumentation/presentation/Radiation-damage-in-CIS120-for-use-in-future-space-missions/14157-123"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The CIS120 is “being evaluated for TRUTHS”.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "The CIS120 study found does not name TRUTHS. Ask the CEI whether TRUTHS is a named customer for this work.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "SMILE": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "0f0f5ea0c88d",
+    "ou_involvement": "45b31b6cb4b4",
+    "status": "a5ebc3339906",
+    "launch_year": "aee655773d85",
+    "orbit": "b4b7cf66a020",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“Launched in April 2026.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: Smile set to launch on 19 May",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Smile/Smile_set_to_launch_on_19_May"
+      }
+     ],
+     "note": "Launched 19 May 2026 on Vega-C. The 9 April date was postponed.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "ESA–CAS mission for the first global X-ray images of the magnetosphere and its interaction with the solar wind.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: SMILE",
+       "u": "https://en.wikipedia.org/wiki/SMILE_(spacecraft)"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Twin CCD370s, 4510 × 4510 pixels of 18 µm, form the SXI focal plane. The CEI tested noise, CTI and defects before flight.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Parsons et al. 2023: SXI flight CCD370 characterisation",
+       "u": "https://doi.org/10.26464/epp2023057"
+      },
+      {
+       "t": "OU CEI mission page: smile",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/smile"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“Adapted from the CCD270s flown on PLATO.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: PLATO",
+       "u": "https://en.wikipedia.org/wiki/PLATO_(spacecraft)"
+      }
+     ],
+     "note": "PLATO has not flown (launch now March 2027). The CCD370 derives from the CCD270 developed for PLATO. Suggest “developed for PLATO”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The Centre for Electronic Imaging designed … the detectors.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "OU news: SMILE launch",
+       "u": "https://www.open.ac.uk/blogs/news/science-mct/open-university-experts-at-heart-of-landmark-smile-mission-launch/"
+      }
+     ],
+     "note": "The OU says the CEI has spent over a decade “developing and testing” them. Teledyne e2v manufactures them. “Developed and characterised” is safer than “designed”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The university is now analysing the mission’s early X-ray images.”",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU on the SMILE operations team, working with the SXI team: reviewer's knowledge.",
+     "decision": "custom",
+     "reviewerNote": "We are on the operations team, working closely with the SXI team to maximise science return from the detectors.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Swift": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "d8b1021cea00",
+    "status": "8459f93535e3",
+    "status_timeline": "f47b5a586d4d",
+    "launch_year": "667e624fb374",
+    "orbit": "9b1ac0397a99",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "status",
+     "claim": "Status “Decommissioned”.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: Neil Gehrels Swift Observatory",
+       "u": "https://en.wikipedia.org/wiki/Neil_Gehrels_Swift_Observatory"
+      },
+      {
+       "t": "Space.com: Swift restarts science",
+       "u": "https://www.space.com/space-exploration/missions/nasas-doomed-swift-space-telescope-restarts-science-work-after-rescue-mission-fails"
+      }
+     ],
+     "note": "status Operational with status_timeline to Re-entered on 2027-01-01. That date is an estimate from NASA's 'around the end of 2026'; replace it with the real re-entry date.",
+     "decision": "custom",
+     "reviewerNote": "i agree with this change - can we change the mission status based on the date that the app loads with?",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Gamma-ray burst observatory that slews to afterglows, operating for over 20 years.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Swift",
+       "u": "https://science.nasa.gov/mission/swift/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astronomers use Swift data to teach transient astrophysics.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU involvement removed pending confirmation; flag as missing.",
+     "decision": "custom",
+     "reviewerNote": "remove this for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": true
+  },
+  "UKube-1": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "5271e7faa7f7",
+    "ou_involvement": "250877771e7a",
+    "status": "1f5a1abf2f08",
+    "launch_year": "39e21432a7dc",
+    "orbit": "a92147619f23",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "First UK Space Agency mission, a CubeSat technology demonstrator. Completed after about 14 months of operations.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "eoPortal: UKube-1",
+       "u": "https://www.eoportal.org/satellite-missions/ukube-1"
+      },
+      {
+       "t": "ARRL: UKube-1 completes mission",
+       "u": "https://www.arrl.org/news/ukube-1-the-uk-space-agency-s-first-national-spacecraft-completes-its-mission"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Payloads for space weather and secure communications.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "eoPortal: UKube-1",
+       "u": "https://www.eoportal.org/satellite-missions/ukube-1"
+      }
+     ],
+     "note": "TOPCAT measured the ionosphere with GPS. JANUS tested random-number generation for secure communications. FUNcube provided education.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI won one of three science payload slots for C3D. Launched July 2014, three cameras, first in-orbit test of a European 0.18 µm CMOS imager. Dark-current and flatband shifts like CCDs, plus single-event upsets.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: past-missions/ukube-1-c3d",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/past-missions/ukube-1-c3d"
+      },
+      {
+       "t": "Harriss et al. 2011, SPIE 8146",
+       "u": "https://doi.org/10.1117/12.895986"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The data “has since informed the design of more radiation-tolerant space CMOS sensors”.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Plausible (C3D2 followed on AlSat Nano) but not stated in a source. Ask the CEI.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Moon": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "51f81e6b2368",
+    "ou_involvement": "646ea1429551",
+    "status": "ea26876daa9a",
+    "orbit": "1641dd463a4c",
+    "tilt": "e38d947c8cf9",
+    "rot_period": "342615087b21",
+    "parent": "a074430f352b",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Only natural satellite, drives tides, stabilises Earth’s axis, regolith and mare basalts, only other body humans have visited.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Moon facts",
+       "u": "https://science.nasa.gov/moon/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The OU leads international efforts in lunar research, focusing on the extraction of water and oxygen from regolith … mass spectrometers … permanently shadowed craters.”",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "ESA: Prospect",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Prospect_searching_for_water_at_the_lunar_poles"
+      }
+     ],
+     "note": "Apollo sample water, Beagle 2/Rosetta heritage and ISRU wording from the reviewer. Candidate source for the Apollo claim: Greenwood et al. 2011, Nature Geoscience (OU authors).",
+     "decision": "custom",
+     "reviewerNote": "dont mention prospa - talk about analysis of apollo samples leading to the realisation that the moon contains water, and summarise recent efforts of using heratige from missions such as beagle, rosetta, to analyse the moon composition. Also mention in-situ resource utlisation for exploring how to use regolith to extract water, fuel and how to build with it.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Work is essential for Artemis missions.",
+     "status": "corrected",
+     "sources": [],
+     "note": "No documented OU Artemis role found. PROSPECT flies on a NASA CLPS lander, which is part of the wider Artemis programme.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Chandrayaan-1": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "e3dacdd9ad8a",
+    "ou_involvement": "7a627c30c110",
+    "status": "1f5a1abf2f08",
+    "launch_year": "527dc687fa58",
+    "orbit": "c925ea8ab3f3",
+    "parent": "846b90266cab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "India’s first lunar probe. International instruments, 3D mapping and mineralogy, evidence of water molecules, operated about ten months.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Chandrayaan-1",
+       "u": "https://en.wikipedia.org/wiki/Chandrayaan-1"
+      }
+     ],
+     "note": "Launched 22 October 2008, contact lost 29 August 2009, so about ten months. The file’s “nearly a year” is fine.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI proton radiation assessment of C1XS’s 24 CCD54 detectors using SPENVIS. 14 modules characterised and ten recommended. Continuing advisory role.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: past-missions/chandrayaan-1",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/past-missions/chandrayaan-1"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Chang'e-5": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "c32a85a8a2a3",
+    "ou_involvement": "11e10806026f",
+    "status": "1f5a1abf2f08",
+    "launch_year": "85568b20c331",
+    "landed_coords": "46ae3c542fcd",
+    "parent": "846b90266cab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords lat 42, lon −58.5.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: Chang’e 5",
+       "u": "https://en.wikipedia.org/wiki/Chang%27e_5"
+      },
+      {
+       "t": "Space.com: landing site named",
+       "u": "https://www.space.com/china-chang-e-5-moon-landing-site-name"
+      }
+     ],
+     "note": "Set to the real site 43.06, -51.92. Peregrine (never landed) moved to 33, -34 to keep the landers apart in the scene.",
+     "decision": "custom",
+     "reviewerNote": "This was changed slightly to move the lander away from the peregrine landing site - I would rather this coordinate be accurate and peregrine to be moved away slihtly to keep seperation in the visualisation, because peregrine failed.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Returned about 2 kg (1,731 g) in December 2020 from young mare basalts in Oceanus Procellarum. Automated docking in lunar orbit.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Chang’e 5",
+       "u": "https://en.wikipedia.org/wiki/Chang%27e_5"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“One of only seven international scientists selected … loan beginning in April 2025.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Science: foreign scientists awarded lunar samples",
+       "u": "https://www.science.org/content/article/huge-honor-china-reveals-foreign-scientists-awarded-rare-lunar-samples"
+      },
+      {
+       "t": "CNSA announcement",
+       "u": "https://www.cnsa.gov.cn/english/n6465652/n6465653/c10670280/content.html"
+      }
+     ],
+     "note": "CNSA named seven institutions from six countries on 24 April 2025, and the OU was one. Mahesh Anand then collected 60 mg in China. “Loan beginning in April 2025” should read “awarded in April 2025”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Measuring C, N, O and noble-gas isotopes to test the giant-impact theory.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Oxygen isotopes are confirmed in the Science article. Carbon, nitrogen and noble gases are not stated publicly. Ask Mahesh Anand.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "LUPEX": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "8c83dd2a263d",
+    "ou_involvement": "a83a31ed501c",
+    "status": "9cbe42aaff60",
+    "launch_year": "96f13313ff6a",
+    "landed_coords": "180776368094",
+    "parent": "846b90266cab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“Search for liquid water and ice at the lunar south pole.”",
+     "status": "disputed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "JAXA: LUPEX",
+       "u": "https://www.exploration.jaxa.jp/assets/img/program/Leaflet_LUPEX-e_A4.pdf"
+      }
+     ],
+     "note": "LUPEX looks for water ice and other volatiles, not liquid water. Drop “liquid”.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "ISRO–JAXA mission: JAXA rover and ISRO lander, targeted for 2028 on H3.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: LUPEX",
+       "u": "https://en.wikipedia.org/wiki/Lunar_Polar_Exploration_Mission"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU develops the Exploration Mass Spectrometer (EMS-L) for the LUPEX rover.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "James et al. 2025: EMS-L simulations",
+       "u": "https://zenodo.org/records/15470682"
+      },
+      {
+       "t": "Heather et al., LPSC 2024",
+       "u": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1085.pdf"
+      }
+     ],
+     "note": "Conference paper by an OU author. EMS-L descends from the ion-trap EMS in ESA’s PROSPECT.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU is “the science lead” for EMS-L.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Role title not found publicly. Ask the EMS-L team.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Heritage from flight hardware on Rosetta (Ptolemy) and Beagle 2 (GAP).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "RAL Space: Rosetta–Philae",
+       "u": "https://www.ralspace.stfc.ac.uk/mission/rosetta-philae"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Earth-Sun L2": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "6326d5f82d40",
+    "ou_involvement": "e4e8fd081903",
+    "status": "ea26876daa9a",
+    "orbit": "4795e3bf3a84",
+    "parent": "48c98cab7866",
+    "type": "5b8bc5807335"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“A gravitational stable point.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: What is a Lagrange point?",
+       "u": "https://science.nasa.gov/resource/what-is-a-lagrange-point/"
+      }
+     ],
+     "note": "L1, L2 and L3 are unstable equilibrium points. Spacecraft need regular station-keeping. Only L4 and L5 are stable. Suggest “a point where gravity and orbital motion balance”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "About 1.5 million km from Earth on the far side from the Sun. Halo or Lissajous orbits.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: What is a Lagrange point?",
+       "u": "https://science.nasa.gov/resource/what-is-a-lagrange-point/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU uses L2 as a virtual laboratory to study how deep space affects satellite components and monitors OU-characterised missions there.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "The Gaia in-flight radiation analysis (CEI) is a documented example. The broader programme is not. Ask the CEI.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "JWST": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "cf2906b88f68",
+    "ou_involvement": "08ae00343dce",
+    "status": "8459f93535e3",
+    "launch_year": "fd93ac461456",
+    "orbit": "1aba850acc53",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Launched 2021. Gold-coated mirror, infrared view of the first galaxies, exoplanet atmospheres.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Webb",
+       "u": "https://science.nasa.gov/mission/webb/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU researchers contributed to the WASP-39b studies.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Rustamkulov et al. 2023, Nature (NIRSpec PRISM)",
+       "u": "https://www.nature.com/articles/s41586-022-05677-y"
+      },
+      {
+       "t": "Ahrer et al. 2023, Nature (NIRCam)",
+       "u": "https://www.nature.com/articles/s41586-022-05590-4"
+      }
+     ],
+     "note": "OU co-authors (for example Joanna Barstow) on the Early Release Science papers.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU contribution to L 98-59 d and WASP-107b.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "arXiv:2408.15707, JWST L 98-59 d retrievals",
+       "u": "https://arxiv.org/abs/2408.15707"
+      }
+     ],
+     "note": "Rewritten in plain language from the sourced WASP-39b and L 98-59 d work; WASP-107b dropped.",
+     "decision": "custom",
+     "reviewerNote": "This is too technical - summarise it in plain language so that stakeholders can understand the contribution.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Results feed into OU astronomy modules.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No public source.",
+     "decision": "custom",
+     "reviewerNote": "remove for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Gaia": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a69bcbbd9ac7",
+    "ou_involvement": "486ecc521793",
+    "status": "3d76fd53aa0f",
+    "launch_year": "d08b10a32612",
+    "orbit": "81e2c2a80598",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Largest, most precise 3D map of the galaxy, nearly two billion stars.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Farewell, Gaia",
+       "u": "https://www.esa.int/Enabling_Support/Operations/Farewell_Gaia!_Spacecraft_operations_come_to_an_end"
+      }
+     ],
+     "note": "Science ended 15 January 2025. Passivated 27 March 2025, so “Decommissioned” is right.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI modelled charge trapping before launch, analysed the BP/RP and RVS radiation campaigns and fed the pipeline. Less in-flight damage than predicted, still being investigated.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: gaia",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/gaia"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU PhD students use Gaia catalogues for clusters and binaries.",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Gaia alerts and the S818 Space Science module case study added by the reviewer.",
+     "decision": "custom",
+     "reviewerNote": "Keep this - also talk about using Gaia alerts to find transient objects, and that Gaia is a core casestudy in the module S818:Space Science where students use Gaia data to perform follow up observations from our remote telescope on tenerife.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Euclid": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "d7da45453f30",
+    "ou_involvement": "15b61fe485eb",
+    "status": "8459f93535e3",
+    "launch_year": "445cd2fd3273",
+    "orbit": "268f7bc6c2d2",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Dark-universe survey of billions of galaxies out to 10 billion light-years using weak lensing.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Euclid",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Euclid"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI characterised the CCD273 for VIS and runs trap-pumping analysis in the Euclid Science Ground Segment.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: euclid",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/euclid"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“Developed the ‘Trap-Pumping’ technique.”",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "OU CEI mission page: euclid",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/euclid"
+      },
+      {
+       "t": "NASA HWO technology statements (credits the OU)",
+       "u": "https://ntrs.nasa.gov/api/citations/20260000936/downloads/HWO%20Tech%20SOA%20Statements%20v2.pdf"
+      }
+     ],
+     "note": "Reworded to explain trap pumping as the reviewer described. The CEI page credits the CEI with the trap-pumping analysis routines; confirm that 'developed' is right.",
+     "decision": "custom",
+     "reviewerNote": "need to explain what this is - a new method for accurately measuring device degradation in space, ensuring better image correction and ensuring science quality.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astronomers “lead research groups” finding gravitational lenses in Euclid surveys.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "Euclid collaboration 2025: finding lenses with CNNs",
+       "u": "https://arxiv.org/abs/2502.09802"
+      },
+      {
+       "t": "OU job ad: Euclid strong lensing (Serjeant)",
+       "u": "https://jobs.open.ac.uk/job/Postdoctoral-Research-Associate-in-Euclid-Spectroscopy-and-Strong-LensingGalaxy-Morphology/332-en_GB/"
+      }
+     ],
+     "note": "Kept at the reviewer's request; flag for follow-up.",
+     "decision": "custom",
+     "reviewerNote": "Leave as is but keep it flagged for follow up",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "HWO": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "929c46ee5113",
+    "ou_involvement": "9f554f8c76d1",
+    "status": "9cbe42aaff60",
+    "launch_year": "d3fd36cbeb8a",
+    "orbit": "c97981eb176e",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "NASA flagship to image Earth-like exoplanets with a coronagraph and search for biosignatures.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Habitable Worlds Observatory",
+       "u": "https://science.nasa.gov/astrophysics/programs/habitable-worlds-observatory/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI develops UV-enhanced, photon-counting CMOS detectors for HWO.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU: Electronic imaging",
+       "u": "https://research.open.ac.uk/faculties-institutes/space/electronic-imaging"
+      },
+      {
+       "t": "Single-photon counting CMOS for HWO, arXiv 2026",
+       "u": "https://arxiv.org/abs/2608.02839"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“Over £400,000 in UK Space Agency funding” for UK CMOS readiness.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Leicester: UK to lead key HWO instrument",
+       "u": "https://le.ac.uk/news/2026/july/nam-2026-key-instrument-nasa-habitable-worlds-observatory"
+      }
+     ],
+     "note": "Figure not found. The OU is in the UK HWO consortium that received £3 million in July 2026. Ask the CEI for the grant reference.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "PLATO": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "e8967f828c7f",
+    "ou_involvement": "ac752e1c5b9d",
+    "status": "9cbe42aaff60",
+    "launch_year": "64e0cfdcb9cb",
+    "orbit": "b282ad6ebce0",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "launch_year",
+     "claim": "launch_year 2026.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: PLATO",
+       "u": "https://en.wikipedia.org/wiki/PLATO_(spacecraft)"
+      }
+     ],
+     "note": "Now March 2027 on Ariane 6.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "26 cameras monitoring hundreds of thousands of bright stars for transits of Earth-sized planets.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: PLATO",
+       "u": "https://en.wikipedia.org/wiki/PLATO_(spacecraft)"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU population studies of astrophysical false positives (blended eclipsing binaries), funded by UKSA for the Development Phase.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Bray et al. 2023, MNRAS",
+       "u": "https://doi.org/10.1093/mnras/stac3262"
+      },
+      {
+       "t": "Bray et al. 2025, MNRAS",
+       "u": "https://doi.org/10.1093/mnras/staf877"
+      }
+     ],
+     "note": "UKSA grant ST/R003211/1.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI radiation-damage studies of PLATO’s CCDs.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: plato",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/plato"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU robotic telescopes provide follow-up of PLATO candidates.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Softened to 'could provide'; no public source for OU follow-up.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Roman": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "0dee2d9b07af",
+    "ou_involvement": "b8973a713a28",
+    "status": "a5ebc3339906",
+    "launch_year": "aee655773d85",
+    "orbit": "50eb846396eb",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "status",
+     "claim": "Status “Planned”, launch_year 2027.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: Roman launch updates",
+       "u": "https://science.nasa.gov/blogs/roman/2026/08/30/nasas-roman-space-telescope-launch-updates/"
+      }
+     ],
+     "note": "Launched 30 August 2026 on Falcon Heavy. Should be “Launched” or “En Route”, 2026.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Field of view 100 times Hubble’s at similar resolution, dark energy and exoplanet surveys, technology-demonstration coronagraph.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Roman",
+       "u": "https://science.nasa.gov/mission/roman-space-telescope/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI worked under contract to JPL from 2014 to 2019 on the coronagraph EMCCD, resulting in the CCD311, a customised CCD201 selected for flight.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA HWO technology statements",
+       "u": "https://ntrs.nasa.gov/api/citations/20260000936/downloads/HWO%20Tech%20SOA%20Statements%20v2.pdf"
+      },
+      {
+       "t": "Harding et al. 2016, JATIS",
+       "u": "https://oro.open.ac.uk/45133/1/Harding-JATIS_02_01_arXiv.pdf"
+      },
+      {
+       "t": "OU CEI mission page: w-first",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/w-first"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astronomers are preparing microlensing and stellar-population studies with Roman data.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source found.",
+     "decision": "custom",
+     "reviewerNote": "take out for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Mars": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a2896a114c07",
+    "ou_involvement": "98068424b8ea",
+    "status": "ea26876daa9a",
+    "orbit": "47534f6a2e23",
+    "tilt": "4e16768de00d",
+    "rot_period": "dadd801a73ce",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Iron oxide colouring, largest volcano and deepest canyons, thin atmosphere, polar caps, once warmer and wetter.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Mars facts",
+       "u": "https://science.nasa.gov/mars/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Long history: lander instruments (Beagle 2 GAP) and orbital atmospheric data (NOMAD UVIS).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU: Manish Patel",
+       "u": "https://profiles.open.ac.uk/manish-patel"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU supports agencies in selecting landing sites for future rovers and sample return.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU researchers (for example Matt Balme) have worked on landing sites, but no source was pinned down. Ask the OU Mars group.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "ExoMars TGO": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b3fd0e87c6d0",
+    "ou_involvement": "ac8b4bc43510",
+    "status": "8459f93535e3",
+    "launch_year": "ab39c5423911",
+    "orbit": "d13a9ee4c3c1",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA-led orbiter mapping trace gases like methane, and a relay for Curiosity and Perseverance.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: ExoMars TGO",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Exploration/ExoMars/ExoMars_Trace_Gas_Orbiter"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "An OU scientist is NOMAD Co-PI.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ORO: Manish Patel",
+       "u": "https://oro.open.ac.uk/view/person/mrp76.html"
+      }
+     ],
+     "note": "Manish Patel.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "UVIS channel “designed and built … in-house”.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: TGO instruments",
+       "u": "https://exploration.esa.int/web/mars/-/48523-trace-gas-orbiter-instruments"
+      }
+     ],
+     "note": "UVIS was designed at the OU. Further development, manufacture and assembly were done at Lambda-X in Belgium. Suggest “designed and led”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "UVIS data used for ozone, water vapour and trace gases, and to study water escape.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ORO: Patel publications",
+       "u": "https://oro.open.ac.uk/view/person/mrp76.html"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Beagle 2": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "4d09e74b556d",
+    "ou_involvement": "753b61125825",
+    "status": "75a7bf994e9a",
+    "launch_year": "ab165cb90d19",
+    "landed_coords": "9ae059457296",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords 11.52° N, 90.43° E.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Bridges et al. 2017, R. Soc. Open Sci.",
+       "u": "https://royalsocietypublishing.org/rsos/article/4/10/170785/93065/Identification-of-the-Beagle-2-lander-on"
+      }
+     ],
+     "note": "Matches 11.5265° N, 90.4295° E.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "UK lander deployed from Mars Express in 2003, found by MRO in January 2015 partly deployed. Aimed to detect carbon isotope signatures of life.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Beagle 2",
+       "u": "https://en.wikipedia.org/wiki/Beagle_2"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Conceived and led by an OU professor (Colin Pillinger). GAP used 12 ovens and stepped combustion mass spectrometry.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Beagle 2 lander",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Beagle_2_lander"
+      },
+      {
+       "t": "ESA Beagle 2 brochure",
+       "u": "https://sci.esa.int/documents/33745/35957/1567255011803-BeagleWeb.pdf"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Lessons from Beagle 2 informed later landers including ExoMars.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Commonly said but no specific source found.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Perseverance": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "222fa4e4e68c",
+    "ou_involvement": "962ef433a7b1",
+    "status": "8459f93535e3",
+    "launch_year": "85568b20c331",
+    "landed_coords": "5970fe08ec36",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords 18.4° N, 77.5° E.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Perseverance",
+       "u": "https://science.nasa.gov/mission/mars-2020-perseverance/"
+      }
+     ],
+     "note": "Octavia E. Butler landing site, 18.4447° N, 77.4508° E.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Exploring Jezero for ancient life, caching samples, carried Ingenuity (first powered flight on another planet).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Perseverance",
+       "u": "https://science.nasa.gov/mission/mars-2020-perseverance/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "An OU researcher is on the NASA/ESA Mars Sample Return Campaign Science Group.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL: MSR Campaign Science Group",
+       "u": "https://www.jpl.nasa.gov/news/nasa-partner-establish-new-research-group-for-mars-sample-return-program/"
+      }
+     ],
+     "note": "Susanne Schwenzer (OU).",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU uses the rover’s remote-sensing data to study delta mineralogy (clays, carbonates).",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No OU paper found. Ask the OU Mars group.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "ExoMars Rosalind Franklin": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "d544fc16be23",
+    "ou_involvement": "424db4bc2065",
+    "status": "9cbe42aaff60",
+    "launch_year": "431f6b7d5b29",
+    "landed_coords": "cd25902f2a00",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords 18.1° N, 335.7° E (Oxia Planum).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Oxia Planum",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Exploration/ExoMars/Oxia_Planum_favoured_for_ExoMars_surface_mission"
+      }
+     ],
+     "note": "Close to the published ellipse centre of about 18.2° N, 335.45° E.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Launch 2028, lands at Oxia Planum, drill to 2 m.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "UCL: Rosalind Franklin 2028",
+       "u": "https://www.ucl.ac.uk/mathematical-physical-sciences/research-projects/2025/jan/rosalind-franklin-exomars-2028"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "An OU researcher is an Interdisciplinary Scientist and is on the WISDOM radar team.",
+     "status": "corrected",
+     "sources": [],
+     "note": "Not found. The OU members found are Matt Balme and Mark Leese on the PanCam science team. Ask them whether the IDS and WISDOM roles are correct.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU is building data-analysis pipelines for the rover’s chemical findings.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source.",
+     "decision": "custom",
+     "reviewerNote": "take out for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "MSL Curiosity": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "149fada96852",
+    "ou_involvement": "b7c82e731e02",
+    "status": "8459f93535e3",
+    "launch_year": "32a70a32da27",
+    "landed_coords": "50a6d1bb0bdf",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords −4.6°, 137.4° E.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Curiosity",
+       "u": "https://science.nasa.gov/mission/msl-curiosity/"
+      }
+     ],
+     "note": "Bradbury Landing, 4.5895° S, 137.4417° E.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Car-sized rover in Gale Crater since 2012. Evidence of ancient lakes and organic molecules.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Curiosity",
+       "u": "https://science.nasa.gov/mission/msl-curiosity/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“OU academics serve as participating scientists.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "OU profile: Susanne Schwenzer",
+       "u": "http://www.open.ac.uk/research/people/ss24846"
+      }
+     ],
+     "note": "Susanne Schwenzer is an MSL science team member as a collaborator of participating scientist John Bridges (Leicester). Her research is noble gases and water–rock interaction, as the file says. Suggest “science team members”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Other OU researchers combine rover and TGO data to model dust and water cycles.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Plausible (Patel’s group) but no joint paper found.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Jupiter": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b19e14ae7428",
+    "status": "ea26876daa9a",
+    "orbit": "ea5d914bc2d9",
+    "tilt": "916a3b37862d",
+    "rot_period": "abf5258a74db",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Largest planet, Great Red Spot, faint rings, strong gravity and magnetic field.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Jupiter facts",
+       "u": "https://science.nasa.gov/jupiter/jupiter-facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Dozens of moons.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: Jupiter moons",
+       "u": "https://science.nasa.gov/jupiter/jupiter-moons/"
+      }
+     ],
+     "note": "95 officially recognised. “About a hundred” is closer.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU leads multiple Jovian initiatives on atmospheric dynamics, aurorae and cloud chemistry.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU involvement removed so it shows as missing.",
+     "decision": "custom",
+     "reviewerNote": "take out ou involvement for now so it flags as missing",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Io": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "01d2a8dca73f",
+    "status": "ea26876daa9a",
+    "orbit": "00531bc8dd92",
+    "parent": "88d1577dcc4f",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Innermost Galilean moon, most volcanically active body, tidal heating, sulfur colouring.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Io",
+       "u": "https://science.nasa.gov/jupiter/jupiter-moons/io/"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Europa": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b44a37a565d9",
+    "ou_involvement": "00e55003a4f1",
+    "status": "ea26876daa9a",
+    "orbit": "56f7ef49f0ce",
+    "parent": "88d1577dcc4f",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Subsurface ocean, young cracked ice shell, strong habitability candidate.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Europa",
+       "u": "https://science.nasa.gov/jupiter/jupiter-moons/europa/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astrobiologists study ocean worlds with Arctic fieldwork on cryovolcanism and salts.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Eos: lipids from Europa’s ocean",
+       "u": "https://eos.org/articles/lipids-from-europas-ocean-could-be-detectable-on-the-surface"
+      }
+     ],
+     "note": "Mark Fox-Powell (OU) works at Arctic analogue springs (Axel Heiberg Island, Canadian High Arctic).",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Svalbard fieldwork, and cryo-analytical lab techniques and simulation facilities for icy surfaces.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Svalbard removed; the cryo-analytical techniques and simulation facilities are still unsourced.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Ganymede": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "24e51a9a986b",
+    "ou_involvement": "1e9a8a1d4629",
+    "status": "ea26876daa9a",
+    "orbit": "63b593187303",
+    "parent": "88d1577dcc4f",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Largest moon, bigger than Mercury, only moon with its own magnetic field, dark and grooved terrain.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Ganymede",
+       "u": "https://science.nasa.gov/jupiter/jupiter-moons/ganymede/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Same ocean-worlds programme as Europa, applied to Ganymede.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "As for Europa.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Callisto": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "cf206d292d3e",
+    "status": "ea26876daa9a",
+    "orbit": "27a7c45fc59a",
+    "parent": "88d1577dcc4f",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Heavily cratered and inactive, rock and ice, possible ocean, farther from Jupiter’s radiation.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Callisto",
+       "u": "https://science.nasa.gov/jupiter/jupiter-moons/callisto/"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "JUICE": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "691962b23e4e",
+    "ou_involvement": "ab0b04cb74cd",
+    "status": "e86f931b9258",
+    "launch_year": "445cd2fd3273",
+    "trajectory": "5a35a3f8192e",
+    "orbit": "99903e732e65",
+    "parent": "48c98cab7866",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "trajectory",
+     "claim": "Waypoints: launch 14 April 2023, lunar–Earth flyby 20 August 2024, Venus 31 August 2025, Earth 28 September 2026, Earth January 2029, Jupiter July 2031.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Juice to fly past Earth",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist"
+      },
+      {
+       "t": "ESA: world’s first lunar–Earth flyby",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_rerouted_to_Venus_in_world_s_first_lunar-Earth_flyby"
+      }
+     ],
+     "note": "The 28 September 2026 Earth flyby passed 8,640 km from Earth.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "ESA mission launched 2023, arrives 2031, studies Ganymede, Europa and Callisto.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Juice",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Juice"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "CEI and Teledyne e2v developed and characterised the CIS115 CMOS sensor for JANUS, including radiation testing.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU CEI mission page: juice",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/juice"
+      }
+     ],
+     "note": "The CEI page covers radiation (electrons, protons, gamma, heavy ions) and optical testing. It does not mention vibration or thermal tests.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU academics contribute to science planning for JUICE’s targets.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "The CEI page mentions science activities shaping instrument goals. No named planning role found.",
+     "decision": "custom",
+     "reviewerNote": "take this out.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Saturn": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "6ef78eab383b",
+    "ou_involvement": "10820797ee88",
+    "status": "ea26876daa9a",
+    "orbit": "4c14197288a2",
+    "tilt": "b975f9046b06",
+    "rot_period": "8c320c4a6843",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Rings of ice and rock, second largest planet, low density (would float).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Saturn facts",
+       "u": "https://science.nasa.gov/saturn/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Dozens of moons.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: Saturn fact sheet",
+       "u": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html"
+      }
+     ],
+     "note": "The NASA fact sheet lists 274. “Hundreds of moons” is now correct.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU models Enceladus cryovolcanism and Saturn’s weather as a long-term initiative.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "McBride et al. 2007: CDA dust at Saturn",
+       "u": "https://oro.open.ac.uk/8738"
+      }
+     ],
+     "note": "Rewritten from sources: Cassini Cosmic Dust Analyser work and the Huygens SSP.",
+     "decision": "custom",
+     "reviewerNote": "Make this more accurate to the sources you found.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "orbit.e",
+     "claim": "Orbital eccentricity 0.057.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: Saturn fact sheet",
+       "u": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html"
+      },
+      {
+       "t": "JPL: approximate planetary elements",
+       "u": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+      }
+     ],
+     "note": "The NASA fact sheet gives 0.052 (mean) and JPL’s J2000 elements give 0.054. 0.057 is high. Visually minor.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Titan": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "c01aed5bea0d",
+    "ou_involvement": "21f3bc712969",
+    "status": "ea26876daa9a",
+    "orbit": "ec261b7ec1d7",
+    "parent": "7c14ab20f3a9",
+    "type": "46dcd4dd65b6"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Largest moon of Saturn, thick atmosphere, methane and ethane lakes, methane cycle, dunes and mountains.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Titan",
+       "u": "https://science.nasa.gov/saturn/moons/titan/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“OU planetary scientists led the production of Titan’s first global geomorphological map.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Lopes et al. 2019, Nature Astronomy",
+       "u": "https://doi.org/10.1038/s41550-019-0917-6"
+      },
+      {
+       "t": "OU article by Rothery",
+       "u": "https://research.open.ac.uk/news/titan-first-global-map-uncovers-secrets-potentially-habitable-moon-saturn"
+      }
+     ],
+     "note": "The Nature Astronomy map (2019) was led by Rosaly Lopes at JPL. None of its 13 authors is at the OU. The OU web article about it is a commentary by David Rothery. Six terrain types is correct.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU astrobiologists study Titan as an ocean world.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "As for Europa.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Cassini": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "2b12d58a5e3b",
+    "ou_involvement": "c45426f734a9",
+    "status": "3d76fd53aa0f",
+    "launch_year": "2cfe534aa669",
+    "orbit": "756561bf14a5",
+    "parent": "7c14ab20f3a9",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "13 years at Saturn, Enceladus geysers, Titan’s surface, deliberate plunge in 2017 to protect the moons.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Cassini",
+       "u": "https://science.nasa.gov/mission/cassini/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU led studies of the rings and of magnetosphere–satellite interaction, and world-leading icy-moon research.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "McBride et al. 2007",
+       "u": "https://oro.open.ac.uk/8738"
+      },
+      {
+       "t": "ORO: CDA calibration",
+       "u": "https://oro.open.ac.uk/4806"
+      }
+     ],
+     "note": "Documented OU Cassini work is on the Cosmic Dust Analyser (calibration and dust composition) and Huygens SSP. Ring and magnetosphere leadership not found.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Huygens": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "e51fd5b72b11",
+    "ou_involvement": "d2842317a888",
+    "status": "35761b18b2ea",
+    "launch_year": "2cfe534aa669",
+    "landed_coords": "9761e2e20021",
+    "parent": "0ce8e5dac8f6",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords 10.2° S, 192.4° W.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Pinpointing Huygens landing site",
+       "u": "https://science.nasa.gov/resource/pinpointing-huygens-landing-site/"
+      },
+      {
+       "t": "Wikipedia: Huygens",
+       "u": "https://en.wikipedia.org/wiki/Huygens_(spacecraft)"
+      }
+     ],
+     "note": "The widely quoted value. A later refinement is 10.573° S, 192.335° W.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "ESA probe, the only landing in the outer Solar System, 2005, a descent of about 2.5 hours, pebbles shaped by liquid methane.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Huygens",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Cassini-Huygens"
+      }
+     ],
+     "note": "The descent took 2 h 27 min. “Two-hour” is a slight undercount.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU provided the Principal Investigator for the Surface Science Package.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Huygens investigators",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Cassini-Huygens/Huygens_investigators"
+      },
+      {
+       "t": "NSSDCA: SSP",
+       "u": "https://nssdc.gsfc.nasa.gov/nmc/experiment/display.action?id=1997-061C-06"
+      }
+     ],
+     "note": "John Zarnecki, SSP PI from 1990.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Uranus": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a2cf6d636dab",
+    "status": "ea26876daa9a",
+    "orbit": "13b716e4a386",
+    "tilt": "4fd4ad82f3b7",
+    "rot_period": "79b79997607f",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“A diverse family of 27 moons.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "SwRI: new moon of Uranus",
+       "u": "https://www.swri.org/newsroom/press-releases/swri-led-webb-telescope-survey-discovers-new-moon-orbiting-uranus"
+      },
+      {
+       "t": "Wikipedia: S/2025 U 1",
+       "u": "https://en.wikipedia.org/wiki/S/2025_U_1"
+      }
+     ],
+     "note": "29 as of 2025. S/2025 U1 was found by JWST and announced in August 2025, following a 28th in 2023.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Ice giant on its side, methane gives the blue-green colour, faint rings.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Uranus facts",
+       "u": "https://science.nasa.gov/uranus/facts/"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Neptune": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "status": "ea26876daa9a",
+    "orbit": "82a96928ef9a",
+    "tilt": "5b0f2f2a3935",
+    "rot_period": "6784503f48be",
+    "parent": "48c98cab7866",
+    "type": "c8fb554a6215"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "No description or OU text in the file. Only physical values (see the Physical values tab).",
+     "status": "verified",
+     "sources": [],
+     "note": "Gap in content, not an error.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Rosetta": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "bba770073c07",
+    "ou_involvement": "b38f4a0ad7f7",
+    "status": "1f5a1abf2f08",
+    "launch_year": "667e624fb374",
+    "orbit": "0a8c0421c8f4",
+    "parent": "3ed13bbdebed",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "First long-term study of a comet nucleus, orbited 67P for over two years.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Rosetta",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU co-developed Ptolemy with RAL Space.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "RAL Space: Rosetta–Philae",
+       "u": "https://www.ralspace.stfc.ac.uk/mission/rosetta-philae"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU contributed to MUPUS and GIADA.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU Rosetta: UK contribution",
+       "u": "https://www5.open.ac.uk/science/research/rosetta/uk-contribution/academia/open-university"
+      }
+     ],
+     "note": "OU Co-Is: MUPUS (Barber, Zarnecki, Hagermann, Kaufmann) and GIADA (McDonnell, Green, Leese, Zarnecki).",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU coordinated the international ground-based observing campaign.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Snodgrass et al.: Rosetta amateur campaign",
+       "u": "https://oro.open.ac.uk/74572/1/pdf.pdf"
+      }
+     ],
+     "note": "Colin Snodgrass, then at the OU.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU research on why 67P’s jets follow a day–night cycle.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No OU paper found. Ask the OU comet group.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Philae": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a194b042b525",
+    "ou_involvement": "b19d877e1a3a",
+    "status": "35761b18b2ea",
+    "launch_year": "667e624fb374",
+    "landed_coords": "b3802a52722a",
+    "parent": "3ed13bbdebed",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords −17°, −171°.",
+     "status": "disputed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "Boehnhardt et al. 2017: Philae overview",
+       "u": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5454222/"
+      }
+     ],
+     "note": "The final Abydos site is about 8.15° S, 358.45° E (−1.55°) in the standard Cheops frame. The first touchdown (Agilkia) was 12.0° N, 335.7° E. The app’s value may be tuned to the 67P model’s own orientation, so check against the model before changing it.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "First landing on a comet nucleus in 2014, ten instruments, bounced, then hibernated.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Philae",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_s_Philae_lander"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The OU designed and built the Ptolemy gas analyser.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "RAL Space: Rosetta–Philae",
+       "u": "https://www.ralspace.stfc.ac.uk/mission/rosetta-philae"
+      },
+      {
+       "t": "Wright et al. 2015, Science",
+       "u": "https://doi.org/10.1126/science.aab0673"
+      }
+     ],
+     "note": "Built jointly by RAL Space and the OU. Ptolemy’s results (Wright et al. 2015, Science) came alongside COSAC’s. “First chemical analysis of organics on a comet’s surface” is shared with COSAC.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Established the OU as a world leader in miniaturised lab technology and comet science.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Opinion rather than fact.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Hera": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "8c68aef2884e",
+    "ou_involvement": "efa6e8fb6735",
+    "status": "e86f931b9258",
+    "launch_year": "7e79a3af2634",
+    "orbit": "934e03121817",
+    "parent": "48c98cab7866",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA planetary defence mission launched 2024 to Didymos and Dimorphos, following up NASA’s DART impact. Arrives late 2026.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Planetary Society: Hera",
+       "u": "https://www.planetary.org/space-missions/hera"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU is involved in the Hera science team.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Hera mission team",
+       "u": "https://www.heramission.space/team"
+      }
+     ],
+     "note": "Simon Green (OU) is on the Hera Science Team management board.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU does pre-launch simulations, impact-dynamics modelling and surface-property analysis to predict Dimorphos’s orbit change.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Unverified tasks removed; replaced with: OU researchers were on the Hera Science Team management board (Simon Green, now retired).",
+     "decision": "custom",
+     "reviewerNote": "take this out for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "AKARI": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "610cae27f06d",
+    "ou_involvement": "7b69f9079855",
+    "status": "3d76fd53aa0f",
+    "launch_year": "1938b79762f0",
+    "orbit": "e7ec90664e19",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Japanese infrared all-sky survey satellite with widely used catalogues.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA Cosmos: AKARI",
+       "u": "https://www.cosmos.esa.int/web/akari"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU was an international partner institute alongside Nagoya, Tokyo, ESA and other UK institutions.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA Cosmos: AKARI",
+       "u": "https://www.cosmos.esa.int/web/akari"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU used AKARI for interstellar dust, PAHs and early star formation.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Likely (OU AKARI papers exist) but no specific paper was checked.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Spitzer": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "325d97ab7697",
+    "ou_involvement": "e8a0ed517ea1",
+    "status": "3d76fd53aa0f",
+    "launch_year": "ab165cb90d19",
+    "orbit": "a089619867bd",
+    "parent": "48c98cab7866",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "NASA Great Observatory, TRAPPIST-1 planets, over 16 years of operations (2003–2020).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Spitzer",
+       "u": "https://science.nasa.gov/mission/spitzer/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU analyses Spitzer light curves for exoplanets and uses them to inform Ariel target selection.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source found.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Herschel": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "af46ca59534d",
+    "ou_involvement": "838b76918556",
+    "status": "3d76fd53aa0f",
+    "launch_year": "7263d678abae",
+    "orbit": "d8c65eac5e07",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“The largest infrared telescope ever launched.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "ESA: Herschel",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Herschel"
+      }
+     ],
+     "note": "True at launch (3.5 m). JWST (6.5 m, 2021) is now the largest. Suggest “the largest infrared telescope launched until JWST”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“A contributing institute in the international SPIRE consortium.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "UK Herschel: SPIRE in depth",
+       "u": "https://herscheltelescope.org.uk/mission/spire/"
+      }
+     ],
+     "note": "The UK Herschel site lists the SPIRE consortium institutes as Cardiff, Imperial, MSSL, RAL, UKATC and Sussex. It names the OU among institutions “using SPIRE for research”. Suggest “used SPIRE data”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU sub-millimetre research on distant galaxies.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ORDO: Stephen Serjeant",
+       "u": "https://ordo.open.ac.uk/authors/Stephen_Serjeant/16865694"
+      }
+     ],
+     "note": "Stephen Serjeant (OU) works on submillimetre surveys and lensing.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Planck": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "ca9ae3bc8860",
+    "ou_involvement": "538fe128e994",
+    "status": "3d76fd53aa0f",
+    "launch_year": "7263d678abae",
+    "orbit": "15f396c0edaf",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Mapped the cosmic microwave background from about 380,000 years after the Big Bang, refined age, composition and expansion.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Planck",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Planck"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU cosmology research uses Planck maps with Euclid.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source found.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Peregrine": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b85b7e5c1d05",
+    "ou_involvement": "b71f5a63224d",
+    "status": "75a7bf994e9a",
+    "launch_year": "7e79a3af2634",
+    "landed_coords": "759c36cfd52c",
+    "parent": "846b90266cab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Astrobotic lander, propellant leak after launch in January 2024, payloads operated, re-entered.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: Peregrine Mission One",
+       "u": "https://en.wikipedia.org/wiki/Peregrine_Mission_One"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“The first private US lunar lander.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: Peregrine Mission One",
+       "u": "https://en.wikipedia.org/wiki/Peregrine_Mission_One"
+      }
+     ],
+     "note": "It was the first US commercial lander attempt. Suggest “the first US commercial lunar lander to launch”.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU with RAL Space built the Exospheric Mass Spectrometer (PITMS) under ESA contract. It demonstrated full functionality in space.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Peregrine spectrometer, over and out",
+       "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Peregrine_spectrometer_over_and_out"
+      },
+      {
+       "t": "PITMS results, PSJ 2025",
+       "u": "https://iopscience.iop.org/article/10.3847/PSJ/ad9927"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "Directly informed more robust spectrometers for upcoming landers.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "The EMS heritage flows to LUPEX EMS-L, but “more robust” is not stated in a source.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Comet Interceptor": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "91d594f94038",
+    "ou_involvement": "9c72d4f20079",
+    "status": "9cbe42aaff60",
+    "launch_year": "f3b3e04bcde7",
+    "orbit": "019f28484609",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA mission that waits at L2 for a pristine comet, then flies by.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Comet Interceptor",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Comet_Interceptor"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU light-gas gun fires particles at several km/s to test DISC’s dust shield.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Performance of the DISC dust shield (ORO)",
+       "u": "https://oro.open.ac.uk/104946/9/104946.pdf"
+      },
+      {
+       "t": "DISC instrument paper (ORO)",
+       "u": "https://oro.open.ac.uk/87295/8/87295.pdf"
+      }
+     ],
+     "note": "Tests at about 5 km/s.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU is “a lead Co-Investigator institution” for DISC.",
+     "status": "corrected",
+     "sources": [],
+     "note": "DISC is led from Italy. OU co-authorship is confirmed but not a “lead” role. Ask the OU impact lab.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "EnVision": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "f248dea9ede3",
+    "ou_involvement": "3cae88638396",
+    "status": "9cbe42aaff60",
+    "launch_year": "0d0c9e996263",
+    "orbit": "e37fc1bca578",
+    "parent": "710689724688",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA Venus orbiter with radar and spectrometers.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: EnVision",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Envision/Envision_studying_Venus"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The Centre for Electronic Imaging is testing … VenSpec-U detectors. The OU leads a £2.3 million ESA-funded contribution, heading the science preparation team.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "OU news tagged Manish Patel (EnVision £2.3M)",
+       "u": "https://www.open.ac.uk/blogs/news/tag/dr-manish-patel/"
+      },
+      {
+       "t": "LESIA: EnVision VenSpec-U",
+       "u": "https://sites.lesia.obspm.fr/envision/envision-venspec-u/"
+      }
+     ],
+     "note": "The £2.3 million grant and VenSpec-U detector testing are confirmed, but the team is Manish Patel’s Atmospheric Research and Space Exploration group, not the CEI. The source says the OU is “participating in” science preparations, not heading them.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "ZefERO": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "ffce37bebbb8",
+    "ou_involvement": "cb2835272a85",
+    "status": "9cbe42aaff60",
+    "launch_year": "c53c713e8cec",
+    "orbit": "4a7524d52057",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Proposed repurposing of the MSR Earth Return Orbiter to study Martian winds and geology and act as a relay, launching 2032.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "European Spaceflight: ESA to repurpose ESM and ERO",
+       "u": "https://europeanspaceflight.com/esa-to-repurpose-european-service-module-and-earth-return-orbiter/"
+      }
+     ],
+     "note": "ESA member states proposed cancelling ERO in March 2026. ZefERO’s approval is not confirmed.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU plans to use ZefERO data for atmospheric models.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Prospective. No OU role announced.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "LightShip-1": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "1dfc982de574",
+    "ou_involvement": "fecff09d5e55",
+    "status": "9cbe42aaff60",
+    "launch_year": "c53c713e8cec",
+    "orbit": "9dc83b5c5f68",
+    "parent": "1778011d76ab",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA electric-propulsion tug to Mars that then forms part of MARCONI.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Wikipedia: LightShip",
+       "u": "https://en.wikipedia.org/wiki/LightShip_(spacecraft)"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU ARES group leads design of the High-Resolution Imager for Mars Exploration (HiRIME).",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU news: HiRIME",
+       "u": "https://www.open.ac.uk/blogs/news/science-mct/ou-leads-the-way-to-future-high-resolution-orbital-imaging-of-mars/"
+      }
+     ],
+     "note": "Phase A study with a €500k ESA grant. The OU leads a consortium with partners in the US, Germany, Spain, Switzerland and Italy. HiRIME flies on the SpotLight spacecraft delivered by LightShip-1.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“Unprecedented macroscopic imagery.”",
+     "status": "corrected",
+     "sources": [],
+     "note": "Wording: HiRIME is a high-resolution imager. “Macroscopic” reads oddly.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "OGRE": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b12141f82dfa",
+    "ou_involvement": "843113bb552c",
+    "status": "9cbe42aaff60",
+    "launch_year": "96f13313ff6a",
+    "suborbital": "2fc965eec944",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "suborbital",
+     "claim": "start_coords 40.8° N, −77.8°.",
+     "status": "disputed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "APS 2025: OGRE overview",
+       "u": "https://meetings-archive.aps.org/smt/2025/apr-h01/2/"
+      },
+      {
+       "t": "NASA Wallops: OGRE",
+       "u": "https://sites.wff.nasa.gov/code810/news/story225_36.298%20OGRE.html"
+      }
+     ],
+     "note": "That is State College, Pennsylvania (Penn State, the PI institution), not a launch site. Black Brant IX flights launch from Wallops (37.9° N, −75.5°) or White Sands (32.4° N, −106.3°). OGRE-P is slated for early 2027. Confirm the site with Penn State.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Sub-orbital sounding rocket for high-resolution X-ray spectra (target Capella), a few minutes above the atmosphere.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA Wallops: OGRE",
+       "u": "https://sites.wff.nasa.gov/code810/news/story225_36.298%20OGRE.html"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "“The CEI, working with XCAM, developed and integrated the array of four EM-CCD sensors.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "OU CEI mission page: ogre",
+       "u": "https://university.open.ac.uk/science/research/cei/missions/ogre"
+      }
+     ],
+     "note": "The CEI page says XCAM designs and builds the camera. The CEI characterises and optimises the four CCD207-40 EMCCDs and programs the four BeagleBone Black computers.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Hayabusa2": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "6ca3cad5f1ae",
+    "ou_involvement": "11077fe039d4",
+    "status": "e86f931b9258",
+    "launch_year": "39e21432a7dc",
+    "orbit": "2386838389a5",
+    "parent": "9a6593197fac",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Deployed rovers, kinetic impactor, returned Ryugu surface and subsurface samples. “En Route” fits its extended mission to 1998 KY26.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JAXA: Hayabusa2",
+       "u": "https://www.hayabusa2.jaxa.jp/en/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "The OU oxygen isotope lab joined “Team Kochi”, one of three Japanese-led initial analysis teams.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Greenwood et al. 2023, Nature Astronomy",
+       "u": "https://doi.org/10.1038/s41550-022-01824-7"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU studies “water and organic molecules” in Ryugu grains.",
+     "status": "corrected",
+     "sources": [],
+     "note": "The published OU work is oxygen isotopes, pointing to CI chondrites as a source of Earth’s early water. Organics not found.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "OSIRIS-REx": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "cb8e1b829f4a",
+    "ou_involvement": "55a8485f1af1",
+    "status": "e86f931b9258",
+    "launch_year": "ab39c5423911",
+    "orbit": "0425d953ff22",
+    "parent": "d6e7c673736d",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Returned Bennu samples in September 2023. Now OSIRIS-APEX, bound for Apophis in 2029.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: OSIRIS-APEX",
+       "u": "https://science.nasa.gov/mission/osiris-apex/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU produced temperature predictions for the Nightingale site.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU SPS news",
+       "u": "https://university.open.ac.uk/science/physical-science/news/sps-researcher-involvement-nasa-mission-sample-asteroid-bennu"
+      },
+      {
+       "t": "Rozitis et al. 2022, JGR Planets",
+       "u": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2021JE007153"
+      }
+     ],
+     "note": "Ben Rozitis (OU).",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU academics analyse returned Bennu material.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Bulk oxygen isotopes of Bennu (NTRS)",
+       "u": "https://ntrs.nasa.gov/citations/20240000340"
+      }
+     ],
+     "note": "Oxygen isotopes, Franchi, Greenwood and Malley.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Stardust": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "6a810cdf6848",
+    "ou_involvement": "6702aac39904",
+    "status": "3d76fd53aa0f",
+    "launch_year": "fbc7843acd86",
+    "orbit": "69506f9eb08f",
+    "parent": "3f01164c4fad",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "First return of comet coma and interstellar dust, captured in aerogel. Capsule landed 2006.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Stardust",
+       "u": "https://science.nasa.gov/mission/stardust/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU researchers used IR, UV/visible and Raman spectroscopy on Wild 2 grains in preliminary examination.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Keller et al., LPSC 2006 #2062",
+       "u": "https://www.lpi.usra.edu/meetings/lpsc2006/pdf/2062.pdf"
+      },
+      {
+       "t": "Brownlee et al. 2006, Science",
+       "u": "https://www.science.org/doi/10.1126/science.1135840"
+      }
+     ],
+     "note": "Franchi and Grady (OU) are co-authors.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Bennu": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "452ef29edf35",
+    "status": "ea26876daa9a",
+    "orbit": "3f3fa9e43010",
+    "rot_period": "e5d05199b7d4",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Diamond-shaped, carbon-rich rubble-pile near-Earth asteroid.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Bennu",
+       "u": "https://science.nasa.gov/solar-system/asteroids/101955-bennu/"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Ryugu": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "51adcafc2101",
+    "status": "ea26876daa9a",
+    "orbit": "25612d9d7d34",
+    "rot_period": "eba2028c26ff",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“Orbits between Earth and Mars.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "JPL SBDB: Ryugu",
+       "u": "https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=162173"
+      }
+     ],
+     "note": "Ryugu is an Apollo asteroid whose orbit crosses Earth’s (0.96–1.41 AU). The rest (dark, diamond-shaped, rubble pile, boulders) is correct.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Comet Wild 2": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "fdf4f60df2d2",
+    "status": "ea26876daa9a",
+    "orbit": "c789e3094cd6",
+    "parent": "48c98cab7866",
+    "type": "9cb5b53f83e2"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "First comet with dust sampled and returned. Rugged nucleus with steep-walled depressions.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Wild 2",
+       "u": "https://science.nasa.gov/solar-system/comets/81p-wild/"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Comet 67P": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "01e1dc5068da",
+    "status": "ea26876daa9a",
+    "orbit": "3d0bcbae53ae",
+    "tilt": "b6589fc6ab0d",
+    "rot_period": "1b390cd54a0c",
+    "parent": "48c98cab7866",
+    "type": "9cb5b53f83e2"
+   },
+   "claims": [
+    {
+     "field": "orbit",
+     "claim": "e 0.641, i 7.04°, node 50.14°, peri 12.8°, a 3.46 AU, rotation 0.5 d.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB: 67P",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=67P"
+      }
+     ],
+     "note": "Matches JPL SBDB (e 0.641, i 7.04, Ω 50.1, ω 12.8, a 3.46). The rotation period is about 12.4 h.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Jupiter-family comet, two-lobed “rubber duck”, low density, dust and ices, jets near the Sun.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Rosetta",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "4731 MonicaGrady": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "6636c4045fb5",
+    "status": "ea26876daa9a",
+    "orbit": "ae605b05c17d",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Naming citation: NHM meteorite curator, carbon isotopes, meteorite recovery.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=4731&discovery=1"
+      }
+     ],
+     "note": "Matches the official citation.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Curator of the meteorite collection at the Natural History Museum.”",
+     "status": "disputed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "Wikipedia: Monica Grady",
+       "u": "https://en.wikipedia.org/wiki/Monica_Grady"
+      }
+     ],
+     "note": "The citation dates from her NHM years. She returned to the OU in 2005, so the present tense is out of date. Suggest “formerly curator”.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Emeritus Proffesor at the Open University.”",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Typo fixed; 'Emeritus' still unconfirmed.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "20386 IanFranchi": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "a3552b57bcce",
+    "status": "ea26876daa9a",
+    "orbit": "0f6ee422a31b",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "British cosmochemist, emeritus professor at the OU, 40 years of oxygen-isotope work.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=20386&discovery=1"
+      }
+     ],
+     "note": "Word for word from the citation.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "20617 RichardGreenwood": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "193ed0c9e297",
+    "status": "ea26876daa9a",
+    "orbit": "217225f4a081",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "OU senior research fellow, oxygen isotopes, wrote a popular meteorite book.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=20617&discovery=1"
+      }
+     ],
+     "note": "Word for word from the citation. SBDB classes it as outer main belt.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "20626 Rider-Stokes": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "f74ea64106ff",
+    "status": "ea26876daa9a",
+    "orbit": "6894700bb5a0",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "OU post-doc on achondrite differentiation and spectral analogues.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=20626&discovery=1"
+      }
+     ],
+     "note": "Word for word from the citation.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "69423 OpenUni": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "b48d9a8e8a25",
+    "status": "ea26876daa9a",
+    "orbit": "b7ae31b601d0",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Founded 23 April 1969, over 2 million part-time students, space exploration history.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=69423&discovery=1"
+      },
+      {
+       "t": "OU: asteroid named after the OU",
+       "u": "https://university.open.ac.uk/science/physical-science/news/asteroid-officially-named-after-open-university"
+      }
+     ],
+     "note": "Word for word from the WGSBN citation.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "10230 AndrewNorton": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "500b850f3079",
+    "status": "ea26876daa9a",
+    "orbit": "abac7383414f",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Astrophysicist, teaching and outreach, compact binaries, SuperWASP Variable Stars, RAS Higher Education Award.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=10230&discovery=1"
+      }
+     ],
+     "note": "The citation says “is … at the Open University”. The file says “was Professor”. Confirm the current status with him.",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "9831 SimonGreen": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "852644a53763",
+    "status": "ea26876daa9a",
+    "orbit": "b1d0cb225def",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Emeritus Professor at the OU, over 20 years observing minor planets and TNOs, starting with IRAS.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=9831&discovery=1"
+      },
+      {
+       "t": "OU profile",
+       "u": "https://stem.open.ac.uk/people/sfg27"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "15614 Pillinger": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "408599d5a62c",
+    "status": "ea26876daa9a",
+    "orbit": "1d81a32f1c00",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "OU professor and planetary geochemist, light-element geochemistry, originator and PI of Beagle 2.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=15614&discovery=1"
+      }
+     ],
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "20594 Pemartin": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "58664e463313",
+    "status": "ea26876daa9a",
+    "orbit": "9407522e28e3",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“Research fellow at the Open University.”",
+     "status": "disputed",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=20594&discovery=1"
+      }
+     ],
+     "note": "The official citation says “a French planetary scientist at the University of Bern”. His Scholar profile lists an OU post-doc. The rest matches the citation. Confirm his current affiliation with him.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "17920 Zarnecki": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "0619fb83be0d",
+    "status": "ea26876daa9a",
+    "orbit": "78b293195e40",
+    "parent": "48c98cab7866",
+    "type": "50b99d34f45c"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "At the OU developed instruments for surfaces and atmospheres. PI for Huygens on Cassini.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "JPL SBDB citation",
+       "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=17920&discovery=1"
+      }
+     ],
+     "note": "Matches the citation. Strictly he was PI of Huygens’ Surface Science Package.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "“Since 2013 John has served as the Director of the International Space Science Institute.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "Wikipedia: John Zarnecki",
+       "u": "https://en.wikipedia.org/wiki/John_Zarnecki"
+      }
+     ],
+     "note": "Dates removed: 'has also served as a Director of ISSI'.",
+     "decision": "custom",
+     "reviewerNote": "remove dates, just say 'served as'",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Earth-Sun L1": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "7784387c28e8",
+    "status": "ea26876daa9a",
+    "orbit": "9dc9a9f70691",
+    "parent": "48c98cab7866",
+    "type": "5b8bc5807335"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "“A gravitational stable point.”",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "NASA: What is a Lagrange point?",
+       "u": "https://science.nasa.gov/resource/what-is-a-lagrange-point/"
+      }
+     ],
+     "note": "L1 is unstable, as with L2.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "About 1.5 million km sunward, uninterrupted Sun view, solar-storm warnings.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: What is a Lagrange point?",
+       "u": "https://science.nasa.gov/resource/what-is-a-lagrange-point/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU studies solar-wind composition from L1 missions, and the Sun’s chemistry for Solar System history.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "OU involvement removed pending confirmation.",
+     "decision": "custom",
+     "reviewerNote": "remove for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Genesis": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "1836d9e8f7b8",
+    "ou_involvement": "3a282437e22e",
+    "status": "1f5a1abf2f08",
+    "launch_year": "9195f873d171",
+    "orbit": "f045d2a87061",
+    "parent": "2ce7558fe0e6",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Collected solar wind at L1 for over two years, hard landing in Utah (2004), measured the Sun’s O and N isotopes.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "NASA: Genesis",
+       "u": "https://science.nasa.gov/mission/genesis/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU ion microprobe facilities helped measure the solar-wind oxygen isotopes.",
+     "status": "corrected",
+     "sources": [
+      {
+       "t": "McKeegan et al. 2011, Science 332",
+       "u": "https://doi.org/10.1126/science.1204636"
+      }
+     ],
+     "note": "The key paper (McKeegan et al. 2011, Science) lists 13 authors from UCLA, LANL, Caltech, Montana, ASU, Bristol and Okayama, and none from the OU. The measurement used UCLA’s MegaSIMS. The finding (Sun enriched in ¹⁶O) is correct. Remove this unless the OU can point to its own Genesis paper.",
+     "decision": "accept",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Ariel": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "734ecc56bee7",
+    "status": "9cbe42aaff60",
+    "launch_year": "f3b3e04bcde7",
+    "orbit": "d4ef0ce78827",
+    "parent": "741c3966b6d0",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "ESA survey of about 1,000 exoplanet atmospheres in visible and infrared.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "ESA: Ariel",
+       "u": "https://www.esa.int/Science_Exploration/Space_Science/Ariel"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "ou_involvement",
+     "claim": "OU has worked with ESA since conception on science cases and targets, and the Tenerife telescopes monitor Ariel targets.",
+     "status": "removed",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "No source found. Ask the OU exoplanet group.",
+     "decision": "custom",
+     "reviewerNote": "remove for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": true
+  },
+  "Open Science Observatories": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "852d78bf60bd",
+    "ou_involvement": "9caa9cd803b4",
+    "status": "8459f93535e3",
+    "launch_year": "527dc687fa58",
+    "landed_coords": "dd2e9f7bec96",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "PIRATE and COAST robotic telescopes at Teide Observatory, operated remotely for teaching and research, including transits.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "OU: OpenScience Observatories",
+       "u": "https://stem.open.ac.uk/study/openstem-labs/openscience-observatories"
+      },
+      {
+       "t": "IAC: Open University Telescope",
+       "u": "https://www.iac.es/en/observatorios-de-canarias/telescopes-and-experiments/open-university-telescope"
+      }
+     ],
+     "note": "The OU also lists a third facility, ART.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "landed_coords",
+     "claim": "landed_coords 28.3° N, −16.5°.",
+     "status": "verified",
+     "sources": [],
+     "note": "Teide Observatory is at about 28.30° N, 16.51° W.",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "launch_year",
+     "claim": "launch_year 2010.",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [
+      {
+       "t": "Kolb et al.: robotic telescope for distance teaching",
+       "u": "https://arxiv.org/abs/1806.02989"
+      }
+     ],
+     "note": "launch_year set to 2008 'for now' by the reviewer; confirm.",
+     "decision": "custom",
+     "reviewerNote": "change to 2008 for now",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  },
+  "Mars Yard": {
+   "renamedFrom": [],
+   "lastChecked": "2026-09-30",
+   "hashes": {
+    "description": "967ab8fc3747",
+    "ou_involvement": "39d5c7c3f6ee",
+    "status": "8459f93535e3",
+    "launch_year": "04e8696e6424",
+    "landed_coords": "cd65ca410783",
+    "parent": "a074430f352b",
+    "type": "e59abed35218"
+   },
+   "claims": [
+    {
+     "field": "description",
+     "claim": "Planetary simulation yard on the Milton Keynes campus, used for rover driving in teaching.",
+     "status": "verified",
+     "sources": [
+      {
+       "t": "Space Universities Network: OU Mars Yard",
+       "u": "https://spaceuniversitiesnetwork.ac.uk/project/the-open-university-mars-yard-mission-simulation/"
+      }
+     ],
+     "review": "2026-09-30"
+    },
+    {
+     "field": "launch_year",
+     "claim": "launch_year 2017.",
+     "status": "unverified",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Opening date not found.",
+     "decision": "keep",
+     "review": "2026-09-30"
+    },
+    {
+     "field": "description",
+     "claim": "Used to test autonomous navigation and train future mission operators.",
+     "status": "user-supplied",
+     "since": "2026-09-30",
+     "sources": [],
+     "note": "Autonomous rover testing: reviewer's knowledge.",
+     "decision": "custom",
+     "reviewerNote": "also add that it's used for autonomous rover testing",
+     "review": "2026-09-30"
+    }
+   ],
+   "missingOu": false
+  }
+ },
+ "candidates": [
+  {
+   "name": "PROSPECT (on Intuitive Machines IM-4)",
+   "firstProposed": "2026-09-30",
+   "why": "The home of the OU-led ProSPA now that it no longer flies on Luna 27. Could replace or rename the Luna 27 entry.",
+   "sources": [
+    {
+     "t": "ESA: Prospect",
+     "u": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Prospect_searching_for_water_at_the_lunar_poles"
+    },
+    {
+     "t": "NSSDCA: IM-4 (CP-22)",
+     "u": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=TO-CP-22"
+    },
+    {
+     "t": "Heather et al., LPSC 2024",
+     "u": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1085.pdf"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Moon",
+    "status": "Planned",
+    "launch_year": "2027",
+    "orbit_type": "landed",
+    "landed_coords": "{ lat: -84.5, lon: 31.5 } (current planned site, subject to NASA confirmation)",
+    "description": "ESA’s PROSPECT package will drill up to about 1 m into the regolith near the lunar south pole and analyse the samples for water and other volatiles. It flies on Intuitive Machines’ Nova-C lander under NASA’s CLPS programme (task CP-22).",
+    "ou_involvement": "The Open University leads development of ProSPA, the package’s analytical laboratory, which heats drilled samples in sealed ovens and measures the gases with mass spectrometers."
+   },
+   "lastReview": "2026-09-30",
+   "status": "added"
+  },
+  {
+   "name": "Chandrayaan-2",
+   "firstProposed": "2026-09-30",
+   "why": "Listed on the CEI mission page and the OU space research page. Follows directly from the Chandrayaan-1 entry.",
+   "sources": [
+    {
+     "t": "OU CEI mission page: past-missions/chandrayaan-2",
+     "u": "https://university.open.ac.uk/science/research/cei/missions/past-missions/chandrayaan-2"
+    },
+    {
+     "t": "Smith et al. 2013, SPIE (ORO)",
+     "u": "https://oro.open.ac.uk/39057/1/2013%20-%20Smith%20et%20al,%20SPIE.pdf"
+    },
+    {
+     "t": "Wikipedia: Chandrayaan-2",
+     "u": "https://en.wikipedia.org/wiki/Chandrayaan-2"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Moon",
+    "status": "Operational (orbiter)",
+    "launch_year": "2019",
+    "orbit": "lunar polar orbit, about 100 km",
+    "description": "India’s second lunar mission. Its orbiter has mapped the Moon since 2019. The Vikram lander was lost during landing.",
+    "ou_involvement": "The Centre for Electronic Imaging characterised the CCD236 swept-charge devices for the CLASS X-ray spectrometer, which maps the Moon’s elements. It analysed radiation damage, showed a factor-of-two gain in radiation hardness, and produced the instrument’s quantum-efficiency calibration. CLASS uses 16 CCD236s."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "AlSat Nano",
+   "firstProposed": "2026-09-30",
+   "why": "The credits already name “AlSat Nano mission, The Open University” (used for the UKube-1 image), but there is no entry. It carried the OU’s C3D2 camera.",
+   "sources": [
+    {
+     "t": "eoPortal: AlSat-Nano",
+     "u": "https://www.eoportal.org/satellite-missions/alsat-nano"
+    },
+    {
+     "t": "Surrey Space Centre: AlSat-1N",
+     "u": "https://www.surrey.ac.uk/surrey-space-centre/missions/alsat-1n"
+    },
+    {
+     "t": "ScienceDaily: first colour image",
+     "u": "https://www.sciencedaily.com/releases/2017/01/170116091655.htm"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Earth",
+    "status": "Complete",
+    "launch_year": "2016",
+    "orbit": "680 km sun-synchronous, launched 26 Sep 2016 on PSLV-C35",
+    "description": "A joint UK–Algeria 3U CubeSat, built with Surrey Space Centre to train Algerian engineers and test UK payloads in orbit.",
+    "ou_involvement": "The OU built the C3D2 camera with XCAM and e2v, a follow-on to the C3D flown on UKube-1. It carried three e2v Sapphire CMOS sensors and took AlSat Nano’s first colour image on 3 December 2016."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "ExoMars 2016 Schiaparelli",
+   "firstProposed": "2026-09-30",
+   "why": "An OU scientist was on the lander’s surface payload team. Its carrier (TGO) is already in the file.",
+   "sources": [
+    {
+     "t": "Esposito et al. 2018: DREAMS, Space Sci Rev",
+     "u": "https://link.springer.com/article/10.1007/s11214-018-0535-0"
+    },
+    {
+     "t": "Wikipedia: Schiaparelli EDM",
+     "u": "https://en.wikipedia.org/wiki/Schiaparelli_EDM"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Mars",
+    "status": "Crashed",
+    "launch_year": "2016",
+    "orbit_type": "landed",
+    "landed_coords": "{ lat: -2.05, lon: -6.21 } (crash site, Meridiani Planum)",
+    "description": "ESA’s entry, descent and landing demonstrator. It reached Mars with the Trace Gas Orbiter but crashed on 19 October 2016 after a software error in the final descent.",
+    "ou_involvement": "Manish Patel (OU) was a co-investigator on DREAMS, the lander’s environmental sensor package, which included the MicroARES electric-field sensor."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "Mars Express",
+   "firstProposed": "2026-09-30",
+   "why": "Carried Beagle 2. An OU scientist is a co-investigator on its orbiter instruments.",
+   "sources": [
+    {
+     "t": "ESA SP-1240: Mars Express payload",
+     "u": "https://www.esa.int/esapub/sp/sp1240/sp1240web.pdf"
+    },
+    {
+     "t": "Wikipedia: Mars Express",
+     "u": "https://en.wikipedia.org/wiki/Mars_Express"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Mars",
+    "status": "Operational",
+    "launch_year": "2003",
+    "description": "ESA’s first Mars mission, in orbit since December 2003. Confirmed to the end of 2026, with an extension to 2028 to support JAXA’s MMX.",
+    "ou_involvement": "Mars Express carried the OU-led Beagle 2 lander. John Murray (OU) was a co-investigator on the orbiter’s instrument teams (HRSC camera), per ESA’s payload documentation."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "WSO-UVS (Spektr-UF)",
+   "firstProposed": "2026-09-30",
+   "why": "Listed as a current CEI mission.",
+   "sources": [
+    {
+     "t": "OU CEI mission page: wso-uvs",
+     "u": "https://university.open.ac.uk/science/research/cei/missions/wso-uvs"
+    },
+    {
+     "t": "Wikipedia: Spektr-UV",
+     "u": "https://en.wikipedia.org/wiki/Spektr-UV"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Earth",
+    "status": "Planned",
+    "launch_year": "2031 or later (repeatedly delayed)",
+    "description": "A Russian-led ultraviolet space observatory for 115–310 nm, with Spain and Japan as partners.",
+    "ou_involvement": "The Centre for Electronic Imaging studies radiation damage to the CCD camera’s sensors and their ability to integrate for long periods at very low noise."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "International Mars Ice Mapper (I-MIM)",
+   "firstProposed": "2026-09-30",
+   "why": "The OU received £2 million, then £1.2 million, from UKSA for the imager detector. It is a significant OU instrument role.",
+   "sources": [
+    {
+     "t": "OU news: £2M for I-MIM",
+     "u": "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-major-grant-supporting-the-future-human-exploration-of-mars/"
+    },
+    {
+     "t": "OU news: £1.2M follow-on",
+     "u": "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-1-2-million-to-advance-imaging-technology-supporting-the-future-human-exploration-of-mars/"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Mars",
+    "status": "Planned (status uncertain)",
+    "launch_year": "TBC",
+    "description": "A proposed Canadian-led orbiter to map shallow water ice on Mars ahead of human exploration.",
+    "ou_involvement": "Manish Patel’s team is developing the imaging detector for a visible–infrared multispectral imager, with the University of Bern."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  },
+  {
+   "name": "Apollo and Luna samples",
+   "firstProposed": "2026-09-30",
+   "why": "The OU’s evidence to Parliament cites OU discoveries from Apollo and Luna samples. An Apollo lander model already exists in the project’s models.",
+   "sources": [
+    {
+     "t": "OU written evidence to Parliament, April 2025 (PDF)",
+     "u": "https://committees.parliament.uk/writtenevidence/140492/pdf/"
+    },
+    {
+     "t": "NASA: Apollo 11 landing site",
+     "u": "https://www.nasa.gov/history/apollo-11-mission-overview/"
+    }
+   ],
+   "fields": {
+    "type": "mission",
+    "parent": "Moon",
+    "status": "Complete",
+    "launch_year": "1969 (Apollo 11)",
+    "orbit_type": "landed",
+    "landed_coords": "Apollo 11: { lat: 0.674, lon: 23.473 }",
+    "ou_involvement": "OU laboratories have analysed returned Apollo and Luna samples, for example water and oxygen isotopes in lunar rocks. Name specific studies before using this."
+   },
+   "lastReview": "2026-09-30",
+   "status": "proposed"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU develops machine learning for satellite imagery to track deforestation, urban growth and glacial retreat, and supports international climate efforts.",
+  "field": "ou_involvement",
+  "id": "Earth--1",
+  "kind": "claim",
+  "note": "keep as it is but still flag it as unverified on this system\n",
+  "object": "Earth",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T07:58:52.721Z",
+  "verdict": "unv"
+}

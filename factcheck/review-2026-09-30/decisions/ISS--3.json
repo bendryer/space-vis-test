@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“For 533 days.”",
+  "field": "ou_involvement",
+  "id": "ISS--3",
+  "kind": "claim",
+  "note": "",
+  "object": "ISS",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "for 533 days",
+      "to": "for about 18 months"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:59:32.652Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU astronomers are preparing microlensing and stellar-population studies with Roman data.",
+  "field": "ou_involvement",
+  "id": "Roman--3",
+  "kind": "claim",
+  "note": "take out for now",
+  "object": "Roman",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:21:20.106Z",
+  "verdict": "unv"
+}

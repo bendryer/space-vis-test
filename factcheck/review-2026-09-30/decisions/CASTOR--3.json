@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU helps define the telescope’s survey strategy.",
+  "field": "ou_involvement",
+  "id": "CASTOR--3",
+  "kind": "claim",
+  "note": "yes remove the survey strategy - it's more involvement in the detectors especially detector optimisation and measurements of effectiveness and degradation of UV coating.",
+  "object": "CASTOR",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "spaceflight, alongside OU involvement in helping define the telescope's survey strategy.",
+      "to": "spaceflight."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:08:34.074Z",
+  "verdict": "unv"
+}

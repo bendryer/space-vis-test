@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Status “Decommissioned”.",
+  "field": "status",
+  "id": "Swift--0",
+  "kind": "claim",
+  "note": "i agree with this change - can we change the mission status based on the date that the app loads with?",
+  "object": "Swift",
+  "suggestion": [
+    {
+      "f": "status",
+      "from": "Decommissioned",
+      "to": "Operational"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:10:54.017Z",
+  "verdict": "bad"
+}

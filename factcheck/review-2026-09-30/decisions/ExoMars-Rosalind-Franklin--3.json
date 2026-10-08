@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU is building data-analysis pipelines for the rover’s chemical findings.",
+  "field": "ou_involvement",
+  "id": "ExoMars-Rosalind-Franklin--3",
+  "kind": "claim",
+  "note": "take out for now",
+  "object": "ExoMars Rosalind Franklin",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:22:28.941Z",
+  "verdict": "unv"
+}

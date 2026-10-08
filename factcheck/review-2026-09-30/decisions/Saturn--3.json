@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Orbital eccentricity 0.057.",
+  "field": "orbit.e",
+  "id": "Saturn--3",
+  "kind": "claim",
+  "note": "",
+  "object": "Saturn",
+  "suggestion": [
+    {
+      "f": "orbit.e",
+      "from": "0.057",
+      "to": "0.054"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:24:52.047Z",
+  "verdict": "fix"
+}

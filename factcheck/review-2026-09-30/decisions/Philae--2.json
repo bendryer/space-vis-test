@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The OU designed and built the Ptolemy gas analyser.”",
+  "field": "ou_involvement",
+  "id": "Philae--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Philae",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU designed and built the Ptolemy gas analyser, which performed the first chemical analysis",
+      "to": "Together with RAL Space, the OU designed and built the Ptolemy gas analyser, which with the COSAC instrument made the first chemical analysis"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:26:20.960Z",
+  "verdict": "fix"
+}

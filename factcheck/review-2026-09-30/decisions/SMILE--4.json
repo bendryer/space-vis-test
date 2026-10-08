@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The Centre for Electronic Imaging designed … the detectors.”",
+  "field": "ou_involvement",
+  "id": "SMILE--4",
+  "kind": "claim",
+  "note": "",
+  "object": "SMILE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "designed and characterised the twin CCD370 detectors",
+      "to": "developed and tested the twin CCD370 detectors"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:09:28.698Z",
+  "verdict": "fix"
+}

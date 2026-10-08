@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Results feed into OU astronomy modules.",
+  "field": "ou_involvement",
+  "id": "JWST--3",
+  "kind": "claim",
+  "note": "remove for now",
+  "object": "JWST",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:16:33.695Z",
+  "verdict": "unv"
+}

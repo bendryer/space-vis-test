@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Adapted from the CCD270s flown on PLATO.”",
+  "field": "ou_involvement",
+  "id": "SMILE--3",
+  "kind": "claim",
+  "note": "",
+  "object": "SMILE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "adapted from the CCD270s flown on PLATO",
+      "to": "derived from the CCD270s developed for PLATO"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:09:18.712Z",
+  "verdict": "bad"
+}

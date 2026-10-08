@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“OU academics serve as participating scientists.”",
+  "field": "ou_involvement",
+  "id": "MSL-Curiosity--2",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "OU academics serve as participating scientists on the Mars Science Laboratory mission",
+      "to": "OU academics are members of the Mars Science Laboratory science team"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:22:33.739Z",
+  "verdict": "fix"
+}

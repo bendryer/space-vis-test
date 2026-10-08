@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "landed_coords lat 42, lon −58.5.",
+  "field": "landed_coords",
+  "id": "Chang-e-5--0",
+  "kind": "claim",
+  "note": "This was changed slightly to move the lander away from the peregrine landing site - I would rather this coordinate be accurate and peregrine to be moved away slihtly to keep seperation in the visualisation, because peregrine failed.",
+  "object": "Chang'e-5",
+  "suggestion": [
+    {
+      "f": "landed_coords",
+      "from": "{\"lat\":42,\"lon\":-58.5}",
+      "to": "{\"lat\":43.06,\"lon\":-51.92}"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:14:23.858Z",
+  "verdict": "bad"
+}

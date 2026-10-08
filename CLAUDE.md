@@ -4,27 +4,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads `src/main.js` (~2000+ lines), which renders the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders, and a cinematic auto-tour camera mode. It's a single-page, single-app project, not a monorepo.
+OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads `src/main.js` (~5000 lines), which renders the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders (`src/sun.js`, `src/sun/*.glsl`), and a cinematic auto-tour camera mode.
 
 `src/counter.js` and `src/javascript.svg` are unused Vite-scaffold leftovers, not imported anywhere.
 
+`ENGINE-PLAN.md` is the agreed plan for splitting `main.js` into a shared engine plus apps (the current showcase, and a planned presentation app). Follow its ground rules when doing that work.
+
 ## Commands
 
-- `npm run dev` — start dev server
-- `npm run build` — production build (runs before `deploy` via `predeploy`)
-- `npm run preview` — preview a production build locally
-- `npm run deploy` — build and publish `dist/` to GitHub Pages via `gh-pages`
-- `npm run lint` — ESLint (flat config). There are no tests.
+- `npm run dev`: dev server on port 5173, at `http://localhost:5173/space-vis-test/`
+- `npm run build`: production build into `dist/`. `ANALYZE=1 npm run build` also writes and opens a bundle report (`stats.html`).
+- `npm run preview`: serve the production build (`/space-vis-test/`)
+- `npm run deploy`: check, build and publish `dist/` to GitHub Pages (see Workflow)
+- `npm run lint`: ESLint (flat config). There are no tests yet (a smoke test is Phase 0 of `ENGINE-PLAN.md`).
 
-`npm run build` opens a bundle report in the browser (`rollup-plugin-visualizer` with `open: true`).
+## Workflow
 
-Design work happens in the sibling `../space-vis-design` sandbox, which shares this `public/` folder; finished changes to `index.html`, `src/main.js`, `src/style.css`, `src/sun.js` and `src/sun/*.glsl` are copied back here, with `DATA.md`.
+- `main` is what's live, and must always be deployable. Do new work on a branch (`feature/*`, `design/*`, `refactor/*`) and merge it into `main` once it's checked (lint, build, no console errors in the dev server). Small fixes can still go straight to `main`.
+- Design experiments are branches. (They used to be a separate sandbox folder, `../space-vis-design`, retired on 2026-10-08.)
+- `npm run deploy` runs `tools/deploy-check.mjs` first, which stops unless you're on `main` with a clean tree that matches `origin/main`. After publishing, `tools/deploy-tag.mjs` tags the commit `deploy-YYYY-MM-DD-HHMM` and pushes the tag, so every live version can be found again. Rollback steps are in `tools/deploy-check.mjs`.
+- Live at https://bendryer.github.io/space-vis-test/.
+- Commit or push only when the user asks.
+
+## Product and design context
+
+`PRODUCT.md` (audience, purpose, constraints) and `DESIGN.md` (the OU visual system) describe the product. Read them before design work. Brand: OU colours, Poppins, the OU logo at `public/images/brand/`. `.impeccable/` holds the design tooling's record (`design.json`, critiques, surface notes); its live sessions and screenshots are gitignored.
 
 ## Data files
 
 `public/data.json` is the canonical mission/celestial-body dataset — treat it as the source of truth. `public/data_pippa.json` is a colleague's variant that added descriptions for each object; `data.json` is intended to be the merged result pulling in that work, but the merge should be double-checked rather than assumed complete for any given entry. The two things this data concentrates on per mission/body are the **Open University's involvement** and the **science that OU academics are interested in** — prioritize getting those fields right over other content.
 
-`DATA.md` documents every field the code reads. Objects, their models, orbits (including a mission's cruise `trajectory`), spacecraft motion and menu placement are all driven from `data.json`; adding or changing an object shouldn't need a code change.
+Everything specific to an object lives in `data.json`, never in code. `DATA.md` documents every field the code reads. Adding, removing or restyling an object should need only a `data.json` edit plus any asset files. Notable fields:
+
+- `orbit_color`, `system`, `preload`, `show_orbit`, `segments`, `roughness_map`, `rotation_mode` (replace old name-based rules).
+- `model_named`: a named asteroid's private model, used only when `USE_NAMED_ASTEROID_MODELS` is on. `model` is the public generic one.
+- `motion`: spacecraft attitude (`spin` / `sun` / `nadir` / `tumble`, with `axis`, `along`, `rate`, `tilt`, `wobble`, `period`).
+- `icon`, `menu_parent`, `menu_order`, `menu_top_level` (the Moon, Earth-Sun L1 and L2 are their own groups after Earth).
+- `orbit_type: "trajectory"` + `trajectory` (`waypoints` with `date`/`at`/`revs`/`extreme`, `arrival_orbit`): JUICE's cruise to Jupiter.
+- `status_timeline` (`[{from, status}]`): a status that changes on a known date, applied at load by `applyStatusTimeline` in `main.js` (mirrored in `public/mission-guide.html`).
+- `rotation_mode: "spin"` (an asteroid turns on `rot_period` instead of tumbling) and `"locked"` (a moon keeps +X towards its parent, via `faceParent`): Didymos and Dimorphos.
+- `a_au` in an `orbit`: real size in AU for anything on a real orbit round the Sun, drawn through one shared distance scale (`auToScene`: log compression, 1 AU = 1,000 units). Moons, L1/L2 and craft round a body keep illustrative `a` in scene units. Trajectory `extreme` is in AU.
+
+**Fact-checking `data.json`:** use the `factcheck-data` skill (`.claude/skills/factcheck-data/`). `factcheck/registry.json` records every checked claim and `factcheck/sources.json` every fact found and its sources (check it before searching the web); claims that are unverified, user-supplied, disputed or removed stay flagged in each later review.
 
 ## Deploy path gotcha
 
@@ -37,11 +58,35 @@ Design work happens in the sibling `../space-vis-design` sandbox, which shares t
 Web-ready derivatives live beside the sources, and a changed source needs its derivative regenerated:
 - `public/images/web/<name>.webp`: sidebar copies of each science image (at most 1600px on the long side). The app loads these first and falls back to the original.
 - `public/textures/milky_way_{px,nx,py,ny,pz,nz}.ktx2`: the sky as a GPU-compressed cube map (UASTC), baked from `milky_way.jpg`, which stays as a fallback.
-- `public/models/*.glb` (and `*-low.glb`) were simplified with gltf-transform. The untouched originals are in `model-originals/` (outside `public/`).
+- `public/models/*.glb` (and `*-low.glb`) were simplified with gltf-transform. The untouched originals are in `model-originals/` (outside `public/`, gitignored).
 - `public/draco/` and `public/basis/` are decoders copied from three's `examples/jsm/libs`; update them when `three` is upgraded. Lint ignores them.
 
 `USE_NAMED_ASTEROID_MODELS` in `main.js` is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
 
-## Workflow
+## How the main systems work (src/main.js)
 
-Commits go directly to `main` — there's no branch/PR process for this repo.
+- **Menu:** `populateMenu`. Missions come first in a group, alphabetically, then bodies by distance. Mission asteroids, Honorary asteroids (`menu_holder: "named"`) and Comets are "holders" (`MENU_HOLDERS`) whose rows show the overview with their bodies marked. No status tags in the menu (status shows in the details panel).
+- **Reticles:** instrument callouts over hovered objects (`drawReticle`, `updateGroupReticles`). A ring at range, a light-blue dot up close; position never eased, size eased. The ring is four quarter arcs (half arcs made it pulse). A shown group's reticles are dotted rings with no labels.
+- **Splash:** fly-through intro in `dismissSplash` (timed stages, CSS in `style.css`). The blue ground is drawn inside the splash SVG (`.splash-ground`, a hole under the world), so the whole fly-through is one element scaled by a compositor transform: hole, rim and orbit cannot separate on a slow frame. Don't go back to animating a mask radius (main-thread, stutters apart).
+- **Loading:** the sky doesn't gate the splash: its KTX2 faces are prefetched and transcoded by `startSky()` after `scene-ready` or on dismiss, fading in via `scene.backgroundIntensity`. Preloaded models (Earth system, Comet 67P) wait in `preloadQueue` for `startPreloads()` at the same moments.
+- **Lighting and shadows:** within 36 of a system's radii (`SUN_SHADOW_REACH`) the Sun's point light crossfades to the shadow-casting directional light over 1 s of time (`SUN_SHADOW_FADE_S`), not over distance, because flights cross that range fast; changing system resets the blend (the light is aimed at the new system). `updateSunShadow` also fits the Sun's directional shadow map to the view (texel-snapped, stepped sizes, texel-scaled biases). Solid bodies cast from back faces (`CLOSED_BODY_TYPES`) to avoid acne. The selection spotlight (`updateSelectionSpot`) is overhead for landers and an anti-Sun fill for orbiters that never reaches the planet; it is faint by day and its shadows fade out in sunlight. It counts as night whenever `getSunOcclusion` says another body shades the craft (Earth in a lunar eclipse, a planet's shadow for an orbiter, Saturn's rings, weighted by the ring's `opacity`), not only on a body's own night side. Planned missions (holograms) get no spotlight.
+- **Landers:** `attemptToLand` lands on the parent's full-detail surface when loaded, nudges rays that slip through pole seams, and rests landers on their supports (`getLanderSupports`, `settleOnSupports`), keeping each over its own landing point and adjusting only height and tilt (centring its feet made LUPEX slide sideways when a detail level arrived). `relandLanders` re-seats them when a detail level arrives.
+- **Spacecraft motion:** `updateMissionAttitude`, from each mission's `motion`.
+- **Model flattening:** per-object draw overhead is what limits slow CPUs, so models are merged by material. It's done in the files: `perseverance(-low)`, `cubesat` and `apollo(-low)` were pre-flattened with `%LOCALAPPDATA%\Temp\ouniverse-models\flattenglb.mjs` (bakes skins as three.js draws them, drops unused animations, flattens, dedups, prunes, joins, re-encodes; Perseverance 252 → 43 meshes and 4.9 MB → 1.7 MB). Draco settings matter: 20-bit positions, `QN=14 QT=16`; the low-detail files have coplanar faces that change with triangle order, so `perseverance-low` uses `DRACO_METHOD=sequential` and `apollo-low` is left uncompressed (`SKIP=draco`). Check any re-run by rendering old and new side by side (pixel diff), not just by count. The pre-flatten files are in `model-originals/pre-flatten/`. Perseverance's mast is stowed in those originals: before flattening, bake the raised pose with `node pose-at.mjs <in> <out> 6 CylinderAction bottomAction topAction Cylinder.002Action` (same temp folder). Didymos and Dimorphos come from DART's PDS shape models (OBJ, km, +Z pole), converted by `obj2glb.mjs` in the same temp folder (Y-up, smooth normals, matte rock, Draco, plus a `-low` at 3%). `flattenModel` in `main.js` (called by `buildModelLevel`) is the safety net for new models: it merges at load (Perseverance took ~50 ms) and skips a model whose meshes can't merge (0.1 ms), so pre-flatten any big new model instead.
+- **Adaptive resolution:** `beginFrameTiming` / `endFrameTiming` round the main render. With GPU timer queries (Chrome/Edge), a median GPU time over `GPU_BUDGET_MS` (13 ms) steps the pixel ratio down through `RESOLUTION_STEPS` (1, 0.85, 0.72), and it steps back up when the predicted cost fits under `GPU_HEADROOM_MS`. Without timers it only steps down, for a median frame over 40 ms.
+- **Trajectories:** `getTrajectoryPlan` builds a smooth cruise (per-leg loops and extremes, joined by monotone cubics for angle, radius and height) through flyby points at the simulation's planet positions on each flyby date; `getTrajectoryPosition` / `updateTrajectoryLines` switch to the arrival orbit after the last date.
+- **The Sun:** `src/sun.js`. The surface noise has its own clock that only runs while redrawn, so nothing swaps on approach; loops and rays fade in with size.
+
+## Testing and debugging
+
+- **Dev hook:** in dev builds `window.__ouniverse` exposes `camera`, `controls`, `scene`, `celestialMap`, `renderer`, `THREE`, `loadGltf`, `buildModelLevel`, `getEffectiveModel`, `isTransitioning`, `selectedObject`, `sunEffect`, etc. It is stripped from production builds.
+- **Performance marks:** `system-ready`, `warmup-start`, `warmup-shaders-ready`, `scene-ready` (start button ready), `sky-ready`. Read them with `performance.getEntriesByType('mark')`.
+- **Chrome (claude-in-chrome):** the app only animates while its tab is visible. If `document.visibilityState` is `hidden`, rAF is paused and flights stall; ask the user to bring the window forward. To hurry a flight without deselecting, dispatch a `wheel` event on `renderer.domElement` (Escape deselects).
+- **Headless (Playwright):** the default swiftshader renders about 3 fps. Instead launch system Chrome (`executablePath: C:/Program Files/Google/Chrome/Application/chrome.exe`) with `--enable-gpu --ignore-gpu-blocklist --use-angle=d3d11`: that renders on the real GPU at 60 fps, visible, and is the reliable way to time things (the claude-in-chrome tab is often hidden). In Git Bash, prefix commands passing `/models/...` arguments with `MSYS_NO_PATHCONV=1`.
+- **Performance testing:** weaker hardware is modelled with CDP `Emulation.setCPUThrottlingRate` (4×) and by screen size (1920×1080 @1.25, 3840×2160, 390×844 @3). Read GPU cost from `window.__ouniverse.resolution.gpu` (the app's own timer queries; don't add a second query round `renderer.render`, they can't nest), and set `resolution.changedAt = 1e15` to pin full resolution while measuring. Select objects by `li.menu-item[data-name]` and wait for `isTransitioning` to go true then false (landers fly only once their body loads). Time loads against a production build (`npm run build && npm run preview`).
+- **Model tools:** scripts in `%LOCALAPPDATA%\Temp\ouniverse-models\` (Node with `@gltf-transform/*`, `draco3dgltf`, `meshoptimizer`; Python with scipy and scikit-image): Draco decode/inspect, coplanar/z-fighting detection and fixes (`coplanar2.mjs`, `zfix.mjs`), outer-shell and shrink-wrap (`shell.mjs`, `shrinkwrap.py`, `simplify.mjs`, `writemesh.mjs`). It's a temp folder and may be cleared. Original models are in `model-originals/`.
+- **Shell quoting:** long Python/JS written inline in Bash heredocs has failed on quotes; write scripts to files first.
+
+## Open ideas
+
+- Convert the planet JPGs to WebP (moon 1 MB, mercury 852 KB, mars 733 KB…), about 2 MB off the first load. Ask first.

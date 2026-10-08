@@ -16,6 +16,11 @@ export default [
     },
   },
   {
+    // The fact-check skill, tools/ and the Vite config run in Node, not the browser.
+    files: ['.claude/skills/**/*.mjs', 'tools/**/*.mjs', 'vite.config.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
     // public/draco and public/basis are third-party decoders copied from three.js.
     ignores: ['dist/', 'node_modules/', 'stats.html', 'public/draco/', 'public/basis/'],
   },

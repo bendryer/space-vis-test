@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU studies solar-wind composition from L1 missions, and the Sun’s chemistry for Solar System history.",
+  "field": "ou_involvement",
+  "id": "Earth-Sun-L1--2",
+  "kind": "claim",
+  "note": "remove for now",
+  "object": "Earth-Sun L1",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:31:08.437Z",
+  "verdict": "unv"
+}

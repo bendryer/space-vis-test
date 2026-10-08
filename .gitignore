@@ -51,3 +51,10 @@ public/images/plato_science.jpg
 # Unused Vite scaffold leftovers
 src/counter.js
 src/javascript.svg
+# Claude Code's per-machine permissions
+.claude/settings.local.json
+# impeccable working files: live sessions, screenshots, logs, the staged design-system source
+.impeccable/live/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/ds-artifact/

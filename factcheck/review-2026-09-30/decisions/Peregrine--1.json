@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The first private US lunar lander.”",
+  "field": "description",
+  "id": "Peregrine--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Peregrine",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Peregrine was the first private US lunar lander developed by Astrobotic",
+      "to": "Peregrine was a US commercial lunar lander developed by Astrobotic"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:27:36.505Z",
+  "verdict": "fix"
+}

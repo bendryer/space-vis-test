@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Unprecedented macroscopic imagery.”",
+  "field": "ou_involvement",
+  "id": "LightShip-1--2",
+  "kind": "claim",
+  "note": "",
+  "object": "LightShip-1",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "unprecedented macroscopic imagery",
+      "to": "high-resolution imagery"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:14.558Z",
+  "verdict": "fix"
+}

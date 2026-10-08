@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Dozens of moons.”",
+  "field": "description",
+  "id": "Jupiter--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Jupiter",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "It possesses dozens of moons",
+      "to": "It has about a hundred known moons"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:22:57.132Z",
+  "verdict": "fix"
+}

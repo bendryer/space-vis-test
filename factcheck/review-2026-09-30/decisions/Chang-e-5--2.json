@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“One of only seven international scientists selected … loan beginning in April 2025.”",
+  "field": "ou_involvement",
+  "id": "Chang-e-5--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Chang'e-5",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "An Open University academic was one of only seven international scientists selected to receive samples from the Chang'e-5 mission, with the loan beginning in April 2025.",
+      "to": "In April 2025 the Open University was one of only seven institutions outside China selected to borrow samples from the Chang'e-5 mission."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:14:32.228Z",
+  "verdict": "fix"
+}

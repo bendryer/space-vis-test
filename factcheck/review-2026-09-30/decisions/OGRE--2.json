@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The CEI, working with XCAM, developed and integrated the array of four EM-CCD sensors.”",
+  "field": "ou_involvement",
+  "id": "OGRE--2",
+  "kind": "claim",
+  "note": "",
+  "object": "OGRE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The CEI, working with UK detector manufacturer XCAM, developed and integrated the specialised array of four EM-CCD sensors that make up OGRE's X-ray camera system",
+      "to": "The CEI characterises and optimises the four EM-CCD sensors in OGRE's X-ray camera, which is built by the UK company XCAM"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:35.828Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU studies “water and organic molecules” in Ryugu grains.",
+  "field": "ou_involvement",
+  "id": "Hayabusa2--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Hayabusa2",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "to study the water and organic molecules within the grains, helping to understand how such material may have been delivered to the early Earth",
+      "to": "to measure oxygen isotopes in the grains, showing that Ryugu-like material may have delivered water to the early Earth"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:28:39.979Z",
+  "verdict": "fix"
+}

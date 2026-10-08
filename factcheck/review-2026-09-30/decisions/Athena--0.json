@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Name “Athena”.",
+  "field": "description",
+  "id": "Athena--0",
+  "kind": "claim",
+  "note": "Let's rename it to NewAthena",
+  "object": "Athena",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Athena is a planned ESA X-ray observatory",
+      "to": "NewAthena is a planned ESA X-ray observatory, due for launch around 2037,"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:20:16.380Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU led studies of the rings and of magnetosphere–satellite interaction, and world-leading icy-moon research.",
+  "field": "ou_involvement",
+  "id": "Cassini--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Cassini",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "Academics led studies into the physical properties of Saturn's rings and the interaction between the planet's magnetosphere and its satellites.",
+      "to": "OU researchers helped calibrate Cassini's Cosmic Dust Analyser and studied the composition of dust around Saturn."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:25:25.096Z",
+  "verdict": "fix"
+}

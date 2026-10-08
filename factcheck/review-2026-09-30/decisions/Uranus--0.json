@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“A diverse family of 27 moons.”",
+  "field": "description",
+  "id": "Uranus--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Uranus",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "27 moons",
+      "to": "29 known moons"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:25:33.553Z",
+  "verdict": "bad"
+}

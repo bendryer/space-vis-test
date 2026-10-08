@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "OU uses L2 as a virtual laboratory to study how deep space affects satellite components and monitors OU-characterised missions there.",
+  "field": "ou_involvement",
+  "id": "Earth-Sun-L2--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Earth-Sun L2",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:15:34.495Z",
+  "verdict": "unv"
+}

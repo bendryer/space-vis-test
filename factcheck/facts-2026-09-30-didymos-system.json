@@ -1,0 +1,12 @@
+[
+ { "object": "Didymos", "field": "model", "fact": "Shape models: Didymos v003 and Dimorphos v004 from DART DRACO and LICIACube LUKE images (body-fixed, km, +Z = north pole). Used: Didymos 4.657 m and Dimorphos 0.972 m global OBJs.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Daly et al., DART Shapemodel Archive Bundle, PDS SBN (2023), doi:10.26007/96fn-p578", "u": "https://pds-smallbodies.astro.umd.edu/holdings/pds4-dart_shapemodel-v1.0/SUPPORT/dataset.shtml" } ] },
+ { "object": "Didymos", "field": "description", "fact": "Didymos model extent 818 × 802 × 605 m (flattened at the poles, a spinning-top shape); DRACO imaging of Didymos was limited to about 3.7 m resolution; Didymos pole RA 66.83°, Dec −73.0° (ICRF).", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "DART: Didymos coordinate system description v1 (PDS)", "u": "https://pds-smallbodies.astro.umd.edu/holdings/pds4-dart:document_draco-v3.0/didymos_coordinate_system_description_v1.pdf" } ] },
+ { "object": "Dimorphos", "field": "orbit", "fact": "Post-impact orbit of Dimorphos: period 11.3674 ± 0.0004 h (after settling from 11.377 h), eccentricity 0.0274 ± 0.0015; Didymos pole ecliptic latitude −80.7 ± 0.5° (so the orbit is retrograde, inclined about 170.7° to the ecliptic).", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Naidu et al. 2024, PSJ: Orbital and physical characterization of Dimorphos following the DART impact", "u": "https://iopscience.iop.org/article/10.3847/PSJ/ad26e7" } ] },
+ { "object": "Dimorphos", "field": "orbit", "fact": "Post-impact semi-major axis 1.144 ± 0.070 km; period 11 h 22 m 03 s.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Wikipedia: Dimorphos", "u": "https://en.wikipedia.org/wiki/Dimorphos" } ] },
+ { "object": "Dimorphos", "field": "description", "fact": "Dimorphos model extent 178 × 169 × 115 m. Its rotation after the DART impact is under study (possible non-synchronous or tumbling state), which Hera will measure.", "checked": "2026-09-30", "volatile": true,
+   "sources": [ { "t": "BAAS 56(6): The Rotational State of Dimorphos After the DART Impact (DDA 2024)", "u": "https://baas.aas.org/pub/2024n6i500p06/release/1" } ] }
+]

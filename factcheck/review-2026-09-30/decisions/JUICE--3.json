@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU academics contribute to science planning for JUICE’s targets.",
+  "field": "ou_involvement",
+  "id": "JUICE--3",
+  "kind": "claim",
+  "note": "take this out.",
+  "object": "JUICE",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:24:14.236Z",
+  "verdict": "unv"
+}

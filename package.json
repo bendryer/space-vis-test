@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "node tools/deploy-check.mjs && npm run build",
     "deploy": "gh-pages -d dist",
+    "postdeploy": "node tools/deploy-tag.mjs",
     "lint": "eslint ."
   },
   "devDependencies": {

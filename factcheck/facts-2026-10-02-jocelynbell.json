@@ -1,0 +1,8 @@
+[
+ { "object": "25275 Jocelynbell", "field": "orbit", "fact": "JPL SBDB elements supplied by the user: a 2.365418760 au, e 0.109913567, i 7.982879°, node 97.395166°, peri 320.823874°, n 0.27092059°/day (period 1328.80 d, 3.638 yr), perihelion 2028-Apr-01.517 TDB (JD 2461863.0172). M0 at J2000 computed as n × (J2000 − tp) mod 360 = 84.64°.", "checked": "2026-10-02", "volatile": false,
+   "sources": [ { "t": "IAU Minor Planet Center: (25275) Jocelynbell", "u": "https://minorplanetcenter.net/db_search/show_object?object_id=25275" } ] },
+ { "object": "25275 Jocelynbell", "field": "description", "fact": "Discovered 14 November 1998 at Goodricke-Pigott by R. A. Tucker; named after Susan Jocelyn Bell Burnell (b. 1943), who discovered the first radio pulsar in 1967 with her thesis adviser Antony Hewish.", "checked": "2026-10-02", "volatile": false,
+   "sources": [ { "t": "Wikidata: 25275 Jocelynbell", "u": "https://www.wikidata.org/wiki/Q2523729" }, { "t": "Wikipedia: Jocelyn Bell Burnell", "u": "https://en.wikipedia.org/wiki/Jocelyn_Bell_Burnell" } ] },
+ { "object": "25275 Jocelynbell", "field": "description", "fact": "Bell Burnell's association with the Open University began in 1973 as a tutor; she was Professor of Physics at the OU from 1991 for ten years (to 2001), leading the physics department, then Dean of Science at Bath (2001-04).", "checked": "2026-10-02", "volatile": false,
+   "sources": [ { "t": "Wikipedia: Jocelyn Bell Burnell", "u": "https://en.wikipedia.org/wiki/Jocelyn_Bell_Burnell" }, { "t": "OU News: Dame Jocelyn Bell Burnell wins physics prize", "u": "https://www.open.ac.uk/blogs/news/science-mct/science-environment/dame-jocelyn-bell-burnell-wins-physics-prize/" } ] }
+]

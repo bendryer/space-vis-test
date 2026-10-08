@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The OU leads international research into the Martian-like volcanic history of Venus”, plus atmospheric models of Venus’s evolution.",
+  "field": "ou_involvement",
+  "id": "Venus--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Venus",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The Open University is helping to prepare ESA's EnVision mission to Venus. With a £2.3 million ESA grant, an OU team leads the testing and characterisation of the detectors in the VenSpec-U ultraviolet spectrometer, which will study the sulphur chemistry of Venus's clouds, and takes part in science preparations for the mission."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:57:52.542Z",
+  "verdict": "unv"
+}

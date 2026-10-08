@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "CEI “is leading the design and experimental testing of graded-Z shielding” for the WFI, using GEANT4 validated against detector tests.",
+  "field": "ou_involvement",
+  "id": "Athena--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Athena",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The CEI is leading the design and experimental testing",
+      "to": "The CEI is working with institutions around the world on the design and experimental testing"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:20:25.192Z",
+  "verdict": "fix"
+}

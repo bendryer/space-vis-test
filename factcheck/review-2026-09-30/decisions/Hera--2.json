@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU does pre-launch simulations, impact-dynamics modelling and surface-property analysis to predict Dimorphos’s orbit change.",
+  "field": "ou_involvement",
+  "id": "Hera--2",
+  "kind": "claim",
+  "note": "take this out for now",
+  "object": "Hera",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:26:46.839Z",
+  "verdict": "unv"
+}

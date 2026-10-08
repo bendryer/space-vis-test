@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "An OU researcher is an Interdisciplinary Scientist and is on the WISDOM radar team.",
+  "field": "ou_involvement",
+  "id": "ExoMars-Rosalind-Franklin--2",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars Rosalind Franklin",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "An Open University researcher serves as an Interdisciplinary Scientist on the ESA Rosalind Franklin rover mission and is part of the WISDOM subsurface radar instrument team.",
+      "to": "Open University researchers are members of the science team for the rover's PanCam camera system."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:22:15.443Z",
+  "verdict": "unv"
+}

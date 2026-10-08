@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Launched in April 2026.”",
+  "field": "description",
+  "id": "SMILE--0",
+  "kind": "claim",
+  "note": "",
+  "object": "SMILE",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "launched in April 2026",
+      "to": "launched on 19 May 2026"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:08:57.541Z",
+  "verdict": "bad"
+}

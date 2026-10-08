@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "“Developed the ‘Trap-Pumping’ technique.”",
+  "field": "ou_involvement",
+  "id": "Euclid--2",
+  "kind": "claim",
+  "note": "need to explain what this is - a new method for accurately measuring device degradation in space, ensuring better image correction and ensuring science quality.",
+  "object": "Euclid",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "developed the 'Trap-Pumping' technique now used in-orbit",
+      "to": "developed the 'Trap-Pumping' analysis now used in orbit"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:19:28.972Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU astronomers use Swift data to teach transient astrophysics.",
+  "field": "ou_involvement",
+  "id": "Swift--2",
+  "kind": "claim",
+  "note": "remove this for now",
+  "object": "Swift",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:11:07.478Z",
+  "verdict": "unv"
+}

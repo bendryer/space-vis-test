@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "OU leads multiple Jovian initiatives on atmospheric dynamics, aurorae and cloud chemistry.",
+  "field": "ou_involvement",
+  "id": "Jupiter--2",
+  "kind": "claim",
+  "note": "take out ou involvement for now so it flags as missing",
+  "object": "Jupiter",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:23:19.479Z",
+  "verdict": "unv"
+}

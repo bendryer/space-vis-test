@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“A constellation of two satellites.”",
+  "field": "description",
+  "id": "Sentinel-2--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Sentinel-2",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Sentinel-2 is a constellation of two satellites",
+      "to": "Sentinel-2 is a constellation of satellites, currently three,"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:06:02.658Z",
+  "verdict": "fix"
+}

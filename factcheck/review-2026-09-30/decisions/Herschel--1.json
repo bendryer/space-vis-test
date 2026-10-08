@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“A contributing institute in the international SPIRE consortium.”",
+  "field": "ou_involvement",
+  "id": "Herschel--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Herschel",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The Open University's astronomy group was a contributing institute in the international SPIRE consortium — led by Cardiff University — that built the camera and spectrometer instrument for Herschel.",
+      "to": "The Open University's astronomy group used data from SPIRE, the camera and spectrometer built for Herschel by an international consortium led by Cardiff University."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:27:17.994Z",
+  "verdict": "bad"
+}

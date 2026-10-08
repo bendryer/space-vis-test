@@ -1,0 +1,12 @@
+[
+ { "object": "ExoMars TGO", "field": "ou_involvement", "fact": "The OU supports CaSSIS operations and hosts one of the two CaSSIS Targeting Specialists; NOMAD and CaSSIS operations run from the OU's Interplanetary Space Operations Control area at Walton Hall.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "OU SPS seminar: ExoMars TGO, the CaSSIS instrument", "u": "https://university.open.ac.uk/science/physical-science/events/sps-seminar-exomars-trace-gas-orbiter-mission-cassis-instrument" }, { "t": "OU news: ExoMars TGO finds frost on tallest volcanoes", "u": "https://www.open.ac.uk/blogs/news/science-mct/exomars-tgo-finds-frost-on-the-solar-systems-tallest-volcanoes-on-mars/" } ] },
+ { "object": "Beagle 2", "field": "ou_involvement", "fact": "The Open University was the lead institute for Beagle 2's Environmental Sensor Suite (air temperature, pressure, wind, UV, dust), designed to monitor transient events such as dust devils.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Towner et al.: The Beagle 2 environmental sensors (ORO)", "u": "https://oro.open.ac.uk/5401" } ] },
+ { "object": "JUICE", "field": "ou_involvement", "fact": "JANUS was built under Italian leadership with contributions from the UK (Centre for Electronic Imaging, Open University), Spain and Germany; the OU is the UK institute on the team.", "checked": "2026-09-30", "volatile": false,
+   "sources": [ { "t": "Palumbo et al. 2025: The JANUS imager for JUICE (ORO)", "u": "https://oro.open.ac.uk/103379/3/103379.pdf" }, { "t": "DLR: JANUS camera system", "u": "https://www.dlr.de/en/research-and-transfer/projects-and-missions/juice/janus" } ] },
+ { "object": "ExoMars Rosalind Franklin", "field": "ou_involvement", "fact": "No public source found for an OU role on the Enfys spectrometer (led by Aberystwyth University) or for OU support of PanCam/Enfys operations; added from a colleague's comment (MP).", "status": "not-found", "checked": "2026-09-30", "volatile": false,
+   "searched": ["Enfys spectrometer Rosalind Franklin rover Open University PanCam operations"] },
+ { "object": "LightShip-1", "field": "ou_involvement", "fact": "No public source found for an OU-led 'Dust Environment Spectral Imager' on LightShip; added from a colleague's comment (MP). The ESA LightShip Instrument Definition Team report may list it.", "status": "not-found", "checked": "2026-09-30", "volatile": false,
+   "searched": ["LightShip Mars \"Dust Environment Spectral Imager\" Open University"] }
+]

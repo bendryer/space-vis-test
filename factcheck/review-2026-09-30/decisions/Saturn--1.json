@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“Dozens of moons.”",
+  "field": "description",
+  "id": "Saturn--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Saturn",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "possesses a diverse collection of dozens of moons",
+      "to": "has a diverse collection of hundreds of moons"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:24:20.233Z",
+  "verdict": "fix"
+}

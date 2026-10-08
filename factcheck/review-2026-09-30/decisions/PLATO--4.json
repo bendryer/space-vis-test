@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU robotic telescopes provide follow-up of PLATO candidates.",
+  "field": "ou_involvement",
+  "id": "PLATO--4",
+  "kind": "claim",
+  "note": "",
+  "object": "PLATO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU's own robotic telescopes provide critical follow-up observations of candidate stars identified by the mission.",
+      "to": "The OU's own robotic telescopes could provide follow-up observations of candidate stars once the mission is flying."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:21:04.387Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Same ocean-worlds programme as Europa, applied to Ganymede.",
+  "field": "ou_involvement",
+  "id": "Ganymede--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Ganymede",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:23:46.910Z",
+  "verdict": "unv"
+}

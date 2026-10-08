@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The largest infrared telescope ever launched.”",
+  "field": "description",
+  "id": "Herschel--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Herschel",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "Herschel was the largest infrared telescope ever launched",
+      "to": "Herschel was the largest infrared telescope launched until JWST"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:27:14.528Z",
+  "verdict": "bad"
+}

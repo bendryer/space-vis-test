@@ -1,0 +1,19 @@
+{
+  "choice": "keep",
+  "claim": "“Curator of the meteorite collection at the Natural History Museum.”",
+  "field": "description",
+  "id": "4731-MonicaGrady--1",
+  "kind": "claim",
+  "note": "",
+  "object": "4731 MonicaGrady",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "and curator of the meteorite collection at the Natural History Museum in London, she studies",
+      "to": "and was curator of the meteorite collection at the Natural History Museum in London. She studies"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:29:23.878Z",
+  "verdict": "fix"
+}

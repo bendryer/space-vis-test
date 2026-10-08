@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "UVIS channel “designed and built … in-house”.",
+  "field": "ou_involvement",
+  "id": "ExoMars-TGO--2",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars TGO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "designed and built the UVIS ultraviolet channel of the NOMAD spectrometer suite in-house",
+      "to": "designed and led the development of the UVIS ultraviolet channel of the NOMAD spectrometer suite"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T08:21:41.885Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Established the OU as a world leader in miniaturised lab technology and comet science.",
+  "field": "ou_involvement",
+  "id": "Philae--3",
+  "kind": "claim",
+  "note": "",
+  "object": "Philae",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-09-30T08:26:29.731Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "“The OU flew the BIOlogy and Mars Experiment (BIOMEX).”",
+  "field": "ou_involvement",
+  "id": "ISS--1",
+  "kind": "claim",
+  "note": "",
+  "object": "ISS",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU flew the BIOlogy and Mars Experiment (BIOMEX) aboard",
+      "to": "OU scientists took part in the DLR-led BIOlogy and Mars Experiment (BIOMEX) aboard"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-09-30T07:59:21.576Z",
+  "verdict": "fix"
+}
