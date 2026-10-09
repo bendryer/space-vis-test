@@ -5,30 +5,12 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { createSun } from './sun.js';
 import { celestialMap } from './engine/state.js';
+import { CAMERA_ORBIT_SPEED, CAMERA_FLY_SPEED, ENABLE_NIGHT_LIGHTS, DEBUG_SHADOWS, DEBUG_LANDING, MISSION_MODEL_SIZE, MISSION_VIEW_FILL, BODY_VIEW_FILL, SUN_FRAME_RADII, SOLAR_SYSTEM_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, ORBIT_LINE_MAX_SAG, LANDER_VIEW_ANGLE, USER_FLIGHT_SCALE, MIN_FLIGHT_DURATION, HURRY_FLIGHT_SECONDS, MAX_MOTION_DT, AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, prefersReducedMotion, CULLING_THRESHOLD, HIGH_DETAIL_PREFETCH_PX, HIGH_DETAIL_SHOW_PX, HIGH_DETAIL_HIDE_PX, getEffectiveModel } from './engine/config.js';
 import { scene, camera, renderer, createRenderer } from './engine/scene.js';
 import { getDaysSinceJ2000, orbitFarthest, applySunScale, faceParent, getKeplerPosition, getTrajectoryPlan, getTrajectoryPosition } from './engine/orbits.js';
 import { loadingManager, texLoader, lazyGltfLoader, loadBodyTexture, fixPath } from './engine/assets.js';
 
 // --- CONFIGURATION ---
-const CAMERA_ORBIT_SPEED = 0.1;
-const CAMERA_FLY_SPEED = 0.0083; // Slowed down by ~3x for more cinematic zoom
-const ENABLE_NIGHT_LIGHTS = true;
-const DEBUG_SHADOWS = false;
-const DEBUG_LANDING = false;
-// Every spacecraft model (orbiters and landers alike) is drawn at this size along its longest
-// side, in world units: far larger than true scale, so landers stay visible on a planet's
-// surface. Natural bodies with models (asteroids, comets) keep their own model_scale.
-const MISSION_MODEL_SIZE = 0.3;
-// A selected spacecraft is framed so it fills about this fraction of the view.
-const MISSION_VIEW_FILL = 0.5;
-// A selected body (star, planet, moon, asteroid, comet) is framed so it and everything orbiting
-// it fills this fraction of the view. The Sun is framed on its own: its "system" is everything.
-const BODY_VIEW_FILL = 0.95;
-const SUN_FRAME_RADII = 1.25; // out to the edge of its glowing atmosphere
-// The "Solar System" view (the default on load) keeps the Sun centred and fits every planet's
-// orbit within this fraction of the screen, seen from this angle above the plane of the orbits.
-const SOLAR_SYSTEM_VIEW_FILL = 0.88;
-const SOLAR_SYSTEM_VIEW_ELEVATION = 25 * Math.PI / 180;
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
 // the view is then shifted so selections are centred in the part of the screen still visible.
 const SIDEBAR_BESIDE_MIN_WIDTH = 900;
@@ -36,36 +18,9 @@ const SIDEBAR_BESIDE_MIN_WIDTH = 900;
 const phoneQuery = window.matchMedia('(max-width: 720px)');
 const isPhone = () => phoneQuery.matches;
 let menuSheetOpen = false;
-// Orbit lines may cut inside the true orbit by at most this much (world units, 1% of a craft).
-const ORBIT_LINE_MAX_SAG = 0.003;
-// Landers are viewed from this angle off their surface normal (0 = straight down).
-const LANDER_VIEW_ANGLE = 50 * Math.PI / 180;
 const CINEMATIC_DELAY = 30000; // 30 Seconds
-// Flight length multipliers: flights the visitor asks for are long enough to give a sense of
-// the Solar System's scale but still feel responsive; the tour keeps its slower drift.
-const USER_FLIGHT_SCALE = 3.0;
+// The tour's flights drift more slowly than the visitor's (USER_FLIGHT_SCALE in engine/config.js).
 const CINEMATIC_FLIGHT_SCALE = 5.0;
-const MIN_FLIGHT_DURATION = 0.05; // Reduced motion: effectively a cut
-const HURRY_FLIGHT_SECONDS = 0.6;
-// A slow frame (asset parsing, GC, tab switch) shouldn't make the camera leap to catch up.
-const MAX_MOTION_DT = 1 / 20;
-// After the visitor lets go of a focused object, pick the slow orbit back up from where they left it.
-const AUTO_ORBIT_RESUME_MS = 6000;
-const AUTO_ORBIT_SPEED = CAMERA_ORBIT_SPEED * 60 / (2 * Math.PI); // OrbitControls units for the same rad/s
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const CULLING_THRESHOLD = 1; // Pixel size below which objects are culled
-// Models start in low detail and switch to full detail only once they're big enough on
-// screen for the difference to show (diameter in CSS pixels). Loading starts earlier so the
-// full model is ready by the time it's needed; the gap between the two switch sizes stops
-// it flickering back and forth at the boundary.
-const HIGH_DETAIL_PREFETCH_PX = 60;
-const HIGH_DETAIL_SHOW_PX = 160;
-const HIGH_DETAIL_HIDE_PX = 120;
-
-
-// Privacy switch: an object's "model_named" (a named asteroid's model, which shows a
-// researcher's name) is used in place of its "model" only when this is on.
-const USE_NAMED_ASTEROID_MODELS = false;
 
 function getHash(str) {
     let hash = 0;
@@ -199,13 +154,6 @@ function updateMissionAttitude(obj, time, dt, days) {
     _attRoll.setFromAxisAngle(m.axis, m.rate * time + m.phase);
     meshGroup.quaternion.copy(_attQ).multiply(_attRoll);
 }
-
-// The model data.json gives the object, or null for none.
-function getEffectiveModel(item) {
-    if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
-    return item.model || null;
-}
-
 
 // --- TIME STATE ---
 // Dev builds take ?date=2026-10-08T12:00:00Z to start the clock at a fixed moment and hold it

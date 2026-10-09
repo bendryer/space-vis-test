@@ -56,7 +56,7 @@ Removing an object: delete its entry, and those of anything whose `parent` it is
 | `model_low` | Low-detail model shown until the object is big on screen. Default: the file beside `model` named `<model>-low.glb`; if there's no such file the full model is used throughout. |
 | `model_scale` | Largest dimension of the model in scene units (default 1). |
 | `model_offset` | `{ "x", "y", "z" }` shift of the model inside the object. |
-| `model_named` | A named asteroid's own model, which shows a researcher's name. Used in place of `model` only when `USE_NAMED_ASTEROID_MODELS` is on in `src/main.js` (a privacy switch; off). Keep a generic `model` alongside it. |
+| `model_named` | A named asteroid's own model, which shows a researcher's name. Used in place of `model` only when `USE_NAMED_ASTEROID_MODELS` is on in `src/engine/config.js` (a privacy switch; off). Keep a generic `model` alongside it. |
 
 ### Motion
 

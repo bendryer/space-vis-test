@@ -62,7 +62,7 @@ Web-ready derivatives live beside the sources, and a changed source needs its de
 - `public/models/*.glb` (and `*-low.glb`) were simplified with gltf-transform. The untouched originals are in `model-originals/` (outside `public/`, gitignored).
 - `public/draco/` and `public/basis/` are decoders copied from three's `examples/jsm/libs`; update them when `three` is upgraded. Lint ignores them.
 
-`USE_NAMED_ASTEROID_MODELS` in `main.js` is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
+`USE_NAMED_ASTEROID_MODELS` in `src/engine/config.js` is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
 
 ## How the main systems work (src/main.js)
 

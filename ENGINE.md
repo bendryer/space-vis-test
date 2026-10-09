@@ -74,7 +74,7 @@ The motion clock (camera orbit, spacecraft attitude, the Sun's surface) is separ
 
 ## Options
 
-Planned for `createEngine` (Phase 3). Today they are constants at the top of `main.js`.
+Planned for `createEngine` (Phase 3). Today they are constants in `src/engine/config.js`.
 
 | | |
 |---|---|
