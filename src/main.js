@@ -170,7 +170,7 @@ let simulatedDate = PINNED_DATE ? new Date(PINNED_DATE) : new Date();
 const clock = new THREE.Clock();
 
 // --- STATE ---
-let objects = [];
+const objects = [];
 let selectedObject = null;
 let isTracking = false;
 let sunEffect = null; // see src/sun.js
@@ -1374,165 +1374,7 @@ async function loadSystem() {
         data.forEach(applyStatusTimeline);
         data.forEach(applySunScale);
         fillSplashFacts(data);
-        data.forEach(item => {
-            const group = new THREE.Group();
-            const meshGroup = new THREE.Group();
-            if (item.tilt) {
-                meshGroup.rotation.z = (item.tilt * Math.PI) / 180;
-            }
-            const visualContainer = new THREE.Group();
-            if (item.orbit_type === 'suborbital') {
-                visualContainer.rotation.x = Math.PI / 2;
-            }
-            visualContainer.userData = item;
-            meshGroup.add(visualContainer);
-            group.add(meshGroup);
-            celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item });
-
-            // --- SUN ---
-            if (item.type === 'star') {
-                sunEffect = createSun({ radius: item.radius, renderer });
-                visualContainer.add(sunEffect.group);
-                objects.push(visualContainer);
-            }
-            // --- PLANETS, MOONS, MISSIONS & ASTEROIDS ---
-            else {
-                let mesh;
-                if (item.type === 'reference_point') {
-                    mesh = new THREE.AxesHelper(1); mesh.visible = false;
-                } else if (item.texture) {
-                    const tex = loadBodyTexture(item.texture);
-                    tex.colorSpace = THREE.SRGBColorSpace;
-                    // "segments": sphere smoothness where the default shows (Earth, seen close).
-                    const segments = item.segments || (item.type === 'star' ? 48 : 32);
-                    const geo = new THREE.SphereGeometry(item.radius, segments, segments);
-
-                    let matParams = { map: tex, roughness: 1.0, metalness: 0.0 };
-                    // "roughness_map": which parts shine (Earth's oceans); its own texture is reused.
-                    if (item.roughness_map) {
-                        matParams.roughnessMap = item.roughness_map === item.texture ? tex : loadBodyTexture(item.roughness_map);
-                    }
-                    // A closed sphere: cast from its back faces, like the modelled bodies (see processModelMeshes).
-                    matParams.shadowSide = THREE.BackSide;
-                    const mat = new THREE.MeshStandardMaterial(matParams);
-                    if (item.night_texture && ENABLE_NIGHT_LIGHTS) {
-                        const nightMesh = createEarthNightLayer(item.radius, item.night_texture);
-                        if (nightMesh) visualContainer.add(nightMesh);
-                    }
-                    mesh = new THREE.Mesh(geo, mat);
-                    mesh.userData = item;
-                    mesh.castShadow = true; mesh.receiveShadow = true;
-                } else {
-                    // Create generic proxy placeholder mesh initially
-                    const genericSat = createGenericSatellite(item);
-                    visualContainer.add(genericSat);
-                    mesh = genericSat;
-                }
-                if (item.texture || item.type === 'reference_point') {
-                    visualContainer.add(mesh);
-                }
-                if (item.type !== 'reference_point') objects.push(visualContainer);
-            }
-
-
-            if (item.ring) {
-                const innerRadius = item.radius * (item.ring.inner_radius || 1.4);
-                const outerRadius = item.radius * (item.ring.outer_radius || 2.5);
-                const ringGeo = new THREE.RingGeometry(innerRadius, outerRadius, 128);
-                const pos = ringGeo.attributes.position;
-                const v3 = new THREE.Vector3();
-                for (let i = 0; i < pos.count; i++) {
-                    v3.fromBufferAttribute(pos, i);
-                    const len = Math.sqrt(v3.x * v3.x + v3.y * v3.y);
-                    const u = (len - innerRadius) / (outerRadius - innerRadius);
-                    ringGeo.attributes.uv.setXY(i, u, 0.5);
-                }
-                const ringTex = loadBodyTexture(item.ring.texture);
-                ringTex.colorSpace = THREE.SRGBColorSpace;
-                const ringMat = new THREE.MeshStandardMaterial({
-                    map: ringTex, side: THREE.DoubleSide, transparent: true,
-                    opacity: item.ring.opacity || 0.9, alphaTest: 0.1, roughness: 0.7,
-                    emissive: new THREE.Color(0xffffff).multiplyScalar(item.ring.emissive || 0.1)
-                });
-                const ring = new THREE.Mesh(ringGeo, ringMat);
-                ring.rotation.x = -Math.PI / 2;
-                ring.receiveShadow = true; ring.castShadow = true;
-                meshGroup.add(ring);
-                // Kept for getSunOcclusion, which needs to know where a ring's shadow falls.
-                celestialMap.get(item.name).ring = { mesh: ring, innerRadius, outerRadius, opacity: item.ring.opacity || 0.9 };
-            }
-        });
-
-        // PASS 2: Link & Orbits & Landers
-        celestialMap.forEach((obj) => {
-            const { group, data } = obj;
-            // Models load early for the Sun and any system data.json marks "preload" (Earth's, the
-            // most visited; Comet 67P's, which Philae lands on); the rest as they come into view.
-            // Decided here, once every object exists, so the order of data.json doesn't matter.
-            if (getEffectiveModel(data)) {
-                const system = getSystemRoot(data.name);
-                if (system === 'Sun' || data.preload || celestialMap.get(system)?.data.preload) preloadQueue.push(data);
-            }
-            if (data.orbit_type === 'landed') {
-                pendingLanders.push({ group: group, data: data });
-            } else {
-                scene.add(group);
-                if (data.orbit_type === 'trajectory') {
-                    // The cruise line, and (after arrival) the orbit round the arrival body: one
-                    // shows at a time (see updateTrajectoryLines), as the craft's orbit line.
-                    const color = getStandardizedOrbitColor(data), opacity = getStandardizedOrbitOpacity(data);
-                    const cruise = createTrajectoryLine(obj, color, opacity);
-                    if (cruise) scene.add(cruise);
-                    const plan = getTrajectoryPlan(obj);
-                    let arrived = null;
-                    if (plan.arrival) {
-                        arrived = createOrbitLine(plan.arrivalOrbit, color, opacity);
-                        const host = celestialMap.get(plan.arrival.at);
-                        if (arrived && host) host.group.add(arrived);
-                    }
-                    obj.trajectoryLines = { cruise, arrived };
-                    obj.orbitLine = cruise || arrived;
-                    if (DEBUG_LANDING) console.log(`${data.name} trajectory loops per leg:`, plan.legs);
-                }
-                else if (data.parent) {
-                    let line = null;
-                    if (data.orbit_type === 'lissajous') {
-                        line = createLissajousLine(data.orbit);
-                        const parent = celestialMap.get(data.parent);
-                        if (parent && line) parent.mesh.add(line);
-                    } else if (data.orbit_type === 'suborbital') {
-                        const parent = celestialMap.get(data.parent);
-                        const parentRad = parent ? (parent.data.radius || 1) : 1;
-                        line = createSuborbitalLine(data, parentRad);
-                        if (parent && line) parent.meshGroup.add(line);
-                    } else {
-                        if (data.show_orbit !== false) {
-                            const orbitColor = getStandardizedOrbitColor(data);
-                            const orbitOpacity = getStandardizedOrbitOpacity(data);
-                            line = createOrbitLine(data.orbit, orbitColor, orbitOpacity);
-
-                            if (line) {
-                                const parent = celestialMap.get(data.parent);
-                                if (parent) {
-                                    parent.group.add(line);
-                                } else {
-                                    scene.add(line);
-                                }
-                            }
-                        }
-                    }
-                    if (line) obj.orbitLine = line;
-                }
-            }
-        });
-
-        // PASS 3: Mark Parents for Optimization
-        celestialMap.forEach((obj) => {
-            if (obj.data.parent) {
-                const parent = celestialMap.get(obj.data.parent);
-                if (parent) parent.data.isParent = true;
-            }
-        });
+        buildSystem(data);
 
         setupReticles();
         populateMenu();
@@ -1549,6 +1391,170 @@ async function loadSystem() {
             ? 'You appear to be offline. Reconnect to the internet, then try again.'
             : 'The Solar System data didn’t load. Check your connection and try again.');
     }
+}
+
+// Builds every object in `data` (data.json's entries) into the scene: its groups and mesh,
+// then its orbit line and its place under its parent, then which objects are parents.
+function buildSystem(data) {
+    data.forEach(item => {
+        const group = new THREE.Group();
+        const meshGroup = new THREE.Group();
+        if (item.tilt) {
+            meshGroup.rotation.z = (item.tilt * Math.PI) / 180;
+        }
+        const visualContainer = new THREE.Group();
+        if (item.orbit_type === 'suborbital') {
+            visualContainer.rotation.x = Math.PI / 2;
+        }
+        visualContainer.userData = item;
+        meshGroup.add(visualContainer);
+        group.add(meshGroup);
+        celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item });
+
+        // --- SUN ---
+        if (item.type === 'star') {
+            sunEffect = createSun({ radius: item.radius, renderer });
+            visualContainer.add(sunEffect.group);
+            objects.push(visualContainer);
+        }
+        // --- PLANETS, MOONS, MISSIONS & ASTEROIDS ---
+        else {
+            let mesh;
+            if (item.type === 'reference_point') {
+                mesh = new THREE.AxesHelper(1); mesh.visible = false;
+            } else if (item.texture) {
+                const tex = loadBodyTexture(item.texture);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                // "segments": sphere smoothness where the default shows (Earth, seen close).
+                const segments = item.segments || (item.type === 'star' ? 48 : 32);
+                const geo = new THREE.SphereGeometry(item.radius, segments, segments);
+
+                let matParams = { map: tex, roughness: 1.0, metalness: 0.0 };
+                // "roughness_map": which parts shine (Earth's oceans); its own texture is reused.
+                if (item.roughness_map) {
+                    matParams.roughnessMap = item.roughness_map === item.texture ? tex : loadBodyTexture(item.roughness_map);
+                }
+                // A closed sphere: cast from its back faces, like the modelled bodies (see processModelMeshes).
+                matParams.shadowSide = THREE.BackSide;
+                const mat = new THREE.MeshStandardMaterial(matParams);
+                if (item.night_texture && ENABLE_NIGHT_LIGHTS) {
+                    const nightMesh = createEarthNightLayer(item.radius, item.night_texture);
+                    if (nightMesh) visualContainer.add(nightMesh);
+                }
+                mesh = new THREE.Mesh(geo, mat);
+                mesh.userData = item;
+                mesh.castShadow = true; mesh.receiveShadow = true;
+            } else {
+                // Create generic proxy placeholder mesh initially
+                const genericSat = createGenericSatellite(item);
+                visualContainer.add(genericSat);
+                mesh = genericSat;
+            }
+            if (item.texture || item.type === 'reference_point') {
+                visualContainer.add(mesh);
+            }
+            if (item.type !== 'reference_point') objects.push(visualContainer);
+        }
+
+
+        if (item.ring) {
+            const innerRadius = item.radius * (item.ring.inner_radius || 1.4);
+            const outerRadius = item.radius * (item.ring.outer_radius || 2.5);
+            const ringGeo = new THREE.RingGeometry(innerRadius, outerRadius, 128);
+            const pos = ringGeo.attributes.position;
+            const v3 = new THREE.Vector3();
+            for (let i = 0; i < pos.count; i++) {
+                v3.fromBufferAttribute(pos, i);
+                const len = Math.sqrt(v3.x * v3.x + v3.y * v3.y);
+                const u = (len - innerRadius) / (outerRadius - innerRadius);
+                ringGeo.attributes.uv.setXY(i, u, 0.5);
+            }
+            const ringTex = loadBodyTexture(item.ring.texture);
+            ringTex.colorSpace = THREE.SRGBColorSpace;
+            const ringMat = new THREE.MeshStandardMaterial({
+                map: ringTex, side: THREE.DoubleSide, transparent: true,
+                opacity: item.ring.opacity || 0.9, alphaTest: 0.1, roughness: 0.7,
+                emissive: new THREE.Color(0xffffff).multiplyScalar(item.ring.emissive || 0.1)
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = -Math.PI / 2;
+            ring.receiveShadow = true; ring.castShadow = true;
+            meshGroup.add(ring);
+            // Kept for getSunOcclusion, which needs to know where a ring's shadow falls.
+            celestialMap.get(item.name).ring = { mesh: ring, innerRadius, outerRadius, opacity: item.ring.opacity || 0.9 };
+        }
+    });
+
+    // PASS 2: Link & Orbits & Landers
+    celestialMap.forEach((obj) => {
+        const { group, data } = obj;
+        // Models load early for the Sun and any system data.json marks "preload" (Earth's, the
+        // most visited; Comet 67P's, which Philae lands on); the rest as they come into view.
+        // Decided here, once every object exists, so the order of data.json doesn't matter.
+        if (getEffectiveModel(data)) {
+            const system = getSystemRoot(data.name);
+            if (system === 'Sun' || data.preload || celestialMap.get(system)?.data.preload) preloadQueue.push(data);
+        }
+        if (data.orbit_type === 'landed') {
+            pendingLanders.push({ group: group, data: data });
+        } else {
+            scene.add(group);
+            if (data.orbit_type === 'trajectory') {
+                // The cruise line, and (after arrival) the orbit round the arrival body: one
+                // shows at a time (see updateTrajectoryLines), as the craft's orbit line.
+                const color = getStandardizedOrbitColor(data), opacity = getStandardizedOrbitOpacity(data);
+                const cruise = createTrajectoryLine(obj, color, opacity);
+                if (cruise) scene.add(cruise);
+                const plan = getTrajectoryPlan(obj);
+                let arrived = null;
+                if (plan.arrival) {
+                    arrived = createOrbitLine(plan.arrivalOrbit, color, opacity);
+                    const host = celestialMap.get(plan.arrival.at);
+                    if (arrived && host) host.group.add(arrived);
+                }
+                obj.trajectoryLines = { cruise, arrived };
+                obj.orbitLine = cruise || arrived;
+                if (DEBUG_LANDING) console.log(`${data.name} trajectory loops per leg:`, plan.legs);
+            }
+            else if (data.parent) {
+                let line = null;
+                if (data.orbit_type === 'lissajous') {
+                    line = createLissajousLine(data.orbit);
+                    const parent = celestialMap.get(data.parent);
+                    if (parent && line) parent.mesh.add(line);
+                } else if (data.orbit_type === 'suborbital') {
+                    const parent = celestialMap.get(data.parent);
+                    const parentRad = parent ? (parent.data.radius || 1) : 1;
+                    line = createSuborbitalLine(data, parentRad);
+                    if (parent && line) parent.meshGroup.add(line);
+                } else {
+                    if (data.show_orbit !== false) {
+                        const orbitColor = getStandardizedOrbitColor(data);
+                        const orbitOpacity = getStandardizedOrbitOpacity(data);
+                        line = createOrbitLine(data.orbit, orbitColor, orbitOpacity);
+
+                        if (line) {
+                            const parent = celestialMap.get(data.parent);
+                            if (parent) {
+                                parent.group.add(line);
+                            } else {
+                                scene.add(line);
+                            }
+                        }
+                    }
+                }
+                if (line) obj.orbitLine = line;
+            }
+        }
+    });
+
+    // PASS 3: Mark Parents for Optimization
+    celestialMap.forEach((obj) => {
+        if (obj.data.parent) {
+            const parent = celestialMap.get(obj.data.parent);
+            if (parent) parent.data.isParent = true;
+        }
+    });
 }
 
 function isInScene(object) {
