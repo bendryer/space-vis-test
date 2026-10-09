@@ -2,17 +2,18 @@ import './style.css';
 import * as THREE from 'three';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { celestialMap, objects } from './engine/state.js';
-import { DEBUG_SHADOWS, USER_FLIGHT_SCALE, MAX_MOTION_DT, prefersReducedMotion, CULLING_THRESHOLD, HIGH_DETAIL_PREFETCH_PX, getEffectiveModel, SURFACE_TYPES } from './engine/config.js';
+import { DEBUG_SHADOWS, USER_FLIGHT_SCALE, MAX_MOTION_DT, prefersReducedMotion, getEffectiveModel, SURFACE_TYPES } from './engine/config.js';
 import { scene, camera, renderer, createRenderer, isInScene } from './engine/scene.js';
 import { getDaysSinceJ2000, applySunScale, faceParent, getKeplerPosition, getTrajectoryPosition, getSystemRoot } from './engine/orbits.js';
 import { loadingManager, texLoader, lazyGltfLoader, fixPath } from './engine/assets.js';
 import { collectTextures, uploadNextTexture } from './engine/gpu.js';
 import { pendingLanders, attemptToLand } from './engine/landers.js';
-import { plannedMaterials, loadModelForItem, flattenModel, buildModelLevel, revealNextModel, getModelPixelDiameter, updateModelDetail, requestHighDetail, startPreloads } from './engine/models.js';
+import { plannedMaterials, flattenModel, buildModelLevel, revealNextModel, updateModelDetail, startPreloads } from './engine/models.js';
 import { sunEffect, getStandardizedOrbitColor, getSuborbitalPosition, buildSystem } from './engine/bodies.js';
 import { PINNED_DATE, timeScale, simulatedDate, clock, motionTime, heldMotionTime, advanceMotion, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
 import { onEngine } from './engine/events.js';
 import { selectedObject, isTracking, controls, isTransitioning, setViewInsets, updateViewOffset, getVisualRadius, getFocusPoint, getSystemRadius, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, setUserControl, deselect, updateCamera, showOverview, placeCameraAt, initControls } from './engine/camera.js';
+import { activeSystem, updateVisibility } from './engine/visibility.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -1121,59 +1122,6 @@ async function loadSystem() {
 
 function isSidebarBesideScene() {
     return window.innerWidth >= SIDEBAR_BESIDE_MIN_WIDTH;
-}
-
-// --- OPTIMIZATION ---
-let activeSystem = 'Sun';
-
-function updateVisibility() {
-    activeSystem = 'Sun';
-    if (selectedObject && selectedObject.userData) {
-        activeSystem = getSystemRoot(selectedObject.userData.name);
-    } else {
-        let minDistance = Infinity;
-        celestialMap.forEach(obj => {
-            if (obj.data.parent === 'Sun' && obj.data.type !== 'mission') {
-                const dist = camera.position.distanceTo(obj.group.position);
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    activeSystem = obj.data.name;
-                }
-            }
-        });
-    }
-
-    celestialMap.forEach(obj => {
-        const { group, data } = obj;
-        const distance = camera.position.distanceTo(group.position);
-        if (distance === 0) return;
-
-        const objSystem = getSystemRoot(data.name);
-        const fov = camera.fov * (Math.PI / 180);
-        const radius = data.type === 'mission' ? getVisualRadius(obj) : (data.radius || 1);
-        const projectedSize = radius / distance * window.innerHeight / (2 * Math.tan(fov / 2));
-        const threshold = CULLING_THRESHOLD;
-
-        let isLocalGroup = (objSystem === activeSystem && activeSystem !== 'Sun');
-
-        if (data.type === 'mission' || data.type === 'asteroid' || data.type === 'comet') {
-            if (obj.mesh === selectedObject) {
-                group.visible = true;
-            } else {
-                group.visible = isLocalGroup || (projectedSize > threshold);
-            }
-
-            if ((isLocalGroup || projectedSize > 3) && !data.isModelLoaded) {
-                loadModelForItem(data, false);
-            }
-            if (data.isModelLoaded && !data.hasHighDetail && group.visible
-                && getModelPixelDiameter(obj) > HIGH_DETAIL_PREFETCH_PX) {
-                requestHighDetail(data);
-            }
-        } else {
-            group.visible = true;
-        }
-    });
 }
 
 // --- UI ---
