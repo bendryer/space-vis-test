@@ -211,3 +211,17 @@ export function getTrajectoryPosition(obj, days, out) {
     out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1));
     return false;
 }
+
+// The planet-level body an object belongs to: its own "system" if data.json gives one (the
+// Earth-Sun Lagrange points orbit the Sun but belong with Earth), else the ancestor that
+// orbits the Sun.
+export function getSystemRoot(objName) {
+    if (!objName || objName === 'Sun') return 'Sun';
+
+    const obj = celestialMap.get(objName);
+    if (!obj || !obj.data) return 'Sun';
+
+    if (obj.data.system) return obj.data.system;
+    if (obj.data.parent === 'Sun') return objName;
+    return getSystemRoot(obj.data.parent);
+}

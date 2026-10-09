@@ -57,3 +57,7 @@ export function getEffectiveModel(item) {
     if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
     return item.model || null;
 }
+
+// Solid bodies: they shade what's behind them, and landers stand on them.
+export const SURFACE_TYPES = new Set(['planet', 'moon', 'asteroid', 'comet']);
+export const CLOSED_BODY_TYPES = SURFACE_TYPES; // solid bodies, whose models are closed shapes
