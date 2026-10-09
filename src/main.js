@@ -173,9 +173,9 @@ let objects = [];
 let selectedObject = null;
 let isTracking = false;
 let sunEffect = null; // see src/sun.js
-let plannedMaterials = [];
+const plannedMaterials = [];
 let shadowHelper, lightHelper;
-let pendingLanders = [];
+const pendingLanders = [];
 
 // --- CINEMATIC STATE ---
 let cinematicActive = false;
@@ -1473,6 +1473,12 @@ function relandLanders(obj) {
     attemptToLand();
 }
 
+// Called with each lander's data as it lands.
+const landedListeners = [];
+function onLanded(listener) {
+    landedListeners.push(listener);
+}
+
 function attemptToLand() {
     for (let i = pendingLanders.length - 1; i >= 0; i--) {
         const request = pendingLanders[i];
@@ -1567,13 +1573,7 @@ function attemptToLand() {
 
             if (DEBUG_LANDING) console.log(`Landed ${request.data.name} on ${parent.data.name} at:`, hitMeshGroupPoint);
             pendingLanders.splice(i, 1);
-
-            // Someone picked this lander before it had landed: fly there now.
-            if (pendingLanderFocus && pendingLanderFocus.data === request.data) {
-                const { mesh, data } = pendingLanderFocus;
-                pendingLanderFocus = null;
-                startFlight(mesh, data);
-            }
+            landedListeners.forEach(listener => listener(request.data));
         }
     }
 }
@@ -3470,6 +3470,14 @@ const engine = {
     },
     setViewInsets, setFlightPace, setUserControl,
 };
+
+// Someone picked a lander before it had landed: fly there now.
+onLanded(data => {
+    if (!pendingLanderFocus || pendingLanderFocus.data !== data) return;
+    const { mesh } = pendingLanderFocus;
+    pendingLanderFocus = null;
+    startFlight(mesh, data);
+});
 
 // Showcase: choose an object. Chosen from the menu (returnFocusTo is its row), the details take
 // keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
