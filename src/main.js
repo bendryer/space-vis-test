@@ -1,8 +1,7 @@
 import './style.css';
-import * as THREE from 'three';
 import { celestialMap, objects } from './engine/state.js';
 import { USER_FLIGHT_SCALE, prefersReducedMotion } from './engine/config.js';
-import { scene, camera, renderer } from './engine/scene.js';
+import { camera, renderer } from './engine/scene.js';
 import { getSystemRoot } from './engine/orbits.js';
 import { fixPath } from './engine/assets.js';
 import { pendingLanders, attemptToLand } from './engine/landers.js';
@@ -14,6 +13,7 @@ import { projectBody } from './engine/projection.js';
 import { setSceneVisible } from './engine/sky.js';
 import { onFrame } from './engine/render.js';
 import { loadDeferred, createEngine, listObjects } from './engine/index.js';
+import { raycaster, mouse, intersectVisible } from './engine/picking.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -274,10 +274,6 @@ engine.canvas.addEventListener('webglcontextlost', (e) => {
     showFatalError('The 3D graphics stopped responding, which can happen when a device is low on memory. Reloading usually fixes it.');
 });
 document.body.appendChild(engine.canvas);
-
-// --- GLOBAL VARS ---
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
 
 // --- PRE-ALLOCATED SCRATCHPADS FOR ZERO-ALLOCATION LOOPS ---
 const clockElement = document.getElementById('clock');
@@ -1793,27 +1789,6 @@ renderer.domElement.addEventListener('wheel', hurry, { passive: true });
 
 // Taking hold of the camera ends the tour.
 controls.addEventListener('start', stopCinematicMode);
-
-// Raycaster ignores visibility, so a click would also test every hidden detail level and
-// culled mission, up to hundreds of thousands of triangles. Only test what's on screen.
-function isShown(object) {
-    for (let o = object; o; o = o.parent) {
-        if (!o.visible) return false;
-        if (o === scene) return true;
-    }
-    return false; // not attached to the scene, e.g. a lander that hasn't landed yet
-}
-
-function intersectVisible(roots) {
-    const hits = [];
-    const visit = object => {
-        if (!object.visible) return;
-        if (object.layers.test(raycaster.layers)) object.raycast(raycaster, hits);
-        object.children.forEach(visit);
-    };
-    roots.forEach(root => { if (isShown(root)) visit(root); });
-    return hits.sort((a, b) => a.distance - b.distance);
-}
 
 renderer.domElement.addEventListener('click', (e) => {
     // Orbiting with a drag also ends in a click; only a still tap is a selection.
