@@ -1,19 +1,5 @@
 import './style.css';
-import { celestialMap, objects } from './engine/state.js';
-import { USER_FLIGHT_SCALE, prefersReducedMotion } from './engine/config.js';
-import { camera, renderer } from './engine/scene.js';
-import { getSystemRoot } from './engine/orbits.js';
-import { fixPath } from './engine/assets.js';
-import { pendingLanders, attemptToLand } from './engine/landers.js';
-import { getStandardizedOrbitColor } from './engine/bodies.js';
-import { simulatedDate } from './engine/time.js';
-import { onEngine } from './engine/events.js';
-import { selectedObject, controls, setViewInsets, setFlightPace, hurry, flyTo, deselect, showOverview } from './engine/camera.js';
-import { projectBody } from './engine/projection.js';
-import { setSceneVisible } from './engine/sky.js';
-import { onFrame } from './engine/render.js';
-import { loadDeferred, createEngine, listObjects } from './engine/index.js';
-import { raycaster, mouse, intersectVisible } from './engine/picking.js';
+import { createEngine } from './engine/index.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -26,6 +12,13 @@ let menuSheetOpen = false;
 const CINEMATIC_DELAY = 30000; // 30 Seconds
 // The tour's flights drift more slowly than the visitor's (USER_FLIGHT_SCALE in engine/config.js).
 const CINEMATIC_FLIGHT_SCALE = 5.0;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Asset paths in data.json start with "/"; served under the site's base path, they're relative.
+function fixPath(path) {
+    if (!path) return null;
+    return path.startsWith('/') ? path.slice(1) : path;
+}
 
 // --- STATE ---
 
@@ -35,18 +28,6 @@ let cinematicTimer = null;
 let cinematicQueue = [];
 let sidebarReturnFocus = null;
 
-
-// The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
-// arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
-onEngine('progress', ({ progress }) => {
-    if (splashReady || fatalErrorShown) return;
-    document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
-    const loadingText = document.getElementById('loading-text');
-    if (loadingText) {
-        // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
-        loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
-    }
-});
 
 const SLOW_LOAD_NOTICE_MS = 8000;
 let lastInputWasKeyboard = false;
@@ -92,7 +73,7 @@ const SPLASH_ARRIVE_MS = 2450;
 function dismissSplash({ fromKeyboard = false } = {}) {
     if (splashDismissed || fatalErrorShown) return;
     splashDismissed = true;
-    loadDeferred(); // going in early ("Explore now"): don't wait for the scene to be ready
+    engine.loadDeferred(); // going in early ("Explore now"): don't wait for the scene to be ready
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     const ui = document.getElementById('ui-layer');
@@ -102,7 +83,7 @@ function dismissSplash({ fromKeyboard = false } = {}) {
     const arrive = () => {
         if (fatalErrorShown) return;
         overlay.hidden = true;
-        setSceneVisible(true);
+        engine.setSceneVisible(true);
         ui.inert = false;
         ui.classList.remove('is-waiting');
         setTimeout(() => showCoach(), 700); // once the controls have faded up
@@ -163,7 +144,7 @@ function showFatalError(message) {
     if (!overlay) return;
     overlay.setAttribute('role', 'alert');
     overlay.hidden = false;
-    setSceneVisible(false);
+    engine?.setSceneVisible(false); // (no engine when WebGL is missing)
     overlay.inert = false;
     overlay.classList.remove('is-leaving', 'is-ready');
     overlay.classList.add('is-error');
@@ -264,6 +245,18 @@ try {
     throw e; // Nothing below can run without a renderer
 }
 
+// The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
+// arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
+engine.on('progress', ({ progress }) => {
+    if (splashReady || fatalErrorShown) return;
+    document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
+    const loadingText = document.getElementById('loading-text');
+    if (loadingText) {
+        // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
+        loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
+    }
+});
+
 // Showcase: the 3D view on the page, labelled for screen readers and focusable for keyboard steering.
 engine.canvas.setAttribute('role', 'application');
 engine.canvas.setAttribute('aria-roledescription', '3D view');
@@ -294,43 +287,20 @@ let shownHolder = null;   // the holder on show after its row was chosen
 
 // The bodies a holder gathers: its asteroids or comets, not the missions to them.
 function holderMembers(holder) {
-    return [...celestialMap.values()].filter(obj => holder.holds(obj.data));
+    return engine.listObjects().filter(data => holder.holds(data));
 }
 
+// The engine lights the selection's orbit; the showcase adds what's hovered and the holder on show.
 function updateOrbitLineHighlights() {
-    celestialMap.forEach(obj => {
-        if (obj.orbitLine && obj.orbitLine.material) {
-            const isHovered = hoveredObj === obj
-                || Boolean(hoveredHolder && hoveredHolder !== shownHolder && hoveredHolder.holds(obj.data));
-            const isSelected = (selectedObject === obj.mesh);
-            const isShown = Boolean(shownHolder && shownHolder.holds(obj.data));
-            const mat = obj.orbitLine.material;
-            const baseColor = obj.orbitLine.userData.baseColor || '#888888';
-            const baseOpacity = obj.orbitLine.userData.baseOpacity || 0.35;
-
-            if (isHovered || isSelected) {
-                mat.opacity = 0.95;
-                mat.color.set('#66EEFA'); // OU light blue
-            } else if (isShown) {
-                // Informational: lit in the Core blue tint, apart from the light blue of a choice.
-                mat.opacity = 0.7;
-                mat.color.set('#A6B5F8');
-            } else {
-                mat.opacity = baseOpacity;
-                mat.color.set(baseColor);
-            }
-        }
-    });
+    const hovered = hoveredObj ? [hoveredObj.name] : [];
+    if (hoveredHolder && hoveredHolder !== shownHolder) hovered.push(...holderMembers(hoveredHolder).map(data => data.name));
+    const shown = shownHolder ? holderMembers(shownHolder).map(data => data.name) : [];
+    engine.setOrbitHighlights({ hovered, shown });
 }
 
-function setHoveredObject(obj) {
-    if (hoveredObj === obj) return;
-    if (pendingLanders.length > 0) attemptToLand();
-    hoveredObj = obj;
-    if (hoveredObj) {
-        if (hoveredObj.group) hoveredObj.group.updateMatrixWorld(true);
-        if (hoveredObj.mesh) hoveredObj.mesh.updateMatrixWorld(true);
-    }
+function setHoveredObject(data) {
+    if (hoveredObj === data) return;
+    hoveredObj = data;
     updateOrbitLineHighlights();
 }
 
@@ -494,9 +464,10 @@ function boxesOverlap(a, b) {
 // Draws one reticle. With `placed` (a group's labels so far) the label takes the first spot that
 // clears the others, keeping last frame's spot while it still does, and is left off if none does.
 function drawReticle(r, obj, dt, fresh, placed = null) {
-    const body = projectBody(obj);
+    const body = engine.projectBody(obj.name);
     if (!body) { hideReticle(r); return; }
-    const { cx, cy, bodyR, w, h } = body;
+    const { x: cx, y: cy, radius: bodyR } = body;
+    const w = window.innerWidth, h = window.innerHeight;
     const reduced = prefersReducedMotion.matches;
     const ease = rate => 1 - Math.exp(-rate * (dt || 0.016));
 
@@ -531,7 +502,7 @@ function drawReticle(r, obj, dt, fresh, placed = null) {
         return;
     }
     const tab = r.tab;
-    if (r.tabText !== obj.data.name) { r.tabText = tab.textContent = obj.data.name; r.tabW = 0; }
+    if (r.tabText !== obj.name) { r.tabText = tab.textContent = obj.name; r.tabW = 0; }
     tab.style.display = 'block';
     if (!r.tabW) { r.tabW = tab.offsetWidth; r.tabH = tab.offsetHeight; }
     const edge = sceneRightEdge() - 8;
@@ -595,10 +566,8 @@ function updateGroupReticles(dt, exclude) {
 
 function updateReticles(dt = 0.016) {
     if (!reticleLayer) return;
-    // The renderer refreshes the camera's matrices only when it draws, so do it now; otherwise the
-    // mark is projected through last frame's camera and trails the body whenever the view moves.
-    camera.updateMatrixWorld();
-    const selected = selectedObject && selectedObject.userData ? celestialMap.get(selectedObject.userData.name) : null;
+    // (engine.projectBody uses this frame's camera, so the mark never trails the body.)
+    const selected = engine.getSelection();
 
     // Choosing the object the reticle marks: acknowledge it, then clear the view.
     if (selected !== reticleLastSelected) {
@@ -626,20 +595,20 @@ function updateReticles(dt = 0.016) {
 // Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
 // the craft's orbit line (which hover and selection light up).
 // Showcase: the panels round the system, opening on the whole Solar System.
-onEngine('built', ({ entries }) => {
-    fillSplashFacts(listObjects());
+engine.on('built', ({ entries }) => {
+    fillSplashFacts(engine.listObjects());
     setupReticles();
     populateMenu();
     setupCinematicControls();
     setupCredits(entries.find(item => item.type === 'credits'));
     showSolarSystem({ animate: false });
 });
-onEngine('error', () => {
+engine.on('error', () => {
     showFatalError(navigator.onLine === false
         ? 'You appear to be offline. Reconnect to the internet, then try again.'
         : 'The Solar System data didn’t load. Check your connection and try again.');
 });
-onEngine('ready', markSceneReady);
+engine.on('ready', markSceneReady);
 
 function isSidebarBesideScene() {
     return window.innerWidth >= SIDEBAR_BESIDE_MIN_WIDTH;
@@ -685,7 +654,7 @@ function menuIconName(data) {
 // scene share one key. Everything else stays in the text colour.
 function menuIconColor(data) {
     if (data.type === 'star') return data.color || '#ffcc00';
-    if (data.type === 'planet' || data.type === 'asteroid') return getStandardizedOrbitColor(data);
+    if (data.type === 'planet' || data.type === 'asteroid') return engine.getOrbitColor(data.name);
     return null;
 }
 
@@ -721,12 +690,12 @@ function populateMenu() {
     // just after its parent and indented a step to show it belongs there.
     const childrenMap = new Map();
     const lifted = [];
-    celestialMap.forEach(obj => {
-        if (obj.data.menu_top_level && obj.data.parent) { lifted.push(obj); return; }
-        const parent = obj.data.menu_parent || obj.data.parent || 'root';
+    engine.listObjects().forEach(item => {
+        if (item.menu_top_level && item.parent) { lifted.push(item); return; }
+        const parent = item.menu_parent || item.parent || 'root';
 
         if (!childrenMap.has(parent)) childrenMap.set(parent, []);
-        childrenMap.get(parent).push(obj);
+        childrenMap.get(parent).push(item);
     });
 
     // Sort children: missions first, alphabetically, then natural bodies by "menu_order" or orbit
@@ -735,10 +704,10 @@ function populateMenu() {
     const isMission = data => data.type === 'mission';
     childrenMap.forEach(arr => {
         arr.sort((a, b) => {
-            if (isMission(a.data) !== isMission(b.data)) return isMission(a.data) ? -1 : 1;
-            if (isMission(a.data)) return a.data.name.localeCompare(b.data.name, undefined, { numeric: true, sensitivity: 'base' });
-            const distA = sortKey(a.data);
-            const distB = sortKey(b.data);
+            if (isMission(a) !== isMission(b)) return isMission(a) ? -1 : 1;
+            if (isMission(a)) return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+            const distA = sortKey(a);
+            const distB = sortKey(b);
             if (distA !== distB) return distA - distB;
 
             const typeScore = (t) => {
@@ -748,7 +717,7 @@ function populateMenu() {
                 if (t === 'reference_point') return 3;
                 return 4; // missions
             };
-            return typeScore(a.data.type) - typeScore(b.data.type);
+            return typeScore(a.type) - typeScore(b.type);
         });
     });
 
@@ -758,14 +727,14 @@ function populateMenu() {
     // their heading sticks while you scroll and a disclosure button folds them away.
     let groupCount = 0;
     // `indent` shifts a lifted group, and everything in it, a step in from its level.
-    function renderNode(obj, depth, parentList, { leaf = false, indent = 0 } = {}) {
-        if (!obj || !obj.data) return;
-        const name = obj.data.name;
+    function renderNode(item, depth, parentList, { leaf = false, indent = 0 } = {}) {
+        if (!item) return;
+        const name = item.name;
         const children = leaf ? [] : (childrenMap.get(name) || []);
         const li = document.createElement('li');
         li.className = 'menu-item';
         li.dataset.name = name;
-        const btn = createMenuRow(obj);
+        const btn = createMenuRow(item);
         btn.style.setProperty('--depth', Math.max(0, depth - 1) + indent);
         let ul = null;
         if (children.length) {
@@ -787,7 +756,7 @@ function populateMenu() {
     }
 
     function countDescendants(name) {
-        return (childrenMap.get(name) || []).reduce((n, child) => n + 1 + countDescendants(child.data.name), 0);
+        return (childrenMap.get(name) || []).reduce((n, child) => n + 1 + countDescendants(child.name), 0);
     }
 
     // A group's heading: its own row (to fly there, or for a holder to show its bodies) beside a
@@ -822,9 +791,9 @@ function populateMenu() {
         if (holder.search) li.dataset.search = `${holder.name} ${holder.search}`;
         const ul = document.createElement('ul');
         ul.className = 'menu-list';
-        const count = members.reduce((n, obj) => n + 1 + countDescendants(obj.data.name), 0);
+        const count = members.reduce((n, item) => n + 1 + countDescendants(item.name), 0);
         makeGroup(li, ul, holder.name, count, createHolderRow(holder));
-        members.forEach(obj => renderNode(obj, 2, ul));
+        members.forEach(item => renderNode(item, 2, ul));
         li.appendChild(ul);
         parentList.appendChild(li);
     }
@@ -834,34 +803,34 @@ function populateMenu() {
     tree.className = 'menu-list menu-tree';
     const rootItems = childrenMap.get('root') || [];
     const roots = rootItems.length ? rootItems
-        : [...celestialMap.values()].filter(obj => !obj.data.parent || !celestialMap.has(obj.data.parent));
+        : engine.listObjects().filter(item => !item.parent || !engine.getObject(item.parent));
     roots.forEach(root => {
         // Most of what orbits the Sun sits beside it at the top level; a few objects nest
         // under the Sun's own row, and asteroids and comets gather into holders.
-        const orbiting = childrenMap.get(root.data.name) || [];
-        const own = orbiting.filter(obj => obj.data.menu_parent === root.data.name);
-        let entries = orbiting.filter(obj => !own.includes(obj)).map(obj => ({ obj }));
+        const orbiting = childrenMap.get(root.name) || [];
+        const own = orbiting.filter(item => item.menu_parent === root.name);
+        let entries = orbiting.filter(item => !own.includes(item)).map(item => ({ item }));
         MENU_HOLDERS.forEach(holder => {
-            const members = entries.filter(e => e.obj && holder.holds(e.obj.data)).map(e => e.obj);
+            const members = entries.filter(e => e.item && holder.holds(e.item)).map(e => e.item);
             if (!members.length) return;
-            entries = entries.filter(e => !e.obj || !members.includes(e.obj));
-            const after = entries.findIndex(e => (e.obj ? e.obj.data.name : e.holder.name) === holder.after);
+            entries = entries.filter(e => !e.item || !members.includes(e.item));
+            const after = entries.findIndex(e => (e.item ? e.item.name : e.holder.name) === holder.after);
             entries.splice(after === -1 ? entries.length : after + 1, 0, { holder, members });
         });
 
         // Lifted groups follow the top-level entry they belong under, nearest first (Earth, then
         // the Moon, L1 and L2).
-        [...lifted].sort((a, b) => sortKey(a.data) - sortKey(b.data)).forEach(obj => {
-            const system = getSystemRoot(obj.data.name);
-            let at = entries.findIndex(e => e.obj && e.obj.data.name === system);
-            if (at === -1) { entries.push({ obj, indent: 1 }); return; }
-            while (entries[at + 1] && entries[at + 1].indent && getSystemRoot(entries[at + 1].obj.data.name) === system) at++;
-            entries.splice(at + 1, 0, { obj, indent: 1 });
+        [...lifted].sort((a, b) => sortKey(a) - sortKey(b)).forEach(item => {
+            const system = engine.getSystem(item.name);
+            let at = entries.findIndex(e => e.item && e.item.name === system);
+            if (at === -1) { entries.push({ item, indent: 1 }); return; }
+            while (entries[at + 1] && entries[at + 1].indent && engine.getSystem(entries[at + 1].item.name) === system) at++;
+            entries.splice(at + 1, 0, { item, indent: 1 });
         });
 
-        childrenMap.set(root.data.name, own);
+        childrenMap.set(root.name, own);
         renderNode(root, own.length ? 1 : 0, tree, { leaf: !own.length });
-        entries.forEach(e => (e.holder ? renderHolder(e.holder, e.members, tree) : renderNode(e.obj, 1, tree, { indent: e.indent || 0 })));
+        entries.forEach(e => (e.holder ? renderHolder(e.holder, e.members, tree) : renderNode(e.item, 1, tree, { indent: e.indent || 0 })));
     });
     list.appendChild(tree);
 
@@ -906,18 +875,18 @@ function createHolderRow(holder) {
 }
 
 // One selectable row: icon and name. A mission's status is shown in the details panel, not here.
-function createMenuRow(obj) {
+function createMenuRow(item) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mission-btn';
-    if (obj.data.type === 'mission') btn.classList.add('mission-btn--mission');
-    btn.innerHTML = `${menuIcon(menuIconName(obj.data), menuIconColor(obj.data))}<span class="menu-label">${obj.data.name}</span>`;
+    if (item.type === 'mission') btn.classList.add('mission-btn--mission');
+    btn.innerHTML = `${menuIcon(menuIconName(item), menuIconColor(item))}<span class="menu-label">${item.name}</span>`;
 
     btn.onclick = () => {
         stopCinematicMode();
-        selectObject(obj.data.name, { returnFocusTo: btn });
+        selectObject(item.name, { returnFocusTo: btn });
     };
-    btn.onmouseenter = btn.onfocus = () => setHoveredObject(obj);
+    btn.onmouseenter = btn.onfocus = () => setHoveredObject(item);
     btn.onmouseleave = btn.onblur = () => clearHoveredObject();
     return btn;
 }
@@ -1123,16 +1092,14 @@ function syncMenuCurrent(name) {
 // keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
 function selectObject(name, { returnFocusTo = null } = {}) {
     sidebarReturnFocus = returnFocusTo;
-    return flyTo(name);
+    return engine.flyTo(name);
 }
 
 // A choice, or letting go, ends any holder on show and lights the chosen object's orbit.
-onEngine('select', () => { clearShownHolder(); updateOrbitLineHighlights(); });
-onEngine('deselect', () => { clearShownHolder(); updateOrbitLineHighlights(); });
-// A trajectory's cruise line gave way to its arrival orbit (or back): style the line now shown.
-onEngine('orbit-change', updateOrbitLineHighlights);
+engine.on('select', clearShownHolder);
+engine.on('deselect', clearShownHolder);
 
-onEngine('select', ({ data, waiting }) => {
+engine.on('select', ({ data, waiting }) => {
     if (!cinematicActive) coachStep('pick');
     updateUI(data);
     if (waiting) {
@@ -1156,7 +1123,7 @@ function announce(message) {
 }
 
 // Showcase: close the details and put keyboard focus somewhere sensible.
-onEngine('deselect', () => {
+engine.on('deselect', () => {
     const sb = document.getElementById('sidebar');
     const focusWasInside = sb.contains(document.activeElement);
     sb.classList.remove('active');
@@ -1501,7 +1468,7 @@ function setupPhoneSheets() {
                 const peek = window.innerHeight * PHONE_PEEK_SHARE;
                 if (shown < peek * 0.6 || (v > 0.8 && !sidebar.classList.contains('is-full'))) {
                     stopCinematicMode();
-                    deselect();
+                    engine.deselect();
                     updateOrbitLineHighlights();
                     document.getElementById('explore-btn')?.focus({ preventScroll: true });
                     return;
@@ -1649,15 +1616,15 @@ function setupCoach() {
     });
     // Two fingers on the scene at once is a pinch.
     const pointers = new Set();
-    renderer.domElement.addEventListener('pointerdown', (e) => { pointers.add(e.pointerId); if (pointers.size > 1) coachStep('zoom'); });
+    engine.canvas.addEventListener('pointerdown', (e) => { pointers.add(e.pointerId); if (pointers.size > 1) coachStep('zoom'); });
     const lift = (e) => pointers.delete(e.pointerId);
-    renderer.domElement.addEventListener('pointerup', lift);
-    renderer.domElement.addEventListener('pointercancel', lift);
-    renderer.domElement.addEventListener('pointermove', (e) => {
+    engine.canvas.addEventListener('pointerup', lift);
+    engine.canvas.addEventListener('pointercancel', lift);
+    engine.canvas.addEventListener('pointermove', (e) => {
         if (pointers.size === 1 && pointerDownPos && Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y) > DRAG_THRESHOLD_PX) coachStep('turn');
     });
-    renderer.domElement.addEventListener('wheel', () => coachStep('zoom'), { passive: true });
-    renderer.domElement.addEventListener('keydown', (e) => {
+    engine.canvas.addEventListener('wheel', () => coachStep('zoom'), { passive: true });
+    engine.canvas.addEventListener('keydown', (e) => {
         if (e.key.startsWith('Arrow')) coachStep('turn');
         else if ('+=-_'.includes(e.key)) coachStep('zoom');
     });
@@ -1705,7 +1672,7 @@ function syncViewInsets() {
         insets.top = header ? header.getBoundingClientRect().bottom + 8 : 0;
         insets.bottom = window.innerHeight * (cinematicActive ? PHONE_CAPTION_SHARE : PHONE_PEEK_SHARE);
     }
-    setViewInsets(insets);
+    engine.setViewInsets(insets);
 }
 window.addEventListener('resize', syncViewInsets);
 // Panel sizes can change without a resize (the header's text wrapping once the font loads).
@@ -1715,7 +1682,7 @@ syncViewInsets();
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
-    setFlightPace(CINEMATIC_FLIGHT_SCALE);
+    engine.setFlightPace(CINEMATIC_FLIGHT_SCALE);
     document.body.classList.add('is-cinematic');
     closeMenuSheet();
     hideCoach({ remember: false });
@@ -1732,7 +1699,7 @@ function startCinematicMode() {
 function stopCinematicMode() {
     if (!cinematicActive) return;
     cinematicActive = false;
-    setFlightPace(USER_FLIGHT_SCALE);
+    engine.setFlightPace();
     document.body.classList.remove('is-cinematic');
     const menu = document.getElementById('mission-menu');
     menu.classList.remove('ui-hidden');
@@ -1753,7 +1720,7 @@ function stopCinematicMode() {
 function cycleCinematic() {
     if (!cinematicActive) return;
     if (cinematicQueue.length === 0) {
-        cinematicQueue = listObjects().filter(data => data.type === 'mission').map(data => data.name);
+        cinematicQueue = engine.listObjects().filter(data => data.type === 'mission').map(data => data.name);
         for (let i = cinematicQueue.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cinematicQueue[i], cinematicQueue[j]] = [cinematicQueue[j], cinematicQueue[i]];
@@ -1768,9 +1735,9 @@ function cycleCinematic() {
 // The details close before the tour stops: stopping it first on a phone would put focus in the
 // details just as they close.
 function showSolarSystem({ animate = true } = {}) {
-    deselect();
+    engine.deselect();
     stopCinematicMode();
-    showOverview({ animate });
+    engine.showOverview({ animate });
     syncMenuCurrent('Solar System');
     if (animate) announce('Showing the whole Solar System');
 }
@@ -1780,17 +1747,17 @@ function showSolarSystem({ animate = true } = {}) {
 const DRAG_THRESHOLD_PX = 6;
 let pointerDownPos = null;
 
-renderer.domElement.addEventListener('pointerdown', (e) => {
+engine.canvas.addEventListener('pointerdown', (e) => {
     if (!e.isPrimary) return;
     pointerDownPos = { x: e.clientX, y: e.clientY };
-    hurry();
+    engine.hurry();
 });
-renderer.domElement.addEventListener('wheel', hurry, { passive: true });
+engine.canvas.addEventListener('wheel', () => engine.hurry(), { passive: true });
 
 // Taking hold of the camera ends the tour.
-controls.addEventListener('start', stopCinematicMode);
+engine.on('steer', stopCinematicMode);
 
-renderer.domElement.addEventListener('click', (e) => {
+engine.canvas.addEventListener('click', (e) => {
     // Orbiting with a drag also ends in a click; only a still tap is a selection.
     const start = pointerDownPos;
     pointerDownPos = null;
@@ -1799,24 +1766,14 @@ renderer.domElement.addEventListener('click', (e) => {
     // A tap on the scene ends the tour, then carries on as a normal selection.
     stopCinematicMode();
 
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1; mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const hits = intersectVisible(objects);
-    if (hits.length) {
-        let target = hits[0].object;
-        let safeCount = 0;
-        while (target && !target.userData.name && safeCount < 10) { target = target.parent; safeCount++; }
-        if (target && target.userData && target.userData.name) {
-            selectObject(target.userData.name);
-        }
-    } else {
-        deselect();
-    }
+    const name = engine.pick(e.clientX, e.clientY);
+    if (name) selectObject(name);
+    else engine.deselect();
 });
 
 document.getElementById('sidebar-close').addEventListener('click', () => {
     stopCinematicMode();
-    deselect();
+    engine.deselect();
 });
 
 // Reading the details means the visitor wants to stay on this object.
@@ -1827,26 +1784,27 @@ window.addEventListener('keydown', (e) => {
     // The credits dialog closes itself on Escape; leave the scene alone.
     if (document.getElementById('credits-dialog').open) return;
     if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
-    hurry();
+    engine.hurry();
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
-        deselect();
+        engine.deselect();
     }
 });
 
 
 // Showcase, each frame: the clock line (when the second changes) and the reticles.
-onFrame(dt => {
-    const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
+engine.onFrame(dt => {
+    const time = engine.getTime();
+    const currentSimulatedSeconds = Math.floor(time / 1000);
     if (currentSimulatedSeconds !== lastSimulatedSeconds) {
         lastSimulatedSeconds = currentSimulatedSeconds;
-        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
+        if (clockElement) clockElement.textContent = formatSimulatedTime(new Date(time));
     }
     updateReticles(dt);
 });
 
 // The sky snaps in behind the splash, and fades in once the visitor has gone in.
 const splashOverlay = document.getElementById('loading-overlay');
-setSceneVisible(!splashOverlay || splashOverlay.hidden);
+engine.setSceneVisible(!splashOverlay || splashOverlay.hidden);
 
 engine.start();
