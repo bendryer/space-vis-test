@@ -9,6 +9,7 @@ import { CAMERA_ORBIT_SPEED, CAMERA_FLY_SPEED, ENABLE_NIGHT_LIGHTS, DEBUG_SHADOW
 import { scene, camera, renderer, createRenderer } from './engine/scene.js';
 import { getDaysSinceJ2000, orbitFarthest, applySunScale, faceParent, getKeplerPosition, getTrajectoryPlan, getTrajectoryPosition } from './engine/orbits.js';
 import { loadingManager, texLoader, lazyGltfLoader, loadBodyTexture, fixPath } from './engine/assets.js';
+import { collectTextures, uploadNextTexture, prepareForGPU } from './engine/gpu.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -640,45 +641,6 @@ function startSky() {
 }
 // Fetch the faces now (they download in parallel with everything else); only the transcoding waits.
 SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
-
-// --- GPU WARM-UP ---
-// The first frame that draws a new texture or material stalls while the texture
-// uploads and the shader compiles, which shows as a stutter mid-flight. Do that
-// work ahead of time instead: one texture per frame, shaders compiled in parallel.
-const textureUploadQueue = [];
-
-function collectTextures(root, out = new Set()) {
-    root.traverse(child => {
-        if (!child.material) return;
-        const materials = Array.isArray(child.material) ? child.material : [child.material];
-        materials.forEach(material => {
-            for (const key in material) {
-                const value = material[key];
-                if (value && value.isTexture) out.add(value);
-            }
-            if (material.uniforms) {
-                Object.values(material.uniforms).forEach(u => { if (u && u.value && u.value.isTexture) out.add(u.value); });
-            }
-        });
-    });
-    return out;
-}
-
-function uploadNextTexture() {
-    const job = textureUploadQueue.shift();
-    if (!job) return;
-    try { renderer.initTexture(job.texture); } catch (e) { console.warn('Texture upload failed', e); }
-    job.done();
-}
-
-// Resolves once the object's textures are on the GPU and its shaders are ready.
-function prepareForGPU(object) {
-    const uploads = [...collectTextures(object)].map(texture =>
-        new Promise(done => textureUploadQueue.push({ texture, done })));
-    return Promise.all(uploads)
-        .then(() => renderer.compileAsync(object, camera, scene))
-        .catch(e => console.warn('Shader warm-up failed', e));
-}
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
