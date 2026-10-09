@@ -375,6 +375,8 @@ export function buildSystem(data) {
     });
 }
 
+// Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
+// the craft's orbit line (which hover and selection light up).
 export function updateTrajectoryLines(obj, arrived) {
     const lines = obj.trajectoryLines;
     if (!lines) return;

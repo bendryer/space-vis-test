@@ -605,8 +605,6 @@ function updateReticles(dt = 0.016, { hovered: pointedAt = null, groups = new Ma
     drawReticle(reticle, hovered, dt, !reticleExit && reticle.obj !== hovered);
 }
 
-// Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
-// the craft's orbit line (which hover and selection light up).
 // Showcase: the panels round the system, opening on the whole Solar System.
 engine.on('built', ({ entries }) => {
     fillSplashFacts(engine.listObjects());
