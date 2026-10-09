@@ -1,6 +1,7 @@
 // The engine's entry point: createEngine builds it and returns its API (ENGINE.md). Also loading:
 // data.json, the warm-up, and the progress, built, ready and error events.
 import * as THREE from 'three';
+import { engineOptions } from './config.js';
 import { BASE_PIXEL_RATIO, animate, createGpuTimer, onFrame, resolution } from './render.js';
 import { PINNED_DATE, getDate, setDate, setTimeRate } from './time.js';
 import { SKY_FACES, ktx2Loader, setSceneVisible, startSky } from './sky.js';
@@ -70,8 +71,11 @@ export function loadDeferred() {
 // Builds the engine round a WebGL renderer drawing into `canvas` (or a canvas of its own, which
 // the app puts on the page: engine.canvas), and returns its API (ENGINE.md). Throws where WebGL
 // isn't available. engine.start() then loads `dataUrl` and starts drawing, once the app has added
-// its listeners.
-export function createEngine({ canvas, dataUrl = './data.json' } = {}) {
+// its listeners. `options` (nightLights, namedAsteroidModels) are in config.js's engineOptions.
+export function createEngine({ canvas, dataUrl = './data.json', options = {} } = {}) {
+    for (const key of Object.keys(engineOptions)) {
+        if (key in options) engineOptions[key] = options[key];
+    }
     createRenderer(canvas);
     renderer.setPixelRatio(BASE_PIXEL_RATIO);
     renderer.setSize(window.innerWidth, window.innerHeight);

@@ -1,9 +1,8 @@
-// Engine settings: framing, flight timing, detail levels, debug switches, and the privacy
-// switch for named asteroid models. createEngine's options will set some of these.
+// Engine settings: framing, flight timing, detail levels, debug switches, and the options an app
+// chooses through createEngine (engineOptions), including the privacy switch for named asteroid models.
 
 export const CAMERA_ORBIT_SPEED = 0.1;
 export const CAMERA_FLY_SPEED = 0.0083; // Slowed down by ~3x for more cinematic zoom
-export const ENABLE_NIGHT_LIGHTS = true;
 export const DEBUG_SHADOWS = false;
 export const DEBUG_LANDING = false;
 // Every spacecraft model (orbiters and landers alike) is drawn at this size along its longest
@@ -48,13 +47,18 @@ export const HIGH_DETAIL_SHOW_PX = 160;
 export const HIGH_DETAIL_HIDE_PX = 120;
 
 
-// Privacy switch: an object's "model_named" (a named asteroid's model, which shows a
-// researcher's name) is used in place of its "model" only when this is on.
-const USE_NAMED_ASTEROID_MODELS = false;
+// The options createEngine takes (ENGINE.md), at their defaults. Set once, before anything loads.
+export const engineOptions = {
+    nightLights: true, // city lights on Earth's night side
+    // Privacy switch: an object's "model_named" (a named asteroid's model, which shows a
+    // researcher's name) is used in place of its "model" only when this is on. Off unless an app
+    // turns it on; don't turn it on without confirming it's intended.
+    namedAsteroidModels: false,
+};
 
 // The model data.json gives the object, or null for none.
 export function getEffectiveModel(item) {
-    if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
+    if (engineOptions.namedAsteroidModels && item.model_named) return item.model_named;
     return item.model || null;
 }
 

@@ -2,7 +2,7 @@
 // lights, stand-in satellites) and drawing its orbit, cruise or suborbital line.
 import * as THREE from 'three';
 import { celestialMap, objects } from './state.js';
-import { DEBUG_LANDING, ENABLE_NIGHT_LIGHTS, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
+import { DEBUG_LANDING, engineOptions, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
 import { createSun } from './sun.js';
 import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest } from './orbits.js';
@@ -255,7 +255,7 @@ export function buildSystem(data) {
                 // A closed sphere: cast from its back faces, like the modelled bodies (see processModelMeshes).
                 matParams.shadowSide = THREE.BackSide;
                 const mat = new THREE.MeshStandardMaterial(matParams);
-                if (item.night_texture && ENABLE_NIGHT_LIGHTS) {
+                if (item.night_texture && engineOptions.nightLights) {
                     const nightMesh = createEarthNightLayer(item.radius, item.night_texture);
                     if (nightMesh) visualContainer.add(nightMesh);
                 }

@@ -38,7 +38,7 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 Everything specific to an object lives in `data.json`, never in code. `DATA.md` documents every field the code reads. Adding, removing or restyling an object should need only a `data.json` edit plus any asset files. Notable fields:
 
 - `orbit_color`, `system`, `preload`, `show_orbit`, `segments`, `roughness_map`, `rotation_mode` (replace old name-based rules).
-- `model_named`: a named asteroid's private model, used only when `USE_NAMED_ASTEROID_MODELS` is on. `model` is the public generic one.
+- `model_named`: a named asteroid's private model, used only when the engine's `namedAsteroidModels` option is on. `model` is the public generic one.
 - `motion`: spacecraft attitude (`spin` / `sun` / `nadir` / `tumble`, with `axis`, `along`, `rate`, `tilt`, `wobble`, `period`).
 - `icon`, `menu_parent`, `menu_order`, `menu_top_level` (the Moon, Earth-Sun L1 and L2 are their own groups after Earth).
 - `orbit_type: "trajectory"` + `trajectory` (`waypoints` with `date`/`at`/`revs`/`extreme`, `arrival_orbit`): JUICE's cruise to Jupiter.
@@ -62,7 +62,7 @@ Web-ready derivatives live beside the sources, and a changed source needs its de
 - `public/models/*.glb` (and `*-low.glb`) were simplified with gltf-transform. The untouched originals are in `model-originals/` (outside `public/`, gitignored).
 - `public/draco/` and `public/basis/` are decoders copied from three's `examples/jsm/libs`; update them when `three` is upgraded. Lint ignores them.
 
-`USE_NAMED_ASTEROID_MODELS` in `src/engine/config.js` is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
+The engine's `namedAsteroidModels` option (`createEngine({ options })`, default `false` in `engineOptions` in `src/engine/config.js`; the showcase doesn't pass it) is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
 
 ## How the main systems work (src/main.js and src/engine/)
 

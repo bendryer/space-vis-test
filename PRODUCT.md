@@ -43,7 +43,7 @@ The objects and missions are chosen, and their content written, for their **Open
 - The content comes from `public/data.json`. It has 80 objects: star, planets, moons, asteroids, comets, reference points and missions. Each object has `description` and `ou_involvement` text (62 have OU involvement) and optionally a science image (48 do), `status` (e.g. Active, Planned, Landed, Crashed, Decommissioned) and `launch_year`.
 - `data.json` is the only file the owner wants to edit for content. That includes the image credits, which are held in its `"type": "credits"` entry.
 - It uses GLB/GLTF models with DRACO compression and LOD, textures, and custom shaders. Performance on ordinary consumer devices matters.
-- `USE_NAMED_ASTEROID_MODELS` is a privacy control. Named asteroid models show researchers' names, and must not be turned on without confirmation.
+- The engine's `namedAsteroidModels` option is a privacy control. Named asteroid models show researchers' names, and must not be turned on without confirmation.
 - **Open decision:** where the "go somewhere next" step leads. `data.json` has no link or URL fields yet. Don't invent destinations, URLs or calls to action until the content exists.
 
 ## Brand Commitments
