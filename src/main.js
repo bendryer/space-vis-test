@@ -1,13 +1,12 @@
 import './style.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { createSun } from './sun.js';
 import { celestialMap } from './engine/state.js';
 import { getDaysSinceJ2000, orbitFarthest, applySunScale, faceParent, getKeplerPosition, getTrajectoryPlan, getTrajectoryPosition } from './engine/orbits.js';
+import { loadingManager, texLoader, lazyGltfLoader, loadBodyTexture, fixPath } from './engine/assets.js';
 
 // --- CONFIGURATION ---
 const CAMERA_ORBIT_SPEED = 0.1;
@@ -271,7 +270,6 @@ scene.background = new THREE.Color(0x000000);
 // --- LOADING MANAGER ---
 // The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
 // arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
-const loadingManager = new THREE.LoadingManager();
 loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
     if (splashReady || fatalErrorShown) return;
     const progress = itemsLoaded / itemsTotal;
@@ -519,44 +517,6 @@ function warmUpSceneThenReveal() {
     ]).then(markSceneReady);
 }
 
-
-const texLoader = new THREE.TextureLoader(loadingManager);
-
-// LOADERS
-const gltfLoader = new GLTFLoader(loadingManager);
-const dracoLoader = new DRACOLoader();
-// Served from our own public/draco/ (copied from three's examples) rather than a CDN, so
-// models still load where third-party hosts are blocked, e.g. on school networks.
-dracoLoader.setDecoderPath('draco/');
-// No decoder type set, so DRACOLoader uses WebAssembly (several times faster than
-// the JS decoder) wherever it's supported and falls back to JS elsewhere.
-gltfLoader.setDRACOLoader(dracoLoader);
-
-// Standalone loader for background lazy-loading (non-blocking for startup screen)
-const lazyGltfLoader = new GLTFLoader();
-lazyGltfLoader.setDRACOLoader(dracoLoader);
-
-// Planet and moon maps are drawn on spheres a few hundred pixels across at most, so
-// anything wider than this is downscaled once on load, before it reaches the GPU.
-const MAX_BODY_TEXTURE_WIDTH = 2048;
-
-function capTextureSize(texture) {
-    const image = texture.image;
-    if (!image || image.width <= MAX_BODY_TEXTURE_WIDTH) return;
-    const scale = MAX_BODY_TEXTURE_WIDTH / image.width;
-    const canvas = document.createElement('canvas');
-    canvas.width = MAX_BODY_TEXTURE_WIDTH;
-    canvas.height = Math.round(image.height * scale);
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    texture.image = canvas;
-    texture.needsUpdate = true;
-}
-
-function loadBodyTexture(path) {
-    return texLoader.load(fixPath(path), capTextureSize);
-}
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000000);
 camera.position.set(0, 400, 1200);
@@ -901,12 +861,6 @@ const _lastTrackedPos = new THREE.Vector3();
 const _lastTrackedQuat = new THREE.Quaternion();
 const _trackQuat = new THREE.Quaternion();
 const _trackTurn = new THREE.Quaternion();
-
-// --- HELPER: PATH SANITIZER ---
-function fixPath(path) {
-    if (!path) return null;
-    return path.startsWith('/') ? path.slice(1) : path;
-}
 
 // An orbit line's colour: the object's "orbit_color" if data.json gives one; a moon without one
 // shares its planet's; otherwise a colour by type (a planet falls back to its own "color").
