@@ -2612,19 +2612,20 @@ function isSidebarBesideScene() {
     return window.innerWidth >= SIDEBAR_BESIDE_MIN_WIDTH;
 }
 
-// The part of the screen a selection is framed in: between the menu and the sidebar when the
-// sidebar sits beside the scene, else the whole width (a sidebar over the scene is closed to look
-// round, and centring beside the menu alone would push the selection under it). Selections always
-// open the sidebar, so framing assumes it's there. The menu counts only while shown (cinematic
-// mode hides it). Returns the span's left and right edges in CSS pixels.
+// --- VIEW INSETS ---
+// How much of the screen the app's panels cover while something is selected, in CSS pixels from
+// each edge (setViewInsets). Selections are framed in the rest of the screen, and while there is
+// a selection the view shifts so it sits in the middle of that rest.
+let viewInsets = { left: 0, right: 0, top: 0, bottom: 0 };
+function setViewInsets({ left = 0, right = 0, top = 0, bottom = 0 } = {}) {
+    viewInsets = { left, right, top, bottom };
+}
+// True from "select" to "deselect" (including while a lander's body loads).
+let hasSelection = false;
+
+// The part of the screen a selection is framed in: left and right edges in CSS pixels.
 function getSelectionViewSpan() {
-    const w = window.innerWidth;
-    if (!isSidebarBesideScene()) return { left: 0, right: w };
-    const sidebar = document.getElementById('sidebar');
-    const menu = document.getElementById('mission-menu');
-    const menuShown = menu && !menu.classList.contains('ui-hidden');
-    const left = menuShown ? menu.offsetLeft + menu.offsetWidth : 0;
-    return { left, right: w - sidebar.offsetWidth };
+    return { left: viewInsets.left, right: window.innerWidth - viewInsets.right };
 }
 
 function getSelectionViewWidth() {
@@ -2632,21 +2633,13 @@ function getSelectionViewWidth() {
     return span.right - span.left;
 }
 
-// On a phone the details are a sheet over the bottom of the scene, so a selection is framed in
-// the band between the header and the sheet's resting edge (its half-height peek, or the small
-// caption card in Cinematic Mode). Elsewhere the whole height. Top and bottom in CSS pixels.
-const PHONE_PEEK_SHARE = 0.46;    // matches the sheet's 46dvh in style.css
-const PHONE_CAPTION_SHARE = 0.26; // the caption card plus the dock under it
+// The same band's top and bottom, in CSS pixels.
 function getSelectionViewVSpan() {
-    const h = window.innerHeight;
-    if (!isPhone()) return { top: 0, bottom: h };
-    const header = document.getElementById('header');
-    const top = header ? header.getBoundingClientRect().bottom + 8 : 0;
-    return { top, bottom: h * (1 - (cinematicActive ? PHONE_CAPTION_SHARE : PHONE_PEEK_SHARE)) };
+    return { top: viewInsets.top, bottom: window.innerHeight - viewInsets.bottom };
 }
 
 // Narrower of the vertical and horizontal fields of view (over the visible area), so framing
-// fits portrait screens and the space between the menu and the sidebar (or above a phone's sheet).
+// fits portrait screens and the space the app's panels leave.
 function getMinFov() {
     const vfov = camera.fov * (Math.PI / 180);
     const vspan = getSelectionViewVSpan();
@@ -2655,21 +2648,18 @@ function getMinFov() {
     return Math.min(visibleVfov, hfov);
 }
 
-// While the sidebar is open beside the scene, shift the view so the selection sits in the middle
-// of the visible part (between the menu and the sidebar) rather than behind either. Eased so it
-// glides with the sidebar and with the menu hiding or returning.
-// On a phone the same lifts the selection above the details sheet.
+// While there's a selection, shift the view so it sits in the middle of the part of the screen
+// the panels leave rather than behind one. Eased so it glides with the panels opening and with
+// the insets changing.
 let viewOffsetX = 0;
 let viewOffsetY = 0;
 function updateViewOffset(dt) {
-    const sidebar = document.getElementById('sidebar');
     let goal = 0;
     let goalY = 0;
-    if (sidebar.classList.contains('active') && isSidebarBesideScene()) {
+    if (hasSelection) {
         const span = getSelectionViewSpan();
-        goal = window.innerWidth / 2 - (span.left + span.right) / 2;
-    } else if (sidebar.classList.contains('active') && isPhone()) {
         const vspan = getSelectionViewVSpan();
+        goal = window.innerWidth / 2 - (span.left + span.right) / 2;
         goalY = window.innerHeight / 2 - (vspan.top + vspan.bottom) / 2;
     }
     const ease = 1 - Math.exp(-dt * 6);
@@ -3758,7 +3748,10 @@ function startFlight(mesh, data) {
         if (parent) loadModelForItem(parent.data, true);
         if (!data.isModelLoaded) loadModelForItem(data, true);
         attemptToLand();
-        if (pendingLanderFocus) emitEngine('select', { data, waiting: true });
+        if (pendingLanderFocus) {
+            hasSelection = true;
+            emitEngine('select', { data, waiting: true });
+        }
         return;
     }
 
@@ -3787,6 +3780,7 @@ function startFlight(mesh, data) {
     getFocusPoint(mesh, initTarget);
 
     initiateTransition(initIdealPos, arrivalTime);
+    hasSelection = true;
     emitEngine('select', { data, waiting: false });
 }
 
@@ -3829,6 +3823,7 @@ function deselect() {
     isTracking = false;
     isTransitioning = false;
     controls.enabled = true;
+    hasSelection = false;
     settleArrival(false);
     emitEngine('deselect');
 }
@@ -4376,6 +4371,31 @@ function syncMenuInert() {
 }
 window.addEventListener('resize', syncMenuInert);
 
+// Tell the engine how much of the screen the panels cover round a selection. Beside the scene,
+// the menu (while shown; Cinematic Mode hides it) and the sidebar (assumed open: a selection
+// opens it). A sidebar over the scene is closed to look round, so it doesn't count (and framing
+// beside the menu alone would push the selection under it). On a phone, the header and the
+// sheet's resting edge: its half-height peek, or the small caption card in Cinematic Mode.
+const PHONE_PEEK_SHARE = 0.46;    // matches the sheet's 46dvh in style.css
+const PHONE_CAPTION_SHARE = 0.26; // the caption card plus the dock under it
+function syncViewInsets() {
+    const insets = { left: 0, right: 0, top: 0, bottom: 0 };
+    if (isSidebarBesideScene()) {
+        const menu = document.getElementById('mission-menu');
+        if (!menu.classList.contains('ui-hidden')) insets.left = menu.offsetLeft + menu.offsetWidth;
+        insets.right = document.getElementById('sidebar').offsetWidth;
+    } else if (isPhone()) {
+        const header = document.getElementById('header');
+        insets.top = header ? header.getBoundingClientRect().bottom + 8 : 0;
+        insets.bottom = window.innerHeight * (cinematicActive ? PHONE_CAPTION_SHARE : PHONE_PEEK_SHARE);
+    }
+    setViewInsets(insets);
+}
+window.addEventListener('resize', syncViewInsets);
+// Panel sizes can change without a resize (the header's text wrapping once the font loads).
+new ResizeObserver(syncViewInsets).observe(document.getElementById('header'));
+syncViewInsets();
+
 function startCinematicMode() {
     if (cinematicActive) return;
     cinematicActive = true;
@@ -4386,6 +4406,7 @@ function startCinematicMode() {
     const menu = document.getElementById('mission-menu');
     menu.classList.add('ui-hidden');
     syncMenuInert();
+    syncViewInsets();
     syncCinematicButton();
     announce('Cinematic Mode on. The camera will visit a new mission every 30 seconds.');
     cycleCinematic();
@@ -4400,6 +4421,7 @@ function stopCinematicMode() {
     const menu = document.getElementById('mission-menu');
     menu.classList.remove('ui-hidden');
     syncMenuInert();
+    syncViewInsets();
     if (cinematicTimer) clearInterval(cinematicTimer);
     cinematicTimer = null;
     syncCinematicButton();
