@@ -4,14 +4,14 @@ import * as THREE from 'three';
 import { celestialMap, objects } from './state.js';
 import { DEBUG_LANDING, ENABLE_NIGHT_LIGHTS, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
-import { createSun } from '../sun.js';
+import { createSun } from './sun.js';
 import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest } from './orbits.js';
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
 import { renderer, scene } from './scene.js';
 import { emitEngine } from './events.js';
 
-export let sunEffect = null; // see src/sun.js
+export let sunEffect = null; // see src/engine/sun.js
 
 // An orbit line's colour: the object's "orbit_color" if data.json gives one; a moon without one
 // shares its planet's; otherwise a colour by type (a planet falls back to its own "color").
