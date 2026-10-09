@@ -8,7 +8,7 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 
 `src/counter.js` and `src/javascript.svg` are unused Vite-scaffold leftovers, not imported anywhere.
 
-`ENGINE-PLAN.md` is the agreed plan for splitting `main.js` into a shared engine plus apps (the current showcase, and a planned presentation app). Follow its ground rules when doing that work.
+`ENGINE-PLAN.md` is the agreed plan for splitting `main.js` into a shared engine plus apps (the current showcase, and a planned presentation app). Follow its ground rules when doing that work. `ENGINE.md` describes the engine's API (what's in place and what's planned); keep it in step with the code.
 
 ## Commands
 

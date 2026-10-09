@@ -50,7 +50,9 @@ Done: `onEngine` / `emitEngine` with `select`, `arrive` and `deselect`; `flyTo(n
 - Split `closeUI` the same way: `engine.deselect()` plus a showcase listener.
 - Rewrite cinematic mode to use only the API. This proves the approach.
 
-## Phase 2: Define the engine API (`ENGINE.md`)
+## Phase 2: Define the engine API (`ENGINE.md`) ✅ (2026-10-09)
+
+Done: `ENGINE.md` describes the API, and `main.js` gathers it in an `engine` object. Added `setViewInsets` (the showcase's `syncViewInsets` measures its panels; the engine no longer reads the sidebar, menu, header or `cinematicActive`), `showOverview` (split from `showSolarSystem`), `hurry`, `getDate` / `setDate` / `setTimeRate`, `getObject`, `projectBody` and `setUserControl`. `createEngine`, the options and the `progress` / `ready` events come with Phase 3, when there is a module to construct; `flyTo`'s `{ view, duration }` waits for the presentation app. `ENGINE.md` lists the showcase work the engine code still does. Smoke test 0.00% at every stop; phone framing checked by numbers (view shift and distance unchanged at 390×844). The smoke baseline was retaken from `main` on 2026-10-09 after a Chrome update changed text anti-aliasing.
 
 | Area | API |
 |---|---|
