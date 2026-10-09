@@ -801,7 +801,7 @@ async function main() {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(res.statusText);
     data = (await res.json()).filter(d => d.type !== 'credits'); // the credits dialog's content, not an object
-    // Mirrors applyStatusTimeline() in src/main.js: a dated status replaces `status` once its day has come.
+    // Mirrors applyStatusTimeline() in src/engine/index.js: a dated status replaces `status` once its day has come.
     const today = new Date().toISOString().slice(0, 10);
     data.forEach(d => (d.status_timeline || []).forEach(s => { if (s.from && s.status && s.from <= today) d.status = s.status; }));
   } catch (err) {

@@ -42,7 +42,7 @@ Everything specific to an object lives in `data.json`, never in code. `DATA.md` 
 - `motion`: spacecraft attitude (`spin` / `sun` / `nadir` / `tumble`, with `axis`, `along`, `rate`, `tilt`, `wobble`, `period`).
 - `icon`, `menu_parent`, `menu_order`, `menu_top_level` (the Moon, Earth-Sun L1 and L2 are their own groups after Earth).
 - `orbit_type: "trajectory"` + `trajectory` (`waypoints` with `date`/`at`/`revs`/`extreme`, `arrival_orbit`): JUICE's cruise to Jupiter.
-- `status_timeline` (`[{from, status}]`): a status that changes on a known date, applied at load by `applyStatusTimeline` in `main.js` (mirrored in `public/mission-guide.html`).
+- `status_timeline` (`[{from, status}]`): a status that changes on a known date, applied at load by `applyStatusTimeline` in `src/engine/index.js` (mirrored in `public/mission-guide.html`).
 - `rotation_mode: "spin"` (an asteroid turns on `rot_period` instead of tumbling) and `"locked"` (a moon keeps +X towards its parent, via `faceParent`): Didymos and Dimorphos.
 - `a_au` in an `orbit`: real size in AU for anything on a real orbit round the Sun, drawn through one shared distance scale (`auToScene`: log compression, 1 AU = 1,000 units). Moons, L1/L2 and craft round a body keep illustrative `a` in scene units. Trajectory `extreme` is in AU.
 

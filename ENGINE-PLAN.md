@@ -66,15 +66,25 @@ Done: `ENGINE.md` describes the API, and `main.js` gathers it in an `engine` obj
 
 `setViewInsets` changes the framing maths: compare desktop and phone screenshots.
 
-## Phase 3: Move the engine into `src/engine/`, one module per commit
+## Phase 3: Move the engine into `src/engine/`, one module per commit ✅
 
-In progress (2026-10-09). Moved so far, each verbatim and smoke-tested at 0.00%: `state.js` (`celestialMap`, `objects`), `orbits.js` (also `getSystemRoot`), `assets.js`, `scene.js` (scene, camera, renderer), `config.js` (engine settings, including `USE_NAMED_ASTEROID_MODELS`), `gpu.js` (warm-up), `landers.js`, `models.js`, `bodies.js`, then `time.js` (the simulated and motion clocks), `events.js`, `camera.js` (selection, flights, tracking, the overview, view insets, the controls and keyboard steering), `visibility.js` (culling, model loading, `activeSystem`), `lighting.js` and `motion.js` (tumbles, spacecraft attitude). `main.js` is down from ~5,050 lines to ~2,340.
+Done (2026-10-09). The engine is in `src/engine/`, each module moved verbatim and smoke-tested at 0.00%: `state.js` (`celestialMap`, `objects`), `config.js` (engine settings and `engineOptions`), `scene.js` (scene, camera, renderer, `isInScene`), `orbits.js` (also `getSystemRoot`), `assets.js`, `gpu.js` (texture upload), `landers.js`, `models.js`, `bodies.js` (also `updateTrajectoryLines`), `time.js` (the simulated and motion clocks), `events.js`, `camera.js` (selection, flights, tracking, the overview, view insets, the controls and keyboard steering), `visibility.js` (culling, model loading, `activeSystem`), `lighting.js`, `motion.js` (tumbles, spacecraft attitude), `projection.js` (`projectBody`), `sky.js`, `render.js` (the loop, adaptive resolution, resize), `sun.js` with its shaders (unchanged), and `index.js` (`createEngine`, loading, the warm-up). `main.js` is down from ~5,050 lines to ~1,900, all showcase.
 
-Changes made to allow the moves, each in its own commit: `createRenderer()` (so a missing WebGL still reaches the showcase's error screen), `onLanded` (landers report a landing; the flight code flies to a waiting lander), `buildSystem` split from `loadSystem`, a few never-reassigned `let`s made `const`, `updateCamera` (the camera's per-frame step, lifted out of `animate`), `initControls`, `placeCameraAt` (the camera half of `holdMotion`), and the showcase relighting orbits on `select`/`deselect` and adding its own controls `start` listener, so the camera code calls nothing in the showcase. The spotlight tests `status === 'Planned'` as the hologram code does, not the showcase's `statusTone`. A variable only one module assigns is a live `export let` (`renderer`, `sunEffect`), so no shared `state` object has been needed yet.
+Changes made to allow the moves, each in its own commit:
+- `createRenderer(canvas)`, so a missing WebGL still reaches the showcase's error screen.
+- `onLanded`: landers report a landing, and the flight code flies to a waiting lander.
+- `buildSystem` split from `loadSystem`; a few never-reassigned `let`s made `const`.
+- `updateCamera` (the camera's per-frame step, lifted out of `animate`), `initControls`, and `placeCameraAt` (the camera half of `holdMotion`).
+- The showcase relights orbits on `select`, `deselect` and `orbit-change`, and adds its own controls `start` listener, so engine code calls nothing in the showcase. The spotlight tests `status === 'Planned'` as the hologram code does, not the showcase's `statusTone`.
+- `onFrame` hooks: the loop hands back the clock line and the reticles.
+- Loading reports through events (`progress`, `built`, `ready`, `error`); `loadDeferred` and `setSceneVisible` replace the engine reading the splash.
+- `createEngine({ canvas, dataUrl, options })` and `engine.start()`; the options `nightLights` and `namedAsteroidModels` (still off; the showcase doesn't pass it). The debug flags stay constants.
 
-Next: `render.js` and `index.js` together, since what's left builds from the renderer at load (adaptive resolution's timer queries, the KTX2 loader's `detectSupport`) and so needs `createEngine` to call it in order. The loop also does two showcase jobs to hand back: the clock line and `updateReticles`. `showSky` reads the splash to decide whether to fade, and `loadSystem` / `warmUpSceneThenReveal` mix loading with the splash (the `progress` and `ready` events). Still in `main.js` for Phase 4: orbit highlights (`updateOrbitLineHighlights`), which mix hover and the menu's holders.
+A variable only one module assigns is a live `export let` (`renderer`, `sunEffect`, `selectedObject`), so no shared `state` object was needed. Scratch vectors stay local to each module; a few are copied where two modules use them.
 
-In order of least coupling: `orbits.js` → `assets.js` → `models.js` → `bodies.js` → `landers.js` → `lighting.js` → `camera.js` → `render.js` → `index.js` (`createEngine`, owning the shared `state` object). Scratch vectors stay local to each module, `sun.js` moves in unchanged, and `window.__ouniverse` keeps its names. Re-time loads after this phase.
+Checks beyond the smoke test, as one-off scripts in the gitignored `smoke/`: a lander chosen before its body loads still waits, then flies; keyboard steering, Escape, clicking empty sky and grabbing the camera in Cinematic Mode; JUICE's line swap keeps its highlight; the error screens for a failed `data.json` and for no WebGL; the sky snapping in behind the splash and fading in after; named asteroids keep their generic models.
+
+Loads re-timed on production builds against `main` before Phase 3 (12 cold loads each, alternating, median): `scene-ready` 3.45 s before, 3.51 s after; `sky-ready` 4.66 s and 4.80 s. Within the spread between runs.
 
 ## Phase 4: Separate the showcase app and the shared features
 
