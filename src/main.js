@@ -214,7 +214,7 @@ const PINNED_DATE = import.meta.env.DEV ? (() => {
     const date = param ? new Date(param) : null;
     return date && !isNaN(date) ? date : null;
 })() : null;
-const timeScale = PINNED_DATE ? 0 : 1;
+let timeScale = PINNED_DATE ? 0 : 1; // simulated seconds per real second (setTimeRate)
 let simulatedDate = PINNED_DATE ? new Date(PINNED_DATE) : new Date();
 const clock = new THREE.Clock();
 
@@ -245,6 +245,8 @@ const SOLAR_SYSTEM_SPIN_EASE_SECONDS = 2;
 // Once the visitor rotates or zooms around a focused object, the scripted orbit
 // stops steering the camera; it only carries the camera along with the object.
 let userHasControl = false;
+// Whether the visitor may steer the camera at all (setUserControl); off for a presenter-driven app.
+let userControlEnabled = true;
 let autoOrbitResumeTimer = null;
 let motionTime = 0; // Clamped clock for camera motion, so hitches don't cause jumps
 // Dev only: the smoke test holds the motion clock at a set time so the camera's orbit, the
@@ -3784,6 +3786,46 @@ function startFlight(mesh, data) {
     emitEngine('select', { data, waiting: false });
 }
 
+// Every object's data.json entry by name, or null.
+function getObject(name) {
+    return celestialMap.get(name)?.data ?? null;
+}
+
+// The simulated clock: a copy of its date, a new date, and how many simulated seconds pass per
+// real second (0 stops it).
+function getDate() {
+    return new Date(simulatedDate);
+}
+function setDate(date) {
+    simulatedDate.setTime(new Date(date).getTime());
+}
+function setTimeRate(rate) {
+    timeScale = rate;
+}
+
+// Let the visitor steer the camera (drag, scroll, keys), or not. Turning it off hands the camera
+// back to its scripted orbit.
+function setUserControl(enabled) {
+    userControlEnabled = enabled;
+    controls.enabled = enabled && !isTransitioning;
+    if (!enabled) releaseUserControl();
+}
+
+// The engine's API, as ENGINE.md describes it. Phase 3 moves the engine into src/engine/ and
+// createEngine returns this; until then the showcase still calls the functions directly.
+const engine = {
+    on: onEngine,
+    flyTo, showOverview, deselect, hurry,
+    getDate, setDate, setTimeRate,
+    getObject, listObjects,
+    // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
+    projectBody(name) {
+        const p = projectBody(celestialMap.get(name));
+        return p && { x: p.cx, y: p.cy, radius: p.bodyR };
+    },
+    setViewInsets, setFlightPace, setUserControl,
+};
+
 // Showcase: choose an object. Chosen from the menu (returnFocusTo is its row), the details take
 // keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
 function selectObject(name, { returnFocusTo = null } = {}) {
@@ -3822,7 +3864,7 @@ function deselect() {
     selectedObject = null;
     isTracking = false;
     isTransitioning = false;
-    controls.enabled = true;
+    controls.enabled = userControlEnabled;
     hasSelection = false;
     settleArrival(false);
     emitEngine('deselect');
@@ -4616,7 +4658,7 @@ function animate() {
         if (transitionProgress >= 1.0) {
             transitionProgress = 1.0;
             isTransitioning = false;
-            controls.enabled = true;
+            controls.enabled = userControlEnabled;
             if (selectedObject) {
                 isTracking = true;
                 getFocusPoint(selectedObject, _lastTrackedPos);
@@ -4939,7 +4981,7 @@ const KEY_POLE_MARGIN = 0.05; // radians kept clear of straight up and down
 const _keyOffset = new THREE.Vector3();
 const _keyRight = new THREE.Vector3();
 renderer.domElement.addEventListener('keydown', (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!userControlEnabled || e.altKey || e.ctrlKey || e.metaKey) return;
     const turn = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
     const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
     if (!turn && !zoom) return;
@@ -5049,7 +5091,7 @@ window.addEventListener('resize', () => {
 if (import.meta.env.DEV) {
     window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
         loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
-        get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
+        engine, get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
         get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; }, get simulatedDate() { return simulatedDate; }, getSunOcclusion, resolution, flattenModel,
         // Hold the motion clock (null releases it) and put the camera straight where the held
         // clock says, so it has nothing left to ease.
