@@ -289,7 +289,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// --- Privacy toggle: kept in sync with USE_NAMED_ASTEROID_MODELS in src/main.js. ---
+// --- Privacy toggle: kept in sync with the engine's namedAsteroidModels option (src/engine/config.js). ---
 // When false, custom OU-researcher-named asteroid models are swapped for generic ones.
 const USE_NAMED_ASTEROID_MODELS = false;
 
@@ -307,7 +307,7 @@ function getHash(str) {
   return Math.abs(hash);
 }
 
-// Mirrors getEffectiveModel in src/main.js: a named asteroid's private model (`model_named`) is used
+// Mirrors getEffectiveModel in src/engine/config.js: a named asteroid's private model (`model_named`) is used
 // only when the toggle is on; otherwise its public generic `model`. Never load model_named otherwise.
 function getEffectiveModelPath(item) {
   if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
@@ -512,7 +512,7 @@ function wireLazyPreviews(root, byName) {
   root.querySelectorAll('.preview-wrap[data-name]').forEach(el => io.observe(el));
 }
 
-// --- Labels, status and icons: kept in step with src/main.js ---
+// --- Labels, status and icons: kept in step with the showcase (src/apps/showcase/) ---
 
 const TYPE_LABEL = {
   star: 'Star', planet: 'Planet', moon: 'Moon', mission: 'Mission',
@@ -525,7 +525,7 @@ const TYPE_PLURAL = {
 function typeLabel(t) { return TYPE_LABEL[t] || (t ? t.charAt(0).toUpperCase() + t.slice(1).replace(/_/g, ' ') : 'Object'); }
 function typePlural(t) { return TYPE_PLURAL[t] || typeLabel(t); }
 
-// Mirrors statusTone() in src/main.js, so a status reads the same here as in the app.
+// Mirrors statusTone() in src/apps/showcase/details.js, so a status reads the same here as in the app.
 function statusTone(status) {
   if (status === 'Planned') return 'planned';
   if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost', 'Re-entered'].includes(status)) return 'ended';
@@ -550,7 +550,7 @@ const MENU_ICONS = {
     facility: '<path d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8"/><path d="M13 7l0 .01"/><path d="M17 7l0 .01"/><path d="M17 11l0 .01"/><path d="M17 15l0 .01"/>',
 };
 
-// Mirrors menuIconName / menuIconColor in src/main.js.
+// Mirrors menuIconName / menuIconColor in src/apps/showcase/menu.js.
 function menuIconName(data) {
   if (MENU_ICONS[data.icon]) return data.icon;
   switch (data.type) {
@@ -577,7 +577,7 @@ function iconSvg(name, color = null, extra = '') {
   return `<svg class="icon${tint}${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"${style}>${MENU_ICONS[name]}</svg>`;
 }
 
-// --- The contents tree: the Explore menu's order and grouping (populateMenu in src/main.js) ---
+// --- The contents tree: the Explore menu's order and grouping (populateMenu in src/apps/showcase/menu.js) ---
 // Missions first, alphabetically, then bodies by "menu_order" or orbit size. Objects under their
 // "menu_parent" (else their parent); "menu_top_level" objects (the Moon) leave their parent for a
 // group of their own just after it; asteroids and comets gather into holders.

@@ -2,7 +2,7 @@
 
 The engine draws the Solar System and flies the camera. Apps (the showcase now, a presentation app later) build their panels round it and talk to it only through this API. See `ENGINE-PLAN.md` for the plan this is part of.
 
-The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). The showcase (`src/main.js`) uses only this API: it imports nothing from `src/engine/` but `createEngine`.
+The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). The showcase (`src/apps/showcase/`) uses only this API: it imports nothing from `src/engine/` but `createEngine`.
 
 Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 
@@ -100,9 +100,12 @@ Passed as `createEngine({ options })`, and kept in `engineOptions` in `src/engin
 
 The debug flags (`DEBUG_SHADOWS`, `DEBUG_LANDING`) stay constants in `config.js`: they're for developers, not apps. In dev builds `createEngine` also installs the dev hook (`window.__ouniverse`, `src/engine/devhook.js`).
 
-## Still to separate
+## Shared features
 
-Still in the showcase, to become shared features in Phase 4:
-- **Reticles and labels** (`updateReticles`, run from the showcase's `onFrame` hook; `sceneRightEdge` reads the sidebar): built on `projectBody`, for the presentation's anchored panels too.
+Opt-in modules in `src/features/` that any app can use, built only on this API.
 
-The input handlers (canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, `steer` ends the tour) are the showcase's choices and stay with it.
+| | |
+|---|---|
+| ✅ Reticles (`src/features/reticles/`) | `setupReticles(engine, container)` adds the overlay to `container`. `updateReticles(dt, { hovered, groups, rightEdge })`, from the app's `onFrame` hook, marks `hovered` (an entry, with a name tab; it swipes out when that object is selected) and each entry in `groups` (a `Map` to `'hover'` or `'info'`), keeping labels left of `rightEdge`. |
+
+The showcase's input choices (canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, `steer` ends the tour) stay with it.

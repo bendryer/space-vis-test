@@ -86,11 +86,17 @@ Checks beyond the smoke test, as one-off scripts in the gitignored `smoke/`: a l
 
 Loads re-timed on production builds against `main` before Phase 3 (12 cold loads each, alternating, median): `scene-ready` 3.45 s before, 3.51 s after; `sky-ready` 4.66 s and 4.80 s. Within the spread between runs.
 
-## Phase 4: Separate the showcase app and the shared features
+## Phase 4: Separate the showcase app and the shared features ✅
 
 - `src/apps/showcase/`: splash, menu and search, sidebar, phone sheets, coach, credits, fullscreen, keyboard, cinematic mode.
 - `src/features/reticles/`: the overlay the presentation's anchored panels will build on.
 - CSS: `base.css` (OU tokens, fonts), `showcase.css`, and one CSS file per feature, each imported by its own module.
+
+Done (2026-10-09). The showcase uses only the engine API: it imports nothing from `src/engine/` but `createEngine`, and works with `data.json` entries rather than the engine's objects. API added for it: `pick`, `getSelection`, `getTime`, `getSystem`, `getOrbitColor`, `setOrbitHighlights` (the engine now owns orbit highlighting), the `steer` event, and `setFlightPace()` with no scale. The dev hook moved into the engine (`devhook.js`), and click raycasting into `picking.js`.
+
+The showcase is in `src/apps/showcase/`: `main.js` (78 lines) only wires the modules together, calling each module's setup function in the order the code ran before (side effects were first wrapped in place, then moved). Modules: `splash`, `fullscreen`, `input`, `config`, `announce`, `clock`, `views` (hover, holders, the overview), `menu`, `details`, `credits`, `phone`, `cinematic`, `coach`, `layout`, and `engine.js` holding the instance. The reticles are `src/features/reticles/`, taking what to mark as parameters (`setupReticles(engine, container)`, `updateReticles(dt, { hovered, groups, rightEdge })`). `style.css` became `src/base.css`, `showcase.css` and `reticles.css`.
+
+Smoke test 0.00% at every step. One-off checks: hover and holder highlights and reticles, clicking a body, keyboard steering and Escape, the error screens and the sky fade, a waiting lander, and the panels (search, details, Cinematic Mode, credits, the coach) on desktop and at phone size. Loads re-timed against the end of Phase 3 (12 cold production loads each, median): `scene-ready` 3.42 s before, 3.37 s after; `sky-ready` 4.73 s and 4.72 s.
 
 ## Phase 5: Second entry point and a minimal presentation
 

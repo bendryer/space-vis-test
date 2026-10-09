@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads `src/main.js`, which with the engine modules in `src/engine/` (being split out of it, see `ENGINE-PLAN.md`) renders the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders (`src/engine/sun.js`, `src/engine/sun/*.glsl`), and a cinematic auto-tour camera mode.
+OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads the showcase app, `src/apps/showcase/main.js`, built on the engine in `src/engine/` (`createEngine`; its API is in `ENGINE.md`) and the shared features in `src/features/` (reticles). Together they render the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders (`src/engine/sun.js`, `src/engine/sun/*.glsl`), and a cinematic auto-tour camera mode.
 
 `src/counter.js` and `src/javascript.svg` are unused Vite-scaffold leftovers, not imported anywhere.
 
-`ENGINE-PLAN.md` is the agreed plan for splitting `main.js` into a shared engine plus apps (the current showcase, and a planned presentation app). Follow its ground rules when doing that work. `ENGINE.md` describes the engine's API (what's in place and what's planned); keep it in step with the code.
+`ENGINE-PLAN.md` is the agreed plan for splitting the app into a shared engine plus apps (the current showcase, and a planned presentation app). Follow its ground rules when doing that work. `ENGINE.md` describes the engine's API (what's in place and what's planned); keep it in step with the code.
 
 ## Commands
 
@@ -64,7 +64,9 @@ Web-ready derivatives live beside the sources, and a changed source needs its de
 
 The engine's `namedAsteroidModels` option (`createEngine({ options })`, default `false` in `engineOptions` in `src/engine/config.js`; the showcase doesn't pass it) is a deliberate privacy toggle: when `true`, asteroids use their `model_named` (custom OU-researcher-named models such as `Grady.glb`, `Pillinger.glb`) instead of their generic `model`. Don't flip this without confirming it's intended — it affects whether researcher names are exposed in the build.
 
-## How the main systems work (src/main.js and src/engine/)
+## How the main systems work (src/engine/, src/apps/showcase/, src/features/)
+
+Styles: `src/base.css` (OU tokens, page basics), `src/apps/showcase/showcase.css`, and each feature's own (`src/features/reticles/reticles.css`), each imported by the module that uses it.
 
 - **Menu:** `populateMenu`. Missions come first in a group, alphabetically, then bodies by distance. Mission asteroids, Honorary asteroids (`menu_holder: "named"`) and Comets are "holders" (`MENU_HOLDERS`) whose rows show the overview with their bodies marked. No status tags in the menu (status shows in the details panel).
 - **Reticles:** instrument callouts over hovered objects (`drawReticle`, `updateGroupReticles`). A ring at range, a light-blue dot up close; position never eased, size eased. The ring is four quarter arcs (half arcs made it pulse). A shown group's reticles are dotted rings with no labels.
