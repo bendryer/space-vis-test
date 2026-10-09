@@ -68,6 +68,12 @@ Done: `ENGINE.md` describes the API, and `main.js` gathers it in an `engine` obj
 
 ## Phase 3: Move the engine into `src/engine/`, one module per commit
 
+In progress (2026-10-09). Moved so far, each verbatim and smoke-tested at 0.00%: `state.js` (`celestialMap`, `objects`), `orbits.js` (also `getSystemRoot`), `assets.js`, `scene.js` (scene, camera, renderer), `config.js` (engine settings, including `USE_NAMED_ASTEROID_MODELS`), `gpu.js` (warm-up), `landers.js`, `models.js`, `bodies.js`. `main.js` is down from ~5,050 lines to ~3,700.
+
+Changes made to allow the moves, each in its own commit: `createRenderer()` (so a missing WebGL still reaches the showcase's error screen), `onLanded` (landers report a landing; the flight code flies to a waiting lander), `buildSystem` split from `loadSystem`, and a few never-reassigned `let`s made `const`. A variable only one module assigns is a live `export let` (`renderer`, `sunEffect`), so no shared `state` object has been needed yet.
+
+Next: the camera and flight code (`camera.js`) before `lighting.js`, since the selection spotlight reads the camera's state. Still in `main.js` for Phase 4: orbit highlights (`updateOrbitLineHighlights`, `updateTrajectoryLines`), which mix hover and the menu's holders.
+
 In order of least coupling: `orbits.js` → `assets.js` → `models.js` → `bodies.js` → `landers.js` → `lighting.js` → `camera.js` → `render.js` → `index.js` (`createEngine`, owning the shared `state` object). Scratch vectors stay local to each module, `sun.js` moves in unchanged, and `window.__ouniverse` keeps its names. Re-time loads after this phase.
 
 ## Phase 4: Separate the showcase app and the shared features
