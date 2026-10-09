@@ -3464,6 +3464,22 @@ function showOverview({ animate = true } = {}) {
     }
 }
 
+// Dev only (holdMotion): put the camera straight where the motion clock at `time` says, so it has
+// nothing left to ease. Not during a flight, or while the visitor steers.
+function placeCameraAt(time) {
+    if (isTransitioning || userHasControl) return;
+    if (isTracking && selectedObject) {
+        getIdealCameraPosition(selectedObject, time, camera.position);
+        getFocusPoint(selectedObject, controls.target);
+        // The tracking step follows the target's movement from here, not from before the jump.
+        _lastTrackedPos.copy(controls.target);
+        selectedObject.getWorldQuaternion(_lastTrackedQuat);
+    } else if (solarSystemView) {
+        getSolarSystemView(camera.position, controls.target);
+    }
+    controls.update();
+}
+
 // Showcase: "Solar System" pinned atop the menu (and the view on load, with animate: false).
 // The details close before the tour stops: stopping it first on a phone would put focus in the
 // details just as they close.
@@ -3647,17 +3663,7 @@ if (import.meta.env.DEV) {
                 obj.meshGroup.rotateZ(obj.tumbleSpeed.z * time);
             });
             scene.updateMatrixWorld(true);
-            if (isTransitioning || userHasControl) return;
-            if (isTracking && selectedObject) {
-                getIdealCameraPosition(selectedObject, time, camera.position);
-                getFocusPoint(selectedObject, controls.target);
-                // The tracking step follows the target's movement from here, not from before the jump.
-                _lastTrackedPos.copy(controls.target);
-                selectedObject.getWorldQuaternion(_lastTrackedQuat);
-            } else if (solarSystemView) {
-                getSolarSystemView(camera.position, controls.target);
-            }
-            controls.update();
+            placeCameraAt(time);
         } };
 }
 
