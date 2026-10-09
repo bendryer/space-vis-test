@@ -2,20 +2,20 @@ import './style.css';
 import * as THREE from 'three';
 import { celestialMap, objects } from './engine/state.js';
 import { USER_FLIGHT_SCALE, prefersReducedMotion, getEffectiveModel } from './engine/config.js';
-import { scene, camera, renderer, createRenderer, isInScene } from './engine/scene.js';
-import { applySunScale, getSystemRoot } from './engine/orbits.js';
-import { loadingManager, lazyGltfLoader, fixPath } from './engine/assets.js';
-import { collectTextures } from './engine/gpu.js';
+import { scene, camera, renderer, isInScene } from './engine/scene.js';
+import { getSystemRoot } from './engine/orbits.js';
+import { lazyGltfLoader, fixPath } from './engine/assets.js';
 import { pendingLanders, attemptToLand } from './engine/landers.js';
-import { flattenModel, buildModelLevel, startPreloads } from './engine/models.js';
-import { sunEffect, getStandardizedOrbitColor, buildSystem } from './engine/bodies.js';
-import { PINNED_DATE, simulatedDate, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
-import { onEngine, emitEngine } from './engine/events.js';
-import { selectedObject, controls, isTransitioning, setViewInsets, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, setUserControl, deselect, showOverview, placeCameraAt, initControls } from './engine/camera.js';
+import { flattenModel, buildModelLevel } from './engine/models.js';
+import { sunEffect, getStandardizedOrbitColor } from './engine/bodies.js';
+import { simulatedDate, holdMotionClock } from './engine/time.js';
+import { onEngine } from './engine/events.js';
+import { selectedObject, controls, isTransitioning, setViewInsets, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, deselect, showOverview, placeCameraAt } from './engine/camera.js';
 import { selectionSpot, getSunOcclusion } from './engine/lighting.js';
 import { projectBody } from './engine/projection.js';
-import { setSceneVisible, SKY_FACES, ktx2Loader, startSky } from './engine/sky.js';
-import { BASE_PIXEL_RATIO, resolution, createGpuTimer, onFrame, animate } from './engine/render.js';
+import { setSceneVisible } from './engine/sky.js';
+import { resolution, onFrame } from './engine/render.js';
+import { loadDeferred, createEngine, listObjects } from './engine/index.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -37,12 +37,6 @@ let cinematicTimer = null;
 let cinematicQueue = [];
 let sidebarReturnFocus = null;
 
-
-// --- LOADING MANAGER ---
-// The engine reports loading as "progress" events, 0 to 1.
-loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    emitEngine('progress', { progress: itemsLoaded / itemsTotal });
-};
 
 // The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
 // arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
@@ -263,92 +257,6 @@ function syncFullscreenButtons() {
         if (e.key === 'Escape' && !start.disabled) dismissSplash({ fromKeyboard: true });
     });
 })();
-
-// The background texture can finish before data.json has queued the planets,
-// so only treat the manager going idle as "ready" once the system is built.
-let systemReady = false;
-loadingManager.onLoad = () => { if (systemReady) warmUpSceneThenReveal(); };
-
-// Planets are frustum-culled until they come into view, so without this their
-// textures upload mid-flight. Upload everything while the loader is still up.
-let sceneWarmedUp = false;
-function warmUpSceneThenReveal() {
-    if (sceneWarmedUp) { sceneReady(); return; }
-    sceneWarmedUp = true;
-    performance.mark('warmup-start'); // read by the performance checks
-    const textures = collectTextures(scene);
-    if (scene.background && scene.background.isTexture) textures.add(scene.background);
-    textures.forEach(texture => {
-        try { renderer.initTexture(texture); } catch (e) { console.warn('Texture upload failed', e); }
-    });
-    const WARM_UP_TIMEOUT_MS = 5000;
-    Promise.race([
-        renderer.compileAsync(scene, camera)
-            .then(() => performance.mark('warmup-shaders-ready'))
-            .catch(e => console.warn('Shader warm-up failed', e)),
-        new Promise(resolve => setTimeout(resolve, WARM_UP_TIMEOUT_MS))
-    ]).then(sceneReady);
-}
-
-// The scene is warmed up and can be shown: start the loads that wait for this, then "ready" (once).
-let sceneIsReady = false;
-function sceneReady() {
-    if (sceneIsReady) return;
-    sceneIsReady = true;
-    performance.mark('scene-ready'); // read by the performance checks
-    loadDeferred();
-    emitEngine('ready');
-}
-
-// The loads held back until the scene is ready (the sky and preloaded models), which an app can
-// start sooner if it shows the scene before then.
-function loadDeferred() {
-    startSky();
-    startPreloads();
-}
-
-
-// --- ENGINE ---
-// Builds the engine round a WebGL renderer drawing into `canvas` (or a canvas of its own, which
-// the app puts on the page: engine.canvas), and returns its API (ENGINE.md). Throws where WebGL
-// isn't available. engine.start() then loads `dataUrl` and starts drawing, once the app has added
-// its listeners.
-function createEngine({ canvas, dataUrl = './data.json' } = {}) {
-    createRenderer(canvas);
-    renderer.setPixelRatio(BASE_PIXEL_RATIO);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap; // Efficient PCF shadow filtering for integrated GPUs
-    renderer.toneMapping = THREE.ReinhardToneMapping;
-    renderer.toneMappingExposure = 1.2;
-    // Reading shader logs on a shader's first use blocks until the driver finishes compiling
-    // it; measured as the main arrival stall (100-300ms per new model). Keep it in dev only.
-    renderer.debug.checkShaderErrors = import.meta.env.DEV;
-    resolution.timer = createGpuTimer();
-    ktx2Loader.detectSupport(renderer);
-    // Fetch the sky's faces now (they download in parallel with everything else); only the
-    // transcoding waits.
-    SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
-    initControls();
-
-    return {
-        canvas: renderer.domElement,
-        start() {
-            loadSystem(dataUrl);
-            animate();
-        },
-        on: onEngine, onFrame,
-        flyTo, showOverview, deselect, hurry,
-        getDate, setDate, setTimeRate,
-        getObject, listObjects,
-        // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
-        projectBody(name) {
-            const p = projectBody(celestialMap.get(name));
-            return p && { x: p.cx, y: p.cy, radius: p.bodyR };
-        },
-        setViewInsets, setFlightPace, setUserControl, setSceneVisible, loadDeferred,
-    };
-}
 
 let engine;
 try {
@@ -723,30 +631,6 @@ function updateReticles(dt = 0.016) {
 
 // Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
 // the craft's orbit line (which hover and selection light up).
-// --- LOADING ---
-// Fetches data.json and builds the system, then "built" (with every entry, for the app's own use).
-// Anything that goes wrong, including in a "built" listener, is reported as "error".
-async function loadSystem(dataUrl) {
-    try {
-        const res = await fetch(dataUrl);
-        if (!res.ok) throw new Error(`data.json responded ${res.status}`);
-        const entries = await res.json();
-        // The credits entry holds the credits page text, not a body to draw.
-        const data = entries.filter(item => item.type !== 'credits');
-        data.forEach(applyStatusTimeline);
-        data.forEach(applySunScale);
-        buildSystem(data);
-        attemptToLand(); // landers on plain spheres can land right away
-        emitEngine('built', { entries });
-        systemReady = true;
-        performance.mark('system-ready'); // read by the performance checks
-
-    } catch (e) {
-        console.error("Loading System Failed:", e);
-        emitEngine('error', { error: e });
-    }
-}
-
 // Showcase: the panels round the system, opening on the whole Solar System.
 onEngine('built', ({ entries }) => {
     fillSplashFacts(listObjects());
@@ -1241,16 +1125,6 @@ function syncMenuCurrent(name) {
     if (btn.offsetParent !== null) btn.scrollIntoView({ block: 'nearest' });
 }
 
-// Every object's data.json entry, in load order.
-function listObjects() {
-    return [...celestialMap.values()].map(obj => obj.data);
-}
-
-// Every object's data.json entry by name, or null.
-function getObject(name) {
-    return celestialMap.get(name)?.data ?? null;
-}
-
 // Showcase: choose an object. Chosen from the menu (returnFocusTo is its row), the details take
 // keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
 function selectObject(name, { returnFocusTo = null } = {}) {
@@ -1322,17 +1196,6 @@ function getWebImagePath(url) {
 const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><defs><linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DFFD3"/><stop offset="1" stop-color="#66EEFA"/></linearGradient><mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask></defs><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></svg>`;
 
 // One status vocabulary for the menu and the sidebar.
-// `status_timeline` lets a status change on a known date without editing data.json again:
-// [{ "from": "YYYY-MM-DD", "status": "..." }, ...]. The last entry whose date has passed
-// (by the visitor's clock) replaces `status`; before the first date, `status` stands.
-function applyStatusTimeline(item) {
-    if (!Array.isArray(item.status_timeline)) return;
-    const today = (PINNED_DATE || new Date()).toISOString().slice(0, 10);
-    for (const step of item.status_timeline) {
-        if (step.from && step.status && step.from <= today) item.status = step.status;
-    }
-}
-
 function statusTone(status) {
     if (status === 'Planned') return 'planned';
     if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost', 'Re-entered'].includes(status)) return 'ended';
