@@ -330,6 +330,14 @@ function showHolder(holder) {
     announce(`Showing ${count} ${holder.spoken || holder.name.toLowerCase()} and their orbits`);
 }
 
+// The holders' bodies the reticles mark: the holder on show as information, a hovered one as hover.
+function reticleGroups() {
+    const groups = new Map();
+    if (shownHolder) holderMembers(shownHolder).forEach(data => groups.set(data, 'info'));
+    if (hoveredHolder && hoveredHolder !== shownHolder) holderMembers(hoveredHolder).forEach(data => groups.set(data, 'hover'));
+    return groups;
+}
+
 function clearShownHolder() {
     if (!shownHolder) return;
     shownHolder = null;
@@ -364,6 +372,8 @@ let reticle = null; // the hovered object's reticle, the only one that plays the
 const groupReticles = new Map(); // obj -> reticle, for the members of a hovered or shown holder
 let reticleExit = null; // { obj, until } while the chosen object's reticle swipes out
 let reticleLastSelected = null;
+let reticleEngine = null; // the engine the reticles project through (setupReticles)
+let reticleRightEdge = 0; // this frame's right edge of the scene (updateReticles)
 
 function svgEl(name, attrs) {
     const el = document.createElementNS(SVG_NS, name);
@@ -390,9 +400,11 @@ function createReticle({ primary = false } = {}) {
     return r;
 }
 
-function setupReticles() {
-    const uiLayer = document.getElementById('ui-layer');
+// The reticles' layer, in `container`, drawn over `engine`'s scene.
+function setupReticles(engine, container) {
+    const uiLayer = container;
     if (!uiLayer || reticleLayer) return;
+    reticleEngine = engine;
     reticleLayer = svgEl('svg', { class: 'reticles', 'aria-hidden': 'true', focusable: 'false' });
     const defs = svgEl('defs', {});
     const grad = svgEl('linearGradient', { id: 'reticle-signal', x1: '0', y1: '1', x2: '1', y2: '0' });
@@ -464,7 +476,7 @@ function boxesOverlap(a, b) {
 // Draws one reticle. With `placed` (a group's labels so far) the label takes the first spot that
 // clears the others, keeping last frame's spot while it still does, and is left off if none does.
 function drawReticle(r, obj, dt, fresh, placed = null) {
-    const body = engine.projectBody(obj.name);
+    const body = reticleEngine.projectBody(obj.name);
     if (!body) { hideReticle(r); return; }
     const { x: cx, y: cy, radius: bodyR } = body;
     const w = window.innerWidth, h = window.innerHeight;
@@ -505,7 +517,7 @@ function drawReticle(r, obj, dt, fresh, placed = null) {
     if (r.tabText !== obj.name) { r.tabText = tab.textContent = obj.name; r.tabW = 0; }
     tab.style.display = 'block';
     if (!r.tabW) { r.tabW = tab.offsetWidth; r.tabH = tab.offsetHeight; }
-    const edge = sceneRightEdge() - 8;
+    const edge = reticleRightEdge - 8;
 
     let spot = null;
     if (!placed) {
@@ -546,12 +558,10 @@ function drawReticle(r, obj, dt, fresh, placed = null) {
     tab.style.top = `${box.top.toFixed(1)}px`;
 }
 
-// The members of a hovered holder (hover style) and of the holder on show (informational),
-// minus the object the primary reticle is marking.
-function updateGroupReticles(dt, exclude) {
-    const wanted = new Map();
-    if (shownHolder) holderMembers(shownHolder).forEach(obj => wanted.set(obj, 'info'));
-    if (hoveredHolder && hoveredHolder !== shownHolder) holderMembers(hoveredHolder).forEach(obj => wanted.set(obj, 'hover'));
+// A group's reticles (`groups`: entry -> 'hover' or 'info'), minus the object the primary reticle
+// is marking.
+function updateGroupReticles(dt, exclude, groups) {
+    const wanted = new Map(groups);
     if (exclude) wanted.delete(exclude);
 
     groupReticles.forEach((r, obj) => { if (!wanted.has(obj)) hideReticle(r); });
@@ -564,10 +574,13 @@ function updateGroupReticles(dt, exclude) {
     });
 }
 
-function updateReticles(dt = 0.016) {
+// Each frame: `hovered` is the entry pointed at (or null), `groups` the entries marked as a group
+// ('hover' or 'info'), and `rightEdge` where the scene ends on the right (a panel may cover the rest).
+function updateReticles(dt = 0.016, { hovered: pointedAt = null, groups = new Map(), rightEdge = window.innerWidth } = {}) {
     if (!reticleLayer) return;
-    // (engine.projectBody uses this frame's camera, so the mark never trails the body.)
-    const selected = engine.getSelection();
+    reticleRightEdge = rightEdge;
+    // (projectBody uses this frame's camera, so the mark never trails the body.)
+    const selected = reticleEngine.getSelection();
 
     // Choosing the object the reticle marks: acknowledge it, then clear the view.
     if (selected !== reticleLastSelected) {
@@ -584,10 +597,10 @@ function updateReticles(dt = 0.016) {
     }
 
     // Hover marks anything but the object already on show.
-    const hovered = reticleExit ? reticleExit.obj : (hoveredObj && hoveredObj !== selected ? hoveredObj : null);
-    updateGroupReticles(dt, hovered);
+    const hovered = reticleExit ? reticleExit.obj : (pointedAt && pointedAt !== selected ? pointedAt : null);
+    updateGroupReticles(dt, hovered, groups);
     // A shown group's rings step back while anything is pointed at, so the hover stands out.
-    reticleLayer.classList.toggle('is-pointing', Boolean(hovered || (hoveredHolder && hoveredHolder !== shownHolder)));
+    reticleLayer.classList.toggle('is-pointing', Boolean(hovered || [...groups.values()].includes('hover')));
     if (!hovered) { hideReticle(reticle); return; }
     drawReticle(reticle, hovered, dt, !reticleExit && reticle.obj !== hovered);
 }
@@ -597,7 +610,7 @@ function updateReticles(dt = 0.016) {
 // Showcase: the panels round the system, opening on the whole Solar System.
 engine.on('built', ({ entries }) => {
     fillSplashFacts(engine.listObjects());
-    setupReticles();
+    setupReticles(engine, document.getElementById('ui-layer'));
     populateMenu();
     setupCinematicControls();
     setupCredits(entries.find(item => item.type === 'credits'));
@@ -1800,7 +1813,7 @@ engine.onFrame(dt => {
         lastSimulatedSeconds = currentSimulatedSeconds;
         if (clockElement) clockElement.textContent = formatSimulatedTime(new Date(time));
     }
-    updateReticles(dt);
+    updateReticles(dt, { hovered: hoveredObj, groups: reticleGroups(), rightEdge: sceneRightEdge() });
 });
 
 // The sky snaps in behind the splash, and fades in once the visitor has gone in.
