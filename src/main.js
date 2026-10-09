@@ -39,19 +39,29 @@ let sidebarReturnFocus = null;
 let animFrameCounter = 0;
 
 
+// Whether the app is showing the scene (false while a splash covers it): the sky fades in only then.
+let sceneVisible = true;
+function setSceneVisible(visible) {
+    sceneVisible = visible;
+}
+
 // --- LOADING MANAGER ---
+// The engine reports loading as "progress" events, 0 to 1.
+loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    emitEngine('progress', { progress: itemsLoaded / itemsTotal });
+};
+
 // The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
 // arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
-loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+onEngine('progress', ({ progress }) => {
     if (splashReady || fatalErrorShown) return;
-    const progress = itemsLoaded / itemsTotal;
     document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
     const loadingText = document.getElementById('loading-text');
     if (loadingText) {
         // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
         loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
     }
-};
+});
 
 const SLOW_LOAD_NOTICE_MS = 8000;
 let lastInputWasKeyboard = false;
@@ -65,9 +75,6 @@ let fatalErrorShown = false;
 function markSceneReady() {
     if (splashReady || fatalErrorShown) return;
     splashReady = true;
-    performance.mark('scene-ready'); // read by the performance checks
-    startSky();
-    startPreloads();
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     if (!overlay || splashDismissed) return;
@@ -100,8 +107,7 @@ const SPLASH_ARRIVE_MS = 2450;
 function dismissSplash({ fromKeyboard = false } = {}) {
     if (splashDismissed || fatalErrorShown) return;
     splashDismissed = true;
-    startSky(); // going in early ("Explore now"): don't wait for the scene to be ready
-    startPreloads();
+    loadDeferred(); // going in early ("Explore now"): don't wait for the scene to be ready
     clearTimeout(slowLoadTimer);
     const overlay = document.getElementById('loading-overlay');
     const ui = document.getElementById('ui-layer');
@@ -111,6 +117,7 @@ function dismissSplash({ fromKeyboard = false } = {}) {
     const arrive = () => {
         if (fatalErrorShown) return;
         overlay.hidden = true;
+        setSceneVisible(true);
         ui.inert = false;
         ui.classList.remove('is-waiting');
         setTimeout(() => showCoach(), 700); // once the controls have faded up
@@ -171,6 +178,7 @@ function showFatalError(message) {
     if (!overlay) return;
     overlay.setAttribute('role', 'alert');
     overlay.hidden = false;
+    setSceneVisible(false);
     overlay.inert = false;
     overlay.classList.remove('is-leaving', 'is-ready');
     overlay.classList.add('is-error');
@@ -272,7 +280,7 @@ loadingManager.onLoad = () => { if (systemReady) warmUpSceneThenReveal(); };
 // textures upload mid-flight. Upload everything while the loader is still up.
 let sceneWarmedUp = false;
 function warmUpSceneThenReveal() {
-    if (sceneWarmedUp) { markSceneReady(); return; }
+    if (sceneWarmedUp) { sceneReady(); return; }
     sceneWarmedUp = true;
     performance.mark('warmup-start'); // read by the performance checks
     const textures = collectTextures(scene);
@@ -286,7 +294,24 @@ function warmUpSceneThenReveal() {
             .then(() => performance.mark('warmup-shaders-ready'))
             .catch(e => console.warn('Shader warm-up failed', e)),
         new Promise(resolve => setTimeout(resolve, WARM_UP_TIMEOUT_MS))
-    ]).then(markSceneReady);
+    ]).then(sceneReady);
+}
+
+// The scene is warmed up and can be shown: start the loads that wait for this, then "ready" (once).
+let sceneIsReady = false;
+function sceneReady() {
+    if (sceneIsReady) return;
+    sceneIsReady = true;
+    performance.mark('scene-ready'); // read by the performance checks
+    loadDeferred();
+    emitEngine('ready');
+}
+
+// The loads held back until the scene is ready (the sky and preloaded models), which an app can
+// start sooner if it shows the scene before then.
+function loadDeferred() {
+    startSky();
+    startPreloads();
 }
 
 
@@ -419,8 +444,7 @@ function useEquirectSky() {
 function showSky(sky) {
     try { renderer.initTexture(sky); } catch (e) { console.warn('Sky upload failed', e); }
     scene.background = sky;
-    const splash = document.getElementById('loading-overlay');
-    if (prefersReducedMotion.matches || (splash && !splash.hidden)) return;
+    if (prefersReducedMotion.matches || !sceneVisible) return;
     const start = performance.now();
     scene.backgroundIntensity = 0;
     const fade = () => {
@@ -886,35 +910,44 @@ function updateTrajectoryLines(obj, arrived) {
 }
 
 // --- LOADING ---
-async function loadSystem() {
+// Fetches data.json and builds the system, then "built" (with every entry, for the app's own use).
+// Anything that goes wrong, including in a "built" listener, is reported as "error".
+async function loadSystem(dataUrl) {
     try {
-        const res = await fetch('./data.json'); // FIX: Relative path
+        const res = await fetch(dataUrl);
         if (!res.ok) throw new Error(`data.json responded ${res.status}`);
         const entries = await res.json();
         // The credits entry holds the credits page text, not a body to draw.
-        const credits = entries.find(item => item.type === 'credits');
         const data = entries.filter(item => item.type !== 'credits');
         data.forEach(applyStatusTimeline);
         data.forEach(applySunScale);
-        fillSplashFacts(data);
         buildSystem(data);
-
-        setupReticles();
-        populateMenu();
-        setupCinematicControls();
-        setupCredits(credits);
         attemptToLand(); // landers on plain spheres can land right away
-        showSolarSystem({ animate: false }); // open on the whole Solar System
+        emitEngine('built', { entries });
         systemReady = true;
         performance.mark('system-ready'); // read by the performance checks
 
     } catch (e) {
         console.error("Loading System Failed:", e);
-        showFatalError(navigator.onLine === false
-            ? 'You appear to be offline. Reconnect to the internet, then try again.'
-            : 'The Solar System data didn’t load. Check your connection and try again.');
+        emitEngine('error', { error: e });
     }
 }
+
+// Showcase: the panels round the system, opening on the whole Solar System.
+onEngine('built', ({ entries }) => {
+    fillSplashFacts(listObjects());
+    setupReticles();
+    populateMenu();
+    setupCinematicControls();
+    setupCredits(entries.find(item => item.type === 'credits'));
+    showSolarSystem({ animate: false });
+});
+onEngine('error', () => {
+    showFatalError(navigator.onLine === false
+        ? 'You appear to be offline. Reconnect to the internet, then try again.'
+        : 'The Solar System data didn’t load. Check your connection and try again.');
+});
+onEngine('ready', markSceneReady);
 
 function isSidebarBesideScene() {
     return window.innerWidth >= SIDEBAR_BESIDE_MIN_WIDTH;
@@ -2352,5 +2385,9 @@ onFrame(dt => {
     updateReticles(dt);
 });
 
-loadSystem();
+// The sky snaps in behind the splash, and fades in once the visitor has gone in.
+const splashOverlay = document.getElementById('loading-overlay');
+setSceneVisible(!splashOverlay || splashOverlay.hidden);
+
+loadSystem('./data.json');
 animate();
