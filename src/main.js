@@ -1699,7 +1699,7 @@ function updateSelectionSpot(dt) {
     // Planned missions are holograms that glow by themselves, so they get no light.
     const arrived = selectedObject && isTracking && !isTransitioning
         && selectedObject.userData && selectedObject.userData.type === 'mission'
-        && statusTone(selectedObject.userData.status) !== 'planned';
+        && selectedObject.userData.status !== 'Planned';
     const wanted = arrived ? selectedObject : null;
     // Only move to a new subject while dark, so the light never visibly jumps.
     if (wanted !== spotSubject && selectionSpot.intensity < 0.02) spotSubject = wanted;
