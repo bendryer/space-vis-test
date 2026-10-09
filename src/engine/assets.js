@@ -8,14 +8,12 @@ export const loadingManager = new THREE.LoadingManager();
 export const texLoader = new THREE.TextureLoader(loadingManager);
 
 // LOADERS
-const gltfLoader = new GLTFLoader(loadingManager);
 const dracoLoader = new DRACOLoader();
 // Served from our own public/draco/ (copied from three's examples) rather than a CDN, so
 // models still load where third-party hosts are blocked, e.g. on school networks.
 dracoLoader.setDecoderPath('draco/');
 // No decoder type set, so DRACOLoader uses WebAssembly (several times faster than
 // the JS decoder) wherever it's supported and falls back to JS elsewhere.
-gltfLoader.setDRACOLoader(dracoLoader);
 
 // Standalone loader for background lazy-loading (non-blocking for startup screen)
 export const lazyGltfLoader = new GLTFLoader();
