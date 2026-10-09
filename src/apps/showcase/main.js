@@ -1,6 +1,6 @@
-import './style.css';
-import { createEngine } from './engine/index.js';
-import { setupReticles, updateReticles } from './features/reticles/reticles.js';
+import '../../style.css';
+import { createEngine } from '../../engine/index.js';
+import { setupReticles, updateReticles } from '../../features/reticles/reticles.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
