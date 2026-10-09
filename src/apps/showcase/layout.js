@@ -32,7 +32,7 @@ export function syncMenuInert() {
 // opens it). A sidebar over the scene is closed to look round, so it doesn't count (and framing
 // beside the menu alone would push the selection under it). On a phone, the header and the
 // sheet's resting edge: its half-height peek, or the small caption card in Cinematic Mode.
-export const PHONE_PEEK_SHARE = 0.46;    // matches the sheet's 46dvh in style.css
+export const PHONE_PEEK_SHARE = 0.46;    // matches the sheet's 46dvh in showcase.css
 const PHONE_CAPTION_SHARE = 0.26; // the caption card plus the dock under it
 export function syncViewInsets() {
     const insets = { left: 0, right: 0, top: 0, bottom: 0 };

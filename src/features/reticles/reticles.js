@@ -1,5 +1,7 @@
 // Reticles: instrument-style marks over objects in the scene, drawn from the engine's projectBody.
 // A shared feature: an app sets it up over its scene and tells it each frame what to mark.
+import './reticles.css';
+
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // --- RETICLE ---
@@ -24,7 +26,7 @@ const LEADER_RISE = 18;
 // Leader heights tried, in order, when a group's labels would collide; negative ones drop below.
 const LEADER_RISES = [LEADER_RISE, 34, 50, -LEADER_RISE, -34, -50];
 const LABEL_PAD = 4; // clear space kept between a group's labels
-const RETICLE_EXIT_MS = 700; // matches the chained transitions in style.css
+const RETICLE_EXIT_MS = 700; // matches the chained transitions in reticles.css
 let reticleLayer = null;
 let reticle = null; // the hovered object's reticle, the only one that plays the exit
 const groupReticles = new Map(); // obj -> reticle, for the members of a hovered or shown holder

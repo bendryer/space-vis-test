@@ -1,0 +1,100 @@
+/* --- RETICLE --- */
+/* An instrument callout while an object is hovered in the menu: a ring (a light-blue dot up close)
+   and a 45-degree leader to a name tab. Choosing it plays one chained exit: the ring, lit in the
+   OU green to light-blue gradient, sweeps round into the leader's foot; the leader retracts
+   towards the name; the name wipes away. Each stage starts as the one before it lands. */
+.reticles {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 999;
+}
+.reticle-mark {
+    fill: var(--ou-light);
+    fill-opacity: 0;
+    stroke: rgba(255, 255, 255, 0.85);
+    stroke-width: 1.5;
+    stroke-dashoffset: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: fill-opacity 0.15s, stroke 0.15s;
+}
+/* Up close: a solid light-blue dot, outlined in core blue so it holds on bright surfaces. */
+.reticle-mark.is-dot {
+    fill-opacity: 1;
+    stroke: var(--ou-core);
+}
+.reticle-leader {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 1;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 0;
+}
+/* The exit is one gesture in three stages: sweep round into the leader's foot and run up the
+   leader at an even pace, then decelerate as the name wipes out. */
+/* The dash pattern goes on only for the exit: left on while the ring is held, it opens a hairline
+   gap at the leader's foot that flickers as the radius changes. */
+.reticle-mark.is-leaving {
+    stroke: url(#reticle-signal);
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.28s linear;
+}
+.reticle-mark.is-dot.is-leaving {
+    stroke: var(--ou-core);
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.55, 0, 1, 0.45);
+}
+.reticle-leader.is-leaving {
+    stroke-dashoffset: -1;
+    transition: stroke-dashoffset 0.18s linear 0.26s;
+}
+.reticle-tab.is-leaving {
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 0.26s var(--ease-out) 0.42s;
+}
+.reticle-tab.is-flipped.is-leaving {
+    clip-path: inset(0 100% 0 0);
+}
+.reticle-tab {
+    position: absolute;
+    display: none;
+    padding: 3px 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-shield);
+    color: var(--text);
+    font-size: 0.78125rem;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    clip-path: inset(0); /* the starting point for the exit wipe */
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* Informational: a holder's bodies while it's on show. A ticked ring alone, in the Core blue
+   tint its orbits are lit in, so none reads as the thing that's chosen; names come one at a time
+   on hover. The rings step back while anything is pointed at, so the hover stays the loudest. */
+.reticle-mark.reticle--info {
+    stroke: rgba(166, 181, 248, 0.85);
+    stroke-width: 1;
+    stroke-dasharray: 1.5 2.5;
+    transition: opacity 0.2s;
+}
+.reticle-mark.reticle--info.is-dot {
+    fill: #A6B5F8;
+    stroke: var(--ou-core);
+    stroke-dasharray: none;
+}
+.reticles.is-pointing .reticle-mark.reticle--info { opacity: 0.35; }
+/* A group's paths keep real lengths, so the primary's normalised dash pattern doesn't apply. */
+.reticle-leader.reticle--group { stroke-dasharray: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .reticle-mark, .reticle-mark.is-leaving, .reticle-leader.is-leaving, .reticle-tab.is-leaving { transition: none; }
+}

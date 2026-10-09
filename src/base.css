@@ -1,0 +1,54 @@
+/* OU identity on the app's compact layout. Colours are the OU brand palette; plates are
+   Core blue, hairlines a Core blue tint, and OU light blue is the one accent. */
+:root {
+    --ou-core: #060645;
+    --ou-mid: #1C46C0;
+    --ou-light: #66EEFA;
+    --ou-green: #7DFFD3;
+    --ou-yellow: #FFF488;
+    --ou-pink: #FFB4FF;
+    --surface: rgba(6, 6, 69, 0.9);       /* Core blue plate over the scene */
+    --surface-solid: #05053E;              /* the same plate, opaque: sticky heads, the panel */
+    --surface-menu: #05053E;
+    --line: rgba(166, 181, 248, 0.2);      /* Core blue tint #A6B5F8 */
+    --space: #000;                         /* the scene's black */
+    --text: #fff;
+    --text-muted: rgba(255, 255, 255, 0.78);
+    --text-faint: rgba(255, 255, 255, 0.6);
+    --accent: var(--ou-light);
+    --accent-wash: rgba(102, 238, 250, 0.12);
+    --accent-current: rgba(102, 238, 250, 0.22);
+    --status-active: var(--ou-green);
+    --status-planned: var(--ou-yellow);
+    --status-ended: var(--ou-pink);
+    --status-neutral: rgba(255, 255, 255, 0.5);
+    --link: var(--ou-light);
+    --font: 'Poppins', Arial, sans-serif;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --radius: 10px;
+    --radius-shield: 2px;                  /* the OU shield's squared top-left corner */
+    --plate-radius: var(--radius-shield) var(--radius) var(--radius) var(--radius);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font);
+    background-color: var(--space);
+    color: var(--text);
+}
+button { font: inherit; }
+::selection { background: var(--accent); color: var(--space); }
+canvas {
+    display: block;
+    outline: none;
+}
+/* The 3D view takes keyboard focus (arrows turn it, plus and minus zoom), so it shows a ring, drawn
+   inside the edge so the window doesn't clip it. Not for mouse clicks. */
+canvas:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: -3px;
+}

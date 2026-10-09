@@ -1,57 +1,5 @@
-/* OU identity on the app's compact layout. Colours are the OU brand palette; plates are
-   Core blue, hairlines a Core blue tint, and OU light blue is the one accent. */
-:root {
-    --ou-core: #060645;
-    --ou-mid: #1C46C0;
-    --ou-light: #66EEFA;
-    --ou-green: #7DFFD3;
-    --ou-yellow: #FFF488;
-    --ou-pink: #FFB4FF;
-    --surface: rgba(6, 6, 69, 0.9);       /* Core blue plate over the scene */
-    --surface-solid: #05053E;              /* the same plate, opaque: sticky heads, the panel */
-    --surface-menu: #05053E;
-    --line: rgba(166, 181, 248, 0.2);      /* Core blue tint #A6B5F8 */
-    --space: #000;                         /* the scene's black */
-    --text: #fff;
-    --text-muted: rgba(255, 255, 255, 0.78);
-    --text-faint: rgba(255, 255, 255, 0.6);
-    --accent: var(--ou-light);
-    --accent-wash: rgba(102, 238, 250, 0.12);
-    --accent-current: rgba(102, 238, 250, 0.22);
-    --status-active: var(--ou-green);
-    --status-planned: var(--ou-yellow);
-    --status-ended: var(--ou-pink);
-    --status-neutral: rgba(255, 255, 255, 0.5);
-    --link: var(--ou-light);
-    --font: 'Poppins', Arial, sans-serif;
-    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-    --radius: 10px;
-    --radius-shield: 2px;                  /* the OU shield's squared top-left corner */
-    --plate-radius: var(--radius-shield) var(--radius) var(--radius) var(--radius);
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: var(--font);
-    background-color: var(--space);
-    color: var(--text);
-}
-button { font: inherit; }
-::selection { background: var(--accent); color: var(--space); }
-canvas {
-    display: block;
-    outline: none;
-}
-/* The 3D view takes keyboard focus (arrows turn it, plus and minus zoom), so it shows a ring, drawn
-   inside the edge so the window doesn't clip it. Not for mouse clicks. */
-canvas:focus-visible {
-    outline: 3px solid var(--accent);
-    outline-offset: -3px;
-}
+/* The showcase's layout and panels, on base.css's OU tokens. The reticles' styles are in
+   src/features/reticles/reticles.css. */
 
 /* --- UI CONTAINER --- */
 #ui-layer {
@@ -618,7 +566,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 #controls.shifted {
     right: 380px; /* 350px sidebar width + 30px buffer */
 }
-/* Below the width where the sidebar sits beside the scene (SIDEBAR_BESIDE_MIN_WIDTH in main.js) it
+/* Below the width where the sidebar sits beside the scene (SIDEBAR_BESIDE_MIN_WIDTH in config.js) it
    covers the scene, so the controls have nowhere to go: they wait until it closes. */
 @media (max-width: 899px) {
     #controls.shifted { visibility: hidden; opacity: 0; }
@@ -757,103 +705,6 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     transition: opacity 1.0s ease-in-out;
 }
 
-/* --- RETICLE --- */
-/* An instrument callout while an object is hovered in the menu: a ring (a light-blue dot up close)
-   and a 45-degree leader to a name tab. Choosing it plays one chained exit: the ring, lit in the
-   OU green to light-blue gradient, sweeps round into the leader's foot; the leader retracts
-   towards the name; the name wipes away. Each stage starts as the one before it lands. */
-.reticles {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-    z-index: 999;
-}
-.reticle-mark {
-    fill: var(--ou-light);
-    fill-opacity: 0;
-    stroke: rgba(255, 255, 255, 0.85);
-    stroke-width: 1.5;
-    stroke-dashoffset: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-    transition: fill-opacity 0.15s, stroke 0.15s;
-}
-/* Up close: a solid light-blue dot, outlined in core blue so it holds on bright surfaces. */
-.reticle-mark.is-dot {
-    fill-opacity: 1;
-    stroke: var(--ou-core);
-}
-.reticle-leader {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.55);
-    stroke-width: 1;
-    stroke-dasharray: 1 1;
-    stroke-dashoffset: 0;
-}
-/* The exit is one gesture in three stages: sweep round into the leader's foot and run up the
-   leader at an even pace, then decelerate as the name wipes out. */
-/* The dash pattern goes on only for the exit: left on while the ring is held, it opens a hairline
-   gap at the leader's foot that flickers as the radius changes. */
-.reticle-mark.is-leaving {
-    stroke: url(#reticle-signal);
-    stroke-dasharray: 1 1;
-    stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.28s linear;
-}
-.reticle-mark.is-dot.is-leaving {
-    stroke: var(--ou-core);
-    transform: scale(0);
-    transition: transform 0.2s cubic-bezier(0.55, 0, 1, 0.45);
-}
-.reticle-leader.is-leaving {
-    stroke-dashoffset: -1;
-    transition: stroke-dashoffset 0.18s linear 0.26s;
-}
-.reticle-tab.is-leaving {
-    clip-path: inset(0 0 0 100%);
-    transition: clip-path 0.26s var(--ease-out) 0.42s;
-}
-.reticle-tab.is-flipped.is-leaving {
-    clip-path: inset(0 100% 0 0);
-}
-.reticle-tab {
-    position: absolute;
-    display: none;
-    padding: 3px 8px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-shield);
-    color: var(--text);
-    font-size: 0.78125rem;
-    font-weight: 500;
-    line-height: 1.3;
-    white-space: nowrap;
-    clip-path: inset(0); /* the starting point for the exit wipe */
-    pointer-events: none;
-    z-index: 999;
-}
-
-/* Informational: a holder's bodies while it's on show. A ticked ring alone, in the Core blue
-   tint its orbits are lit in, so none reads as the thing that's chosen; names come one at a time
-   on hover. The rings step back while anything is pointed at, so the hover stays the loudest. */
-.reticle-mark.reticle--info {
-    stroke: rgba(166, 181, 248, 0.85);
-    stroke-width: 1;
-    stroke-dasharray: 1.5 2.5;
-    transition: opacity 0.2s;
-}
-.reticle-mark.reticle--info.is-dot {
-    fill: #A6B5F8;
-    stroke: var(--ou-core);
-    stroke-dasharray: none;
-}
-.reticles.is-pointing .reticle-mark.reticle--info { opacity: 0.35; }
-/* A group's paths keep real lengths, so the primary's normalised dash pattern doesn't apply. */
-.reticle-leader.reticle--group { stroke-dasharray: none; }
-
 /* --- ACCESSIBILITY UTILITIES --- */
 .visually-hidden {
     position: absolute !important;
@@ -875,7 +726,6 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
     #sidebar, #controls, .menu-chevron { transition-duration: 0.01s; }
-    .reticle-mark, .reticle-mark.is-leaving, .reticle-leader.is-leaving, .reticle-tab.is-leaving { transition: none; }
 }
 
 /* --- FIRST-RUN COACH (bottom centre) --- */
@@ -1073,7 +923,7 @@ body:has(#sidebar.active) .coach {
     #credits-content { padding: 0 20px 20px; }
 }
 
-/* --- PHONES (up to 720px wide; isPhone() in main.js) --- */
+/* --- PHONES (up to 720px wide; isPhone() in config.js) --- */
 /* The chrome regroups round the thumb. The controls become a dock along the bottom edge beside
    the logo; the Explore menu is a sheet that rises from the dock over a dimmed scene; the details
    are a sheet resting at half height, the selection framed in the scene above it, with a grip to
@@ -1281,7 +1131,7 @@ body:has(#sidebar.active) .coach {
         z-index: 1004;
         width: auto;
         /* Always its full height; at rest it slides down to show the top 46% of the screen
-           (PHONE_PEEK_SHARE in main.js), so opening and closing it only moves it. */
+           (PHONE_PEEK_SHARE in layout.js), so opening and closing it only moves it. */
         --sheet-h: min(90vh, calc(100vh - 48px));
         --sheet-h: min(90dvh, calc(100dvh - 48px));
         --peek-drop: calc(var(--sheet-h) - 46vh);

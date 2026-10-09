@@ -1,6 +1,7 @@
 // The showcase: OUniverse's web app round the engine. This file wires its modules together, in the
 // order things must happen: the splash, the engine, the panels round it, the input, then start.
-import '../../style.css';
+import '../../base.css';
+import './showcase.css';
 import { createEngine } from '../../engine/index.js';
 import { engine, setEngine } from './engine.js';
 import { setupReticles, updateReticles } from '../../features/reticles/reticles.js';

@@ -3,7 +3,7 @@
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
 // the view is then shifted so selections are centred in the part of the screen still visible.
 const SIDEBAR_BESIDE_MIN_WIDTH = 900;
-// Below this the phone layout takes over (see PHONE LAYOUT); matches style.css.
+// Below this the phone layout takes over (see phone.js); matches showcase.css.
 export const phoneQuery = window.matchMedia('(max-width: 720px)');
 export const isPhone = () => phoneQuery.matches;
 
