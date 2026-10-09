@@ -18,3 +18,8 @@ export function createRenderer() {
         powerPreference: "high-performance"
     });
 }
+
+export function isInScene(object) {
+    for (let o = object; o; o = o.parent) if (o === scene) return true;
+    return false;
+}

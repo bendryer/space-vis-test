@@ -4,13 +4,15 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { celestialMap, objects } from './engine/state.js';
 import { CAMERA_ORBIT_SPEED, CAMERA_FLY_SPEED, DEBUG_SHADOWS, MISSION_MODEL_SIZE, MISSION_VIEW_FILL, BODY_VIEW_FILL, SUN_FRAME_RADII, SOLAR_SYSTEM_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, LANDER_VIEW_ANGLE, USER_FLIGHT_SCALE, MIN_FLIGHT_DURATION, HURRY_FLIGHT_SECONDS, MAX_MOTION_DT, AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, prefersReducedMotion, CULLING_THRESHOLD, HIGH_DETAIL_PREFETCH_PX, getEffectiveModel, SURFACE_TYPES } from './engine/config.js';
-import { scene, camera, renderer, createRenderer } from './engine/scene.js';
+import { scene, camera, renderer, createRenderer, isInScene } from './engine/scene.js';
 import { getDaysSinceJ2000, orbitFarthest, applySunScale, faceParent, getKeplerPosition, getTrajectoryPosition, getSystemRoot } from './engine/orbits.js';
 import { loadingManager, texLoader, lazyGltfLoader, fixPath } from './engine/assets.js';
 import { collectTextures, uploadNextTexture } from './engine/gpu.js';
 import { pendingLanders, onLanded, attemptToLand } from './engine/landers.js';
 import { plannedMaterials, loadModelForItem, flattenModel, buildModelLevel, revealNextModel, getModelPixelDiameter, updateModelDetail, requestHighDetail, preloadSystemModels, startPreloads } from './engine/models.js';
 import { sunEffect, getStandardizedOrbitColor, getSuborbitalPosition, buildSystem } from './engine/bodies.js';
+import { PINNED_DATE, timeScale, simulatedDate, clock, motionTime, heldMotionTime, advanceMotion, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
+import { onEngine, emitEngine } from './engine/events.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -157,18 +159,6 @@ function updateMissionAttitude(obj, time, dt, days) {
     meshGroup.quaternion.copy(_attQ).multiply(_attRoll);
 }
 
-// --- TIME STATE ---
-// Dev builds take ?date=2026-10-08T12:00:00Z to start the clock at a fixed moment and hold it
-// there, so the smoke test's screenshots repeat (tools/smoke.mjs). Ignored in production builds.
-const PINNED_DATE = import.meta.env.DEV ? (() => {
-    const param = new URLSearchParams(location.search).get('date');
-    const date = param ? new Date(param) : null;
-    return date && !isNaN(date) ? date : null;
-})() : null;
-let timeScale = PINNED_DATE ? 0 : 1; // simulated seconds per real second (setTimeRate)
-let simulatedDate = PINNED_DATE ? new Date(PINNED_DATE) : new Date();
-const clock = new THREE.Clock();
-
 // --- STATE ---
 let selectedObject = null;
 let isTracking = false;
@@ -195,17 +185,6 @@ let userHasControl = false;
 // Whether the visitor may steer the camera at all (setUserControl); off for a presenter-driven app.
 let userControlEnabled = true;
 let autoOrbitResumeTimer = null;
-let motionTime = 0; // Clamped clock for camera motion, so hitches don't cause jumps
-// Dev only: the smoke test holds the motion clock at a set time so the camera's orbit, the
-// craft and the Sun come to rest in the same place on every run (window.__ouniverse.holdMotion).
-let heldMotionTime = null;
-function advanceMotion(dt) {
-    motionTime = heldMotionTime ?? motionTime + dt;
-}
-function holdMotionClock(time) {
-    heldMotionTime = time;
-}
-
 // --- TRANSITION STATE ---
 const transitionStartPos = new THREE.Vector3();
 const transitionStartTarget = new THREE.Vector3();
@@ -1185,11 +1164,6 @@ async function loadSystem() {
             ? 'You appear to be offline. Reconnect to the internet, then try again.'
             : 'The Solar System data didn’t load. Check your connection and try again.');
     }
-}
-
-function isInScene(object) {
-    for (let o = object; o; o = o.parent) if (o === scene) return true;
-    return false;
 }
 
 function isSidebarBesideScene() {
@@ -2268,19 +2242,6 @@ function releaseUserControl() {
     clearTimeout(autoOrbitResumeTimer);
 }
 
-// --- ENGINE EVENTS ---
-// Things that happen now and then (a selection, an arrival) go out as events, so the app round
-// the engine can follow them without the engine knowing about its panels. The per-frame loop
-// never goes through these. Events: select, arrive, deselect.
-const engineListeners = new Map();
-function onEngine(type, listener) {
-    if (!engineListeners.has(type)) engineListeners.set(type, []);
-    engineListeners.get(type).push(listener);
-}
-function emitEngine(type, detail) {
-    engineListeners.get(type)?.forEach(listener => listener(detail));
-}
-
 // Settles the promise flyTo returned: true on arrival, false if something else was chosen first.
 let arrivalWaiter = null;
 function settleArrival(arrived) {
@@ -2354,18 +2315,6 @@ function startFlight(mesh, data) {
 // Every object's data.json entry by name, or null.
 function getObject(name) {
     return celestialMap.get(name)?.data ?? null;
-}
-
-// The simulated clock: a copy of its date, a new date, and how many simulated seconds pass per
-// real second (0 stops it).
-function getDate() {
-    return new Date(simulatedDate);
-}
-function setDate(date) {
-    simulatedDate.setTime(new Date(date).getTime());
-}
-function setTimeRate(rate) {
-    timeScale = rate;
 }
 
 // Let the visitor steer the camera (drag, scroll, keys), or not. Turning it off hands the camera
