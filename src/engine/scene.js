@@ -11,9 +11,10 @@ camera.lookAt(0, 0, 0);
 
 // --- RENDERER ---
 export let renderer;
-// Throws where WebGL isn't available.
-export function createRenderer() {
+// Throws where WebGL isn't available. Draws into `canvas`, or makes its own when that's undefined.
+export function createRenderer(canvas) {
     renderer = new THREE.WebGLRenderer({
+        canvas,
         antialias: true, // Native hardware MSAA for smooth antialiased edges on models & orbits
         powerPreference: "high-performance"
     });

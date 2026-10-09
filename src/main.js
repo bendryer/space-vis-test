@@ -316,22 +316,8 @@ function loadDeferred() {
 
 
 const pixelRatio = window.devicePixelRatio;
-
-try {
-    createRenderer();
-} catch (e) {
-    showFatalError('Your browser or device doesn’t support 3D graphics (WebGL), or it’s turned off. Try an up-to-date Chrome, Edge, Firefox or Safari, or check that hardware acceleration is enabled.');
-    throw e; // Nothing below can run without a renderer
-}
-
 // Sweet spot for integrated GPUs: 1.25x pixel ratio + Hardware MSAA gives crisp Retina anti-aliasing while keeping fill-rate low
 const BASE_PIXEL_RATIO = Math.min(pixelRatio, 1.25);
-renderer.setPixelRatio(BASE_PIXEL_RATIO);
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap; // Efficient PCF shadow filtering for integrated GPUs
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 1.2;
 
 
 // --- ADAPTIVE RESOLUTION ---
@@ -347,12 +333,13 @@ const SLOW_FRAME_MS = 40; // without GPU timing: median frame interval (under 25
 const RESOLUTION_HOLD_MS = 3000; // wait after a change before judging again
 const resolution = {
     step: 0, changedAt: 0, lastFrame: 0, gpu: [], intervals: [],
-    timer: (() => {
-        const gl = renderer.getContext();
-        const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-        return ext ? { gl, ext, pending: [], query: null } : null;
-    })(),
+    timer: null, // GPU timer queries, where the browser has them (createGpuTimer)
 };
+function createGpuTimer() {
+    const gl = renderer.getContext();
+    const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+    return ext ? { gl, ext, pending: [], query: null } : null;
+}
 
 function beginFrameTiming(now) {
     // A long gap is a hidden tab or a load stall, not the steady cost of drawing.
@@ -406,27 +393,13 @@ function pushSample(samples, value) {
     if (samples.length > 120) samples.shift();
 }
 
-// Reading shader logs on a shader's first use blocks until the driver finishes compiling
-// it; measured as the main arrival stall (100-300ms per new model). Keep it in dev only.
-renderer.debug.checkShaderErrors = import.meta.env.DEV;
-
-renderer.domElement.setAttribute('role', 'application');
-renderer.domElement.setAttribute('aria-roledescription', '3D view');
-renderer.domElement.setAttribute('aria-label', 'Interactive 3D view of the Solar System. Arrow keys turn the view, plus and minus zoom. The mission list visits each object.');
-renderer.domElement.tabIndex = 0;
-renderer.domElement.addEventListener('webglcontextlost', (e) => {
-    e.preventDefault();
-    showFatalError('The 3D graphics stopped responding, which can happen when a device is low on memory. Reloading usually fixes it.');
-});
-document.body.appendChild(renderer.domElement);
-
 // --- SKY ---
 // The Milky Way is a cube map of six 2048px UASTC KTX2 faces, baked from the 8K equirect
 // JPEG at the same angular resolution. It stays GPU-compressed (BC7/ASTC, ~25MB) where the
 // JPEG decoded to ~128MB of raw RGBA. If KTX2 can't load, fall back to the JPEG.
 const SKY_FACES = ['px', 'nx', 'py', 'ny', 'pz', 'nz']; // three.js cube face order
 const SKY_FADE_SECONDS = 1;
-const ktx2Loader = new KTX2Loader().setTranscoderPath('basis/').detectSupport(renderer);
+const ktx2Loader = new KTX2Loader().setTranscoderPath('basis/'); // detectSupport in createEngine
 
 function useEquirectSky() {
     const sky = texLoader.load('textures/milky_way.jpg');
@@ -478,10 +451,66 @@ function startSky() {
         useEquirectSky();
     });
 }
-// Fetch the faces now (they download in parallel with everything else); only the transcoding waits.
-SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
+// --- ENGINE ---
+// Builds the engine round a WebGL renderer drawing into `canvas` (or a canvas of its own, which
+// the app puts on the page: engine.canvas), and returns its API (ENGINE.md). Throws where WebGL
+// isn't available. engine.start() then loads `dataUrl` and starts drawing, once the app has added
+// its listeners.
+function createEngine({ canvas, dataUrl = './data.json' } = {}) {
+    createRenderer(canvas);
+    renderer.setPixelRatio(BASE_PIXEL_RATIO);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // Efficient PCF shadow filtering for integrated GPUs
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    // Reading shader logs on a shader's first use blocks until the driver finishes compiling
+    // it; measured as the main arrival stall (100-300ms per new model). Keep it in dev only.
+    renderer.debug.checkShaderErrors = import.meta.env.DEV;
+    resolution.timer = createGpuTimer();
+    ktx2Loader.detectSupport(renderer);
+    // Fetch the sky's faces now (they download in parallel with everything else); only the
+    // transcoding waits.
+    SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
+    initControls();
 
-initControls();
+    return {
+        canvas: renderer.domElement,
+        start() {
+            loadSystem(dataUrl);
+            animate();
+        },
+        on: onEngine, onFrame,
+        flyTo, showOverview, deselect, hurry,
+        getDate, setDate, setTimeRate,
+        getObject, listObjects,
+        // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
+        projectBody(name) {
+            const p = projectBody(celestialMap.get(name));
+            return p && { x: p.cx, y: p.cy, radius: p.bodyR };
+        },
+        setViewInsets, setFlightPace, setUserControl, setSceneVisible, loadDeferred,
+    };
+}
+
+let engine;
+try {
+    engine = createEngine();
+} catch (e) {
+    showFatalError('Your browser or device doesn’t support 3D graphics (WebGL), or it’s turned off. Try an up-to-date Chrome, Edge, Firefox or Safari, or check that hardware acceleration is enabled.');
+    throw e; // Nothing below can run without a renderer
+}
+
+// Showcase: the 3D view on the page, labelled for screen readers and focusable for keyboard steering.
+engine.canvas.setAttribute('role', 'application');
+engine.canvas.setAttribute('aria-roledescription', '3D view');
+engine.canvas.setAttribute('aria-label', 'Interactive 3D view of the Solar System. Arrow keys turn the view, plus and minus zoom. The mission list visits each object.');
+engine.canvas.tabIndex = 0;
+engine.canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    showFatalError('The 3D graphics stopped responding, which can happen when a device is low on memory. Reloading usually fixes it.');
+});
+document.body.appendChild(engine.canvas);
 
 // --- GLOBAL VARS ---
 const raycaster = new THREE.Raycaster();
@@ -1437,21 +1466,6 @@ function getObject(name) {
     return celestialMap.get(name)?.data ?? null;
 }
 
-// The engine's API, as ENGINE.md describes it. Phase 3 moves the engine into src/engine/ and
-// createEngine returns this; until then the showcase still calls the functions directly.
-const engine = {
-    on: onEngine,
-    flyTo, showOverview, deselect, hurry,
-    getDate, setDate, setTimeRate,
-    getObject, listObjects,
-    // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
-    projectBody(name) {
-        const p = projectBody(celestialMap.get(name));
-        return p && { x: p.cx, y: p.cy, radius: p.bodyR };
-    },
-    setViewInsets, setFlightPace, setUserControl,
-};
-
 // Showcase: choose an object. Chosen from the menu (returnFocusTo is its row), the details take
 // keyboard focus; chosen on the canvas or by the tour, the choice is announced instead.
 function selectObject(name, { returnFocusTo = null } = {}) {
@@ -2389,5 +2403,4 @@ onFrame(dt => {
 const splashOverlay = document.getElementById('loading-overlay');
 setSceneVisible(!splashOverlay || splashOverlay.hidden);
 
-loadSystem('./data.json');
-animate();
+engine.start();
