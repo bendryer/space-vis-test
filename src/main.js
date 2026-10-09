@@ -5,6 +5,7 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { createSun } from './sun.js';
 import { celestialMap } from './engine/state.js';
+import { scene, camera, renderer, createRenderer } from './engine/scene.js';
 import { getDaysSinceJ2000, orbitFarthest, applySunScale, faceParent, getKeplerPosition, getTrajectoryPlan, getTrajectoryPosition } from './engine/orbits.js';
 import { loadingManager, texLoader, lazyGltfLoader, loadBodyTexture, fixPath } from './engine/assets.js';
 
@@ -263,10 +264,6 @@ let transitionDuration = 2.5;
 let animFrameCounter = 0;
 
 
-// --- SCENE ---
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
-
 // --- LOADING MANAGER ---
 // The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
 // arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
@@ -518,21 +515,8 @@ function warmUpSceneThenReveal() {
 }
 
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000000);
-camera.position.set(0, 400, 1200);
-camera.lookAt(0, 0, 0);
-
 const pixelRatio = window.devicePixelRatio;
 
-// --- RENDERER ---
-let renderer;
-// Throws where WebGL isn't available.
-function createRenderer() {
-    renderer = new THREE.WebGLRenderer({
-        antialias: true, // Native hardware MSAA for smooth antialiased edges on models & orbits
-        powerPreference: "high-performance"
-    });
-}
 try {
     createRenderer();
 } catch (e) {
