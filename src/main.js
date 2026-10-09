@@ -188,6 +188,7 @@ let solarSystemSpin = 0;
 const SOLAR_SYSTEM_SPIN_EASE_SECONDS = 2;
 
 // --- CAMERA CONTROL STATE ---
+let controls; // OrbitControls, built by initControls
 // Once the visitor rotates or zooms around a focused object, the scripted orbit
 // stops steering the camera; it only carries the camera along with the object.
 let userHasControl = false;
@@ -198,6 +199,12 @@ let motionTime = 0; // Clamped clock for camera motion, so hitches don't cause j
 // Dev only: the smoke test holds the motion clock at a set time so the camera's orbit, the
 // craft and the Sun come to rest in the same place on every run (window.__ouniverse.holdMotion).
 let heldMotionTime = null;
+function advanceMotion(dt) {
+    motionTime = heldMotionTime ?? motionTime + dt;
+}
+function holdMotionClock(time) {
+    heldMotionTime = time;
+}
 
 // --- TRANSITION STATE ---
 const transitionStartPos = new THREE.Vector3();
@@ -628,9 +635,7 @@ function startSky() {
 // Fetch the faces now (they download in parallel with everything else); only the transcoding waits.
 SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.maxDistance = 100000;
+initControls();
 
 // --- LIGHTING ---
 const AMBIENT_LIGHT_INTENSITY = 0.1;
@@ -2303,7 +2308,6 @@ function flyTo(name) {
 
 function startFlight(mesh, data) {
     pendingLanderFocus = null;
-    clearShownHolder();
 
     // A lander whose body hasn't loaded yet is parked off-scene (at the Sun's centre). Show its
     // details now, make sure its body loads, and fly there once it lands (see attemptToLand).
@@ -2324,8 +2328,6 @@ function startFlight(mesh, data) {
     solarSystemView = false;
     selectedObject = mesh;
     isTracking = false;
-    updateOrbitLineHighlights();
-
 
     if (data) {
         if (!data.isModelLoaded) {
@@ -2404,6 +2406,10 @@ function selectObject(name, { returnFocusTo = null } = {}) {
     return flyTo(name);
 }
 
+// A choice, or letting go, ends any holder on show and lights the chosen object's orbit.
+onEngine('select', () => { clearShownHolder(); updateOrbitLineHighlights(); });
+onEngine('deselect', () => { clearShownHolder(); updateOrbitLineHighlights(); });
+
 onEngine('select', ({ data, waiting }) => {
     if (!cinematicActive) coachStep('pick');
     updateUI(data);
@@ -2430,7 +2436,6 @@ function announce(message) {
 // Let go of the selection (and any flight to it). Emits "deselect".
 function deselect() {
     pendingLanderFocus = null;
-    clearShownHolder();
     releaseUserControl();
     selectedObject = null;
     isTracking = false;
@@ -3100,128 +3105,9 @@ function updateCameraUp(dt) {
     controls._quatInverse.copy(controls._quat).invert();
 }
 
-// --- ANIMATION LOOP ---
-function animate() {
-    requestAnimationFrame(animate);
-    const realDt = clock.getDelta();
-    // Motion uses a clamped step so one slow frame can't make the camera leap;
-    // the simulated clock keeps real time.
-    const dt = Math.min(realDt, MAX_MOTION_DT);
-    motionTime = heldMotionTime ?? motionTime + dt;
-    // Tumbles turn by the step, not the clock, so a held clock stops them too.
-    const turnDt = heldMotionTime === null ? dt : 0;
-    const elapsedTime = motionTime;
-
-    uploadNextTexture();
-    revealNextModel();
-
-    simulatedDate.setTime(simulatedDate.getTime() + (realDt * timeScale * 1000));
-
-    const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
-    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
-        lastSimulatedSeconds = currentSimulatedSeconds;
-        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
-    }
-
-    const days = getDaysSinceJ2000(simulatedDate);
-
-    if (pendingLanders.length > 0) attemptToLand();
-
-    plannedMaterials.forEach(mat => { mat.uniforms.uTime.value = elapsedTime; });
-
-    animFrameCounter++;
-    if (animFrameCounter % 10 === 0) {
-        updateVisibility();
-    }
-
-
-    celestialMap.forEach(obj => {
-        const { group, meshGroup, data } = obj;
-        if (data.orbit_type === 'landed') return;
-
-        if (!group.visible && !data.isParent) {
-            return;
-        }
-
-        let localPos;
-        if (data.orbit_type === 'trajectory') {
-            const arrived = getTrajectoryPosition(obj, days, group.position);
-            updateTrajectoryLines(obj, arrived);
-        } else if (data.orbit_type === 'lissajous') {
-            const p = celestialMap.get(data.parent);
-            if (p) {
-                const angle = (days * data.orbit.rate + data.orbit.M0) * (Math.PI / 180);
-                const radius = data.orbit.a;
-                const y_off = radius * Math.sin(angle);
-                const z_off = radius * 2.5 * Math.cos(angle);
-                const x_off = radius * 0.5 * Math.sin(2 * angle);
-                group.position.set(p.group.position.x + x_off, p.group.position.y + y_off, p.group.position.z + z_off);
-            }
-        } else if (data.orbit_type === 'suborbital') {
-            const p = celestialMap.get(data.parent);
-            if (p) {
-                const parentRad = p.data.radius || 1;
-                const duration = data.suborbital.duration || 0.05;
-
-                let simDays = days;
-                if (data.suborbital.progress !== undefined) {
-                    simDays = data.suborbital.progress * duration;
-                }
-
-                const localPos = getSuborbitalPosition(data.suborbital, parentRad, simDays);
-                const futurePos = getSuborbitalPosition(data.suborbital, parentRad, simDays + 0.0001);
-
-                localPos.applyEuler(p.meshGroup.rotation);
-                futurePos.applyEuler(p.meshGroup.rotation);
-
-                group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
-
-                _tempVec1.subVectors(futurePos, localPos).normalize();
-                _tempVec2.copy(group.position).add(_tempVec1);
-                group.lookAt(_tempVec2);
-
-                meshGroup.rotation.z -= dt * 0.5;
-            }
-        } else {
-            localPos = getKeplerPosition(data.orbit, days);
-            if (data.parent && data.parent !== 'Sun') {
-                const p = celestialMap.get(data.parent);
-                if (p) {
-                    group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
-                }
-            } else {
-                group.position.set(localPos.x, localPos.y, localPos.z);
-            }
-        }
-        if (data.rotation_mode === 'utc') {
-            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC.
-            const sunAngle = Math.atan2(-group.position.x, -group.position.z);
-            const hours = simulatedDate.getUTCHours();
-            const mins = simulatedDate.getUTCMinutes();
-            const secs = simulatedDate.getUTCSeconds();
-            const ms = simulatedDate.getUTCMilliseconds();
-            const timeFraction = (hours + mins / 60 + secs / 3600 + ms / 3600000) / 24.0;
-            const timeRotation = (timeFraction - 0.5) * Math.PI * 2;
-            meshGroup.rotation.y = (sunAngle - Math.PI / 2) + timeRotation;
-        } else if (data.rotation_mode === 'locked' && data.orbit) {
-            faceParent(meshGroup, data.orbit, days);
-        } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
-            if (!obj.tumbleSpeed) {
-                obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
-            }
-            meshGroup.rotateX(obj.tumbleSpeed.x * turnDt);
-            meshGroup.rotateY(obj.tumbleSpeed.y * turnDt);
-            meshGroup.rotateZ(obj.tumbleSpeed.z * turnDt);
-        } else if (data.rot_period) {
-            const theta = (days / data.rot_period) * Math.PI * 2;
-            const offset = (data.rot_offset || 0) * (Math.PI / 180);
-            meshGroup.rotation.y = theta + offset;
-        }
-        else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
-            updateMissionAttitude(obj, elapsedTime, turnDt, days);
-        }
-    });
-
+// The camera's step each frame: a flight, riding along with the selection, or the overview's
+// slow turn. False when the selection's position isn't a number, and the frame is dropped.
+function updateCamera(dt, elapsedTime) {
     updateCameraUp(dt);
 
     if (isTransitioning) {
@@ -3268,7 +3154,7 @@ function animate() {
     }
     else if (selectedObject && isTracking) {
         getFocusPoint(selectedObject, _targetWorldPos);
-        if (isNaN(_targetWorldPos.x)) { isTracking = false; return; }
+        if (isNaN(_targetWorldPos.x)) { isTracking = false; return false; }
 
         // Ride along with the subject so the camera never trails it: follow its movement, and for
         // a lander also its turning (e.g. Philae on tumbling Comet 67P). The easing further down
@@ -3423,6 +3309,133 @@ function animate() {
             controls.update();
         }
     }
+    return true;
+}
+
+// --- ANIMATION LOOP ---
+function animate() {
+    requestAnimationFrame(animate);
+    const realDt = clock.getDelta();
+    // Motion uses a clamped step so one slow frame can't make the camera leap;
+    // the simulated clock keeps real time.
+    const dt = Math.min(realDt, MAX_MOTION_DT);
+    advanceMotion(dt);
+    // Tumbles turn by the step, not the clock, so a held clock stops them too.
+    const turnDt = heldMotionTime === null ? dt : 0;
+    const elapsedTime = motionTime;
+
+    uploadNextTexture();
+    revealNextModel();
+
+    simulatedDate.setTime(simulatedDate.getTime() + (realDt * timeScale * 1000));
+
+    const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
+    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
+        lastSimulatedSeconds = currentSimulatedSeconds;
+        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
+    }
+
+    const days = getDaysSinceJ2000(simulatedDate);
+
+    if (pendingLanders.length > 0) attemptToLand();
+
+    plannedMaterials.forEach(mat => { mat.uniforms.uTime.value = elapsedTime; });
+
+    animFrameCounter++;
+    if (animFrameCounter % 10 === 0) {
+        updateVisibility();
+    }
+
+
+    celestialMap.forEach(obj => {
+        const { group, meshGroup, data } = obj;
+        if (data.orbit_type === 'landed') return;
+
+        if (!group.visible && !data.isParent) {
+            return;
+        }
+
+        let localPos;
+        if (data.orbit_type === 'trajectory') {
+            const arrived = getTrajectoryPosition(obj, days, group.position);
+            updateTrajectoryLines(obj, arrived);
+        } else if (data.orbit_type === 'lissajous') {
+            const p = celestialMap.get(data.parent);
+            if (p) {
+                const angle = (days * data.orbit.rate + data.orbit.M0) * (Math.PI / 180);
+                const radius = data.orbit.a;
+                const y_off = radius * Math.sin(angle);
+                const z_off = radius * 2.5 * Math.cos(angle);
+                const x_off = radius * 0.5 * Math.sin(2 * angle);
+                group.position.set(p.group.position.x + x_off, p.group.position.y + y_off, p.group.position.z + z_off);
+            }
+        } else if (data.orbit_type === 'suborbital') {
+            const p = celestialMap.get(data.parent);
+            if (p) {
+                const parentRad = p.data.radius || 1;
+                const duration = data.suborbital.duration || 0.05;
+
+                let simDays = days;
+                if (data.suborbital.progress !== undefined) {
+                    simDays = data.suborbital.progress * duration;
+                }
+
+                const localPos = getSuborbitalPosition(data.suborbital, parentRad, simDays);
+                const futurePos = getSuborbitalPosition(data.suborbital, parentRad, simDays + 0.0001);
+
+                localPos.applyEuler(p.meshGroup.rotation);
+                futurePos.applyEuler(p.meshGroup.rotation);
+
+                group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
+
+                _tempVec1.subVectors(futurePos, localPos).normalize();
+                _tempVec2.copy(group.position).add(_tempVec1);
+                group.lookAt(_tempVec2);
+
+                meshGroup.rotation.z -= dt * 0.5;
+            }
+        } else {
+            localPos = getKeplerPosition(data.orbit, days);
+            if (data.parent && data.parent !== 'Sun') {
+                const p = celestialMap.get(data.parent);
+                if (p) {
+                    group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
+                }
+            } else {
+                group.position.set(localPos.x, localPos.y, localPos.z);
+            }
+        }
+        if (data.rotation_mode === 'utc') {
+            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC.
+            const sunAngle = Math.atan2(-group.position.x, -group.position.z);
+            const hours = simulatedDate.getUTCHours();
+            const mins = simulatedDate.getUTCMinutes();
+            const secs = simulatedDate.getUTCSeconds();
+            const ms = simulatedDate.getUTCMilliseconds();
+            const timeFraction = (hours + mins / 60 + secs / 3600 + ms / 3600000) / 24.0;
+            const timeRotation = (timeFraction - 0.5) * Math.PI * 2;
+            meshGroup.rotation.y = (sunAngle - Math.PI / 2) + timeRotation;
+        } else if (data.rotation_mode === 'locked' && data.orbit) {
+            faceParent(meshGroup, data.orbit, days);
+        } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
+            if (!obj.tumbleSpeed) {
+                obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
+            }
+            meshGroup.rotateX(obj.tumbleSpeed.x * turnDt);
+            meshGroup.rotateY(obj.tumbleSpeed.y * turnDt);
+            meshGroup.rotateZ(obj.tumbleSpeed.z * turnDt);
+        } else if (data.rot_period) {
+            const theta = (days / data.rot_period) * Math.PI * 2;
+            const offset = (data.rot_offset || 0) * (Math.PI / 180);
+            meshGroup.rotation.y = theta + offset;
+        }
+        else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
+            updateMissionAttitude(obj, elapsedTime, turnDt, days);
+        }
+    });
+
+    // The rest of the frame is skipped when the camera loses its subject (see updateCamera).
+    if (!updateCamera(dt, elapsedTime)) return;
 
     updateModelDetail();
     updateViewOffset(dt);
@@ -3488,7 +3501,6 @@ function showOverview({ animate = true } = {}) {
 
     selectedObject = null;
     isTracking = false;
-    updateOrbitLineHighlights();
     solarSystemView = true;
     solarSystemSpin = 0;
 
@@ -3526,23 +3538,9 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 });
 renderer.domElement.addEventListener('wheel', hurry, { passive: true });
 
-// Taking hold of the camera ends the tour, and around a focused object it hands
-// steering to the visitor instead of fighting them back onto the scripted orbit.
-controls.addEventListener('start', () => {
-    stopCinematicMode();
-    if (isTracking || solarSystemView) {
-        userHasControl = true;
-        controls.autoRotate = false;
-        clearTimeout(autoOrbitResumeTimer);
-    }
-});
-controls.addEventListener('end', () => {
-    if (!userHasControl || prefersReducedMotion.matches) return;
-    clearTimeout(autoOrbitResumeTimer);
-    autoOrbitResumeTimer = setTimeout(() => {
-        if (userHasControl && (isTracking || solarSystemView)) controls.autoRotate = true;
-    }, AUTO_ORBIT_RESUME_MS);
-});
+// Taking hold of the camera ends the tour.
+controls.addEventListener('start', stopCinematicMode);
+
 // Keyboard steering for the 3D view (the canvas is focusable): arrows turn the view about what
 // it's looking at, plus and minus move in and out. It goes through the same path as a drag, so
 // it ends the tour and hands steering to the visitor.
@@ -3551,32 +3549,56 @@ const KEY_ZOOM_STEP = 1.15;
 const KEY_POLE_MARGIN = 0.05; // radians kept clear of straight up and down
 const _keyOffset = new THREE.Vector3();
 const _keyRight = new THREE.Vector3();
-renderer.domElement.addEventListener('keydown', (e) => {
-    if (!userControlEnabled || e.altKey || e.ctrlKey || e.metaKey) return;
-    const turn = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
-    const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
-    if (!turn && !zoom) return;
-    e.preventDefault();
-    hurry();
-    controls.dispatchEvent({ type: 'start' });
-    _keyOffset.subVectors(camera.position, controls.target);
-    if (turn) {
-        _keyOffset.applyAxisAngle(camera.up, -turn[0] * KEY_TURN_STEP);
-        _keyRight.crossVectors(camera.up, _keyOffset).normalize();
-        const polar = _keyOffset.angleTo(camera.up);
-        const next = Math.min(Math.max(polar - turn[1] * KEY_TURN_STEP, KEY_POLE_MARGIN), Math.PI - KEY_POLE_MARGIN);
-        _keyOffset.applyAxisAngle(_keyRight, next - polar);
-    } else {
-        const dist = Math.min(Math.max(_keyOffset.length() * zoom, controls.minDistance), controls.maxDistance);
-        _keyOffset.setLength(dist);
-    }
-    camera.position.copy(controls.target).add(_keyOffset);
-    controls.dispatchEvent({ type: 'end' });
-});
 
-// Negative: OrbitControls' auto-rotate turns the opposite way to the scripted orbit, so without
-// this the view reversed direction when it resumed after the visitor let go.
-controls.autoRotateSpeed = -AUTO_ORBIT_SPEED;
+// The camera's controls, once the renderer exists: drag, scroll and the keyboard steer.
+function initControls() {
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.maxDistance = 100000;
+
+    // Taking hold of the camera around a focused object hands steering to the visitor instead of
+    // fighting them back onto the scripted orbit.
+    controls.addEventListener('start', () => {
+        if (isTracking || solarSystemView) {
+            userHasControl = true;
+            controls.autoRotate = false;
+            clearTimeout(autoOrbitResumeTimer);
+        }
+    });
+    controls.addEventListener('end', () => {
+        if (!userHasControl || prefersReducedMotion.matches) return;
+        clearTimeout(autoOrbitResumeTimer);
+        autoOrbitResumeTimer = setTimeout(() => {
+            if (userHasControl && (isTracking || solarSystemView)) controls.autoRotate = true;
+        }, AUTO_ORBIT_RESUME_MS);
+    });
+    renderer.domElement.addEventListener('keydown', (e) => {
+        if (!userControlEnabled || e.altKey || e.ctrlKey || e.metaKey) return;
+        const turn = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+        const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
+        if (!turn && !zoom) return;
+        e.preventDefault();
+        hurry();
+        controls.dispatchEvent({ type: 'start' });
+        _keyOffset.subVectors(camera.position, controls.target);
+        if (turn) {
+            _keyOffset.applyAxisAngle(camera.up, -turn[0] * KEY_TURN_STEP);
+            _keyRight.crossVectors(camera.up, _keyOffset).normalize();
+            const polar = _keyOffset.angleTo(camera.up);
+            const next = Math.min(Math.max(polar - turn[1] * KEY_TURN_STEP, KEY_POLE_MARGIN), Math.PI - KEY_POLE_MARGIN);
+            _keyOffset.applyAxisAngle(_keyRight, next - polar);
+        } else {
+            const dist = Math.min(Math.max(_keyOffset.length() * zoom, controls.minDistance), controls.maxDistance);
+            _keyOffset.setLength(dist);
+        }
+        camera.position.copy(controls.target).add(_keyOffset);
+        controls.dispatchEvent({ type: 'end' });
+    });
+
+    // Negative: OrbitControls' auto-rotate turns the opposite way to the scripted orbit, so without
+    // this the view reversed direction when it resumed after the visitor let go.
+    controls.autoRotateSpeed = -AUTO_ORBIT_SPEED;
+}
 
 // Raycaster ignores visibility, so a click would also test every hidden detail level and
 // culled mission, up to hundreds of thousands of triangles. Only test what's on screen.
@@ -3619,8 +3641,6 @@ renderer.domElement.addEventListener('click', (e) => {
             selectObject(target.userData.name);
         }
     } else {
-        selectedObject = null;
-        updateOrbitLineHighlights();
         deselect();
     }
 });
@@ -3628,7 +3648,6 @@ renderer.domElement.addEventListener('click', (e) => {
 document.getElementById('sidebar-close').addEventListener('click', () => {
     stopCinematicMode();
     deselect();
-    updateOrbitLineHighlights();
 });
 
 // Reading the details means the visitor wants to stay on this object.
@@ -3643,7 +3662,6 @@ window.addEventListener('keydown', (e) => {
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
         deselect();
-        updateOrbitLineHighlights();
     }
 });
 
@@ -3667,7 +3685,7 @@ if (import.meta.env.DEV) {
         // Hold the motion clock (null releases it) and put the camera straight where the held
         // clock says, so it has nothing left to ease.
         holdMotion(time = null) {
-            heldMotionTime = time;
+            holdMotionClock(time);
             if (time === null) return;
             sunEffect?.setNoiseTime(time);
             // Tumbles add up frame by frame, so how far one has turned depends on how long loading
