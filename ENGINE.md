@@ -2,7 +2,7 @@
 
 The engine draws the Solar System and flies the camera. Apps (the showcase now, a presentation app later) build their panels round it and talk to it only through this API. See `ENGINE-PLAN.md` for the plan this is part of.
 
-The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). The showcase (`src/main.js`) still calls some engine modules directly; Phase 4 moves it onto this API alone.
+The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). The showcase (`src/main.js`) uses only this API: it imports nothing from `src/engine/` but `createEngine`.
 
 Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 
@@ -36,7 +36,7 @@ Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 | ✅ `showOverview({ animate = true })` | Lets go of any selection and shows the whole Solar System. `animate: false` jumps straight there. |
 | ✅ `deselect()` | Lets go of the selection and stops any flight to it. The camera stays where it is. |
 | ✅ `hurry()` | Brings a flight in to land within `HURRY_FLIGHT_SECONDS` (0.6 s). Does nothing between flights. |
-| ✅ `setFlightPace(scale)` | How unhurried flights are, as a multiple of the base duration (`USER_FLIGHT_SCALE` 3, `CINEMATIC_FLIGHT_SCALE` 5). |
+| ✅ `setFlightPace(scale)` | How unhurried flights are, as a multiple of the base duration (`USER_FLIGHT_SCALE` 3, the showcase's tour 5). With no `scale`, back to `USER_FLIGHT_SCALE`. |
 
 ## Events
 
@@ -48,6 +48,7 @@ Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 | ✅ `arrive` `{ data }` | The camera reached the selection. |
 | ✅ `orbit-change` `{ data }` | An object's orbit line was replaced (JUICE's cruise line gives way to its arrival orbit, or back). Restyle it if you highlight orbits. |
 | ✅ `deselect` | The selection was let go (`deselect`, `showOverview`). May fire when nothing was selected. |
+| ✅ `steer` | The visitor took hold of the camera (a drag, scroll or steering key). |
 | ⏳ `hover`, `model-loaded` | Added when an app listens for them. |
 
 The lifecycle events (`progress`, `built`, `ready`, `error`) are under Lifecycle.
@@ -57,6 +58,7 @@ The lifecycle events (`progress`, `built`, `ready`, `error`) are under Lifecycle
 | | |
 |---|---|
 | ✅ `getDate()` → `Date` | The simulated date (a copy). |
+| ✅ `getTime()` → `number` | The simulated date in milliseconds, without making a `Date`: for per-frame use (the showcase's clock line). |
 | ✅ `setDate(date)` | Moves the simulated clock to `date` (a `Date` or anything `new Date()` takes). Orbits follow on the next frame. |
 | ✅ `setTimeRate(rate)` | Simulated seconds per real second: 1 is real time (the default), 0 stops the clock, 86400 is a day a second. |
 
@@ -68,12 +70,17 @@ The motion clock (camera orbit, spacecraft attitude, the Sun's surface) is separ
 |---|---|
 | ✅ `getObject(name)` | The object's `data.json` entry, or `null`. Treat it as read-only. |
 | ✅ `listObjects()` | Every object's entry, in load order. |
+| ✅ `getSelection()` | The selected object's entry, or `null`. Set when its flight starts (not while a lander waits for its body). |
+| ✅ `getSystem(name)` | The name of the system an object belongs to: the body round the Sun it's part of (`Earth` for the Moon, the ISS and L1), or `Sun`. |
+| ✅ `getOrbitColor(name)` | The CSS colour of the object's orbit line, unlit. |
+| ✅ `pick(x, y)` → name or `null` | The object under a point on screen, in CSS pixels. Only what's drawn counts. |
 | ✅ `projectBody(name)` → `{ x, y, radius }` or `null` | Where the object is on screen: centre and radius in CSS pixels, including the view shift from `setViewInsets`. `null` when it's behind the camera or not in the scene. Tiny when far away; not hidden behind other bodies. |
 
 ## Layout
 
 | | |
 |---|---|
+| ✅ `setOrbitHighlights({ hovered, shown })` | Names whose orbits to light: `hovered` in the light blue of a choice (as the selection's is), `shown` in a quieter tint (a group on show). Replaces the last call; the engine keeps them right through selections and orbit-line changes. |
 | ✅ `setViewInsets({ left, right, top, bottom })` | How much of the screen the app's panels cover while something is selected, in CSS pixels from each edge (missing edges are 0). The engine frames selections to fit the rest, and while there's a selection (from `select` to `deselect`) it shifts the view so the selection sits in the middle of it. Call it again whenever the panels change size (the showcase does on resize, header resize and Cinematic Mode). |
 
 ## Input
@@ -91,12 +98,11 @@ Passed as `createEngine({ options })`, and kept in `engineOptions` in `src/engin
 | ✅ `nightLights` (default `true`) | City lights on Earth's night side. |
 | ✅ `namedAsteroidModels` (default **`false`**) | Asteroids use their `model_named`: models named after OU researchers. A privacy setting: don't turn it on without confirming. The showcase doesn't pass it. |
 
-The debug flags (`DEBUG_SHADOWS`, `DEBUG_LANDING`) stay constants in `config.js`: they're for developers, not apps. The dev hook (`window.__ouniverse`) is the showcase's.
+The debug flags (`DEBUG_SHADOWS`, `DEBUG_LANDING`) stay constants in `config.js`: they're for developers, not apps. In dev builds `createEngine` also installs the dev hook (`window.__ouniverse`, `src/engine/devhook.js`).
 
 ## Still to separate
 
-Showcase things still to separate in Phase 4:
-- **Direct imports:** the showcase still imports engine modules (selection state, the controls, `listObjects`, `projectBody`, the dev hook's internals) rather than using only the API.
-- **Reticles and labels** (`updateReticles`, run from the showcase's `onFrame` hook; `sceneRightEdge` reads the sidebar): a shared feature for Phase 4, built on `projectBody` and the view insets.
-- **Input handlers:** canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, and taking hold of the controls stops Cinematic Mode (a listener the showcase adds to `controls`). These are the showcase's choices.
-- **Menu highlights:** `updateOrbitLineHighlights` lights the orbits of the menu holder that is hovered or shown (`hoveredHolder`, `shownHolder`). The showcase relights them on `select`, `deselect` and `orbit-change`.
+Still in the showcase, to become shared features in Phase 4:
+- **Reticles and labels** (`updateReticles`, run from the showcase's `onFrame` hook; `sceneRightEdge` reads the sidebar): built on `projectBody`, for the presentation's anchored panels too.
+
+The input handlers (canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, `steer` ends the tour) are the showcase's choices and stay with it.
