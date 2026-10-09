@@ -1861,8 +1861,9 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// Dev-only hook for automated checks (camera paths, lander placement, model orientation); stripped from builds.
-if (import.meta.env.DEV) {
+// In dev builds, window.__ouniverse: the engine's insides, for automated checks (camera paths,
+// lander placement, model orientation) and holdMotion for the smoke test.
+function installDevHook(engine) {
     window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
         loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
         engine, get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
@@ -1886,6 +1887,8 @@ if (import.meta.env.DEV) {
             placeCameraAt(time);
         } };
 }
+
+if (import.meta.env.DEV) installDevHook(engine);
 
 // Showcase, each frame: the clock line (when the second changes) and the reticles.
 onFrame(dt => {
