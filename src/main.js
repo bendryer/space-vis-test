@@ -1,20 +1,18 @@
 import './style.css';
 import * as THREE from 'three';
 import { celestialMap, objects } from './engine/state.js';
-import { USER_FLIGHT_SCALE, prefersReducedMotion, getEffectiveModel } from './engine/config.js';
-import { scene, camera, renderer, isInScene } from './engine/scene.js';
+import { USER_FLIGHT_SCALE, prefersReducedMotion } from './engine/config.js';
+import { scene, camera, renderer } from './engine/scene.js';
 import { getSystemRoot } from './engine/orbits.js';
-import { lazyGltfLoader, fixPath } from './engine/assets.js';
+import { fixPath } from './engine/assets.js';
 import { pendingLanders, attemptToLand } from './engine/landers.js';
-import { flattenModel, buildModelLevel } from './engine/models.js';
-import { sunEffect, getStandardizedOrbitColor } from './engine/bodies.js';
-import { simulatedDate, holdMotionClock } from './engine/time.js';
+import { getStandardizedOrbitColor } from './engine/bodies.js';
+import { simulatedDate } from './engine/time.js';
 import { onEngine } from './engine/events.js';
-import { selectedObject, controls, isTransitioning, setViewInsets, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, deselect, showOverview, placeCameraAt } from './engine/camera.js';
-import { selectionSpot, getSunOcclusion } from './engine/lighting.js';
+import { selectedObject, controls, setViewInsets, setFlightPace, hurry, flyTo, deselect, showOverview } from './engine/camera.js';
 import { projectBody } from './engine/projection.js';
 import { setSceneVisible } from './engine/sky.js';
-import { resolution, onFrame } from './engine/render.js';
+import { onFrame } from './engine/render.js';
 import { loadDeferred, createEngine, listObjects } from './engine/index.js';
 
 // --- CONFIGURATION ---
@@ -1861,34 +1859,6 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// In dev builds, window.__ouniverse: the engine's insides, for automated checks (camera paths,
-// lander placement, model orientation) and holdMotion for the smoke test.
-function installDevHook(engine) {
-    window.__ouniverse = { camera, controls, scene, celestialMap, BODY_TYPES, isInScene, THREE,
-        loadGltf: path => lazyGltfLoader.loadAsync(fixPath(path)), buildModelLevel, getEffectiveModel,
-        engine, get isTransitioning() { return isTransitioning; }, get selectedObject() { return selectedObject; },
-        get spotIntensity() { return selectionSpot.intensity; }, get flightCurve() { return flightCurve; }, getFlightObstacles, Raycaster: THREE.Raycaster, renderer, get sunEffect() { return sunEffect; }, get simulatedDate() { return simulatedDate; }, getSunOcclusion, resolution, flattenModel,
-        // Hold the motion clock (null releases it) and put the camera straight where the held
-        // clock says, so it has nothing left to ease.
-        holdMotion(time = null) {
-            holdMotionClock(time);
-            if (time === null) return;
-            sunEffect?.setNoiseTime(time);
-            // Tumbles add up frame by frame, so how far one has turned depends on how long loading
-            // took: set each to a turn that depends only on the held time.
-            celestialMap.forEach(obj => {
-                if (!obj.tumbleSpeed) return;
-                obj.meshGroup.rotation.set(0, 0, (obj.data.tilt || 0) * Math.PI / 180);
-                obj.meshGroup.rotateX(obj.tumbleSpeed.x * time);
-                obj.meshGroup.rotateY(obj.tumbleSpeed.y * time);
-                obj.meshGroup.rotateZ(obj.tumbleSpeed.z * time);
-            });
-            scene.updateMatrixWorld(true);
-            placeCameraAt(time);
-        } };
-}
-
-if (import.meta.env.DEV) installDevHook(engine);
 
 // Showcase, each frame: the clock line (when the second changes) and the reticles.
 onFrame(dt => {

@@ -16,6 +16,7 @@ import { emitEngine, onEngine } from './events.js';
 import { loadingManager } from './assets.js';
 import { projectBody } from './projection.js';
 import { startPreloads } from './models.js';
+import { installDevHook } from './devhook.js';
 
 // --- LOADING MANAGER ---
 // The engine reports loading as "progress" events, 0 to 1.
@@ -93,7 +94,7 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
     SKY_FACES.forEach(face => fetch(`textures/milky_way_${face}.ktx2`).catch(() => {}));
     initControls();
 
-    return {
+    const engine = {
         canvas: renderer.domElement,
         start() {
             loadSystem(dataUrl);
@@ -110,6 +111,8 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
         },
         setViewInsets, setFlightPace, setUserControl, setSceneVisible, loadDeferred,
     };
+    if (import.meta.env.DEV) installDevHook(engine);
+    return engine;
 }
 
 // --- LOADING ---
