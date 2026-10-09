@@ -1,5 +1,6 @@
 import '../../style.css';
 import { createEngine } from '../../engine/index.js';
+import { engine, setEngine } from './engine.js';
 import { setupReticles, updateReticles } from '../../features/reticles/reticles.js';
 
 // --- CONFIGURATION ---
@@ -32,8 +33,12 @@ let sidebarReturnFocus = null;
 
 const SLOW_LOAD_NOTICE_MS = 8000;
 let lastInputWasKeyboard = false;
-window.addEventListener('keydown', () => { lastInputWasKeyboard = true; }, true);
-window.addEventListener('pointerdown', () => { lastInputWasKeyboard = false; }, true);
+// The kind of input the visitor last used, which decides where focus goes and the coach's words.
+function trackInputType() {
+    window.addEventListener('keydown', () => { lastInputWasKeyboard = true; }, true);
+    window.addEventListener('pointerdown', () => { lastInputWasKeyboard = false; }, true);
+}
+trackInputType();
 let splashReady = false;
 let splashDismissed = false;
 let fatalErrorShown = false;
@@ -123,19 +128,23 @@ function setLoadingAction(label, handler) {
 }
 
 // On a slow connection, say so after a few seconds and let the visitor go in early.
-const slowLoadTimer = setTimeout(() => {
-    const note = document.getElementById('loading-note');
-    if (note) {
-        note.textContent = 'This is taking longer than usual. You can go in now; some planets may appear before their surfaces finish loading.';
-        note.hidden = false;
-    }
-    const start = document.getElementById('splash-start');
-    if (start) {
-        start.disabled = false;
-        start.textContent = 'Explore now';
-        offerFullscreenStart();
-    }
-}, SLOW_LOAD_NOTICE_MS);
+let slowLoadTimer = null;
+function startSlowLoadNotice() {
+    slowLoadTimer = setTimeout(() => {
+        const note = document.getElementById('loading-note');
+        if (note) {
+            note.textContent = 'This is taking longer than usual. You can go in now; some planets may appear before their surfaces finish loading.';
+            note.hidden = false;
+        }
+        const start = document.getElementById('splash-start');
+        if (start) {
+            start.disabled = false;
+            start.textContent = 'Explore now';
+            offerFullscreenStart();
+        }
+    }, SLOW_LOAD_NOTICE_MS);
+}
+startSlowLoadNotice();
 
 // Stops the app with a plain explanation and a way to retry, in place of the way in.
 function showFatalError(message) {
@@ -213,7 +222,7 @@ function syncFullscreenButtons() {
     }
 }
 
-(function setupFullscreen() {
+function setupFullscreen() {
     if (!fullscreenSupported) return;
     const toggle = document.getElementById('menu-fullscreen');
     if (toggle) {
@@ -228,19 +237,20 @@ function syncFullscreenButtons() {
         enterFullscreen();
         dismissSplash({ fromKeyboard: e.detail === 0 });
     });
-})();
+}
+setupFullscreen();
 
-(function setupSplash() {
+function setupSplash() {
     const start = document.getElementById('splash-start');
     start?.addEventListener('click', (e) => dismissSplash({ fromKeyboard: e.detail === 0 }));
     document.getElementById('loading-overlay')?.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !start.disabled) dismissSplash({ fromKeyboard: true });
     });
-})();
+}
+setupSplash();
 
-let engine;
 try {
-    engine = createEngine();
+    setEngine(createEngine());
 } catch (e) {
     showFatalError('Your browser or device doesn’t support 3D graphics (WebGL), or it’s turned off. Try an up-to-date Chrome, Edge, Firefox or Safari, or check that hardware acceleration is enabled.');
     throw e; // Nothing below can run without a renderer
@@ -248,15 +258,18 @@ try {
 
 // The splash (#loading-overlay) doubles as the loader: its orbit draws itself as assets
 // arrive, and "Start exploring" turns on once the scene is ready. The visitor leaves it.
-engine.on('progress', ({ progress }) => {
-    if (splashReady || fatalErrorShown) return;
-    document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
-    const loadingText = document.getElementById('loading-text');
-    if (loadingText) {
-        // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
-        loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
-    }
-});
+function setupLoadingProgress() {
+    engine.on('progress', ({ progress }) => {
+        if (splashReady || fatalErrorShown) return;
+        document.getElementById('loading-overlay')?.style.setProperty('--progress', progress.toFixed(3));
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) {
+            // Files done isn't ready: the scene still warms up (see warmUpSceneThenReveal).
+            loadingText.textContent = progress < 1 ? 'Polishing the planets…' : 'Lining up the orbits…';
+        }
+    });
+}
+setupLoadingProgress();
 
 // Showcase: the 3D view on the page, labelled for screen readers and focusable for keyboard steering.
 engine.canvas.setAttribute('role', 'application');
@@ -280,6 +293,15 @@ function formatSimulatedTime(d) {
         + `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())} UTC`;
 }
 let lastSimulatedSeconds = -1;
+// The clock line, rewritten when the simulated second changes.
+function updateClock() {
+    const time = engine.getTime();
+    const currentSimulatedSeconds = Math.floor(time / 1000);
+    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
+        lastSimulatedSeconds = currentSimulatedSeconds;
+        if (clockElement) clockElement.textContent = formatSimulatedTime(new Date(time));
+    }
+}
 
 
 let hoveredObj = null;
@@ -854,23 +876,52 @@ function selectObject(name, { returnFocusTo = null } = {}) {
 }
 
 // A choice, or letting go, ends any holder on show and lights the chosen object's orbit.
-engine.on('select', clearShownHolder);
-engine.on('deselect', clearShownHolder);
+function setupViews() {
+    engine.on('select', clearShownHolder);
+    engine.on('deselect', clearShownHolder);
+}
+setupViews();
 
-engine.on('select', ({ data, waiting }) => {
-    if (!cinematicActive) coachStep('pick');
-    updateUI(data);
-    if (waiting) {
-        if (sidebarReturnFocus) document.getElementById('info-title')?.focus({ preventScroll: true });
-        announce(`Loading ${data.name}`);
-    } else if (sidebarReturnFocus) {
-        // Visitor chose this from the menu: take them to the details.
-        document.getElementById('info-title')?.focus({ preventScroll: true });
-    } else {
-        // Chosen by a canvas click or the tour: announce without moving focus.
-        announce(`Now showing ${data ? data.name : 'selection'}`);
-    }
-});
+// Showcase: open the details on a selection, and close them on letting go.
+function setupDetails() {
+    engine.on('select', ({ data, waiting }) => {
+        if (!cinematicActive) coachStep('pick');
+        updateUI(data);
+        if (waiting) {
+            if (sidebarReturnFocus) document.getElementById('info-title')?.focus({ preventScroll: true });
+            announce(`Loading ${data.name}`);
+        } else if (sidebarReturnFocus) {
+            // Visitor chose this from the menu: take them to the details.
+            document.getElementById('info-title')?.focus({ preventScroll: true });
+        } else {
+            // Chosen by a canvas click or the tour: announce without moving focus.
+            announce(`Now showing ${data ? data.name : 'selection'}`);
+        }
+    });
+
+    // Showcase: close the details and put keyboard focus somewhere sensible.
+    engine.on('deselect', () => {
+        const sb = document.getElementById('sidebar');
+        const focusWasInside = sb.contains(document.activeElement);
+        sb.classList.remove('active');
+        setDetailsExpanded(false);
+        sb.inert = true;
+        syncMenuInert();
+        document.getElementById('controls').classList.remove('shifted');
+        syncMenuCurrent(null);
+
+        // Don't strand keyboard focus inside a panel that just went inert.
+        if (focusWasInside) {
+            // (On a phone the row that opened it is in the closed Explore sheet: the dock's button instead.)
+            const back = sidebarReturnFocus && sidebarReturnFocus.isConnected && !sidebarReturnFocus.closest('[inert]')
+                ? sidebarReturnFocus
+                : document.getElementById(isPhone() ? 'explore-btn' : 'system-btn');
+            back?.focus({ preventScroll: true });
+        }
+        sidebarReturnFocus = null;
+    });
+}
+setupDetails();
 
 function announce(message) {
     const el = document.getElementById('announcer');
@@ -880,27 +931,6 @@ function announce(message) {
     requestAnimationFrame(() => { el.textContent = message; });
 }
 
-// Showcase: close the details and put keyboard focus somewhere sensible.
-engine.on('deselect', () => {
-    const sb = document.getElementById('sidebar');
-    const focusWasInside = sb.contains(document.activeElement);
-    sb.classList.remove('active');
-    setDetailsExpanded(false);
-    sb.inert = true;
-    syncMenuInert();
-    document.getElementById('controls').classList.remove('shifted');
-    syncMenuCurrent(null);
-
-    // Don't strand keyboard focus inside a panel that just went inert.
-    if (focusWasInside) {
-        // (On a phone the row that opened it is in the closed Explore sheet: the dock's button instead.)
-        const back = sidebarReturnFocus && sidebarReturnFocus.isConnected && !sidebarReturnFocus.closest('[inert]')
-            ? sidebarReturnFocus
-            : document.getElementById(isPhone() ? 'explore-btn' : 'system-btn');
-        back?.focus({ preventScroll: true });
-    }
-    sidebarReturnFocus = null;
-});
 
 // Science images are served from web-sized WebP copies in images/web/ (the originals run
 // to 10000px and 13MB, and decoding one stalled the page). If a copy is missing, the
@@ -1410,7 +1440,6 @@ function syncMenuInert() {
     const covered = sidebar.classList.contains('active') && sidebarLeft < menu.offsetLeft + menu.offsetWidth;
     menu.inert = cinematicActive || covered;
 }
-window.addEventListener('resize', syncMenuInert);
 
 // Tell the engine how much of the screen the panels cover round a selection. Beside the scene,
 // the menu (while shown; Cinematic Mode hides it) and the sidebar (assumed open: a selection
@@ -1432,10 +1461,14 @@ function syncViewInsets() {
     }
     engine.setViewInsets(insets);
 }
-window.addEventListener('resize', syncViewInsets);
-// Panel sizes can change without a resize (the header's text wrapping once the font loads).
-new ResizeObserver(syncViewInsets).observe(document.getElementById('header'));
-syncViewInsets();
+function setupLayout() {
+    window.addEventListener('resize', syncMenuInert);
+    window.addEventListener('resize', syncViewInsets);
+    // Panel sizes can change without a resize (the header's text wrapping once the font loads).
+    new ResizeObserver(syncViewInsets).observe(document.getElementById('header'));
+    syncViewInsets();
+}
+setupLayout();
 
 function startCinematicMode() {
     if (cinematicActive) return;
@@ -1505,59 +1538,57 @@ function showSolarSystem({ animate = true } = {}) {
 const DRAG_THRESHOLD_PX = 6;
 let pointerDownPos = null;
 
-engine.canvas.addEventListener('pointerdown', (e) => {
-    if (!e.isPrimary) return;
-    pointerDownPos = { x: e.clientX, y: e.clientY };
-    engine.hurry();
-});
-engine.canvas.addEventListener('wheel', () => engine.hurry(), { passive: true });
+// The showcase's input: the canvas, the sidebar's close and Escape.
+function setupInput() {
+    engine.canvas.addEventListener('pointerdown', (e) => {
+        if (!e.isPrimary) return;
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+        engine.hurry();
+    });
+    engine.canvas.addEventListener('wheel', () => engine.hurry(), { passive: true });
 
-// Taking hold of the camera ends the tour.
-engine.on('steer', stopCinematicMode);
+    // Taking hold of the camera ends the tour.
+    engine.on('steer', stopCinematicMode);
 
-engine.canvas.addEventListener('click', (e) => {
-    // Orbiting with a drag also ends in a click; only a still tap is a selection.
-    const start = pointerDownPos;
-    pointerDownPos = null;
-    if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > DRAG_THRESHOLD_PX) return;
+    engine.canvas.addEventListener('click', (e) => {
+        // Orbiting with a drag also ends in a click; only a still tap is a selection.
+        const start = pointerDownPos;
+        pointerDownPos = null;
+        if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > DRAG_THRESHOLD_PX) return;
 
-    // A tap on the scene ends the tour, then carries on as a normal selection.
-    stopCinematicMode();
+        // A tap on the scene ends the tour, then carries on as a normal selection.
+        stopCinematicMode();
 
-    const name = engine.pick(e.clientX, e.clientY);
-    if (name) selectObject(name);
-    else engine.deselect();
-});
+        const name = engine.pick(e.clientX, e.clientY);
+        if (name) selectObject(name);
+        else engine.deselect();
+    });
 
-document.getElementById('sidebar-close').addEventListener('click', () => {
-    stopCinematicMode();
-    engine.deselect();
-});
-
-// Reading the details means the visitor wants to stay on this object.
-document.getElementById('sidebar').addEventListener('pointerdown', stopCinematicMode);
-
-window.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    // The credits dialog closes itself on Escape; leave the scene alone.
-    if (document.getElementById('credits-dialog').open) return;
-    if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
-    engine.hurry();
-    if (cinematicActive) { stopCinematicMode(); return; }
-    if (document.getElementById('sidebar').classList.contains('active')) {
+    document.getElementById('sidebar-close').addEventListener('click', () => {
+        stopCinematicMode();
         engine.deselect();
-    }
-});
+    });
 
+    // Reading the details means the visitor wants to stay on this object.
+    document.getElementById('sidebar').addEventListener('pointerdown', stopCinematicMode);
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        // The credits dialog closes itself on Escape; leave the scene alone.
+        if (document.getElementById('credits-dialog').open) return;
+        if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
+        engine.hurry();
+        if (cinematicActive) { stopCinematicMode(); return; }
+        if (document.getElementById('sidebar').classList.contains('active')) {
+            engine.deselect();
+        }
+    });
+}
+setupInput();
 
 // Showcase, each frame: the clock line (when the second changes) and the reticles.
 engine.onFrame(dt => {
-    const time = engine.getTime();
-    const currentSimulatedSeconds = Math.floor(time / 1000);
-    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
-        lastSimulatedSeconds = currentSimulatedSeconds;
-        if (clockElement) clockElement.textContent = formatSimulatedTime(new Date(time));
-    }
+    updateClock();
     updateReticles(dt, { hovered: hoveredObj, groups: reticleGroups(), rightEdge: sceneRightEdge() });
 });
 
