@@ -2,7 +2,7 @@
 
 The engine draws the Solar System and flies the camera. Apps (the showcase now, a presentation app later) build their panels round it and talk to it only through this API. See `ENGINE-PLAN.md` for the plan this is part of.
 
-Today the engine still lives in `src/main.js`, and the API is gathered in its `engine` object (in dev builds also at `window.__ouniverse.engine`). Phase 3 moves it into `src/engine/`, and `createEngine` will return that object.
+The engine is moving into `src/engine/` (Phase 3): the scene, bodies, models, landers, camera, lights and clocks are there; the frame loop, adaptive resolution, the sky and loading are still in `src/main.js`. The API is gathered in `main.js`'s `engine` object (in dev builds also at `window.__ouniverse.engine`), which `createEngine` will return.
 
 Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 
@@ -89,5 +89,5 @@ Showcase things the engine code still does, to move out in Phases 3 and 4:
 - **Loading:** `loadingManager.onProgress` and `markSceneReady` write the splash. These become the `progress` and `ready` events.
 - **The clock line:** the loop writes `#clock`. The showcase can read `getDate()` instead.
 - **Reticles and labels** (`updateReticles` in the loop, `sceneRightEdge` reading the sidebar): a shared feature for Phase 4, built on `projectBody` and the view insets.
-- **Input handlers:** canvas clicks select, any grab or scroll calls `hurry`, and Escape deselects. These are the showcase's choices. The OrbitControls `start` listener also stops Cinematic Mode.
-- **Menu highlights:** `updateOrbitLineHighlights` lights the orbits of the menu holder that is hovered or shown (`hoveredHolder`, `shownHolder`).
+- **Input handlers:** canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, and taking hold of the controls stops Cinematic Mode (a listener the showcase adds to `controls`). These are the showcase's choices.
+- **Menu highlights:** `updateOrbitLineHighlights` lights the orbits of the menu holder that is hovered or shown (`hoveredHolder`, `shownHolder`). The showcase relights them on `select` and `deselect`; `updateTrajectoryLines` (in the loop) still calls it when JUICE's cruise line gives way to its arrival orbit.
