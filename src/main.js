@@ -11,7 +11,7 @@ import { pendingLanders, attemptToLand } from './engine/landers.js';
 import { plannedMaterials, flattenModel, buildModelLevel, revealNextModel, updateModelDetail, startPreloads } from './engine/models.js';
 import { sunEffect, getStandardizedOrbitColor, getSuborbitalPosition, buildSystem } from './engine/bodies.js';
 import { PINNED_DATE, timeScale, simulatedDate, clock, motionTime, heldMotionTime, advanceMotion, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
-import { onEngine } from './engine/events.js';
+import { onEngine, emitEngine } from './engine/events.js';
 import { selectedObject, controls, isTransitioning, setViewInsets, updateViewOffset, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, setUserControl, deselect, updateCamera, showOverview, placeCameraAt, initControls } from './engine/camera.js';
 import { updateVisibility } from './engine/visibility.js';
 import { selectionSpot, getSunOcclusion, updateSelectionSpot, updateSunShadow } from './engine/lighting.js';
@@ -881,7 +881,7 @@ function updateTrajectoryLines(obj, arrived) {
     if (lines.arrived) lines.arrived.visible = arrived;
     if (shown && obj.orbitLine !== shown) {
         obj.orbitLine = shown;
-        updateOrbitLineHighlights();
+        emitEngine('orbit-change', { data: obj.data });
     }
 }
 
@@ -1429,6 +1429,8 @@ function selectObject(name, { returnFocusTo = null } = {}) {
 // A choice, or letting go, ends any holder on show and lights the chosen object's orbit.
 onEngine('select', () => { clearShownHolder(); updateOrbitLineHighlights(); });
 onEngine('deselect', () => { clearShownHolder(); updateOrbitLineHighlights(); });
+// A trajectory's cruise line gave way to its arrival orbit (or back): style the line now shown.
+onEngine('orbit-change', updateOrbitLineHighlights);
 
 onEngine('select', ({ data, waiting }) => {
     if (!cinematicActive) coachStep('pick');
@@ -2073,6 +2075,13 @@ function cycleCinematic() {
 }
 
 // --- ANIMATION LOOP ---
+// The app's own work each frame (onFrame), called directly, after the camera and lights have moved
+// and just before the scene is drawn.
+const frameHooks = [];
+function onFrame(hook) {
+    frameHooks.push(hook);
+}
+
 function animate() {
     requestAnimationFrame(animate);
     const realDt = clock.getDelta();
@@ -2088,12 +2097,6 @@ function animate() {
     revealNextModel();
 
     simulatedDate.setTime(simulatedDate.getTime() + (realDt * timeScale * 1000));
-
-    const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
-    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
-        lastSimulatedSeconds = currentSimulatedSeconds;
-        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
-    }
 
     const days = getDaysSinceJ2000(simulatedDate);
 
@@ -2201,7 +2204,7 @@ function animate() {
     updateViewOffset(dt);
     updateSunShadow(dt);
     updateSelectionSpot(dt);
-    updateReticles(dt);
+    for (const hook of frameHooks) hook(dt);
     // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
     if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
     const frameStart = performance.now();
@@ -2338,6 +2341,16 @@ if (import.meta.env.DEV) {
             placeCameraAt(time);
         } };
 }
+
+// Showcase, each frame: the clock line (when the second changes) and the reticles.
+onFrame(dt => {
+    const currentSimulatedSeconds = Math.floor(simulatedDate.getTime() / 1000);
+    if (currentSimulatedSeconds !== lastSimulatedSeconds) {
+        lastSimulatedSeconds = currentSimulatedSeconds;
+        if (clockElement) clockElement.textContent = formatSimulatedTime(simulatedDate);
+    }
+    updateReticles(dt);
+});
 
 loadSystem();
 animate();
