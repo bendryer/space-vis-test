@@ -4867,30 +4867,38 @@ function getSolarSystemView(outPos, outTarget) {
     return outPos.copy(dir).multiplyScalar(far);
 }
 
-// "Solar System" pinned atop the menu: deselect and show every planet's orbit.
-// animate: false jumps straight there, for the view on load.
-function showSolarSystem({ animate = true } = {}) {
+// Let go of any selection and show the whole Solar System, every planet's orbit lit.
+// animate: false jumps straight there.
+function showOverview({ animate = true } = {}) {
     deselect();
-    stopCinematicMode();
     releaseUserControl();
 
     selectedObject = null;
     isTracking = false;
     updateOrbitLineHighlights();
     solarSystemView = true;
-    syncMenuCurrent('Solar System');
     solarSystemSpin = 0;
 
     getSolarSystemView(transitionEndPos, transitionEndTarget);
 
     if (animate) {
         initiateTransition(transitionEndPos);
-        announce('Showing the whole Solar System');
     } else {
         camera.position.copy(transitionEndPos);
         controls.target.copy(transitionEndTarget);
         controls.update();
     }
+}
+
+// Showcase: "Solar System" pinned atop the menu (and the view on load, with animate: false).
+// The details close before the tour stops: stopping it first on a phone would put focus in the
+// details just as they close.
+function showSolarSystem({ animate = true } = {}) {
+    deselect();
+    stopCinematicMode();
+    showOverview({ animate });
+    syncMenuCurrent('Solar System');
+    if (animate) announce('Showing the whole Solar System');
 }
 
 // Only clicks on the 3D view itself select or deselect. Listening on the canvas
