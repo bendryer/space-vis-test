@@ -3,20 +3,22 @@
 import * as THREE from 'three';
 import { engineOptions } from './config.js';
 import { BASE_PIXEL_RATIO, animate, createGpuTimer, onFrame, resolution } from './render.js';
-import { PINNED_DATE, getDate, setDate, setTimeRate } from './time.js';
+import { PINNED_DATE, getDate, setDate, setTimeRate, simulatedDate } from './time.js';
 import { SKY_FACES, ktx2Loader, setSceneVisible, startSky } from './sky.js';
-import { applySunScale } from './orbits.js';
+import { applySunScale, getSystemRoot } from './orbits.js';
 import { attemptToLand } from './landers.js';
-import { buildSystem } from './bodies.js';
+import { buildSystem, getStandardizedOrbitColor } from './bodies.js';
 import { camera, createRenderer, renderer, scene } from './scene.js';
 import { celestialMap } from './state.js';
 import { collectTextures } from './gpu.js';
-import { deselect, flyTo, hurry, initControls, setFlightPace, setUserControl, setViewInsets, showOverview } from './camera.js';
+import { deselect, flyTo, hurry, initControls, setFlightPace, setUserControl, setViewInsets, showOverview, selectedObject } from './camera.js';
 import { emitEngine, onEngine } from './events.js';
 import { loadingManager } from './assets.js';
 import { projectBody } from './projection.js';
 import { startPreloads } from './models.js';
 import { installDevHook } from './devhook.js';
+import { pick } from './picking.js';
+import { setOrbitHighlights } from './highlights.js';
 
 // --- LOADING MANAGER ---
 // The engine reports loading as "progress" events, 0 to 1.
@@ -106,9 +108,25 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
         getObject, listObjects,
         // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
         projectBody(name) {
+            // The renderer refreshes the camera's matrices only when it draws; an app projecting
+            // from its onFrame hook needs this frame's camera.
+            camera.updateMatrixWorld();
             const p = projectBody(celestialMap.get(name));
             return p && { x: p.cx, y: p.cy, radius: p.bodyR };
         },
+        // The selected object's data.json entry, or null.
+        getSelection() {
+            return selectedObject ? selectedObject.userData : null;
+        },
+        // The simulated date in milliseconds, without making a Date (for per-frame use).
+        getTime() {
+            return simulatedDate.getTime();
+        },
+        getSystem: getSystemRoot,
+        getOrbitColor(name) {
+            return getStandardizedOrbitColor(getObject(name));
+        },
+        pick, setOrbitHighlights,
         setViewInsets, setFlightPace, setUserControl, setSceneVisible, loadDeferred,
     };
     if (import.meta.env.DEV) installDevHook(engine);

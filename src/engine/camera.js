@@ -376,7 +376,7 @@ function planFlightPath(from, to) {
 
 // How unhurried flights are (a multiple of the base duration); the tour flies slower.
 let flightPace = USER_FLIGHT_SCALE;
-export function setFlightPace(scale) { flightPace = scale; }
+export function setFlightPace(scale = USER_FLIGHT_SCALE) { flightPace = scale; }
 
 function estimateFlightDuration(travelDist) {
     const flightScale = prefersReducedMotion.matches ? 0 : flightPace;
@@ -859,6 +859,7 @@ export function initControls() {
             controls.autoRotate = false;
             clearTimeout(autoOrbitResumeTimer);
         }
+        emitEngine('steer');
     });
     controls.addEventListener('end', () => {
         if (!userHasControl || prefersReducedMotion.matches) return;
