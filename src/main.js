@@ -3487,7 +3487,7 @@ function initiateTransition(destPos, arrivalTime = null) {
 
 // Visitors can't steer mid-flight (OrbitControls is off), so any grab, scroll or
 // Escape during a flight fast-forwards it to arrive within a moment.
-function hurryTransition() {
+function hurry() {
     if (!isTransitioning) return;
     const remaining = 1 - transitionProgress;
     if (remaining <= 0) return;
@@ -4901,9 +4901,9 @@ let pointerDownPos = null;
 renderer.domElement.addEventListener('pointerdown', (e) => {
     if (!e.isPrimary) return;
     pointerDownPos = { x: e.clientX, y: e.clientY };
-    hurryTransition();
+    hurry();
 });
-renderer.domElement.addEventListener('wheel', hurryTransition, { passive: true });
+renderer.domElement.addEventListener('wheel', hurry, { passive: true });
 
 // Taking hold of the camera ends the tour, and around a focused object it hands
 // steering to the visitor instead of fighting them back onto the scripted orbit.
@@ -4936,7 +4936,7 @@ renderer.domElement.addEventListener('keydown', (e) => {
     const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
     if (!turn && !zoom) return;
     e.preventDefault();
-    hurryTransition();
+    hurry();
     controls.dispatchEvent({ type: 'start' });
     _keyOffset.subVectors(camera.position, controls.target);
     if (turn) {
@@ -5018,7 +5018,7 @@ window.addEventListener('keydown', (e) => {
     // The credits dialog closes itself on Escape; leave the scene alone.
     if (document.getElementById('credits-dialog').open) return;
     if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
-    hurryTransition();
+    hurry();
     if (cinematicActive) { stopCinematicMode(); return; }
     if (document.getElementById('sidebar').classList.contains('active')) {
         deselect();
