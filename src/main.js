@@ -526,11 +526,15 @@ const pixelRatio = window.devicePixelRatio;
 
 // --- RENDERER ---
 let renderer;
-try {
+// Throws where WebGL isn't available.
+function createRenderer() {
     renderer = new THREE.WebGLRenderer({
         antialias: true, // Native hardware MSAA for smooth antialiased edges on models & orbits
         powerPreference: "high-performance"
     });
+}
+try {
+    createRenderer();
 } catch (e) {
     showFatalError('Your browser or device doesn’t support 3D graphics (WebGL), or it’s turned off. Try an up-to-date Chrome, Edge, Firefox or Safari, or check that hardware acceleration is enabled.');
     throw e; // Nothing below can run without a renderer
