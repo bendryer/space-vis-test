@@ -1,21 +1,21 @@
 import './style.css';
 import * as THREE from 'three';
-import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { celestialMap, objects } from './engine/state.js';
-import { USER_FLIGHT_SCALE, MAX_MOTION_DT, prefersReducedMotion, getEffectiveModel } from './engine/config.js';
+import { USER_FLIGHT_SCALE, prefersReducedMotion, getEffectiveModel } from './engine/config.js';
 import { scene, camera, renderer, createRenderer, isInScene } from './engine/scene.js';
-import { getDaysSinceJ2000, applySunScale, faceParent, getKeplerPosition, getTrajectoryPosition, getSystemRoot } from './engine/orbits.js';
-import { loadingManager, texLoader, lazyGltfLoader, fixPath } from './engine/assets.js';
-import { collectTextures, uploadNextTexture } from './engine/gpu.js';
+import { applySunScale, getSystemRoot } from './engine/orbits.js';
+import { loadingManager, lazyGltfLoader, fixPath } from './engine/assets.js';
+import { collectTextures } from './engine/gpu.js';
 import { pendingLanders, attemptToLand } from './engine/landers.js';
-import { plannedMaterials, flattenModel, buildModelLevel, revealNextModel, updateModelDetail, startPreloads } from './engine/models.js';
-import { sunEffect, getStandardizedOrbitColor, getSuborbitalPosition, buildSystem } from './engine/bodies.js';
-import { PINNED_DATE, timeScale, simulatedDate, clock, motionTime, heldMotionTime, advanceMotion, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
+import { flattenModel, buildModelLevel, startPreloads } from './engine/models.js';
+import { sunEffect, getStandardizedOrbitColor, buildSystem } from './engine/bodies.js';
+import { PINNED_DATE, simulatedDate, holdMotionClock, getDate, setDate, setTimeRate } from './engine/time.js';
 import { onEngine, emitEngine } from './engine/events.js';
-import { selectedObject, controls, isTransitioning, setViewInsets, updateViewOffset, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, setUserControl, deselect, updateCamera, showOverview, placeCameraAt, initControls } from './engine/camera.js';
-import { updateVisibility } from './engine/visibility.js';
-import { selectionSpot, getSunOcclusion, updateSelectionSpot, updateSunShadow } from './engine/lighting.js';
-import { getTumbleSpeed, updateMissionAttitude } from './engine/motion.js';
+import { selectedObject, controls, isTransitioning, setViewInsets, BODY_TYPES, flightCurve, getFlightObstacles, setFlightPace, hurry, flyTo, setUserControl, deselect, showOverview, placeCameraAt, initControls } from './engine/camera.js';
+import { selectionSpot, getSunOcclusion } from './engine/lighting.js';
+import { projectBody } from './engine/projection.js';
+import { setSceneVisible, SKY_FACES, ktx2Loader, startSky } from './engine/sky.js';
+import { BASE_PIXEL_RATIO, resolution, createGpuTimer, onFrame, animate } from './engine/render.js';
 
 // --- CONFIGURATION ---
 // The details sidebar sits beside the scene (rather than over most of it) from this width up;
@@ -36,14 +36,7 @@ let cinematicActive = false;
 let cinematicTimer = null;
 let cinematicQueue = [];
 let sidebarReturnFocus = null;
-let animFrameCounter = 0;
 
-
-// Whether the app is showing the scene (false while a splash covers it): the sky fades in only then.
-let sceneVisible = true;
-function setSceneVisible(visible) {
-    sceneVisible = visible;
-}
 
 // --- LOADING MANAGER ---
 // The engine reports loading as "progress" events, 0 to 1.
@@ -315,142 +308,6 @@ function loadDeferred() {
 }
 
 
-const pixelRatio = window.devicePixelRatio;
-// Sweet spot for integrated GPUs: 1.25x pixel ratio + Hardware MSAA gives crisp Retina anti-aliasing while keeping fill-rate low
-const BASE_PIXEL_RATIO = Math.min(pixelRatio, 1.25);
-
-
-// --- ADAPTIVE RESOLUTION ---
-// Where the GPU can't draw the scene in time (a low-power laptop, or one driving a 4K screen), draw
-// fewer pixels rather than drop frames. Hardware that keeps up never leaves full resolution. The
-// scene is timed on the GPU itself where the browser allows (timer queries), so a capped frame
-// rate (a battery saver's 30 fps) or a busy CPU isn't mistaken for a slow GPU, and the resolution
-// comes back once there's room. Without GPU timing it only steps down, for sustained slow frames.
-const RESOLUTION_STEPS = [1, 0.85, 0.72];
-const GPU_BUDGET_MS = 13; // median GPU time per frame above which a step down is taken
-const GPU_HEADROOM_MS = 9; // the next step up must be predicted to cost less than this
-const SLOW_FRAME_MS = 40; // without GPU timing: median frame interval (under 25 fps) to step down
-const RESOLUTION_HOLD_MS = 3000; // wait after a change before judging again
-const resolution = {
-    step: 0, changedAt: 0, lastFrame: 0, gpu: [], intervals: [],
-    timer: null, // GPU timer queries, where the browser has them (createGpuTimer)
-};
-function createGpuTimer() {
-    const gl = renderer.getContext();
-    const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-    return ext ? { gl, ext, pending: [], query: null } : null;
-}
-
-function beginFrameTiming(now) {
-    // A long gap is a hidden tab or a load stall, not the steady cost of drawing.
-    if (resolution.lastFrame && now - resolution.lastFrame < 250) pushSample(resolution.intervals, now - resolution.lastFrame);
-    resolution.lastFrame = now;
-    const t = resolution.timer;
-    if (!t) return;
-    const { gl, ext } = t;
-    const disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
-    while (t.pending.length && gl.getQueryParameter(t.pending[0], gl.QUERY_RESULT_AVAILABLE)) {
-        const q = t.pending.shift();
-        if (!disjoint) pushSample(resolution.gpu, gl.getQueryParameter(q, gl.QUERY_RESULT) / 1e6);
-        gl.deleteQuery(q);
-    }
-    if (t.pending.length < 4) {
-        t.query = gl.createQuery();
-        gl.beginQuery(ext.TIME_ELAPSED_EXT, t.query);
-    }
-}
-
-function endFrameTiming(now) {
-    const t = resolution.timer;
-    if (t && t.query) {
-        t.gl.endQuery(t.ext.TIME_ELAPSED_EXT);
-        t.pending.push(t.query);
-        t.query = null;
-    }
-    if (now - resolution.changedAt < RESOLUTION_HOLD_MS) return;
-    const median = samples => [...samples].sort((a, b) => a - b)[samples.length >> 1];
-    let next = resolution.step;
-    if (t) {
-        if (resolution.gpu.length < 90) return;
-        const gpu = median(resolution.gpu);
-        const up = resolution.step > 0 ? (RESOLUTION_STEPS[resolution.step - 1] / RESOLUTION_STEPS[resolution.step]) ** 2 : 0;
-        if (gpu > GPU_BUDGET_MS && resolution.step < RESOLUTION_STEPS.length - 1) next++;
-        else if (up && gpu * up < GPU_HEADROOM_MS) next--;
-    } else {
-        if (resolution.intervals.length < 90) return;
-        if (median(resolution.intervals) > SLOW_FRAME_MS && resolution.step < RESOLUTION_STEPS.length - 1) next++;
-    }
-    if (next === resolution.step) return;
-    resolution.step = next;
-    resolution.changedAt = now;
-    resolution.gpu.length = 0;
-    resolution.intervals.length = 0;
-    renderer.setPixelRatio(BASE_PIXEL_RATIO * RESOLUTION_STEPS[next]);
-}
-
-function pushSample(samples, value) {
-    samples.push(value);
-    if (samples.length > 120) samples.shift();
-}
-
-// --- SKY ---
-// The Milky Way is a cube map of six 2048px UASTC KTX2 faces, baked from the 8K equirect
-// JPEG at the same angular resolution. It stays GPU-compressed (BC7/ASTC, ~25MB) where the
-// JPEG decoded to ~128MB of raw RGBA. If KTX2 can't load, fall back to the JPEG.
-const SKY_FACES = ['px', 'nx', 'py', 'ny', 'pz', 'nz']; // three.js cube face order
-const SKY_FADE_SECONDS = 1;
-const ktx2Loader = new KTX2Loader().setTranscoderPath('basis/'); // detectSupport in createEngine
-
-function useEquirectSky() {
-    const sky = texLoader.load('textures/milky_way.jpg');
-    sky.colorSpace = THREE.SRGBColorSpace;
-    // Always magnified on screen at 8K, so mipmaps would never be sampled.
-    sky.generateMipmaps = false;
-    sky.minFilter = THREE.LinearFilter;
-    sky.mapping = THREE.EquirectangularReflectionMapping;
-    scene.background = sky;
-}
-
-// The sky doesn't hold up the loading screen: transcoding the six faces took ~3s after
-// everything the opening view needs was ready (~0.8s). It arrives behind the splash almost
-// always; if the visitor has already gone in, it fades up rather than popping in.
-function showSky(sky) {
-    try { renderer.initTexture(sky); } catch (e) { console.warn('Sky upload failed', e); }
-    scene.background = sky;
-    if (prefersReducedMotion.matches || !sceneVisible) return;
-    const start = performance.now();
-    scene.backgroundIntensity = 0;
-    const fade = () => {
-        scene.backgroundIntensity = Math.min(1, (performance.now() - start) / (SKY_FADE_SECONDS * 1000));
-        if (scene.backgroundIntensity < 1) requestAnimationFrame(fade);
-    };
-    requestAnimationFrame(fade);
-}
-
-// Transcoding competes with the shader warm-up for the CPU (it slowed the warm-up from 0.1s to
-// 0.8s), so it starts once the scene is ready, or as soon as the visitor goes in, whichever is first.
-let skyStarted = false;
-function startSky() {
-    if (skyStarted) return;
-    skyStarted = true;
-    Promise.all(SKY_FACES.map(face => ktx2Loader.loadAsync(`textures/milky_way_${face}.ktx2`)))
-    .then(faces => {
-        const sky = new THREE.CompressedCubeTexture(
-            faces.map(t => ({ width: t.image.width, height: t.image.height, mipmaps: t.mipmaps })),
-            faces[0].format, faces[0].type);
-        sky.colorSpace = THREE.SRGBColorSpace;
-        sky.minFilter = THREE.LinearFilter;
-        sky.magFilter = THREE.LinearFilter;
-        sky.generateMipmaps = false;
-        sky.needsUpdate = true;
-        showSky(sky);
-        performance.mark('sky-ready'); // read by the performance checks
-    })
-    .catch(err => {
-        console.warn('Compressed sky unavailable, using the JPEG', err);
-        useEquirectSky();
-    });
-}
 // --- ENGINE ---
 // Builds the engine round a WebGL renderer drawing into `canvas` (or a canvas of its own, which
 // the app puts on the page: engine.canvas), and returns its API (ENGINE.md). Throws where WebGL
@@ -528,8 +385,6 @@ function formatSimulatedTime(d) {
 }
 let lastSimulatedSeconds = -1;
 
-const _tempVec1 = new THREE.Vector3();
-const _tempVec2 = new THREE.Vector3();
 
 let hoveredObj = null;
 let hoveredHolder = null; // a menu holder (asteroids, comets) whose row is hovered
@@ -700,64 +555,6 @@ function hideReticle(r) {
     r.placement = null;
 }
 
-const _sphere = new THREE.Sphere();
-const _toLocal = new THREE.Matrix4();
-const _worldScale = new THREE.Vector3();
-const _bodyCentre = new THREE.Vector3();
-const _bodyEdge = new THREE.Vector3();
-const _camUp = new THREE.Vector3();
-
-// The body's bounding sphere in its own frame, cached on the object and rebuilt only when its
-// geometry changes (a model finishing loading, a detail level arriving). Measured this way the
-// sphere turns with the body, so its size and centre never shift as the body or its parent
-// rotates, the way a world-aligned bounding box would.
-function getLocalBodySphere(obj) {
-    const root = obj.mesh;
-    let key = '';
-    root.traverse(child => { if (child.geometry) key += child.geometry.uuid; });
-    if (!key) return null;
-    if (obj.reticleSphereKey === key) return obj.reticleSphere;
-
-    root.updateWorldMatrix(true, true);
-    _toLocal.copy(root.matrixWorld).invert();
-    const sphere = new THREE.Sphere();
-    let first = true;
-    root.traverse(child => {
-        if (!child.geometry) return;
-        if (!child.geometry.boundingSphere) child.geometry.computeBoundingSphere();
-        _sphere.copy(child.geometry.boundingSphere).applyMatrix4(child.matrixWorld).applyMatrix4(_toLocal);
-        if (first) { sphere.copy(_sphere); first = false; } else sphere.union(_sphere);
-    });
-    obj.reticleSphereKey = key;
-    obj.reticleSphere = sphere;
-    return sphere;
-}
-
-// The body's on-screen centre and radius, or null when it is off-screen or behind us: its
-// bounding sphere projected exactly, the radius carried out along the camera's up axis so view
-// offsets are respected.
-function projectBody(obj) {
-    if (!obj || !obj.mesh || !isInScene(obj.group)) return null;
-    obj.mesh.updateWorldMatrix(true, false);
-    const local = getLocalBodySphere(obj);
-    if (!local) return null;
-    _bodyCentre.copy(local.center).applyMatrix4(obj.mesh.matrixWorld);
-    obj.mesh.getWorldScale(_worldScale);
-    const worldR = local.radius * Math.max(_worldScale.x, _worldScale.y, _worldScale.z);
-    const inside = camera.position.distanceTo(_bodyCentre) <= worldR;
-
-    _camUp.setFromMatrixColumn(camera.matrixWorld, 1);
-    _bodyEdge.copy(_bodyCentre).addScaledVector(_camUp, worldR).project(camera);
-    _bodyCentre.project(camera);
-    if (_bodyCentre.z > 1) return null; // behind the camera
-    const w = window.innerWidth, h = window.innerHeight;
-    const cx = (_bodyCentre.x * 0.5 + 0.5) * w;
-    const cy = (-_bodyCentre.y * 0.5 + 0.5) * h;
-    const ex = (_bodyEdge.x * 0.5 + 0.5) * w;
-    const ey = (-_bodyEdge.y * 0.5 + 0.5) * h;
-    return { cx, cy, bodyR: inside ? Infinity : Math.hypot(ex - cx, ey - cy), w, h };
-}
-
 // The details panel's left edge when it sits beside the scene, else the viewport's right edge.
 function sceneRightEdge() {
     const sb = document.getElementById('sidebar');
@@ -926,18 +723,6 @@ function updateReticles(dt = 0.016) {
 
 // Shows the cruise line in transit and the arrival orbit once there, keeping the one shown as
 // the craft's orbit line (which hover and selection light up).
-function updateTrajectoryLines(obj, arrived) {
-    const lines = obj.trajectoryLines;
-    if (!lines) return;
-    const shown = arrived ? lines.arrived : lines.cruise;
-    if (lines.cruise) lines.cruise.visible = !arrived;
-    if (lines.arrived) lines.arrived.visible = arrived;
-    if (shown && obj.orbitLine !== shown) {
-        obj.orbitLine = shown;
-        emitEngine('orbit-change', { data: obj.data });
-    }
-}
-
 // --- LOADING ---
 // Fetches data.json and builds the system, then "built" (with every entry, for the app's own use).
 // Anything that goes wrong, including in a "built" listener, is reported as "error".
@@ -2121,145 +1906,6 @@ function cycleCinematic() {
     if (next) selectObject(next);
 }
 
-// --- ANIMATION LOOP ---
-// The app's own work each frame (onFrame), called directly, after the camera and lights have moved
-// and just before the scene is drawn.
-const frameHooks = [];
-function onFrame(hook) {
-    frameHooks.push(hook);
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    const realDt = clock.getDelta();
-    // Motion uses a clamped step so one slow frame can't make the camera leap;
-    // the simulated clock keeps real time.
-    const dt = Math.min(realDt, MAX_MOTION_DT);
-    advanceMotion(dt);
-    // Tumbles turn by the step, not the clock, so a held clock stops them too.
-    const turnDt = heldMotionTime === null ? dt : 0;
-    const elapsedTime = motionTime;
-
-    uploadNextTexture();
-    revealNextModel();
-
-    simulatedDate.setTime(simulatedDate.getTime() + (realDt * timeScale * 1000));
-
-    const days = getDaysSinceJ2000(simulatedDate);
-
-    if (pendingLanders.length > 0) attemptToLand();
-
-    plannedMaterials.forEach(mat => { mat.uniforms.uTime.value = elapsedTime; });
-
-    animFrameCounter++;
-    if (animFrameCounter % 10 === 0) {
-        updateVisibility();
-    }
-
-
-    celestialMap.forEach(obj => {
-        const { group, meshGroup, data } = obj;
-        if (data.orbit_type === 'landed') return;
-
-        if (!group.visible && !data.isParent) {
-            return;
-        }
-
-        let localPos;
-        if (data.orbit_type === 'trajectory') {
-            const arrived = getTrajectoryPosition(obj, days, group.position);
-            updateTrajectoryLines(obj, arrived);
-        } else if (data.orbit_type === 'lissajous') {
-            const p = celestialMap.get(data.parent);
-            if (p) {
-                const angle = (days * data.orbit.rate + data.orbit.M0) * (Math.PI / 180);
-                const radius = data.orbit.a;
-                const y_off = radius * Math.sin(angle);
-                const z_off = radius * 2.5 * Math.cos(angle);
-                const x_off = radius * 0.5 * Math.sin(2 * angle);
-                group.position.set(p.group.position.x + x_off, p.group.position.y + y_off, p.group.position.z + z_off);
-            }
-        } else if (data.orbit_type === 'suborbital') {
-            const p = celestialMap.get(data.parent);
-            if (p) {
-                const parentRad = p.data.radius || 1;
-                const duration = data.suborbital.duration || 0.05;
-
-                let simDays = days;
-                if (data.suborbital.progress !== undefined) {
-                    simDays = data.suborbital.progress * duration;
-                }
-
-                const localPos = getSuborbitalPosition(data.suborbital, parentRad, simDays);
-                const futurePos = getSuborbitalPosition(data.suborbital, parentRad, simDays + 0.0001);
-
-                localPos.applyEuler(p.meshGroup.rotation);
-                futurePos.applyEuler(p.meshGroup.rotation);
-
-                group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
-
-                _tempVec1.subVectors(futurePos, localPos).normalize();
-                _tempVec2.copy(group.position).add(_tempVec1);
-                group.lookAt(_tempVec2);
-
-                meshGroup.rotation.z -= dt * 0.5;
-            }
-        } else {
-            localPos = getKeplerPosition(data.orbit, days);
-            if (data.parent && data.parent !== 'Sun') {
-                const p = celestialMap.get(data.parent);
-                if (p) {
-                    group.position.set(p.group.position.x + localPos.x, p.group.position.y + localPos.y, p.group.position.z + localPos.z);
-                }
-            } else {
-                group.position.set(localPos.x, localPos.y, localPos.z);
-            }
-        }
-        if (data.rotation_mode === 'utc') {
-            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC.
-            const sunAngle = Math.atan2(-group.position.x, -group.position.z);
-            const hours = simulatedDate.getUTCHours();
-            const mins = simulatedDate.getUTCMinutes();
-            const secs = simulatedDate.getUTCSeconds();
-            const ms = simulatedDate.getUTCMilliseconds();
-            const timeFraction = (hours + mins / 60 + secs / 3600 + ms / 3600000) / 24.0;
-            const timeRotation = (timeFraction - 0.5) * Math.PI * 2;
-            meshGroup.rotation.y = (sunAngle - Math.PI / 2) + timeRotation;
-        } else if (data.rotation_mode === 'locked' && data.orbit) {
-            faceParent(meshGroup, data.orbit, days);
-        } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
-            if (!obj.tumbleSpeed) {
-                obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
-            }
-            meshGroup.rotateX(obj.tumbleSpeed.x * turnDt);
-            meshGroup.rotateY(obj.tumbleSpeed.y * turnDt);
-            meshGroup.rotateZ(obj.tumbleSpeed.z * turnDt);
-        } else if (data.rot_period) {
-            const theta = (days / data.rot_period) * Math.PI * 2;
-            const offset = (data.rot_offset || 0) * (Math.PI / 180);
-            meshGroup.rotation.y = theta + offset;
-        }
-        else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
-            updateMissionAttitude(obj, elapsedTime, turnDt, days);
-        }
-    });
-
-    // The rest of the frame is skipped when the camera loses its subject (see updateCamera).
-    if (!updateCamera(dt, elapsedTime)) return;
-
-    updateModelDetail();
-    updateViewOffset(dt);
-    updateSunShadow(dt);
-    updateSelectionSpot(dt);
-    for (const hook of frameHooks) hook(dt);
-    // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
-    if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
-    const frameStart = performance.now();
-    beginFrameTiming(frameStart);
-    renderer.render(scene, camera);
-    endFrameTiming(frameStart);
-}
-
 // EVENTS
 // Showcase: "Solar System" pinned atop the menu (and the view on load, with animate: false).
 // The details close before the tour stops: stopping it first on a phone would put focus in the
@@ -2350,17 +1996,6 @@ window.addEventListener('keydown', (e) => {
     if (document.getElementById('sidebar').classList.contains('active')) {
         deselect();
     }
-});
-
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    celestialMap.forEach(obj => {
-        if (obj.orbitLine && obj.orbitLine.material.resolution) {
-            obj.orbitLine.material.resolution.set(window.innerWidth, window.innerHeight);
-        }
-    });
 });
 
 // Dev-only hook for automated checks (camera paths, lander placement, model orientation); stripped from builds.

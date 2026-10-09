@@ -9,6 +9,7 @@ import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest } fr
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
 import { renderer, scene } from './scene.js';
+import { emitEngine } from './events.js';
 
 export let sunEffect = null; // see src/sun.js
 
@@ -372,4 +373,16 @@ export function buildSystem(data) {
             if (parent) parent.data.isParent = true;
         }
     });
+}
+
+export function updateTrajectoryLines(obj, arrived) {
+    const lines = obj.trajectoryLines;
+    if (!lines) return;
+    const shown = arrived ? lines.arrived : lines.cruise;
+    if (lines.cruise) lines.cruise.visible = !arrived;
+    if (lines.arrived) lines.arrived.visible = arrived;
+    if (shown && obj.orbitLine !== shown) {
+        obj.orbitLine = shown;
+        emitEngine('orbit-change', { data: obj.data });
+    }
 }
