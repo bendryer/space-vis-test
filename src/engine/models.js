@@ -518,3 +518,14 @@ function computeFrameRadius(root, box, boundingRadius, landed) {
     const rms = Math.min(Math.sqrt(sum / count), boundingRadius);
     return Math.sqrt(rms * boundingRadius);
 }
+
+// Preloaded models (~9MB for Earth's system and Comet 67P, none of it in the opening view) wait
+// until the scene is ready too, so on a slow connection they don't share bandwidth with the
+// textures the opening view needs. They still arrive while the splash is up.
+export const preloadQueue = [];
+let preloadsStarted = false;
+export function startPreloads() {
+    if (preloadsStarted) return;
+    preloadsStarted = true;
+    preloadQueue.forEach(data => loadModelForItem(data, true));
+}
