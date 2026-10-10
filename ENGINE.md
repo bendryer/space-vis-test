@@ -1,8 +1,8 @@
 # Engine API
 
-The engine draws the Solar System and flies the camera. Apps (the showcase now, a presentation app later) build their panels round it and talk to it only through this API. See `ENGINE-PLAN.md` for the plan this is part of.
+The engine draws the Solar System and flies the camera. Apps (the showcase, `src/apps/showcase/`, and the presentation, `src/apps/present/`) build their panels round it and talk to it only through this API. See `ENGINE-PLAN.md` for the plan this is part of.
 
-The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). The showcase (`src/apps/showcase/`) uses only this API: it imports nothing from `src/engine/` but `createEngine`.
+The engine lives in `src/engine/`; `createEngine` in `src/engine/index.js` returns the API (in dev builds also at `window.__ouniverse.engine`). Both apps use only this API: they import nothing from `src/engine/` but `createEngine`.
 
 Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 

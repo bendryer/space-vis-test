@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads the showcase app, `src/apps/showcase/main.js`, built on the engine in `src/engine/` (`createEngine`; its API is in `ENGINE.md`) and the shared features in `src/features/` (reticles). Together they render the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders (`src/engine/sun.js`, `src/engine/sun/*.glsl`), and a cinematic auto-tour camera mode.
+OUniverse: a browser-based interactive 3D solar system explorer built with **Three.js** and **Vite**, no other framework (plain JS, `"type": "module"`, no TypeScript). `index.html` loads the showcase app, `src/apps/showcase/main.js`, and `present.html` the presentation app, `src/apps/present/main.js` (see Presentations below); both are built on the engine in `src/engine/` (`createEngine`; its API is in `ENGINE.md`) and the shared features in `src/features/` (reticles). Together they render the Sun, planets, moons, asteroids, comets, and real space missions/spacecraft — many tied to Open University research — using GLTF/GLB models (with DRACO compression and LOD swapping), Keplerian orbital mechanics, custom GLSL shaders (`src/engine/sun.js`, `src/engine/sun/*.glsl`), and a cinematic auto-tour camera mode.
 
 `src/counter.js` and `src/javascript.svg` are unused Vite-scaffold leftovers, not imported anywhere.
 
@@ -17,7 +17,7 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 - `npm run preview`: serve the production build (`/space-vis-test/`)
 - `npm run deploy`: check, build and publish `dist/` to GitHub Pages (see Workflow)
 - `npm run lint`: ESLint (flat config).
-- `npm run smoke`: smoke test (`tools/smoke.mjs`). Starts its own dev server on port 5199, opens system Chrome on the GPU, flies to nine stops, runs Cinematic Mode for two cycles, and compares each screenshot with `smoke/baseline/`. It fails on a console error, a flight that doesn't finish, or a stop where more than 0.5% of pixels change. `npm run smoke -- --baseline` saves a new baseline, and `--only=Sun,Earth` runs just those stops. Output goes in `smoke/`, which is gitignored, so each machine keeps its own baseline. Take it from `main` before starting work that should change nothing visible.
+- `npm run smoke`: smoke test (`tools/smoke.mjs`). Starts its own dev server on port 5199, opens system Chrome on the GPU, flies to nine stops, runs Cinematic Mode for two cycles, then steps through the demo presentation on `present.html`, and compares each screenshot with `smoke/baseline/`. It fails on a console error, a flight that doesn't finish, or a stop where more than 0.5% of pixels change. `npm run smoke -- --baseline` saves a new baseline, and `--only=Sun,Earth` runs just those stops (`--only=present` just the presentation's). Output goes in `smoke/`, which is gitignored, so each machine keeps its own baseline. Take it from `main` before starting work that should change nothing visible.
 
 ## Workflow
 
@@ -30,6 +30,10 @@ OUniverse: a browser-based interactive 3D solar system explorer built with **Thr
 ## Product and design context
 
 `PRODUCT.md` (audience, purpose, constraints) and `DESIGN.md` (the OU visual system) describe the product. Read them before design work. Brand: OU colours, Poppins, the OU logo at `public/images/brand/`. `.impeccable/` holds the design tooling's record (`design.json`, critiques, surface notes); its live sessions and screenshots are gitignored.
+
+## Presentations
+
+`present.html` runs a set path from object to object for a speaker: `?p=<name>` loads `public/presentations/<name>.json` (default `demo`), `{ "title", "steps": [{ "target", "title" }] }`, where `target` is a `data.json` name (an unknown one is left out with a warning) and `title` is shown in the bar (defaults to the target). It opens on the whole Solar System. Next (→, ↓, Page Down, Space, N, or a clicker) flies to the next step and waits there; Next during a flight hurries it in rather than skipping; Previous (←, ↑, Page Up, Backspace, P), Home (the opening view) and End. The visitor can't steer the camera (`setUserControl(false)`). No panels yet; the plan for them is in `ENGINE-PLAN.md`. Vite builds both pages (`build.rollupOptions.input` in `vite.config.js`), so a deploy publishes `present.html` too.
 
 ## Data files
 

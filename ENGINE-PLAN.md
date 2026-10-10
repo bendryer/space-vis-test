@@ -98,11 +98,17 @@ The showcase is in `src/apps/showcase/`: `main.js` (78 lines) only wires the mod
 
 Smoke test 0.00% at every step. One-off checks: hover and holder highlights and reticles, clicking a body, keyboard steering and Escape, the error screens and the sky fade, a waiting lander, and the panels (search, details, Cinematic Mode, credits, the coach) on desktop and at phone size. Loads re-timed against the end of Phase 3 (12 cold production loads each, median): `scene-ready` 3.42 s before, 3.37 s after; `sky-ready` 4.73 s and 4.72 s.
 
-## Phase 5: Second entry point and a minimal presentation
+## Phase 5: Second entry point and a minimal presentation ✅
 
 - `present.html` + `src/apps/present/`, and the Vite multi-page `input`.
 - `presentations/demo.json` with three steps; arrow keys or a clicker run `flyTo` and wait for arrival. No panels yet.
 - Smoke test covers both pages; update `CLAUDE.md`.
+
+Done (2026-10-10). `present.html` loads `src/apps/present/main.js` (with `present.css` on `base.css`), which reads `public/presentations/<name>.json` (`?p=`, default `demo`: Earth, Perseverance, Philae; in `public/` so a presentation is an edit, not a build). It opens on the whole Solar System behind a loading cover, then Next and Previous step through with `flyTo`; Next during a flight calls `hurry` instead of skipping, and Home and End jump. `setUserControl(false)` keeps the arrow keys for stepping. A small bar shows the step's title and "2 of 3", with buttons for a mouse; an announcer says each step. It needed no new engine API.
+
+The smoke test steps through the demo after the showcase (four more screenshots: the opening view and each step). A one-off check covers back, Home, End, the buttons, Next mid-flight (lands in 0.6 s) and a missing presentation. Vite now splits the engine into a chunk both pages share, modulepreloaded by each; loads re-timed against `main` (12 cold production loads each, median, two rounds): `scene-ready` 3.36/3.44 s before, 3.48/3.46 s after; `sky-ready` 4.62/4.84 s and 4.82/4.66 s, within the spread between runs.
+
+Next, when wanted: the presentation's pop-out panels (surfaces and science data, anchored with the reticles' projection), `flyTo`'s `{ view, duration }`, a step's own date or time rate, and a presenter view.
 
 ## Risks to watch
 
