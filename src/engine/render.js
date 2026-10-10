@@ -97,6 +97,14 @@ function pushSample(samples, value) {
 
 const _tempVec1 = new THREE.Vector3();
 const _tempVec2 = new THREE.Vector3();
+const _axisInverse = new THREE.Quaternion();
+const _spin = new THREE.Quaternion();
+const _spinAxis = new THREE.Vector3(0, 1, 0);
+
+// Turns a body `angle` radians about its own north pole (its axis, set up in bodies.js).
+function spinAboutAxis(obj, angle) {
+    obj.meshGroup.quaternion.copy(obj.axis).multiply(_spin.setFromAxisAngle(_spinAxis, angle));
+}
 
 // --- ANIMATION LOOP ---
 // The app's own work each frame (onFrame), called directly, after the camera and lights have moved
@@ -193,15 +201,17 @@ export function animate() {
             }
         }
         if (data.rotation_mode === 'utc') {
-            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC.
-            const sunAngle = Math.atan2(-group.position.x, -group.position.z);
+            // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC. The Sun's
+            // direction is taken in the body's own frame, about its tilted axis.
+            _tempVec1.copy(group.position).negate().applyQuaternion(_axisInverse.copy(obj.axis).invert());
+            const sunAngle = Math.atan2(_tempVec1.x, _tempVec1.z);
             const hours = simulatedDate.getUTCHours();
             const mins = simulatedDate.getUTCMinutes();
             const secs = simulatedDate.getUTCSeconds();
             const ms = simulatedDate.getUTCMilliseconds();
             const timeFraction = (hours + mins / 60 + secs / 3600 + ms / 3600000) / 24.0;
             const timeRotation = (timeFraction - 0.5) * Math.PI * 2;
-            meshGroup.rotation.y = (sunAngle - Math.PI / 2) + timeRotation;
+            spinAboutAxis(obj, (sunAngle - Math.PI / 2) + timeRotation);
         } else if (data.rotation_mode === 'locked' && data.orbit) {
             faceParent(meshGroup, data.orbit, days);
         } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
@@ -214,7 +224,7 @@ export function animate() {
         } else if (data.rot_period) {
             const theta = (days / data.rot_period) * Math.PI * 2;
             const offset = (data.rot_offset || 0) * (Math.PI / 180);
-            meshGroup.rotation.y = theta + offset;
+            spinAboutAxis(obj, theta + offset);
         }
         else if (data.type === 'mission' && data.orbit_type !== 'suborbital') {
             updateMissionAttitude(obj, elapsedTime, turnDt, days);

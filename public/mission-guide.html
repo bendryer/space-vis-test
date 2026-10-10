@@ -320,6 +320,15 @@ function getEffectiveModelPath(item) {
 // so the page works whether it's served from a site root or a GitHub Pages sub-path.
 function fixPath(p) { return p ? p.replace(/^\/+/, '') : p; }
 
+// How far a body's north pole leans from the ecliptic's north, in degrees: from its "pole"
+// (right ascension and declination, as the app's poleDirection reads it), else its "tilt".
+function axialTilt(item) {
+  if (!item.pole) return item.tilt || 0;
+  const a = item.pole.ra * Math.PI / 180, d = item.pole.dec * Math.PI / 180, e = 23.4392911 * Math.PI / 180;
+  const zEcl = -Math.cos(d) * Math.sin(a) * Math.sin(e) + Math.sin(d) * Math.cos(e);
+  return Math.acos(Math.max(-1, Math.min(1, zEcl))) * 180 / Math.PI;
+}
+
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -455,7 +464,9 @@ function initPreview(container, item) {
     const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), material);
     group.add(sphere);
     if (item.ring) group.add(buildRing(item.ring));
-    group.rotation.z = THREE.MathUtils.degToRad(item.tilt || 0);
+    // Tilted, then spun about its own axis (ZYX: the spin about y comes before the tilt).
+    group.rotation.order = 'ZYX';
+    group.rotation.z = THREE.MathUtils.degToRad(axialTilt(item));
     setStatus(container, '');
   } else {
     setStatus(container, 'No 3D model available');
@@ -674,6 +685,7 @@ function factsFor(item) {
   if (item.model_named) add('Named model', `${item.model_named} (private: not shown)`);
   add('Texture', item.texture);
   add('Radius', item.radius !== undefined ? `${item.radius} (scene units)` : undefined);
+  add('Pole', item.pole && `RA ${item.pole.ra}°, Dec ${item.pole.dec}° (${fmt(axialTilt(item), 1)}° from the ecliptic's north)`);
   add('Tilt', item.tilt !== undefined ? `${item.tilt}°` : undefined);
   add('Rotation period', item.rot_period !== undefined ? `${item.rot_period} days` : undefined);
   add('Ring', item.ring && `${item.ring.inner_radius}–${item.ring.outer_radius} × radius, opacity ${item.ring.opacity ?? 1}`);

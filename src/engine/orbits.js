@@ -41,6 +41,18 @@ export function faceParent(meshGroup, orbit, days) {
     meshGroup.quaternion.setFromRotationMatrix(_lockM.makeBasis(_lockX, _lockY, _lockZ));
 }
 
+// A body's north pole ("pole": IAU right ascension and declination, J2000 equator) as a unit
+// vector in the scene: from the equator to the ecliptic (tilted by the obliquity), then to the
+// scene's axes as getKeplerPosition uses them (ecliptic x = X, y = -Z, z = Y).
+const OBLIQUITY_J2000 = 23.4392911 * (Math.PI / 180);
+export function poleDirection({ ra, dec }) {
+    const a = ra * (Math.PI / 180), d = dec * (Math.PI / 180);
+    const x = Math.cos(d) * Math.cos(a), y = Math.cos(d) * Math.sin(a), z = Math.sin(d);
+    const c = Math.cos(OBLIQUITY_J2000), s = Math.sin(OBLIQUITY_J2000);
+    const yEcl = y * c + z * s, zEcl = -y * s + z * c;
+    return new THREE.Vector3(x, zEcl, -yEcl);
+}
+
 export function getKeplerPosition(orbitData, days) {
     if (!orbitData || orbitData.a === 0) return { x: 0, y: 0, z: 0 };
     let M = (orbitData.M0 + (orbitData.rate * days)) % 360;

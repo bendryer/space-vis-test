@@ -5,7 +5,7 @@ import { celestialMap, objects } from './state.js';
 import { DEBUG_LANDING, engineOptions, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
 import { createSun } from './sun.js';
-import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest } from './orbits.js';
+import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest, poleDirection } from './orbits.js';
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
 import { renderer, scene } from './scene.js';
@@ -211,15 +211,21 @@ function createGenericSatellite(item) {
     return satGroup;
 }
 
+const _bodyUp = new THREE.Vector3(0, 1, 0);
+const _bodyTiltAxis = new THREE.Vector3(0, 0, 1);
+
 // Builds every object in `data` (data.json's entries) into the scene: its groups and mesh,
 // then its orbit line and its place under its parent, then which objects are parents.
 export function buildSystem(data) {
     data.forEach(item => {
         const group = new THREE.Group();
         const meshGroup = new THREE.Group();
-        if (item.tilt) {
-            meshGroup.rotation.z = (item.tilt * Math.PI) / 180;
-        }
+        // Which way the body's north pole (its +Y) points: "pole" if given, else "tilt" degrees
+        // off the scene's +Y. It spins about this axis (render.js), so seasons come out right.
+        const axis = new THREE.Quaternion();
+        if (item.pole) axis.setFromUnitVectors(_bodyUp, poleDirection(item.pole));
+        else if (item.tilt) axis.setFromAxisAngle(_bodyTiltAxis, (item.tilt * Math.PI) / 180);
+        meshGroup.quaternion.copy(axis);
         const visualContainer = new THREE.Group();
         if (item.orbit_type === 'suborbital') {
             visualContainer.rotation.x = Math.PI / 2;
@@ -227,7 +233,7 @@ export function buildSystem(data) {
         visualContainer.userData = item;
         meshGroup.add(visualContainer);
         group.add(meshGroup);
-        celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item });
+        celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item, axis });
 
         // --- SUN ---
         if (item.type === 'star') {

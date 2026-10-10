@@ -28,7 +28,7 @@ export function installDevHook(engine) {
             // took: set each to a turn that depends only on the held time.
             celestialMap.forEach(obj => {
                 if (!obj.tumbleSpeed) return;
-                obj.meshGroup.rotation.set(0, 0, (obj.data.tilt || 0) * Math.PI / 180);
+                obj.meshGroup.quaternion.copy(obj.axis);
                 obj.meshGroup.rotateX(obj.tumbleSpeed.x * time);
                 obj.meshGroup.rotateY(obj.tumbleSpeed.y * time);
                 obj.meshGroup.rotateZ(obj.tumbleSpeed.z * time);

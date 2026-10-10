@@ -6,7 +6,7 @@
     "radius": 25,
     "texture": "/textures/sun.jpg",
     "color": "#ffcc00",
-    "tilt": 7.25,
+    "pole": {"ra": 286.13, "dec": 63.87},
     "rot_period": 27,
     "orbit": {
       "a": 0,
@@ -27,7 +27,7 @@
     "texture": "/textures/mercury.jpg",
     "color": "#aaaaaa",
     "orbit_color": "#a1a1a1",
-    "tilt": 0.03,
+    "pole": {"ra": 281.0103, "dec": 61.4155},
     "rot_period": 58.6,
     "orbit": {
       "a_au": 0.38709927,
@@ -78,7 +78,7 @@
     "texture": "/textures/venus.jpg",
     "color": "#e6c229",
     "orbit_color": "#e3bb76",
-    "tilt": 177.3,
+    "pole": {"ra": 272.76, "dec": 67.16},
     "rot_period": -243,
     "orbit": {
       "a_au": 0.72333566,
@@ -105,7 +105,7 @@
     "segments": 48,
     "color": "#2244ff",
     "orbit_color": "#4a90e2",
-    "tilt": 23.4,
+    "pole": {"ra": 0.0, "dec": 90.0},
     "rot_period": 0.997,
     "rotation_mode": "utc",
     "orbit": {
@@ -615,7 +615,7 @@
     "texture": "/textures/mars.jpg",
     "color": "#cc3300",
     "orbit_color": "#ff4433",
-    "tilt": 25.2,
+    "pole": {"ra": 317.2692, "dec": 54.4325},
     "rot_period": 1.03,
     "orbit": {
       "a_au": 1.52371034,
@@ -739,7 +739,7 @@
     "texture": "/textures/jupiter.jpg",
     "color": "#d8ca9d",
     "orbit_color": "#e0a96d",
-    "tilt": 3.1,
+    "pole": {"ra": 268.0566, "dec": 64.4953},
     "rot_period": 0.41,
     "orbit": {
       "a_au": 5.202887,
@@ -897,7 +897,7 @@
     "texture": "/textures/saturn.jpg",
     "color": "#ead6b8",
     "orbit_color": "#f4d06f",
-    "tilt": 26.7,
+    "pole": {"ra": 40.589, "dec": 83.537},
     "rot_period": 0.45,
     "ring": {
       "texture": "/textures/saturn_ring.png",
@@ -986,7 +986,7 @@
     "texture": "/textures/uranus.jpg",
     "color": "#99ccff",
     "orbit_color": "#7de3e4",
-    "tilt": 97.8,
+    "pole": {"ra": 257.311, "dec": -15.175},
     "rot_period": -0.72,
     "orbit": {
       "a_au": 19.18916464,
@@ -1008,7 +1008,7 @@
     "texture": "/textures/neptune.jpg",
     "color": "#3366ff",
     "orbit_color": "#4b70dd",
-    "tilt": 28.3,
+    "pole": {"ra": 299.36, "dec": 43.46},
     "rot_period": 0.67,
     "orbit": {
       "a_au": 30.06992276,
