@@ -7,7 +7,8 @@
 // Starts its own Vite dev server, drives system Chrome on the real GPU, flies to a set of objects
 // with the simulation date pinned (?date=) and the motion clock held (__ouniverse.holdMotion), and
 // screenshots each one. Records console errors, GPU time per stop and the load marks, then runs
-// Cinematic Mode for two cycles. Fails on a console error, a flight that doesn't finish, or a
+// Cinematic Mode for two cycles. Then the presentation (present.html with the demo): its opening
+// view and each step, reached with the arrow key. Fails on a console error, a flight that doesn't finish, or a
 // screenshot that differs from the baseline by more than DIFF_LIMIT, or a stop whose keyboard
 // focus, announcement, details panel or current menu row differs from the baseline's.
 import { createServer } from 'vite';
@@ -30,7 +31,9 @@ const DIFF_LIMIT = 0.005;
 const args = new Set(process.argv.slice(2));
 // --only=Sun,Earth runs just those stops (for debugging the test itself).
 const only = process.argv.find(a => a.startsWith('--only='))?.slice(7).split(',');
-const STOPS = only ?? ALL_STOPS;
+const STOPS = (only ?? ALL_STOPS).filter(name => name !== 'present');
+// --only=present runs the presentation's steps; they run with any --only that names it, or none.
+const runPresent = !only || only.includes('present');
 const saveBaseline = args.has('--baseline');
 const root = path.resolve('smoke');
 const outDir = path.join(root, saveBaseline ? 'baseline' : 'latest');
@@ -42,19 +45,23 @@ const server = await createServer({ server: { port: PORT, strictPort: true }, lo
 await server.listen();
 const base = server.config.base;
 const url = `http://localhost:${PORT}${base}?date=${PINNED_DATE}`;
+const presentUrl = `http://localhost:${PORT}${base}present.html?date=${PINNED_DATE}`;
 
 const browser = await chromium.launch({
     executablePath: CHROME,
     headless: false,
     args: ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=d3d11', `--window-size=${VIEWPORT.width},${VIEWPORT.height + 140}`],
 });
-const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
+let page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
 // The first-run coach comes and goes on its own timers: mark it seen.
 await page.addInitScript(() => localStorage.setItem('ouniverse-coach-done', '1'));
 
 const errors = [];
-page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
-page.on('pageerror', err => errors.push(String(err)));
+const listen = p => {
+    p.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
+    p.on('pageerror', err => errors.push(String(err)));
+};
+listen(page);
 
 const report = { date: new Date().toISOString(), url, viewport: VIEWPORT, stops: [], cinematic: null, marks: {}, errors };
 const failures = [];
@@ -64,6 +71,27 @@ const waitFor = (fn, timeout, arg) => page.waitForFunction(fn, arg, { timeout, p
     if (!/Timeout/i.test(err.message)) console.warn(`  wait failed: ${err.message.split('\n')[0]}`);
     return false;
 });
+
+// Holds the motion clock and waits for the scene to settle, then records the stop's GPU time, its
+// state (stateFn, run in the page) and a screenshot, leaving uncheckedFn's area out of the comparison.
+async function capture(stop, stateFn, uncheckedFn) {
+    await app(t => window.__ouniverse.holdMotion(t), HELD_MOTION_TIME);
+    await page.waitForTimeout(1500); // detail levels and landers settle
+    if (!await waitForStill()) stop.warning = 'camera still moving';
+    await app(() => { window.__ouniverse.resolution.gpu.length = 0; });
+    await page.waitForTimeout(1500);
+    stop.gpuMs = await app(() => {
+        const s = [...window.__ouniverse.resolution.gpu].sort((a, b) => a - b);
+        return s.length ? +s[s.length >> 1].toFixed(2) : null;
+    });
+    stop.file = `${String(report.stops.length + 1).padStart(2, '0')}-${stop.name.toLowerCase().replace(/\W+/g, '-')}.png`;
+    stop.state = await app(stateFn);
+    await page.screenshot({ path: path.join(outDir, stop.file) });
+    stop.unchecked = uncheckedFn ? await app(uncheckedFn) : null;
+    await app(() => window.__ouniverse.holdMotion(null));
+    report.stops.push(stop);
+    console.log(`${stop.name.padEnd(18)} ${stop.flew ? 'flew' : 'no flight'}, ${((stop.arriveMs ?? 0) / 1000).toFixed(1)} s, GPU ${stop.gpuMs ?? '–'} ms${stop.warning ? `, ${stop.warning}` : ''}`);
+}
 
 // Wait until the camera has stopped moving (relative to its distance from the target).
 async function waitForStill(timeout = 15000) {
@@ -112,33 +140,18 @@ try {
         if (!arrived) { failures.push(`${name}: flight never finished`); stop.error = 'flight never finished'; }
         stop.selected = await app(() => document.getElementById('info-title')?.textContent ?? null);
 
-        await app(t => window.__ouniverse.holdMotion(t), HELD_MOTION_TIME);
-        await page.waitForTimeout(1500); // detail levels and landers settle
-        if (!await waitForStill()) stop.warning = 'camera still moving';
-        await app(() => { window.__ouniverse.resolution.gpu.length = 0; });
-        await page.waitForTimeout(1500);
-        stop.gpuMs = await app(() => {
-            const s = [...window.__ouniverse.resolution.gpu].sort((a, b) => a - b);
-            return s.length ? +s[s.length >> 1].toFixed(2) : null;
-        });
-        stop.file = `${String(report.stops.length + 1).padStart(2, '0')}-${name.toLowerCase().replace(/\W+/g, '-')}.png`;
-        // What a screenshot can't show: where keyboard focus is and what was announced.
-        stop.state = await app(() => ({
+        // What a screenshot can't show: where keyboard focus is and what was announced. Where the
+        // menu list lands when it scrolls to the selection depends on whether a group is still
+        // opening, so its area is left out of the comparison (it stays in the screenshot).
+        await capture(stop, () => ({
             focus: document.activeElement?.id || document.activeElement?.className || null,
             announced: document.getElementById('announcer')?.textContent ?? null,
             sidebar: document.getElementById('sidebar')?.classList.contains('active') ?? null,
             menuCurrent: document.querySelector('#mission-list [aria-current]')?.textContent?.trim() ?? null,
-        }));
-        await page.screenshot({ path: path.join(outDir, stop.file) });
-        // Where the menu list lands when it scrolls to the selection depends on whether a group is
-        // still opening, so its area is left out of the comparison (it stays in the screenshot).
-        stop.unchecked = await app(() => {
+        }), () => {
             const r = document.getElementById('mission-list')?.getBoundingClientRect();
             return r ? { x: Math.floor(r.left), y: Math.floor(r.top), w: Math.ceil(r.width), h: Math.ceil(r.height) } : null;
         });
-        await app(() => window.__ouniverse.holdMotion(null));
-        report.stops.push(stop);
-        console.log(`${name.padEnd(18)} ${stop.flew ? 'flew' : 'no flight'}, ${(stop.arriveMs / 1000).toFixed(1)} s, GPU ${stop.gpuMs ?? '–'} ms${stop.warning ? `, ${stop.warning}` : ''}`);
     }
 
     // Cinematic Mode: count arrivals until it has visited CINEMATIC_CYCLES missions.
@@ -162,6 +175,38 @@ try {
     console.log('Marks             ', Object.entries(report.marks).map(([k, v]) => `${k} ${v} ms`).join(', '));
 } catch (err) {
     failures.push(`run stopped: ${err.message}`);
+}
+
+// The presentation: its opening view, then each step of the demo, reached with the arrow key.
+if (runPresent) {
+    try {
+        await page.close();
+        page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
+        listen(page);
+        await page.goto(presentUrl);
+        if (!await waitFor(() => !document.getElementById('present-bar').hidden, 120000)) throw new Error('the presentation never became ready');
+        await app(() => { window.__ouniverse.resolution.changedAt = 1e15; });
+        await page.mouse.move(VIEWPORT.width / 2, 30);
+        await page.waitForTimeout(1500); // the loading cover fades
+        const steps = await app(() => fetch('./presentations/demo.json').then(r => r.json()).then(d => d.steps.length));
+        for (let i = 0; i <= steps; i++) {
+            const stop = { name: `present ${i}` };
+            if (i > 0) {
+                const start = Date.now();
+                await page.keyboard.press('ArrowRight');
+                stop.flew = await waitFor(() => window.__ouniverse.isTransitioning, 60000);
+                const arrived = await waitFor(() => !window.__ouniverse.isTransitioning, 90000);
+                stop.arriveMs = Date.now() - start;
+                if (!arrived) { failures.push(`${stop.name}: flight never finished`); stop.error = 'flight never finished'; }
+            }
+            await capture(stop, () => ({
+                where: document.querySelector('.present-where')?.textContent.trim() ?? null,
+                announced: document.getElementById('present-announcer')?.textContent ?? null,
+            }));
+        }
+    } catch (err) {
+        failures.push(`presentation stopped: ${err.message}`);
+    }
 }
 
 // Compare with the baseline in the browser (no image libraries needed).
