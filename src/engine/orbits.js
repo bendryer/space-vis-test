@@ -57,10 +57,14 @@ export function getKeplerPosition(orbitData, days) {
     const r = Math.hypot(x_orb, z_orb);
     const k = inAu && r > 0 ? auToScene(r) / r : 1;
 
+    // Worked out with ecliptic north along -Y, then turned over (y and z negated) so that north is
+    // +Y: orbits then go round anticlockwise seen from above, the same way the bodies spin. In the
+    // scene, ecliptic x = X, y = -Z, z = Y.
+
     // Fallback for simple 2D orbits that lack advanced parameters
     if (orbitData.node === undefined || orbitData.peri === undefined) {
         const i_rad = (orbitData.i || 0) * (Math.PI / 180);
-        return { x: x_orb * k, y: z_orb * Math.sin(i_rad) * k, z: z_orb * Math.cos(i_rad) * k };
+        return { x: x_orb * k, y: -z_orb * Math.sin(i_rad) * k, z: -z_orb * Math.cos(i_rad) * k };
     }
 
     // Full 3D Keplerian Rotation
@@ -75,7 +79,7 @@ export function getKeplerPosition(orbitData, days) {
     _keplerPos.applyAxisAngle(_keplerAxisY, -node_rad);
     _keplerPos.multiplyScalar(k);
 
-    return { x: _keplerPos.x, y: _keplerPos.y, z: _keplerPos.z };
+    return { x: _keplerPos.x, y: -_keplerPos.y, z: -_keplerPos.z };
 }
 
 // --- TRAJECTORIES ---
@@ -146,13 +150,13 @@ export function getTrajectoryPlan(obj) {
     });
     const knots = { days: [], angle: [], radius: [], height: [] };
     const legs = [];
-    let angle = points.length ? Math.atan2(points[0].x, points[0].z) : 0; // unwrapped, falling
+    let angle = points.length ? Math.atan2(points[0].x, points[0].z) : 0; // unwrapped, rising
     for (let i = 0; i + 1 < waypoints.length; i++) {
         const A = points[i], B = points[i + 1], wB = waypoints[i + 1];
         const d0 = waypoints[i].days, span = wB.days - d0;
         const rA = Math.hypot(A.x, A.z), rB = Math.hypot(B.x, B.z);
-        // Planets go round in the direction of falling atan2(x, z), so the craft does too.
-        let turn = Math.atan2(A.x, A.z) - Math.atan2(B.x, B.z);
+        // Planets go round in the direction of rising atan2(x, z), so the craft does too.
+        let turn = Math.atan2(B.x, B.z) - Math.atan2(A.x, A.z);
         while (turn < 0) turn += Math.PI * 2;
         if (span < 30 && turn > Math.PI * 11 / 6) turn -= Math.PI * 2; // a short hop slightly back, not a lap
         const bump = wB.extreme !== undefined ? auToScene(wB.extreme) - (rA + rB) / 2 : 0;
@@ -169,11 +173,11 @@ export function getTrajectoryPlan(obj) {
         for (let q = i === 0 ? 0 : 1; q <= 8; q++) {
             const s = q / 8, k = Math.round(s * N);
             knots.days.push(d0 + span * s);
-            knots.angle.push(angle - total * (cum[k] / cum[N]));
+            knots.angle.push(angle + total * (cum[k] / cum[N]));
             knots.radius.push(radiusAt(s));
             knots.height.push(A.y + (B.y - A.y) * s);
         }
-        angle -= total;
+        angle += total;
         legs.push({ to: wB.label || wB.at, revs });
     }
     const samples = [];

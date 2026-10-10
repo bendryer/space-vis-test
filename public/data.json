@@ -333,6 +333,7 @@
     "orbit_color": "#888888",
     "tilt": 6.68,
     "rot_period": 27.3,
+    "rotation_mode": "locked",
     "orbit": {
       "a": 30,
       "e": 0.055,
