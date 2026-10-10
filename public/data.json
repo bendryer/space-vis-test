@@ -31,10 +31,12 @@
     "rot_period": 58.6,
     "orbit": {
       "a_au": 0.38709927,
-      "e": 0.205,
-      "i": 7,
-      "M0": 174.7,
-      "rate": 4.09
+      "e": 0.20564,
+      "i": 7.005,
+      "M0": 174.793,
+      "rate": 4.0923344,
+      "node": 48.331,
+      "peri": 29.127
     },
     "description": "Mercury is the smallest planet in our solar system and the closest to the Sun, resulting in extreme temperature variations. Its heavily cratered surface resembles Earth's Moon, indicating that the planet has been geologically quiet for billions of years. Despite its small size, it has a global magnetic field, which is surprising for such a small planet, and a high density that suggests a massive metallic core.",
     "ou_involvement": "OU scientists have spent decades studying Mercury’s surface composition to understand the early volcanic history of the planet. Researchers use advanced spectroscopy to interpret data from visiting spacecraft and map the distribution of chemical elements. An OU scientist is the UK lead for BepiColombo's MIXS X-ray spectrometer, which will map the elements on Mercury's surface."
@@ -80,10 +82,12 @@
     "rot_period": -243,
     "orbit": {
       "a_au": 0.72333566,
-      "e": 0.007,
-      "i": 3.4,
-      "M0": 50.1,
-      "rate": 1.6
+      "e": 0.00678,
+      "i": 3.395,
+      "M0": 50.377,
+      "rate": 1.6021304,
+      "node": 76.68,
+      "peri": 54.923
     },
     "description": "Venus is often called Earth’s twin due to its similar size and density, but it possesses a thick, toxic atmosphere that creates a runaway greenhouse effect. The planet rotates backwards on its axis and suffers from surface temperatures hot enough to melt lead. Its surface is hidden by thick clouds of sulfuric acid, which are only penetrable by radar and specialized spectrometers.",
     "ou_involvement": "The Open University is helping to prepare ESA's EnVision mission to Venus. With a £2.3 million ESA grant, an OU team leads the testing and characterisation of the detectors in the VenSpec-U ultraviolet spectrometer, which will study the sulphur chemistry of Venus's clouds, and takes part in science preparations for the mission."
@@ -106,10 +110,12 @@
     "rotation_mode": "utc",
     "orbit": {
       "a_au": 1.00000261,
-      "e": 0.017,
-      "i": 0,
-      "M0": 357.5,
-      "rate": 0.9856
+      "e": 0.01671,
+      "i": 0.0,
+      "M0": 357.527,
+      "rate": 0.9856003,
+      "node": 0.0,
+      "peri": 102.938
     },
     "description": "Earth is the only known planet to support life and is characterized by its vast oceans and nitrogen-oxygen atmosphere. It features a dynamic surface shaped by plate tectonics and an active climate system that regulates temperatures for its diverse ecosystems. Our home planet sits within the Sun's habitable zone, allowing water to exist in liquid form on the surface.",
     "ou_involvement": "The Open University uses Earth observation data to monitor environmental changes and support international climate conservation efforts. Academics develop machine learning algorithms to analyse satellite imagery for tracking deforestation, urban growth, and glacial retreat. This research provides a critical foundation for teaching students about the intersection of technology and environmental sustainability."
@@ -429,10 +435,12 @@
     "radius": 1,
     "orbit": {
       "a": 1150,
-      "e": 0.017,
-      "i": 0,
-      "M0": 357.5,
-      "rate": 0.9856
+      "e": 0.01671,
+      "i": 0.0,
+      "M0": 357.527,
+      "rate": 0.9856003,
+      "node": 0.0,
+      "peri": 102.938
     },
     "ou_involvement": "The OU uses this reference point as a virtual laboratory to study how deep-space environment conditions affect various satellite components. Academics monitor the performance of multiple OU-characterized missions that are stationed at this critical vantage point. This data is used to improve the design of future detectors for flagship missions currently under development at the university."
   },
@@ -610,10 +618,12 @@
     "rot_period": 1.03,
     "orbit": {
       "a_au": 1.52371034,
-      "e": 0.094,
-      "i": 1.9,
-      "M0": 19.4,
-      "rate": 0.524
+      "e": 0.09339,
+      "i": 1.85,
+      "M0": 19.39,
+      "rate": 0.5240208,
+      "node": 49.56,
+      "peri": 286.497
     },
     "description": "Mars is known as the Red Planet due to the iron oxide on its surface and features the largest volcanoes and deepest canyons in the Solar System. Its thin atmosphere and frozen polar caps suggest a world that was once much warmer and wetter billions of years ago. Today, it is the focus of intense robotic exploration as scientists look for signs of ancient microbial life.",
     "ou_involvement": "The Open University has a long history of Martian research, ranging from the design of lander instruments to the analysis of orbital atmospheric data. Academics lead research into the planet's volatile cycles and the potential habitability of its subsurface environments. This research is used to support international space agencies in selecting landing sites for future rover and sample return missions."
@@ -732,10 +742,12 @@
     "rot_period": 0.41,
     "orbit": {
       "a_au": 5.202887,
-      "e": 0.049,
-      "i": 1.3,
-      "M0": 20,
-      "rate": 0.083
+      "e": 0.04839,
+      "i": 1.304,
+      "M0": 19.668,
+      "rate": 0.083081,
+      "node": 100.474,
+      "peri": 274.255
     },
     "description": "Jupiter is the largest planet in our Solar System and is a massive gas giant famous for its Great Red Spot. It has about a hundred known moons and a faint ring system, serving as a miniature solar system for astronomers to study. Its intense gravity and magnetic field have a profound influence on the movement of objects throughout the outer Solar System."
   },
@@ -895,10 +907,12 @@
     },
     "orbit": {
       "a_au": 9.53667594,
-      "e": 0.054,
-      "i": 2.49,
-      "M0": 317,
-      "rate": 0.033
+      "e": 0.05386,
+      "i": 2.486,
+      "M0": 317.355,
+      "rate": 0.0334815,
+      "node": 113.662,
+      "peri": 338.936
     },
     "description": "Saturn is a massive gas giant famous for its spectacular ring system, which is composed primarily of ice and rock particles. It is the second-largest planet in the Solar System and has a diverse collection of hundreds of moons, including the massive, orange-hued Titan. Despite its great size, the planet has a very low density and would theoretically float if placed in a large enough ocean.",
     "ou_involvement": "OU researchers have studied dust in the Saturn system with Cassini's Cosmic Dust Analyser, helping to calibrate the instrument and analysing the composition of dust around the planet. An OU scientist also led the Surface Science Package on the Huygens probe, which landed on Titan, Saturn's largest moon."
@@ -975,10 +989,12 @@
     "rot_period": -0.72,
     "orbit": {
       "a_au": 19.18916464,
-      "e": 0.046,
-      "i": 0.77,
-      "M0": 141,
-      "rate": 0.011
+      "e": 0.04726,
+      "i": 0.773,
+      "M0": 142.284,
+      "rate": 0.01172,
+      "node": 74.017,
+      "peri": 96.937
     },
     "description": "Uranus is an ice giant planet that is uniquely characterized by its extreme axial tilt, causing it to rotate almost on its side. Its pale blue-green color is a result of the methane in its atmosphere, which absorbs red light and reflects blue and green. It features a faint ring system and a diverse family of 29 known moons, most of which are composed of ice and rock."
   },
@@ -995,10 +1011,12 @@
     "rot_period": 0.67,
     "orbit": {
       "a_au": 30.06992276,
-      "e": 0.011,
+      "e": 0.00859,
       "i": 1.77,
-      "M0": 256,
-      "rate": 0.006
+      "M0": 259.915,
+      "rate": 0.0059899,
+      "node": 131.784,
+      "peri": 273.181
     }
   },
   {
@@ -2027,10 +2045,12 @@
     "radius": 1,
     "orbit": {
       "a": 850,
-      "e": 0.017,
-      "i": 0,
-      "M0": 357.5,
-      "rate": 0.9856
+      "e": 0.01671,
+      "i": 0.0,
+      "M0": 357.527,
+      "rate": 0.9856003,
+      "node": 0.0,
+      "peri": 102.938
     }
   },
   {
