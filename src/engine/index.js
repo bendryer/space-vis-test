@@ -5,7 +5,8 @@ import { engineOptions } from './config.js';
 import { BASE_PIXEL_RATIO, animate, createGpuTimer, onFrame, resolution } from './render.js';
 import { PINNED_DATE, getDate, setDate, setTimeRate, simulatedDate } from './time.js';
 import { SKY_FACES, ktx2Loader, setSceneVisible, startSky } from './sky.js';
-import { applySunScale, getSystemRoot } from './orbits.js';
+import { getSystemRoot } from './orbits.js';
+import { applyScales } from './scale.js';
 import { attemptToLand } from './landers.js';
 import { buildSystem, getStandardizedOrbitColor } from './bodies.js';
 import { camera, createRenderer, renderer, scene } from './scene.js';
@@ -144,7 +145,7 @@ async function loadSystem(dataUrl) {
         // The credits entry holds the credits page text, not a body to draw.
         const data = entries.filter(item => item.type !== 'credits');
         data.forEach(applyStatusTimeline);
-        data.forEach(applySunScale);
+        applyScales(data);
         buildSystem(data);
         attemptToLand(); // landers on plain spheres can land right away
         emitEngine('built', { entries });

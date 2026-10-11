@@ -5,7 +5,8 @@ import { celestialMap, objects } from './state.js';
 import { DEBUG_LANDING, engineOptions, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
 import { createSun } from './sun.js';
-import { getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest, poleDirection } from './orbits.js';
+import { getDaysSinceJ2000, getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest, poleDirection } from './orbits.js';
+import { simulatedDate } from './time.js';
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
 import { renderer, scene } from './scene.js';
@@ -48,6 +49,21 @@ function createTrajectoryLine(obj, color, opacity) {
     return line;
 }
 
+// Points round an orbit as it is `days` after J2000 (an orbit whose node or periapsis turns is
+// drawn as it is then; refreshOrbitLine keeps it so).
+function orbitLinePoints(orbitData, segments, days) {
+    const e = orbitData.e || 0;
+    const points = [];
+    for (let i = 0; i < segments; i++) {
+        const E = (i / segments) * 2 * Math.PI;
+        const meanAnomalyDeg = (E - e * Math.sin(E)) * (180 / Math.PI);
+        const fakeDays = (meanAnomalyDeg - (orbitData.M0 || 0)) / orbitData.rate;
+        const pos = getKeplerPosition(orbitData, fakeDays, days);
+        points.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+    }
+    return points;
+}
+
 function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
     if (!orbitData || orbitData.a === 0 || orbitData.rate === 0) return null;
     // Enough points that each straight segment stays within ORBIT_LINE_MAX_SAG of the true
@@ -55,18 +71,11 @@ function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
     // Points are spread evenly in eccentric anomaly (evenly along the ellipse), not in time,
     // which bunched them at aphelion; each is still placed by getKeplerPosition, exactly as
     // the object itself moves.
-    const e = orbitData.e || 0;
     const farthest = orbitFarthest(orbitData);
     const segments = THREE.MathUtils.clamp(
         Math.ceil(2 * Math.PI * Math.sqrt(farthest / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
-    const points = [];
-    for (let i = 0; i < segments; i++) {
-        const E = (i / segments) * 2 * Math.PI;
-        const meanAnomalyDeg = (E - e * Math.sin(E)) * (180 / Math.PI);
-        const fakeDays = (meanAnomalyDeg - (orbitData.M0 || 0)) / orbitData.rate;
-        const pos = getKeplerPosition(orbitData, fakeDays);
-        points.push(new THREE.Vector3(pos.x, pos.y, pos.z));
-    }
+    const days = getDaysSinceJ2000(simulatedDate);
+    const points = orbitLinePoints(orbitData, segments, days);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
         color: new THREE.Color(color),
@@ -75,8 +84,21 @@ function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
         depthWrite: false
     });
     const line = new THREE.LineLoop(geometry, material);
-    line.userData = { baseColor: color, baseOpacity: opacity };
+    line.userData = { baseColor: color, baseOpacity: opacity, orbit: orbitData, segments, days };
     return line;
+}
+
+// An orbit whose node or periapsis turns (the Moon's node goes round in 18.6 years, Io's
+// periapsis in 1.3) is redrawn once it has turned a tenth of a degree since it was last drawn.
+const ORBIT_LINE_REDRAW_DEG = 0.1;
+export function refreshOrbitLine(line, days) {
+    const o = line?.userData.orbit;
+    if (!o || !(o.node_rate || o.peri_rate)) return;
+    const turned = Math.abs(days - line.userData.days) * (Math.abs(o.node_rate || 0) + Math.abs(o.peri_rate || 0));
+    if (turned < ORBIT_LINE_REDRAW_DEG) return;
+    line.geometry.setFromPoints(orbitLinePoints(o, line.userData.segments, days));
+    line.geometry.computeBoundingSphere();
+    line.userData.days = days;
 }
 
 function createLissajousLine(orbitData) {

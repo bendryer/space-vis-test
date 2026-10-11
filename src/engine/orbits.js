@@ -2,6 +2,7 @@
 // cruise trajectories of missions in transit. Positions only; nothing here touches the scene.
 import * as THREE from 'three';
 import { celestialMap } from './state.js';
+import { MISSION_MODEL_SIZE } from './config.js';
 
 const J2000_DATE = new Date('2000-01-01T12:00:00Z');
 
@@ -17,17 +18,69 @@ export function getDaysSinceJ2000(date) { return (date - J2000_DATE) / 86400000;
 // Everything that orbits the Sun on a real orbit gives its size in AU ("a_au") and is placed on one
 // shared scale: a smooth compression of distance from the Sun, so the planets, the asteroid belt and
 // the comets all sit in their true order and relative place while Neptune stays within reach.
-// Earth's 1 AU maps to 1,000 scene units. Orbits round a planet, and the Earth-Sun L1/L2 points,
-// stay illustrative: they give "a" in scene units and are not rescaled.
+// Earth's 1 AU maps to 1,000 scene units. The Earth-Sun L1/L2 points and the Lissajous paths round
+// them stay illustrative: they give "a" in scene units and are not rescaled.
 const SUN_SCALE_KNEE = 2.1;                                         // AU; below this, nearly proportional
 const SUN_SCALE_UNITS = 1000 / Math.log(1 + 1 / SUN_SCALE_KNEE);    // so that 1 AU = 1,000 units
 const auToScene = au => SUN_SCALE_UNITS * Math.log(1 + au / SUN_SCALE_KNEE);
 const sceneToAu = units => SUN_SCALE_KNEE * (Math.exp(units / SUN_SCALE_UNITS) - 1);
+
+// --- DISTANCE SCALE ROUND A BODY ---
+// An orbit round a planet, moon, asteroid or comet gives its real size in km ("a_km"), and each
+// point's height above the body is drawn on one scale: true to the body's drawn size close in (the
+// ISS skims the Earth), then compressed, so moons sit in their true order without a system
+// spreading across the Solar System. A height of h km is drawn as u * K * ln(1 + h / K), where u is
+// the body's scene units per km (its drawn radius over its real one) and K is the knee: a planet's
+// or moon's, or a small body's (whose orbiters are a few km out, not thousands). A craft is kept at
+// least its own size above the ground.
+const SATELLITE_KNEE_KM = 100000;
+const SMALL_BODY_KNEE_KM = 5;
+const SMALL_BODY_TYPES = new Set(['asteroid', 'comet']);
+function satelliteDistance(rKm, s) {
+    const h = Math.max(0, rKm - s.radiusKm);
+    return s.radius + Math.hypot(s.unit * s.knee * Math.log(1 + h / s.knee), MISSION_MODEL_SIZE);
+}
+
 // The farthest the orbit reaches from its parent, in scene units.
-export const orbitFarthest = o => (o.a_au !== undefined ? auToScene(o.a_au * (1 + (o.e || 0))) : (o.a || 0) * (1 + (o.e || 0)));
-// An orbit in AU gets a scene-unit "a" too (its scaled size), for sorting, framing and culling.
-export function applySunScale(item) {
-    if (item.orbit?.a_au !== undefined) item.orbit.a = auToScene(item.orbit.a_au);
+export function orbitFarthest(o) {
+    const reach = 1 + (o.e || 0);
+    if (o.a_au !== undefined) return auToScene(o.a_au * reach);
+    if (o.a_km !== undefined && o.scale) return satelliteDistance(o.a_km * reach, o.scale);
+    return (o.a || 0) * reach;
+}
+
+// Readies an orbit for drawing, once its parent's drawn size is known (scale.js): a scene-unit
+// "a" (its scaled size, for sorting, framing and culling), and for an orbit round a body, the
+// scale it's drawn on and the plane its elements are measured from. That plane is "plane" if
+// given: "ecliptic", or a pole { ra, dec } (a moon's Laplace plane, as JPL gives it); else the
+// parent's equator (its "pole"); else, for a body without one, the ecliptic. In a plane other than
+// the ecliptic the node is measured from where the plane crosses Earth's equator (ICRF), as JPL
+// does; for Earth's own equator, from the March equinox.
+export function prepareOrbit(orbit, parent) {
+    if (!orbit) return;
+    if (orbit.a_au !== undefined) orbit.a = auToScene(orbit.a_au);
+    if (orbit.a_km === undefined || !parent) return;
+    orbit.scale = {
+        radius: parent.radius, radiusKm: parent.radius_km, unit: parent.radius / parent.radius_km,
+        knee: SMALL_BODY_TYPES.has(parent.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM,
+    };
+    orbit.a = satelliteDistance(orbit.a_km, orbit.scale);
+    orbit.node ??= 0;
+    orbit.peri ??= 0;
+    const plane = orbit.plane ?? parent.pole ?? 'ecliptic';
+    orbit.frame = plane === 'ecliptic' ? null : planeFrame(plane);
+}
+
+// A reference plane's axes in the scene: its pole (Z), its ascending node on the ICRF equator (X)
+// and Y = Z x X. getKeplerPosition's result is in the scene's form of these axes (x = X, y = Z,
+// z = -Y), so the frame maps that x, y, z onto X, Z and -Y.
+function planeFrame(pole) {
+    const Z = poleDirection(pole);
+    const X = poleDirection({ ra: 0, dec: 90 }).cross(Z);
+    if (X.lengthSq() < 1e-12) X.set(1, 0, 0);                       // Earth's equator: from the equinox
+    X.normalize();
+    const Y = Z.clone().cross(X);
+    return { x: X, y: Z, z: Y.negate() };
 }
 
 // Tidal locking ("rotation_mode": "locked"): the body keeps its +X face towards its parent, with
@@ -53,7 +106,10 @@ export function poleDirection({ ra, dec }) {
     return new THREE.Vector3(x, zEcl, -yEcl);
 }
 
-export function getKeplerPosition(orbitData, days) {
+// Where the orbit has its body `days` after J2000, relative to the parent. The node and periapsis
+// turn at "node_rate" and "peri_rate" (degrees a day); `precessDays` sets how far they've turned,
+// when that should differ from `days` (an orbit line drawn as the orbit is now).
+export function getKeplerPosition(orbitData, days, precessDays = days) {
     if (!orbitData || orbitData.a === 0) return { x: 0, y: 0, z: 0 };
     let M = (orbitData.M0 + (orbitData.rate * days)) % 360;
     let M_rad = M * (Math.PI / 180);
@@ -61,13 +117,15 @@ export function getKeplerPosition(orbitData, days) {
     let E = M_rad;
     for (let k = 0; k < 5; k++) E = M_rad + e * Math.sin(E);
 
-    // A real orbit round the Sun is worked out in AU, then its distance from the Sun is rescaled.
+    // A real orbit is worked out in AU (round the Sun) or km (round a body), then each point's
+    // distance from the parent is rescaled.
     const inAu = orbitData.a_au !== undefined;
-    const a = inAu ? orbitData.a_au : orbitData.a;
+    const inKm = !inAu && orbitData.a_km !== undefined && orbitData.scale;
+    const a = inAu ? orbitData.a_au : inKm ? orbitData.a_km : orbitData.a;
     const x_orb = a * (Math.cos(E) - e);
     const z_orb = a * Math.sqrt(1 - e * e) * Math.sin(E);
     const r = Math.hypot(x_orb, z_orb);
-    const k = inAu && r > 0 ? auToScene(r) / r : 1;
+    const k = r > 0 && inAu ? auToScene(r) / r : r > 0 && inKm ? satelliteDistance(r, orbitData.scale) / r : 1;
 
     // Worked out with ecliptic north along -Y, then turned over (y and z negated) so that north is
     // +Y: orbits then go round anticlockwise seen from above, the same way the bodies spin. In the
@@ -81,8 +139,8 @@ export function getKeplerPosition(orbitData, days) {
 
     // Full 3D Keplerian Rotation
     _keplerPos.set(x_orb, 0, z_orb);
-    const peri_rad = orbitData.peri * (Math.PI / 180);
-    const node_rad = orbitData.node * (Math.PI / 180);
+    const peri_rad = (orbitData.peri + (orbitData.peri_rate || 0) * precessDays) * (Math.PI / 180);
+    const node_rad = (orbitData.node + (orbitData.node_rate || 0) * precessDays) * (Math.PI / 180);
     const inc_rad = orbitData.i * (Math.PI / 180);
 
     // Apply Euler rotations mapped to Three.js Y-Up coordinate space
@@ -91,7 +149,14 @@ export function getKeplerPosition(orbitData, days) {
     _keplerPos.applyAxisAngle(_keplerAxisY, -node_rad);
     _keplerPos.multiplyScalar(k);
 
-    return { x: _keplerPos.x, y: -_keplerPos.y, z: -_keplerPos.z };
+    const x = _keplerPos.x, y = -_keplerPos.y, z = -_keplerPos.z;
+    const f = orbitData.frame;   // measured from a plane other than the ecliptic (prepareOrbit)
+    if (!f) return { x, y, z };
+    return {
+        x: x * f.x.x + y * f.y.x + z * f.z.x,
+        y: x * f.x.y + y * f.y.y + z * f.z.y,
+        z: x * f.x.z + y * f.y.z + z * f.z.z,
+    };
 }
 
 // --- TRAJECTORIES ---

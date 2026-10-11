@@ -7,7 +7,7 @@ import { attemptToLand, pendingLanders } from './landers.js';
 import { camera, renderer, scene } from './scene.js';
 import { celestialMap } from './state.js';
 import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition } from './orbits.js';
-import { getSuborbitalPosition, sunEffect, updateTrajectoryLines } from './bodies.js';
+import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateTrajectoryLines } from './bodies.js';
 import { getTumbleSpeed, updateMissionAttitude } from './motion.js';
 import { plannedMaterials, revealNextModel, updateModelDetail } from './models.js';
 import { updateCamera, updateViewOffset } from './camera.js';
@@ -145,6 +145,7 @@ export function animate() {
     celestialMap.forEach(obj => {
         const { group, meshGroup, data } = obj;
         if (data.orbit_type === 'landed') return;
+        refreshOrbitLine(obj.orbitLine, days);   // an orbit that turns (the Moon's) is redrawn as it does
 
         if (!group.visible && !data.isParent) {
             return;

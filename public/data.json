@@ -3,7 +3,7 @@
     "name": "Sun",
     "type": "star",
     "status": "Natural",
-    "radius": 25,
+    "radius_km": 695700,
     "texture": "/textures/sun.jpg",
     "color": "#ffcc00",
     "pole": {"ra": 286.13, "dec": 63.87},
@@ -23,7 +23,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 2,
+    "radius_km": 2439.7,
     "texture": "/textures/mercury.jpg",
     "color": "#aaaaaa",
     "orbit_color": "#a1a1a1",
@@ -56,11 +56,11 @@
     "radius": 0.8,
     "color": "#00aaff",
     "orbit": {
-      "a": 4,
-      "e": 0.1,
-      "i": 80,
+      "a_km": 3430.5,
+      "e": 0.14867,
+      "i": 90,
       "M0": 0,
-      "rate": 5
+      "rate": 3657.008077
     },
     "status_timeline": [
       {
@@ -74,7 +74,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 4.5,
+    "radius_km": 6051.8,
     "texture": "/textures/venus.jpg",
     "color": "#e6c229",
     "orbit_color": "#e3bb76",
@@ -98,7 +98,7 @@
     "type": "planet",
     "status": "Natural",
     "preload": true,
-    "radius": 5,
+    "radius_km": 6371.0,
     "texture": "/textures/earth.jpg",
     "night_texture": "/textures/earth_night.jpg",
     "roughness_map": "/textures/earth.jpg",
@@ -135,11 +135,11 @@
     "radius": 0.5,
     "color": "#ffffff",
     "orbit": {
-      "a": 6,
-      "e": 0,
-      "i": 51.6,
+      "a_km": 6795.6,
+      "e": 0.00066,
+      "i": 51.64,
       "M0": 0,
-      "rate": 5600
+      "rate": 5579.092362
     }
   },
   {
@@ -157,11 +157,11 @@
     "radius": 0.6,
     "color": "#dddddd",
     "orbit": {
-      "a": 6.5,
-      "e": 0,
-      "i": 28.5,
+      "a_km": 6898.1,
+      "e": 0.00072,
+      "i": 28.47,
       "M0": 180,
-      "rate": 5400
+      "rate": 5455.204477
     }
   },
   {
@@ -178,11 +178,13 @@
     "radius": 0.5,
     "color": "#44cc44",
     "orbit": {
-      "a": 7,
-      "e": 0,
-      "i": 98.6,
+      "a_km": 7164.1,
+      "e": 0.0,
+      "i": 98.62,
       "M0": 120,
-      "rate": 4900
+      "rate": 5154.218243,
+      "node": 77.96,
+      "node_rate": 0.9856474
     }
   },
   {
@@ -199,11 +201,13 @@
     "radius": 0.5,
     "color": "#0088ff",
     "orbit": {
-      "a": 7.5,
-      "e": 0,
-      "i": 98.6,
+      "a_km": 7192.6,
+      "e": 0.0,
+      "i": 98.65,
       "M0": 240,
-      "rate": 4800
+      "rate": 5123.613954,
+      "node": 70.46,
+      "node_rate": 0.9856474
     }
   },
   {
@@ -221,11 +225,11 @@
     "radius": 0.5,
     "color": "#aa0000",
     "orbit": {
-      "a": 8,
-      "e": 0,
+      "a_km": 7178.1,
+      "e": 0.0,
       "i": 98,
       "M0": 0,
-      "rate": 5200
+      "rate": 5139.146596
     }
   },
   {
@@ -243,11 +247,11 @@
     "radius": 0.5,
     "color": "#00ffff",
     "orbit": {
-      "a": 8.5,
-      "e": 0,
+      "a_km": 6987.1,
+      "e": 0.0,
       "i": 90,
       "M0": 0,
-      "rate": 5100
+      "rate": 5351.306476
     }
   },
   {
@@ -265,11 +269,11 @@
     "radius": 0.5,
     "color": "#ff00aa",
     "orbit": {
-      "a": 20,
-      "e": 0.6,
+      "a_km": 69378.1,
+      "e": 0.836,
       "i": 70,
       "M0": 0,
-      "rate": 800
+      "rate": 171.02975
     }
   },
   {
@@ -286,11 +290,11 @@
     "radius": 0.4,
     "color": "#aa00ff",
     "orbit": {
-      "a": 9,
-      "e": 0,
-      "i": 20.6,
+      "a_km": 6833.1,
+      "e": 0.00073,
+      "i": 20.56,
       "M0": 180,
-      "rate": 4700
+      "rate": 5533.228408
     },
     "status_timeline": [
       {
@@ -314,11 +318,11 @@
     "radius": 0.2,
     "color": "#666666",
     "orbit": {
-      "a": 9.5,
-      "e": 0,
+      "a_km": 7013.1,
+      "e": 0.0,
       "i": 98.4,
       "M0": 0,
-      "rate": 4800
+      "rate": 5321.575345
     }
   },
   {
@@ -327,7 +331,7 @@
     "menu_top_level": true,
     "type": "moon",
     "status": "Natural",
-    "radius": 1.5,
+    "radius_km": 1737.4,
     "texture": "/textures/moon.jpg",
     "color": "#aaaaaa",
     "orbit_color": "#888888",
@@ -335,11 +339,16 @@
     "rot_period": 27.3,
     "rotation_mode": "locked",
     "orbit": {
-      "a": 30,
-      "e": 0.055,
-      "i": 5.1,
-      "M0": 135,
-      "rate": 13.17
+      "a_km": 384400.0,
+      "e": 0.0554,
+      "i": 5.16,
+      "M0": 135.082,
+      "rate": 13.0649967,
+      "node": 125.08,
+      "peri": 318.15,
+      "node_rate": -0.0529907,
+      "peri_rate": 0.1643532,
+      "plane": "ecliptic"
     },
     "description": "The Moon is Earth's only natural satellite and has a significant influence on our planet's tides and rotational stability. Its surface is covered in regolith and ancient lava plains, recording billions of years of solar system history without atmospheric erosion. As the only celestial body humans have visited, it remains the primary target for future deep-space exploration and colonization.",
     "ou_involvement": "OU analysis of rock samples returned by the Apollo missions helped show that the Moon is not as dry as once thought, and that water is locked inside lunar minerals. Building on instrument experience from missions such as Beagle 2 and Rosetta, OU teams now develop miniature laboratories to measure what the Moon is made of. They also research in-situ resource utilisation: how lunar regolith could supply water, oxygen and fuel, and how it could be used to build on the Moon. This work supports plans for sustainable future exploration of the Moon."
@@ -359,11 +368,11 @@
     "radius": 0.4,
     "color": "#eeeeee",
     "orbit": {
-      "a": 2.2,
-      "e": 0,
+      "a_km": 1837.4,
+      "e": 0.0,
       "i": 90,
       "M0": 0,
-      "rate": 40
+      "rate": 4401.015474
     }
   },
   {
@@ -435,7 +444,7 @@
     "description": "Lagrange Point 2 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly opposite the Sun. It provides a perfect, quiet environment for space telescopes to observe the deep universe without interference from Earth's heat. Spacecraft at this location follow a halo or Lissajous orbit to maintain a constant line of sight for communication.",
     "radius": 1,
     "orbit": {
-      "a": 1150,
+      "a": 1222,
       "e": 0.01671,
       "i": 0.0,
       "M0": 357.527,
@@ -611,7 +620,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 3,
+    "radius_km": 3389.5,
     "texture": "/textures/mars.jpg",
     "color": "#cc3300",
     "orbit_color": "#ff4433",
@@ -644,11 +653,11 @@
     "radius": 0.8,
     "color": "#ffffff",
     "orbit": {
-      "a": 5,
-      "e": 0,
+      "a_km": 3796.2,
+      "e": 0.0,
       "i": 74,
       "M0": 0,
-      "rate": 4500
+      "rate": 4380.044477
     }
   },
   {
@@ -735,7 +744,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 22,
+    "radius_km": 69911,
     "texture": "/textures/jupiter.jpg",
     "color": "#d8ca9d",
     "orbit_color": "#e0a96d",
@@ -757,15 +766,19 @@
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
-    "radius": 1.5,
+    "radius_km": 1821.6,
     "texture": "/textures/io.jpg",
     "color": "#ffff00",
     "orbit": {
-      "a": 35,
+      "a_km": 421800.0,
       "e": 0.004,
-      "i": 0.05,
-      "M0": 0,
-      "rate": 203
+      "i": 0.0,
+      "M0": 330.821,
+      "rate": 202.7495528,
+      "node": 0.0,
+      "peri": 49.1,
+      "peri_rate": 0.7394046,
+      "plane": {"ra": 268.1, "dec": 64.5}
     },
     "description": "Io is the innermost of Jupiter's four large Galilean moons and is the most geologically active body in the Solar System. Its surface is constantly reshaped by hundreds of volcanoes, which are fueled by the intense tidal heating caused by Jupiter's gravity. The moon's yellow-orange color is a result of the sulfur and sulfur dioxide frost that covers its entire surface."
   },
@@ -774,15 +787,20 @@
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
-    "radius": 1.4,
+    "radius_km": 1560.8,
     "texture": "/textures/europa.jpg",
     "color": "#dddddd",
     "orbit": {
-      "a": 45,
+      "a_km": 671100.0,
       "e": 0.009,
-      "i": 0.47,
-      "M0": 45,
-      "rate": 101
+      "i": 0.5,
+      "M0": 345.462,
+      "rate": 100.7003101,
+      "node": 184.0,
+      "peri": 45.0,
+      "node_rate": -0.0326345,
+      "peri_rate": 0.707049,
+      "plane": {"ra": 268.1, "dec": 64.5}
     },
     "description": "Europa is an icy moon of Jupiter that is believed to hide a massive liquid water ocean beneath its frozen crust. Its smooth surface is crisscrossed by cracks and streaks, suggesting that the ice shell is dynamic and relatively young. Scientists consider Europa one of the best candidates in the Solar System for finding habitable environments beyond Earth.",
     "ou_involvement": "Open University astrobiologists research Europa as one of the Solar System's most promising 'ocean worlds', developing novel cryo-analytical laboratory techniques and planetary simulation facilities to study icy surface materials at the molecular and micro-scale. Fieldwork in polar environments such as the Canadian High Arctic helps researchers understand how ice and salts delivered to the surface by cryovolcanism can reveal what conditions exist in the ocean far below."
@@ -792,15 +810,20 @@
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
-    "radius": 2.2,
+    "radius_km": 2631.2,
     "texture": "/textures/ganymede.jpg",
     "color": "#aaaaaa",
     "orbit": {
-      "a": 75,
+      "a_km": 1070400.0,
       "e": 0.001,
       "i": 0.2,
-      "M0": 10,
-      "rate": 50.5
+      "M0": 324.851,
+      "rate": 50.310329,
+      "node": 58.5,
+      "peri": 198.3,
+      "node_rate": -0.007152,
+      "peri_rate": 0.0144306,
+      "plane": {"ra": 268.2, "dec": 64.6}
     },
     "description": "Ganymede is the largest moon in the Solar System and is even bigger than the planet Mercury. It is the only known moon to possess its own magnetic field, which creates brilliant aurorae around its poles. The moon features a mix of dark, cratered regions and lighter, grooved terrain that indicates a complex geological history.",
     "ou_involvement": "Ganymede is one of the icy 'ocean worlds' studied by Open University astrobiologists, whose research develops cryo-analytical lab techniques and planetary-simulation facilities to analyse the ice and salts that reach such moons' surfaces via cryovolcanism. This research aims to reveal the chemistry of the vast subsurface ocean thought to lie beneath Ganymede's ice shell, complementing the OU's separate technical contribution to the JUICE mission that will study the moon directly."
@@ -810,15 +833,20 @@
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
-    "radius": 2.1,
+    "radius_km": 2410.3,
     "texture": "/textures/callisto.jpg",
     "color": "#888888",
     "orbit": {
-      "a": 130,
+      "a_km": 1882700.0,
       "e": 0.007,
-      "i": 0.2,
-      "M0": 200,
-      "rate": 21.5
+      "i": 0.3,
+      "M0": 87.486,
+      "rate": 21.5692338,
+      "node": 309.1,
+      "peri": 43.8,
+      "node_rate": -0.0017074,
+      "peri_rate": 0.0035464,
+      "plane": {"ra": 268.7, "dec": 64.8}
     },
     "description": "Callisto is the most heavily cratered object in the Solar System and shows very few signs of geological activity on its ancient surface. It is composed of equal parts rock and ice and may also contain a subsurface ocean deep within its interior. Its distance from Jupiter means it is less affected by the planet's intense radiation environment compared to the other Galilean moons."
   },
@@ -868,11 +896,11 @@
         }
       ],
       "arrival_orbit": {
-        "a": 110,
-        "e": 0.5,
-        "i": 2,
+        "a_km": 2573712.0,
+        "e": 0.66667,
+        "i": 0.0,
         "M0": 0,
-        "rate": 18
+        "rate": 13.494652
       }
     },
     "menu_parent": "Jupiter",
@@ -893,7 +921,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 20,
+    "radius_km": 58232,
     "texture": "/textures/saturn.jpg",
     "color": "#ead6b8",
     "orbit_color": "#f4d06f",
@@ -923,15 +951,20 @@
     "parent": "Saturn",
     "type": "moon",
     "status": "Natural",
-    "radius": 2,
+    "radius_km": 2574.7,
     "texture": "/textures/titan.jpg",
     "color": "#ff9900",
     "orbit": {
-      "a": 50,
-      "e": 0.028,
+      "a_km": 1221900.0,
+      "e": 0.029,
       "i": 0.3,
-      "M0": 0,
-      "rate": 22
+      "M0": 162.838,
+      "rate": 22.5755657,
+      "node": 78.6,
+      "peri": 130.3,
+      "node_rate": -0.0014339,
+      "peri_rate": 0.002843,
+      "plane": {"ra": 36.4, "dec": 84.0}
     },
     "description": "Titan is the largest moon of Saturn and the only moon in the Solar System to possess a thick atmosphere and liquid lakes on its surface. These lakes are composed of liquid methane and ethane, creating a weather cycle similar to Earth's but at much colder temperatures. Its thick, orange haze hides a complex surface that features vast dunes, mountains, and potentially even cryovolcanoes.",
     "ou_involvement": "Titan's first global geomorphological map, published in Nature Astronomy in 2019, used Cassini data to identify six major terrain types across the moon's surface, from plains to dune fields. Titan is also one of the icy 'ocean worlds' studied by OU astrobiologists, whose research explores how its surface chemistry and methane cycle could relate to conditions for life. This body-focused research sits alongside the OU's separate instrument-development work on the Cassini and Huygens missions."
@@ -951,11 +984,11 @@
     "radius": 0.8,
     "color": "#ccaa44",
     "orbit": {
-      "a": 90,
-      "e": 0.05,
-      "i": 45,
+      "a_km": 671618.0,
+      "e": 0.90773,
+      "i": 62.4,
       "M0": 120,
-      "rate": 5
+      "rate": 55.392531
     }
   },
   {
@@ -982,7 +1015,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 12,
+    "radius_km": 25362,
     "texture": "/textures/uranus.jpg",
     "color": "#99ccff",
     "orbit_color": "#7de3e4",
@@ -1004,7 +1037,7 @@
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
-    "radius": 11,
+    "radius_km": 24622,
     "texture": "/textures/neptune.jpg",
     "color": "#3366ff",
     "orbit_color": "#4b70dd",
@@ -1035,11 +1068,11 @@
     "radius": 0.5,
     "color": "#00aaff",
     "orbit": {
-      "a": 3.75,
+      "a_km": 30,
       "e": 0,
-      "i": 30,
+      "i": 90,
       "M0": 0,
-      "rate": 150
+      "rate": 24.604662
     }
   },
   {
@@ -1085,11 +1118,11 @@
         }
       ],
       "arrival_orbit": {
-        "a": 3,
+        "a_km": 20,
         "e": 0.1,
         "i": 10,
         "M0": 0,
-        "rate": 6
+        "rate": 10.50129
       }
     },
     "menu_parent": "Didymos",
@@ -1120,11 +1153,13 @@
     "radius": 0.5,
     "color": "#ffaa44",
     "orbit": {
-      "a": 6.3,
-      "e": 0,
+      "a_km": 7078.1,
+      "e": 0.0,
       "i": 98.2,
       "M0": 45,
-      "rate": 5000
+      "rate": 5248.439817,
+      "node": 10.46,
+      "node_rate": 0.9856474
     }
   },
   {
@@ -1253,11 +1288,11 @@
     "radius": 0.6,
     "color": "#ffaa66",
     "orbit": {
-      "a": 5.2,
-      "e": 0,
-      "i": 74,
+      "a_km": 6431.8,
+      "e": 0.02488,
+      "i": 88,
       "M0": 200,
-      "rate": 150
+      "rate": 5469.967618
     }
   },
   {
@@ -1275,11 +1310,11 @@
     "radius": 0.6,
     "color": "#44ffaa",
     "orbit": {
-      "a": 8,
-      "e": 0.1,
+      "a_km": 8396.2,
+      "e": 0.1191,
       "i": 45,
       "M0": 300,
-      "rate": 60
+      "rate": 1331.612874
     }
   },
   {
@@ -1325,11 +1360,11 @@
     "radius": 0.5,
     "color": "#ddccaa",
     "orbit": {
-      "a": 2.5,
-      "e": 0.08,
-      "i": 5.8,
+      "a_km": 20,
+      "e": 0,
+      "i": 0,
       "M0": 100,
-      "rate": 0.77
+      "rate": 0
     }
   },
   {
@@ -1347,11 +1382,11 @@
     "radius": 0.5,
     "color": "#44aaff",
     "orbit": {
-      "a": 2.5,
-      "e": 0.2,
-      "i": 6,
+      "a_km": 1.0,
+      "e": 0,
+      "i": 90,
       "M0": 200,
-      "rate": 0.8
+      "rate": 346.241881
     }
   },
   {
@@ -1369,11 +1404,11 @@
     "radius": 0.5,
     "color": "#ffdd44",
     "orbit": {
-      "a": 2.5,
+      "a_km": 237,
       "e": 0,
-      "i": 2,
+      "i": 0,
       "M0": 50,
-      "rate": 0.6
+      "rate": 0
     }
   },
   {
@@ -1382,8 +1417,7 @@
     "type": "asteroid",
     "status": "Natural",
     "model": "/models/bennu.glb",
-    "model_scale": 1,
-    "radius": 16,
+    "radius_km": 0.2524,
     "color": "#444444",
     "rot_period": 4.3,
     "orbit": {
@@ -1403,8 +1437,7 @@
     "type": "asteroid",
     "status": "Natural",
     "model": "/models/ryugu.glb",
-    "model_scale": 1,
-    "radius": 18,
+    "radius_km": 0.502,
     "color": "#555555",
     "rot_period": 7.6,
     "orbit": {
@@ -1424,8 +1457,7 @@
     "type": "asteroid",
     "status": "Natural",
     "model": "/models/didymos.glb",
-    "model_scale": 1,
-    "radius": 16,
+    "radius_km": 0.3985,
     "color": "#8a8175",
     "rot_period": -0.094139,
     "orbit": {
@@ -1446,12 +1478,11 @@
     "type": "moon",
     "status": "Natural",
     "model": "/models/dimorphos.glb",
-    "model_scale": 0.217,
-    "radius": 3.5,
+    "radius_km": 0.0885,
     "color": "#857d74",
     "rotation_mode": "locked",
     "orbit": {
-      "a": 1.398,
+      "a_km": 1.152,
       "e": 0.0274,
       "i": 170.7,
       "M0": 0,
@@ -1465,8 +1496,7 @@
     "type": "comet",
     "status": "Natural",
     "model": "/models/wild2.glb",
-    "model_scale": 1.6,
-    "radius": 24,
+    "radius_km": 2.75,
     "color": "#aaaaaa",
     "orbit": {
       "a_au": 3.44975,
@@ -1486,13 +1516,12 @@
     "status": "Natural",
     "preload": true,
     "model": "/models/67p.glb",
-    "model_scale": 4,
     "model_offset": {
       "x": 0,
       "y": 0,
       "z": 0
     },
-    "radius": 1,
+    "radius_km": 2.17,
     "color": "#aaaaaa",
     "tilt": 0,
     "rot_period": 0.5,
@@ -1514,7 +1543,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 5.059,
     "color": "#777777",
     "orbit": {
       "a_au": 3.11326,
@@ -1527,8 +1556,7 @@
     },
     "description": "A main-belt asteroid named after planetary scientist Monica Grady. Monica is Emeritus Professor at the Open University, and curator of the meteorite collection at the Natural History Museum in London, she studies carbon isotopes in a wide range of meteorites with a focus on understanding the geologic processes leading to their formation. She is also actively involved in meteorite recovery efforts around the world. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
-    "model_named": "/models/Grady.glb",
-    "model_scale": 1
+    "model_named": "/models/Grady.glb"
   },
   {
     "name": "20386 IanFranchi",
@@ -1537,7 +1565,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 3.32,
+    "radius_estimated": true,
     "color": "#888888",
     "orbit": {
       "a_au": 2.84766,
@@ -1550,8 +1579,7 @@
     },
     "description": "A main-belt asteroid named in honor of Ian Franchi. Ian is a British cosmochemist and emeritus professor at The Open University. He has forty years experience studying the origin and evolution of the early Solar System using advanced analytical techniques, and in particular, high-precision oxygen isotope measurements, on extraterrestrial materials. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Franchi.glb",
-    "model_scale": 1
+    "model_named": "/models/Franchi.glb"
   },
   {
     "name": "20617 RichardGreenwood",
@@ -1560,7 +1588,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 8.748,
     "color": "#666666",
     "orbit": {
       "a_au": 3.23093,
@@ -1573,8 +1601,7 @@
     },
     "description": "A main-belt asteroid honoring Richard Greenwood. Richard is an English senior research fellow at The Open University who specializes in using oxygen isotopic analyses of extraterrestrial material to understand the origin and early evolution of the Solar System. He has also written a book on meteorites that was geared towards a general audience. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Greenwood.glb",
-    "model_scale": 1
+    "model_named": "/models/Greenwood.glb"
   },
   {
     "name": "20626 Rider-Stokes",
@@ -1583,7 +1610,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.6,
+    "radius_km": 1.671,
     "color": "#999999",
     "orbit": {
       "a_au": 2.23958,
@@ -1596,8 +1623,7 @@
     },
     "description": "A main-belt asteroid honoring Ben Rider-Stokes. Ben is an English post-doctoral researcher at The Open University specializing in understanding the timing of magmatic differentiation and volatile accretion of achondrites. He evaluates the spectral characteristics of meteorites in the ultraviolet, visible, and near-infrared to identify meteoritic analogs for asteroids. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
-    "model_named": "/models/Rider-Stokes.glb",
-    "model_scale": 1
+    "model_named": "/models/Rider-Stokes.glb"
   },
   {
     "name": "25275 Jocelynbell",
@@ -1606,7 +1632,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 1.728,
     "color": "#707070",
     "orbit": {
       "a_au": 2.36542,
@@ -1619,8 +1645,7 @@
     },
     "description": "A main-belt asteroid named after British astrophysicist Susan Jocelyn Bell Burnell (b. 1943). Jocelyn discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Antony Hewish. She served as Head of Physics at the Open University (1991–2001) and has been President of the Royal Astronomical Society (2002–2004), the Institute of Physics (2008–2010) and the Royal Society of Edinburgh (2014–2018). In August 2006 she presided over the IAU’s adoption of resolutions defining the terms “planet” and “dwarf planet”. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
-    "model_named": "/models/Bell.glb",
-    "model_scale": 1
+    "model_named": "/models/Bell.glb"
   },
   {
     "name": "69423 OpenUni",
@@ -1629,7 +1654,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.9,
+    "radius_km": 1.64,
     "color": "#0055ff",
     "orbit": {
       "a_au": 2.52339,
@@ -1642,8 +1667,7 @@
     },
     "description": "Named in honor of the Open University. The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
-    "model_named": "/models/OU.glb",
-    "model_scale": 1
+    "model_named": "/models/OU.glb"
   },
   {
     "name": "10230 AndrewNorton",
@@ -1652,7 +1676,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 2.76,
+    "radius_estimated": true,
     "color": "#777777",
     "orbit": {
       "a_au": 2.8834,
@@ -1665,8 +1690,7 @@
     },
     "description": "A main-belt asteroid honoring Andrew Norton. Andrew is an English astrophysicist and was Professor at the Open University where he led major teaching and outreach initiatives, and carried out research into the time-domain astrophysics of compact binary stars. He led the SuperWASP Variable Stars citizen science project, supervised numerous Ph.D. students and won the RAS Higher Education Award. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
-    "model_named": "/models/Norton.glb",
-    "model_scale": 1
+    "model_named": "/models/Norton.glb"
   },
   {
     "name": "9831 SimonGreen",
@@ -1675,7 +1699,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 1.51,
+    "radius_estimated": true,
     "color": "#888888",
     "orbit": {
       "a_au": 2.41638,
@@ -1688,8 +1713,7 @@
     },
     "description": "A main-belt asteroid honoring Simon Green. Simon is Emeritus Professor at the Open University and has carried out observations of minor planets and transneptunian objects for over 20 years, starting with the use of the IRAS satellite to detect fast-moving objects. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Green.glb",
-    "model_scale": 1
+    "model_named": "/models/Green.glb"
   },
   {
     "name": "15614 Pillinger",
@@ -1698,7 +1722,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 3.486,
     "color": "#555555",
     "orbit": {
       "a_au": 2.98862,
@@ -1711,8 +1735,7 @@
     },
     "description": "Named in honor of Colin Pillinger. Colin was a Professor at the Open University and a planetary geochemist who made significant discoveries in the light-element geochemistry of meteorites, diamonds, lunar samples and terrestrial samples. He was the originator and principal investigator of the Beagle 2 Mars lander. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
-    "model_named": "/models/Pillinger.glb",
-    "model_scale": 1
+    "model_named": "/models/Pillinger.glb"
   },
   {
     "name": "20594 Pemartin",
@@ -1721,7 +1744,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 6.35,
     "model": "/models/Asteroid4.glb",
     "color": "#666666",
     "orbit": {
@@ -1742,7 +1765,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 1.089,
     "color": "#777777",
     "orbit": {
       "a_au": 2.36008,
@@ -1755,8 +1778,7 @@
     },
     "description": "Named in honor of space scientist John Zarnecki. While at The Open University, he developed spacecraft instrumentation to study the surfaces and atmospheres of planets, satellites and small bodies. He was a PI for the Huygens probe/lander on the Cassini mission to Saturn and Saturn VI (Titan). John has also served as a Director of the International Space Science Institute. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
-    "model_named": "/models/Zarnecki.glb",
-    "model_scale": 1
+    "model_named": "/models/Zarnecki.glb"
   },
   {
     "name": "3202 Graff",
@@ -1765,7 +1787,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.9,
+    "radius_km": 17.955,
     "color": "#7a7a7a",
     "orbit": {
       "a_au": 3.93111,
@@ -1778,8 +1800,7 @@
     },
     "description": "An outer main-belt asteroid of the Hilda group, named in honor of Gareth (Graff) Vaughan Williams before he came to the Open University. Working from Leighton Buzzard, England, he identified several low-numbered minor planets among objects that had been given provisional designations, and in 1990 he continued this work at the Minor Planet Center, correcting its files of old observations of low-numbered minor planets. The identification of this asteroid itself was made by C. M. Bardwell. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
-    "model_named": "/models/Graff.glb",
-    "model_scale": 1
+    "model_named": "/models/Graff.glb"
   },
   {
     "name": "9159 McDonnell",
@@ -1788,7 +1809,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 2.78,
+    "radius_estimated": true,
     "color": "#666666",
     "orbit": {
       "a_au": 2.3449,
@@ -1801,8 +1823,7 @@
     },
     "description": "A main-belt asteroid named in honor of J. A. M. (Tony) McDonnell before he came to the Open University. Tony is recognised for his research on cosmic dust: with colleagues, he was the first to demonstrate the intact capture of space particles in aerogel. He has flown instruments on a number of missions and has analysed impact craters on lunar samples and on satellite surfaces exposed to space. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
-    "model_named": "/models/McDonnell.glb",
-    "model_scale": 1
+    "model_named": "/models/McDonnell.glb"
   },
   {
     "name": "158589 Snodgrass",
@@ -1811,7 +1832,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.6,
+    "radius_km": 1.39,
+    "radius_estimated": true,
     "color": "#8a8a8a",
     "orbit": {
       "a_au": 3.1156,
@@ -1824,8 +1846,7 @@
     },
     "description": "A main-belt asteroid named in honor of Colin Snodgrass before he came to the Open University. When it was named, Colin was an astronomer at the European Southern Observatory, working on the characterisation of inactive comet nuclei through photometry, measuring their sizes, colours and rotation periods, and also observing exoplanetary systems. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Snodgrass.glb",
-    "model_scale": 1
+    "model_named": "/models/Snodgrass.glb"
   },
   {
     "name": "15834 McBride",
@@ -1834,7 +1855,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 3.978,
     "color": "#757575",
     "orbit": {
       "a_au": 2.77737,
@@ -1847,8 +1868,7 @@
     },
     "description": "A main-belt asteroid on a steeply inclined orbit, named in honor of Neil McBride while he was at the Open University. Neil has worked on many aspects of Solar System dynamics, including how meteor streams form, the links between minor planets, comets and meteors, and the structure of the region beyond Neptune. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
-    "model_named": "/models/McBride.glb",
-    "model_scale": 1
+    "model_named": "/models/McBride.glb"
   },
   {
     "name": "8463 NaomiMurdoch",
@@ -1857,7 +1877,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 3.544,
     "color": "#6e6e6e",
     "orbit": {
       "a_au": 3.20101,
@@ -1870,8 +1890,7 @@
     },
     "description": "An outer main-belt asteroid named in honor of Naomi Murdoch, who completed her Ph.D. at the Open University in 2012. Using microgravity flight experiments and numerical modelling, she investigated how granular material behaves under the low gravity found on the surfaces of minor planets. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
-    "model_named": "/models/Murdoch.glb",
-    "model_scale": 1
+    "model_named": "/models/Murdoch.glb"
   },
   {
     "name": "11469 Rozitis",
@@ -1880,7 +1899,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.6,
+    "radius_km": 1.27,
+    "radius_estimated": true,
     "color": "#909090",
     "orbit": {
       "a_au": 2.2961,
@@ -1893,8 +1913,7 @@
     },
     "description": "A main-belt asteroid named in honor of Benjamin Rozitis while he was a research fellow at the Open University. Ben studies the physical and dynamical characterisation of asteroid surfaces through spacecraft data, modelling and microgravity experiments. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
-    "model_named": "/models/Rozitis.glb",
-    "model_scale": 1
+    "model_named": "/models/Rozitis.glb"
   },
   {
     "name": "30226 SamuelLeeJackson",
@@ -1903,7 +1922,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.6,
+    "radius_km": 1.441,
     "color": "#808080",
     "orbit": {
       "a_au": 2.31266,
@@ -1916,8 +1935,7 @@
     },
     "description": "A main-belt asteroid named in honor of Samuel Lee Jackson, a British researcher at the Open University who specialises in observations of near-Earth asteroids and the use of small robotic telescopes. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Jackson.glb",
-    "model_scale": 1
+    "model_named": "/models/Jackson.glb"
   },
   {
     "name": "5497 SaraRussell",
@@ -1926,7 +1944,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 5.643,
     "color": "#727272",
     "orbit": {
       "a_au": 3.0091,
@@ -1939,8 +1957,7 @@
     },
     "description": "A main-belt asteroid named in honor of Sara Russell after she left the Open University. When it was named, Sara was a researcher at the Natural History Museum in London, studying the chemistry and mineralogy of meteorites to investigate the early Solar System and the origin of interstellar grains. She has collected meteorites in both hot and cold deserts, and was principal editor of the Meteoritical Bulletin. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
-    "model_named": "/models/Russell.glb",
-    "model_scale": 1
+    "model_named": "/models/Russell.glb"
   },
   {
     "name": "6580 PhilBland",
@@ -1949,7 +1966,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.8,
+    "radius_km": 3.715,
     "color": "#858585",
     "orbit": {
       "a_au": 2.62576,
@@ -1962,8 +1979,7 @@
     },
     "description": "A main-belt asteroid named in honor of Philip Bland after he left the Open University. When it was named, Phil was a research scientist at Imperial College London, working on a variety of planetary and meteorite studies. His fireball camera network offers an important glimpse into the links between meteorites and the minor planets they come from. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
-    "model_named": "/models/Bland.glb",
-    "model_scale": 1
+    "model_named": "/models/Bland.glb"
   },
   {
     "name": "7552 Sephton",
@@ -1972,7 +1988,8 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.6,
+    "radius_km": 1.36,
+    "radius_estimated": true,
     "color": "#6a6a6a",
     "orbit": {
       "a_au": 2.55322,
@@ -1985,8 +2002,7 @@
     },
     "description": "A main-belt asteroid named in honor of Mark Sephton after he left the Open University. When it was named, Mark was a researcher in organic geochemistry and meteoritics at Imperial College London, where he developed new techniques for analysing the organic matter in meteorites. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
-    "model_named": "/models/Sephton.glb",
-    "model_scale": 1
+    "model_named": "/models/Sephton.glb"
   },
   {
     "name": "7635 CarolineSmith",
@@ -1995,7 +2011,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.9,
+    "radius_km": 12.093,
     "color": "#5e5e5e",
     "orbit": {
       "a_au": 3.08571,
@@ -2008,8 +2024,7 @@
     },
     "description": "A main-belt asteroid named in honor of Caroline Smith after she left the Open University. When it was named, Caroline was Head of Earth Sciences Collections and Principal Curator of Meteorites at the Natural History Museum in London. She studies the mineralogy of meteorites, notably ureilites, to understand planetary processes, has collected meteorites in Australia, and has been principal editor of the Meteoritical Bulletin. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
-    "model_named": "/models/Smith.glb",
-    "model_scale": 1
+    "model_named": "/models/Smith.glb"
   },
   {
     "name": "42772 Kokotanekova",
@@ -2018,7 +2033,7 @@
     "type": "asteroid",
     "menu_holder": "named",
     "status": "Natural",
-    "radius": 0.7,
+    "radius_km": 3.277,
     "color": "#7e7e7e",
     "orbit": {
       "a_au": 3.10031,
@@ -2031,8 +2046,7 @@
     },
     "description": "A main-belt asteroid named in honor of Rosita Kokotanekova after she left the Open University. When it was named, Rosita was a Research Fellow at the European Southern Observatory in Garching, Germany, studying the surfaces of comets, trans-Neptunian objects and other small Solar System bodies with ground-based photometry. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
-    "model_named": "/models/Kokotanekova.glb",
-    "model_scale": 1
+    "model_named": "/models/Kokotanekova.glb"
   },
   {
     "name": "Earth-Sun L1",
@@ -2045,7 +2059,7 @@
     "description": "Lagrange Point 1 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly between our planet and the Sun. It provides a constant, uninterrupted view of the Sun, making it the ideal location for solar monitoring satellites. Spacecraft at this point are essential for providing early warnings of solar flares and geomagnetic storms that could impact Earth.",
     "radius": 1,
     "orbit": {
-      "a": 850,
+      "a": 778,
       "e": 0.01671,
       "i": 0.0,
       "M0": 357.527,
