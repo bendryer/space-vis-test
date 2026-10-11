@@ -16,7 +16,7 @@ import { getVisualRadius } from './camera.js';
 
 const NEAR_SHARE = 0.05;   // the near plane, as a share of the gap to the nearest surface
 const NEAR_MIN = 1e-7;     // scene units (0.13 m in True scale)
-const SLICE_RATIO = 1e4;   // far / near within one slice
+const SLICE_RATIO = 1e6;   // far / near within one slice (Diagram mode draws 1e7 in one)
 const MAX_SLICES = 5;
 
 const _cameraPos = new THREE.Vector3();
@@ -47,6 +47,7 @@ export function drawScene() {
             renderer.clearDepth();
             renderer.shadowMap.autoUpdate = false;
             scene.background = null;
+            scene.matrixWorldAutoUpdate = false;   // the first slice brought them up to date
             drawSky(false);
         }
         renderer.render(scene, camera);
@@ -54,6 +55,7 @@ export function drawScene() {
     renderer.autoClear = autoClear;
     renderer.shadowMap.autoUpdate = shadowsAuto;
     scene.background = background;
+    scene.matrixWorldAutoUpdate = true;
     drawSky(true);
 
     camera.near = near;
@@ -61,17 +63,29 @@ export function drawScene() {
     camera.updateProjectionMatrix();
     camera.position.copy(_cameraPos);
     camera.updateMatrixWorld();
-    // Back where the rest of the engine (picking, projections) expects everything.
+    // Back where the rest of the engine (picking, projections) expects everything. The shift was a
+    // translation of the scene alone, so it's added back to each world matrix directly: much
+    // cheaper than working them all out again.
     scene.position.set(0, 0, 0);
-    scene.updateMatrixWorld();
+    scene.updateMatrix();
+    scene.traverse(unshift);
 }
 
-// A share of the gap between the camera and the nearest surface or craft drawn.
+function unshift(object) {
+    const e = object.matrixWorld.elements;
+    e[12] += _cameraPos.x;
+    e[13] += _cameraPos.y;
+    e[14] += _cameraPos.z;
+}
+
+// A share of the gap between the camera and the nearest surface or craft drawn. Positions come
+// from the world matrices as last drawn: a frame old at most, which a share of the gap allows for,
+// and far cheaper than working each one out again.
 function nearPlane() {
     let gap = Infinity;
     celestialMap.forEach(obj => {
         if (!obj.group.visible) return;
-        obj.mesh.getWorldPosition(_objPos);
+        _objPos.setFromMatrixPosition(obj.mesh.matrixWorld);
         gap = Math.min(gap, camera.position.distanceTo(_objPos) - getVisualRadius(obj));
     });
     return Math.max(NEAR_MIN, NEAR_SHARE * gap);

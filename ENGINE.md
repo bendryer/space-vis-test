@@ -74,7 +74,7 @@ The motion clock (camera orbit, spacecraft attitude, the Sun's surface) is separ
 | ✅ `getSystem(name)` | The name of the system an object belongs to: the body round the Sun it's part of (`Earth` for the Moon, the ISS and L1), or `Sun`. |
 | ✅ `getOrbitColor(name)` | The CSS colour of the object's orbit line, unlit. |
 | ✅ `pick(x, y)` → name or `null` | The object under a point on screen, in CSS pixels. Only what's drawn counts. |
-| ✅ `projectBody(name)` → `{ x, y, radius }` or `null` | Where the object is on screen: centre and radius in CSS pixels, including the view shift from `setViewInsets`. `null` when it's behind the camera or not in the scene. Tiny when far away; not hidden behind other bodies. |
+| ✅ `projectBody(name)` → `{ x, y, radius, distance }` or `null` | Where the object is on screen: centre and radius in CSS pixels, including the view shift from `setViewInsets`, and its centre's distance from the camera in scene units. `null` when it's behind the camera or not in the scene. Tiny when far away; not hidden behind other bodies. |
 
 ## Layout
 
@@ -89,7 +89,7 @@ Two ways of drawing the same real data (`SCALE-PLAN.md`): `diagram`, the default
 
 | | |
 |---|---|
-| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. True scale draws correctly up close, but isn't ready to show yet: it needs markers, log-distance flights and its lighting checked (stage 5 of the plan). |
+| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. In True scale flights are timed on the logarithm of distance, and an app shows the markers (below) for what's too small to see. A flight or overview asked for in the same frame as the change waits for the cut. |
 | ✅ `getScaleMode()` | The active mode. |
 | ✅ `scale-mode` `{ mode }` (event) | The scale mode changed. |
 
@@ -117,5 +117,7 @@ Opt-in modules in `src/features/` that any app can use, built only on this API.
 | | |
 |---|---|
 | ✅ Reticles (`src/features/reticles/`) | `setupReticles(engine, container)` adds the overlay to `container`. `updateReticles(dt, { hovered, groups, rightEdge })`, from the app's `onFrame` hook, marks `hovered` (an entry, with a name tab; it swipes out when that object is selected) and each entry in `groups` (a `Map` to `'hover'` or `'info'`), keeping labels left of `rightEdge`. |
+
+| ✅ Markers (`src/features/markers/`) | `setupMarkers(engine, container)` adds a canvas layer to `container`. `updateMarkers({ enabled, hovered, rightEdge })`, from the app's `onFrame` hook, draws a dot in its orbit colour and a name for each object drawn under 3 px across, hiding those behind something drawn, folding a dot into a more important one it sits on, and leaving off names that would overlap (`hovered`'s name always shows). `pickMarker(x, y, radius)` gives the name of the nearest dot within `radius` (12 px by default), or `null`. The showcase enables them in True scale only, picks a marker before the scene on a click, and points the cursor at one. |
 
 The showcase's input choices (canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, `steer` ends the tour) stay with it.

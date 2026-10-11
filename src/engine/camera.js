@@ -381,7 +381,7 @@ function planFlightPath(from, to) {
     const arch = new THREE.Vector3(0, 1, 0);
     if (Math.abs(dir.dot(_UP)) > 0.9) arch.set(0, 0, 1);
     else arch.crossVectors(dir, _UP).cross(dir).normalize();
-    const mid = from.clone().lerp(to, 0.5).addScaledVector(arch, Math.min(dist * 0.15, 800));
+    const mid = from.clone().lerp(to, 0.5).addScaledVector(arch, Math.min(dist * 0.15, view.flightArchMax));
 
     // If the smoothed curve still grazes a body between waypoints, widen the detours and retry.
     let curve;
@@ -397,23 +397,54 @@ function planFlightPath(from, to) {
 let flightPace = USER_FLIGHT_SCALE;
 export function setFlightPace(scale = USER_FLIGHT_SCALE) { flightPace = scale; }
 
-function estimateFlightDuration(travelDist) {
+// A flight's length: in Diagram mode from the distance travelled; in True scale from the powers of
+// ten crossed (logFlightPlan), where startView and endView are the camera's distance from what it
+// looks at, at each end.
+const LOG_FLIGHT_FULL = 20; // the effort (logFlightPlan) at which a True-scale flight takes its full length
+function estimateFlightDuration(travelDist, startView, endView) {
     const flightScale = prefersReducedMotion.matches ? 0 : flightPace;
-    return Math.max((1.5 + Math.min(travelDist / view.flightReach, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
+    const reach = view.logFlights
+        ? logFlightPlan(travelDist, startView, endView).effort / LOG_FLIGHT_FULL
+        : travelDist / view.flightReach;
+    return Math.max((1.5 + Math.min(reach, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
+}
+
+// In True scale a flight crosses powers of ten (from the ISS to Neptune is 3.5 million units, from
+// the ISS to Earth 5), so it's timed on the logarithm of distance: the camera leaves its start and
+// closes on its destination each at a pace in proportion to how far it is from them (climbing out,
+// travelling, coming down). `a` and `b` are the camera's distance from what it looks at, at the
+// start and at the end; `effort` is the flight's total, in natural-log steps.
+let logFlight = null;
+function logFlightPlan(length, a, b) {
+    a = Math.max(a, 1e-9);
+    b = Math.max(b, 1e-9);
+    const e1 = Math.log((length / 2 + a) / a);
+    return { length, a, b, e1, effort: e1 + Math.log((length / 2 + b) / b) };
+}
+// The share of the path's length covered at share f of the effort.
+function logFlightShare(plan, f) {
+    const e = f * plan.effort;
+    const x = e <= plan.e1 ? plan.a * Math.expm1(e) : plan.length - plan.b * Math.expm1(plan.effort - e);
+    return THREE.MathUtils.clamp(x / plan.length, 0, 1);
 }
 
 // arrivalTime: the motion-clock time destPos was computed for (the camera's slow orbit around
 // its target keeps moving, so flights aim for where it will be on arrival and hold that aim).
-function initiateTransition(destPos, arrivalTime = null) {
+// destView: the camera's distance from what it will look at on arrival.
+function initiateTransition(destPos, arrivalTime = null, destView = null) {
     transitionStartPos.copy(camera.position);
     transitionStartTarget.copy(controls.target);
 
     flightCurve = planFlightPath(camera.position, destPos);
     _plannedDest.copy(destPos);
+    const length = flightCurve.getLength();
+    const startView = camera.position.distanceTo(controls.target);
+    const endView = destView ?? destPos.distanceTo(transitionEndTarget);
+    logFlight = view.logFlights ? logFlightPlan(length, startView, endView) : null;
 
     isTransitioning = true;
     transitionProgress = 0;
-    transitionDuration = estimateFlightDuration(flightCurve.getLength());
+    transitionDuration = estimateFlightDuration(length, startView, endView);
     flightArrivalTime = arrivalTime ?? motionTime + transitionDuration;
 
     controls.enabled = false;
@@ -456,6 +487,7 @@ export function flyTo(name) {
 
 function startFlight(mesh, data) {
     pendingLanderFocus = null;
+    if (reframePending) { afterReframe = () => startFlight(mesh, data); return; }
 
     // A lander whose body hasn't loaded yet is parked off-scene (at the Sun's centre). Show its
     // details now, make sure its body loads, and fly there once it lands (see attemptToLand).
@@ -488,13 +520,14 @@ function startFlight(mesh, data) {
 
     const initIdealPos = new THREE.Vector3();
     // Aim for the camera's orbit position at the (estimated) moment of arrival.
-    const arrivalTime = motionTime + estimateFlightDuration(camera.position.distanceTo(mesh.getWorldPosition(new THREE.Vector3())));
+    const arrivalTime = motionTime + estimateFlightDuration(camera.position.distanceTo(mesh.getWorldPosition(new THREE.Vector3())),
+        camera.position.distanceTo(controls.target), calculateFocusDistance(mesh));
     getIdealCameraPosition(mesh, arrivalTime, initIdealPos);
 
     const initTarget = new THREE.Vector3();
     getFocusPoint(mesh, initTarget);
 
-    initiateTransition(initIdealPos, arrivalTime);
+    initiateTransition(initIdealPos, arrivalTime, initIdealPos.distanceTo(initTarget));
     hasSelection = true;
     emitEngine('select', { data, waiting: false });
 }
@@ -518,6 +551,7 @@ onLanded(data => {
 // Let go of the selection (and any flight to it). Emits "deselect".
 export function deselect() {
     pendingLanderFocus = null;
+    afterReframe = null;
     releaseUserControl();
     selectedObject = null;
     isTracking = false;
@@ -606,7 +640,7 @@ export function updateCamera(dt, elapsedTime) {
 
         // Follow the planned path; the destination keeps moving (the camera's slow orbit around
         // the target), so blend that drift in towards the end of the flight.
-        flightCurve.getPointAt(t, camera.position);
+        flightCurve.getPointAt(logFlight ? logFlightShare(logFlight, t) : t, camera.position);
         const driftWeight = t * t * (3 - 2 * t);
         camera.position.addScaledVector(_destDrift.subVectors(destPos, _plannedDest), driftWeight);
 
@@ -821,6 +855,7 @@ function getSolarSystemView(outPos, outTarget) {
 // Let go of any selection and show the whole Solar System, every planet's orbit lit.
 // animate: false jumps straight there.
 export function showOverview({ animate = true } = {}) {
+    if (reframePending) { afterReframe = () => showOverview({ animate }); return; }
     deselect();
     releaseUserControl();
 
@@ -843,10 +878,15 @@ export function showOverview({ animate = true } = {}) {
 // After a change of scale mode (setScaleMode): take the mode's view settings and cut to the
 // selection, or the overview, as now drawn. Done at the next camera step, once everything has been
 // moved to its new place. A flight under way ends there, at its destination.
+// A flight asked for before then would start from where things were, so it waits for it
+// (afterReframe).
 let reframePending = false;
+let afterReframe = null;
 export function reframe() { reframePending = true; }
 function reframeNow() {
     reframePending = false;
+    const next = afterReframe;
+    afterReframe = null;
     camera.near = view.cameraNear ?? camera.near;
     camera.far = view.cameraFar;
     camera.updateProjectionMatrix();
@@ -856,6 +896,7 @@ function reframeNow() {
         if (solarSystemView) getSolarSystemView(transitionEndPos, transitionEndTarget);
         transitionProgress = 1;
     } else placeCameraAt(motionTime);
+    next?.();
 }
 
 // Put the camera straight where the motion clock at `time` says, so it has nothing left to ease

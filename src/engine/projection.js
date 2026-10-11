@@ -46,7 +46,8 @@ export function projectBody(obj) {
     _bodyCentre.copy(local.center).applyMatrix4(obj.mesh.matrixWorld);
     obj.mesh.getWorldScale(_worldScale);
     const worldR = local.radius * Math.max(_worldScale.x, _worldScale.y, _worldScale.z);
-    const inside = camera.position.distanceTo(_bodyCentre) <= worldR;
+    const distance = camera.position.distanceTo(_bodyCentre);
+    const inside = distance <= worldR;
 
     _camUp.setFromMatrixColumn(camera.matrixWorld, 1);
     _bodyEdge.copy(_bodyCentre).addScaledVector(_camUp, worldR).project(camera);
@@ -57,5 +58,5 @@ export function projectBody(obj) {
     const cy = (-_bodyCentre.y * 0.5 + 0.5) * h;
     const ex = (_bodyEdge.x * 0.5 + 0.5) * w;
     const ey = (-_bodyEdge.y * 0.5 + 0.5) * h;
-    return { cx, cy, bodyR: inside ? Infinity : Math.hypot(ex - cx, ey - cy), w, h };
+    return { cx, cy, bodyR: inside ? Infinity : Math.hypot(ex - cx, ey - cy), distance, w, h };
 }

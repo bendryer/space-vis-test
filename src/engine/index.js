@@ -113,7 +113,7 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
             // from its onFrame hook needs this frame's camera.
             camera.updateMatrixWorld();
             const p = projectBody(celestialMap.get(name));
-            return p && { x: p.cx, y: p.cy, radius: p.bodyR };
+            return p && { x: p.cx, y: p.cy, radius: p.bodyR, distance: p.distance };
         },
         // The selected object's data.json entry, or null.
         getSelection() {

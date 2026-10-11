@@ -5,6 +5,7 @@ import { engine } from './engine.js';
 import { stopCinematicMode, cinematicActive } from './cinematic.js';
 import { selectObject } from './details.js';
 import { menuSheetOpen, closeMenuSheet } from './phone.js';
+import { pickMarker } from '../../features/markers/markers.js';
 
 export let lastInputWasKeyboard = false;
 // The kind of input the visitor last used, which decides where focus goes and the coach's words.
@@ -14,6 +15,8 @@ export function trackInputType() {
 }
 
 export let pointerDownPos = null;
+// The marker under the pointer (markers show in True scale), whose name the markers light.
+export let hoveredMarker = null;
 
 // The showcase's input: the canvas, the sidebar's close and Escape. Only clicks on the 3D view
 // itself select or deselect. Listening on the canvas (not window) keeps clicks in the sidebar and
@@ -25,6 +28,11 @@ export function setupInput() {
         engine.hurry();
     });
     engine.canvas.addEventListener('wheel', () => engine.hurry(), { passive: true });
+    engine.canvas.addEventListener('pointermove', (e) => {
+        hoveredMarker = e.pointerType === 'mouse' ? pickMarker(e.clientX, e.clientY) : null;
+        engine.canvas.style.cursor = hoveredMarker ? 'pointer' : '';
+    });
+    engine.canvas.addEventListener('pointerleave', () => { hoveredMarker = null; engine.canvas.style.cursor = ''; });
 
     // Taking hold of the camera ends the tour.
     engine.on('steer', stopCinematicMode);
@@ -38,7 +46,10 @@ export function setupInput() {
         // A tap on the scene ends the tour, then carries on as a normal selection.
         stopCinematicMode();
 
-        const name = engine.pick(e.clientX, e.clientY);
+        // A marker is drawn over the scene, so it's what the visitor is pointing at; a finger
+        // gets a wider reach.
+        const name = pickMarker(e.clientX, e.clientY, e.pointerType === 'mouse' ? undefined : 20)
+            ?? engine.pick(e.clientX, e.clientY);
         if (name) selectObject(name);
         else engine.deselect();
     });

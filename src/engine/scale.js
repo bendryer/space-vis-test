@@ -12,12 +12,20 @@ export const SCALE_MODES = ['diagram', 'true'];
 export let scaleMode = 'diagram';
 
 // Each mode's view settings, in scene units: the camera's near plane (null: set each frame from
-// what's nearest, draw.js) and how far it sees and may go, the distance a flight takes its full
-// length over, and how close to a system the Sun's shadows switch on at least. `relative`: drawn
-// relative to the camera, in slices of depth (draw.js).
+// what's nearest, draw.js) and how far it sees and may go; the distance a flight takes its full
+// length over, or `logFlights` (timed on the logarithm of distance, camera.js), and the most a
+// flight's path arches; how close to a system the Sun's shadows switch on at least, the least
+// their map covers, and `shadowLocal` (the map reaches back only past the nearest body,
+// lighting.js). `relative`: drawn relative to the camera, in slices of depth (draw.js).
 const VIEWS = {
-    diagram: { cameraNear: 0.1, cameraFar: 1e6, maxDistance: 1e5, flightReach: 15000, shadowReachMin: 180, relative: false },
-    true: { cameraNear: null, cameraFar: 1e9, maxDistance: 1e7, flightReach: 1.5e6, shadowReachMin: 180, relative: true },
+    diagram: {
+        cameraNear: 0.1, cameraFar: 1e6, maxDistance: 1e5, flightReach: 15000, logFlights: false, flightArchMax: 800,
+        shadowReachMin: 180, shadowHalfMin: 0.05, shadowLocal: false, relative: false,
+    },
+    true: {
+        cameraNear: null, cameraFar: 2e7, maxDistance: 1e7, logFlights: true, flightArchMax: Infinity,
+        shadowReachMin: 180, shadowHalfMin: 1e-8, shadowLocal: true, relative: true,
+    },
 };
 export let view = VIEWS.diagram;
 

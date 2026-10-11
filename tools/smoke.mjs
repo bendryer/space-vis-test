@@ -7,7 +7,8 @@
 // Starts its own Vite dev server, drives system Chrome on the real GPU, flies to a set of objects
 // with the simulation date pinned (?date=) and the motion clock held (__ouniverse.holdMotion), and
 // screenshots each one. Records console errors, GPU time per stop and the load marks, then runs
-// Cinematic Mode for two cycles. Then the presentation (present.html with the demo): its opening
+// Cinematic Mode for two cycles, then a few stops in True scale and one back in Diagram mode
+// (--only=true for just those). Then the presentation (present.html with the demo): its opening
 // view and each step, reached with the arrow key. Fails on a console error, a flight that doesn't finish, or a
 // screenshot that differs from the baseline by more than DIFF_LIMIT, or a stop whose keyboard
 // focus, announcement, details panel or current menu row differs from the baseline's.
@@ -31,9 +32,12 @@ const DIFF_LIMIT = 0.005;
 const args = new Set(process.argv.slice(2));
 // --only=Sun,Earth runs just those stops (for debugging the test itself).
 const only = process.argv.find(a => a.startsWith('--only='))?.slice(7).split(',');
-const STOPS = (only ?? ALL_STOPS).filter(name => name !== 'present');
+const STOPS = (only ?? ALL_STOPS).filter(name => name !== 'present' && name !== 'true');
 // --only=present runs the presentation's steps; they run with any --only that names it, or none.
 const runPresent = !only || only.includes('present');
+// True scale's stops: likewise with --only=true.
+const TRUE_STOPS = ['overview', 'Earth', 'ISS', 'Perseverance', 'JUICE'];
+const runTrue = !only || only.includes('true');
 const saveBaseline = args.has('--baseline');
 const root = path.resolve('smoke');
 const outDir = path.join(root, saveBaseline ? 'baseline' : 'latest');
@@ -169,6 +173,36 @@ try {
     await page.click('#cinematic-btn');
     report.cinematic = cine;
     console.log(`Cinematic          visited ${cine.visits.join(', ')}`);
+
+    // True scale (SCALE-PLAN.md): its Solar System view and a few stops, flown to in that mode,
+    // then back to Diagram mode, which must look as it did.
+    if (runTrue) {
+        await app(() => window.__ouniverse.engine.setScaleMode('true'));
+        for (const name of TRUE_STOPS) {
+            const stop = { name: `true ${name}` };
+            const start = Date.now();
+            await app(n => { if (n === 'overview') window.__ouniverse.engine.showOverview(); else window.__ouniverse.engine.flyTo(n); }, name);
+            stop.flew = await waitFor(() => window.__ouniverse.isTransitioning, 60000);
+            const arrived = await waitFor(() => !window.__ouniverse.isTransitioning, 90000);
+            stop.arriveMs = Date.now() - start;
+            if (!arrived) { failures.push(`${stop.name}: flight never finished`); stop.error = 'flight never finished'; }
+            await capture(stop, () => ({ mode: window.__ouniverse.engine.getScaleMode() }), () => {
+                const r = document.getElementById('mission-list')?.getBoundingClientRect();
+                return r ? { x: Math.floor(r.left), y: Math.floor(r.top), w: Math.ceil(r.width), h: Math.ceil(r.height) } : null;
+            });
+        }
+        await app(() => window.__ouniverse.engine.setScaleMode('diagram'));
+        const back = { name: 'diagram again ISS' };
+        const backStart = Date.now();
+        await app(() => { window.__ouniverse.engine.flyTo('ISS'); });   // not awaiting the arrival here
+        back.flew = await waitFor(() => window.__ouniverse.isTransitioning, 60000);
+        if (!await waitFor(() => !window.__ouniverse.isTransitioning, 90000)) failures.push(`${back.name}: flight never finished`);
+        back.arriveMs = Date.now() - backStart;
+        await capture(back, () => ({ mode: window.__ouniverse.engine.getScaleMode() }), () => {
+            const r = document.getElementById('mission-list')?.getBoundingClientRect();
+            return r ? { x: Math.floor(r.left), y: Math.floor(r.top), w: Math.ceil(r.width), h: Math.ceil(r.height) } : null;
+        });
+    }
 
     await waitFor(() => performance.getEntriesByName('sky-ready').length, 30000);
     report.marks = await app(() => Object.fromEntries(performance.getEntriesByType('mark').map(m => [m.name, Math.round(m.startTime)])));

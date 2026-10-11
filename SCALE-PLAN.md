@@ -152,7 +152,12 @@ Check every object against its source, recording each in `factcheck/sources.json
 2. ✅ **Diagram mode fixes:** the Hill-sphere rule, framing on the body itself, and the small-body cap. Fixes the Moon and L1 near Venus, Earth looking tiny, and Hayabusa2/Stardust. Retake the smoke baseline once this is agreed.
 3. ✅ **Scale-mode switch in the engine:** `setScaleMode`, the mode objects, and the constants audit, with only Diagram mode wired up. The smoke test must show nothing visible changed.
 4. ✅ **Precision and depth:** rendering relative to the camera, depth in slices (in place of the reversed depth buffer), and a dynamic near plane. Nothing visible changes in Diagram mode. Also fixed on the way: the camera's keep-out margin above a body (`FLIGHT_CLIP_RADII`) no longer reaches past the object viewed (the ISS and landers sit inside it in True scale), and a lander's feet are measured again when its size changes.
-5. **True scale mode:** the linear rules, markers, log-distance flights, framing, and craft drawn at `size_m`. Smoke-test stops in True scale, and checks on weak hardware.
+5. ✅ **True scale mode:** the linear rules, markers, log-distance flights, framing, and craft drawn at `size_m`. Smoke-test stops in True scale, and checks on weak hardware.
+   - Markers: `src/features/markers/` (in `ENGINE.md`); the showcase shows them in True scale only, so Diagram mode is unchanged. `projectBody` now also gives `distance`.
+   - Flights in True scale are timed on the logarithm of distance (`logFlightPlan` in `camera.js`): each power of ten takes about the same time, and a flight lasts 1.5 to 3.5 s times the pace, as in Diagram mode, by the powers of ten it crosses.
+   - The Sun's shadow map in True scale covers down to 1e-8 units and reaches back only past the body nearest the view (`shadowLocal`): a craft still falls into its planet's shadow, but a moon's eclipse of its planet doesn't show in True scale.
+   - Weak hardware (CPU slowed 4×, 1920×1080): True scale holds 60 fps at every smoke stop, as Diagram mode does, once the depth slices stopped recomputing every world matrix (later slices skip the update; the shift back is added to each matrix directly). Phones (390×844 @3): markers and framing checked.
+   - Fixed on the way: a flight or overview asked for in the same frame as `setScaleMode` waits for its cut.
 6. **The switch in the UI:** a toggle in the showcase (desktop and phone layouts, to `DESIGN.md`), the presentation step `scale`, and `ENGINE.md`, `DATA.md` and `CLAUDE.md` updated.
 7. **Animated change** between the modes (optional).
 

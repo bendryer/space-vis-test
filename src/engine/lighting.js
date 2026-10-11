@@ -215,6 +215,18 @@ const _shadowZ = new THREE.Vector3();
 const _ORIGIN = new THREE.Vector3();
 let shadowSystem = null;
 let shadowSystemReach = 0;
+const SHADOW_DEPTH_STEPS = 2 ** 24; // the shadow map's depth resolution, about (float32 fragment depth)
+
+// True scale: the body whose shadow can fall on what's shown (the selection itself if it's a
+// body, else the body it orbits or stands on), or the system's own body. Its centre and radius.
+const _casterCentre = new THREE.Vector3();
+function shadowCaster(shown) {
+    let caster = shown;
+    if (caster && caster.data.type === 'mission') caster = celestialMap.get(caster.data.parent) ?? null;
+    if (!caster || !SURFACE_TYPES.has(caster.data.type)) caster = shadowSystem;
+    caster.group.getWorldPosition(_casterCentre);
+    return { centre: _casterCentre, radius: getVisualRadius(caster) };
+}
 
 export function updateSunShadow(dt) {
     const systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
@@ -247,7 +259,7 @@ export function updateSunShadow(dt) {
     let half = Math.hypot(halfHeight, halfHeight * camera.aspect) * 1.05;
     const shown = selectedObject && selectedObject.userData ? celestialMap.get(selectedObject.userData.name) : null;
     if (shown) half = Math.max(half, getVisualRadius(shown) * 1.5);
-    half = Math.max(0.05, Math.min(half, shadowSystemReach * 1.2));
+    half = Math.max(view.shadowHalfMin, Math.min(half, shadowSystemReach * 1.2));
     half = SUN_SHADOW_SIZE_STEP ** Math.ceil(Math.log(half) / Math.log(SUN_SHADOW_SIZE_STEP));
     const texel = (2 * half) / SUN_SHADOW_MAP_SIZE;
 
@@ -261,20 +273,28 @@ export function updateSunShadow(dt) {
         .addScaledVector(_shadowY, Math.round(sy / texel) * texel - sy);
 
     // Deep enough to take in anything in the system between the Sun and the view (a moon
-    // eclipsing its planet) and no deeper, keeping depth precise enough for small craft.
-    const toward = shadowSystemReach + _viewCenter.distanceTo(systemObj.group.position) + half;
+    // eclipsing its planet) and no deeper, keeping depth precise enough for small craft. In True
+    // scale that's still far too deep for a craft a hundred-thousandth of a unit across, so the map
+    // reaches back only past the body nearest the view (the planet a craft orbits or stands on),
+    // whose shadow is the one that falls on it, and no further behind the view than it covers.
+    const local = view.shadowLocal ? shadowCaster(shown) : null;
+    const toward = local
+        ? local.centre.distanceTo(_viewCenter) + local.radius + half
+        : shadowSystemReach + _viewCenter.distanceTo(systemObj.group.position) + half;
     shadowLight.position.copy(_viewCenter).addScaledVector(_vecToSun, toward);
     shadowLight.target.position.copy(_viewCenter);
     const shadowCamera = shadowLight.shadow.camera;
     shadowCamera.left = shadowCamera.bottom = -half;
     shadowCamera.right = shadowCamera.top = half;
     shadowCamera.near = half * 0.5;
-    shadowCamera.far = toward + Math.max(half, baseRad) * 2;
+    shadowCamera.far = toward + (local ? half : Math.max(half, baseRad)) * 2;
     shadowCamera.updateProjectionMatrix();
     // Offsets that stop surfaces shadowing themselves, about a texel in size: enough to prevent
-    // acne, small enough that a lander's shadow still meets its feet.
+    // acne, small enough that a lander's shadow still meets its feet. In True scale at least a
+    // step of the map's depth, which can be coarser than a texel.
+    const range = shadowCamera.far - shadowCamera.near;
     shadowLight.shadow.normalBias = texel;
-    shadowLight.shadow.bias = -(texel * 0.5) / (shadowCamera.far - shadowCamera.near);
+    shadowLight.shadow.bias = -(local ? Math.max(texel * 0.5, 2 * range / SHADOW_DEPTH_STEPS) : texel * 0.5) / range;
 
     if (shadowHelper) shadowHelper.update();
     if (lightHelper) lightHelper.update();

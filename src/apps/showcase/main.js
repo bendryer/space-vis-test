@@ -5,8 +5,9 @@ import './showcase.css';
 import { createEngine } from '../../engine/index.js';
 import { engine, setEngine } from './engine.js';
 import { setupReticles, updateReticles } from '../../features/reticles/reticles.js';
+import { setupMarkers, updateMarkers } from '../../features/markers/markers.js';
 import { updateClock } from './clock.js';
-import { trackInputType, setupInput } from './input.js';
+import { hoveredMarker, trackInputType, setupInput } from './input.js';
 import { markSceneReady, startSlowLoadNotice, showFatalError, fillSplashFacts, setupSplash, setupLoadingProgress } from './splash.js';
 import { setupFullscreen } from './fullscreen.js';
 import { hoveredObj, reticleGroups, setupViews, showSolarSystem } from './views.js';
@@ -46,6 +47,7 @@ document.body.appendChild(engine.canvas);
 // Showcase: the panels round the system, opening on the whole Solar System.
 engine.on('built', ({ entries }) => {
     fillSplashFacts(engine.listObjects());
+    setupMarkers(engine, document.getElementById('ui-layer'));
     setupReticles(engine, document.getElementById('ui-layer'));
     populateMenu();
     setupCinematicControls();
@@ -67,10 +69,13 @@ setupLayout();
 
 setupInput();
 
-// Showcase, each frame: the clock line (when the second changes) and the reticles.
+// Showcase, each frame: the clock line (when the second changes), the markers (in True scale,
+// where most things are too small to see) and the reticles.
 engine.onFrame(dt => {
     updateClock();
-    updateReticles(dt, { hovered: hoveredObj, groups: reticleGroups(), rightEdge: sceneRightEdge() });
+    const rightEdge = sceneRightEdge();
+    updateMarkers({ enabled: engine.getScaleMode() === 'true', hovered: hoveredMarker, rightEdge });
+    updateReticles(dt, { hovered: hoveredObj, groups: reticleGroups(), rightEdge });
 });
 
 // The sky snaps in behind the splash, and fades in once the visitor has gone in.
