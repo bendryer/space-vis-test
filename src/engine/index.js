@@ -6,13 +6,13 @@ import { BASE_PIXEL_RATIO, animate, createGpuTimer, onFrame, resolution } from '
 import { PINNED_DATE, getDate, setDate, setTimeRate, simulatedDate } from './time.js';
 import { SKY_FACES, ktx2Loader, setSceneVisible, startSky } from './sky.js';
 import { getSystemRoot } from './orbits.js';
-import { applyScales } from './scale.js';
-import { attemptToLand } from './landers.js';
-import { buildSystem, getStandardizedOrbitColor } from './bodies.js';
+import { SCALE_MODES, applyScales, scaleMode } from './scale.js';
+import { attemptToLand, relandLanders } from './landers.js';
+import { buildSystem, getStandardizedOrbitColor, rescaleSystem } from './bodies.js';
 import { camera, createRenderer, renderer, scene } from './scene.js';
 import { celestialMap } from './state.js';
 import { collectTextures } from './gpu.js';
-import { deselect, flyTo, hurry, initControls, setFlightPace, setUserControl, setViewInsets, showOverview, selectedObject } from './camera.js';
+import { deselect, flyTo, hurry, initControls, reframe, setFlightPace, setUserControl, setViewInsets, showOverview, selectedObject } from './camera.js';
 import { emitEngine, onEngine } from './events.js';
 import { loadingManager } from './assets.js';
 import { projectBody } from './projection.js';
@@ -128,6 +128,7 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
             return getStandardizedOrbitColor(getObject(name));
         },
         pick, setOrbitHighlights,
+        setScaleMode, getScaleMode: () => scaleMode,
         setViewInsets, setFlightPace, setUserControl, setSceneVisible, loadDeferred,
     };
     if (import.meta.env.DEV) installDevHook(engine);
@@ -156,6 +157,21 @@ async function loadSystem(dataUrl) {
         console.error("Loading System Failed:", e);
         emitEngine('error', { error: e });
     }
+}
+
+// Draws everything on another scale mode's rules (SCALE-PLAN.md): 'diagram' or 'true'. Sizes, orbits
+// and lines are redone, landers re-seated, and the view cuts to the selection as now drawn. Emits
+// "scale-mode". Only once the system is built.
+function setScaleMode(mode) {
+    if (!SCALE_MODES.includes(mode)) throw new Error(`Unknown scale mode: ${mode}`);
+    if (mode === scaleMode || !systemReady) return;
+    const data = listObjects();
+    applyScales(data, mode);
+    rescaleSystem();
+    new Set(data.filter(d => d.orbit_type === 'landed').map(d => d.parent))
+        .forEach(name => { const body = celestialMap.get(name); if (body) relandLanders(body); });
+    reframe();
+    emitEngine('scale-mode', { mode });
 }
 
 // Every object's data.json entry, in load order.

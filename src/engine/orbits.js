@@ -2,7 +2,7 @@
 // cruise trajectories of missions in transit. Positions only; nothing here touches the scene.
 import * as THREE from 'three';
 import { celestialMap } from './state.js';
-import { MISSION_MODEL_SIZE } from './config.js';
+import { AU_KM, SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, distances } from './units.js';
 
 const J2000_DATE = new Date('2000-01-01T12:00:00Z');
 
@@ -14,33 +14,14 @@ const _keplerAxisX = new THREE.Vector3(1, 0, 0);
 // --- PHYSICS HELPER FUNCTIONS ---
 export function getDaysSinceJ2000(date) { return (date - J2000_DATE) / 86400000; }
 
-// --- DISTANCE SCALE ROUND THE SUN ---
-// Everything that orbits the Sun on a real orbit gives its size in AU ("a_au") and is placed on one
-// shared scale: a smooth compression of distance from the Sun, so the planets, the asteroid belt and
-// the comets all sit in their true order and relative place while Neptune stays within reach.
-// Earth's 1 AU maps to 1,000 scene units. The Earth-Sun L1/L2 points and the Lissajous paths round
-// them stay illustrative: they give "a" in scene units and are not rescaled.
-const SUN_SCALE_KNEE = 2.1;                                         // AU; below this, nearly proportional
-const SUN_SCALE_UNITS = 1000 / Math.log(1 + 1 / SUN_SCALE_KNEE);    // so that 1 AU = 1,000 units
-export const auToScene = au => SUN_SCALE_UNITS * Math.log(1 + au / SUN_SCALE_KNEE);
-const sceneToAu = units => SUN_SCALE_KNEE * (Math.exp(units / SUN_SCALE_UNITS) - 1);
-
-// --- DISTANCE SCALE ROUND A BODY ---
-// An orbit round a planet, moon, asteroid or comet gives its real size in km ("a_km"), and each
-// point's height above the body is drawn on one scale: true to the body's drawn size close in (the
-// ISS skims the Earth), then compressed, so moons sit in their true order without a system
-// spreading across the Solar System. A height of h km is drawn as u * K * ln(1 + h / K), where u is
-// the body's scene units per km (its drawn radius over its real one) and K is the knee: a planet's
-// or moon's, or a small body's (whose orbiters are a few km out, not thousands). A craft is kept at
-// least its own size above the ground. A body may have its own, lower knee ("knee", set by
-// scale.js) so that its system ends short of its neighbours' (its Hill sphere: see setKnees).
-export const SATELLITE_KNEE_KM = 100000;
-export const SMALL_BODY_KNEE_KM = 5;
+// --- DISTANCE SCALES ---
+// Everything that orbits the Sun on a real orbit gives its size in AU ("a_au"), and an orbit round a
+// planet, moon, asteroid or comet in km ("a_km"); each is drawn on the active scale mode's rules
+// (units.js): compressed in Diagram mode, linear in True scale.
+export const auToScene = au => distances.au(au);
+const sceneToAu = units => distances.toAu(units);
 const SMALL_BODY_TYPES = new Set(['asteroid', 'comet']);
-function satelliteDistance(rKm, s) {
-    const h = Math.max(0, rKm - s.radiusKm);
-    return s.radius + Math.hypot(s.unit * s.knee * Math.log(1 + h / s.knee), MISSION_MODEL_SIZE);
-}
+const satelliteDistance = (rKm, s) => distances.aroundBody(rKm, s);
 
 // The farthest the orbit reaches from its parent, in scene units.
 export function orbitFarthest(o) {
@@ -101,7 +82,6 @@ export function distanceFromBody(body, rKm) { return satelliteDistance(rKm, body
 // An Earth-Sun Lagrange point ("lagrange": { "body", "point" }): L1 sunward of the body and L2
 // beyond it, on the line from the Sun, at the edge of the body's Hill sphere (hillRadiusKm). Gives
 // the drawn distance, negative for L1.
-const AU_KM = 149597870.7;
 export function lagrangeOffset(body, sun, point) {
     return (point === 'L1' ? -1 : 1) * distanceFromBody(body, hillRadiusKm(body, sun));
 }

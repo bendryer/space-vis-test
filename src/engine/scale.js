@@ -1,9 +1,25 @@
-// Scales: data.json gives real sizes ("radius_km") and real orbits ("a_au" round the Sun, "a_km"
-// round a body); the engine draws each kind of thing at one fixed scale, set here and in orbits.js
-// (the distance scales). Run once at load, before the system is built: it gives every natural body
-// its drawn "radius" (and a modelled one its "model_scale"), and readies every orbit.
-import { SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, auToScene, distanceFromBody, hillRadiusKm, kneeFor, lagrangeOffset, prepareOrbit } from './orbits.js';
+// Scales: data.json gives real sizes ("radius_km", a craft's "size_m") and real orbits ("a_au" round
+// the Sun, "a_km" round a body); the engine draws each kind of thing at one fixed scale per scale
+// mode (SCALE-PLAN.md): Diagram, compressed so everything is easy to see and reach, or True scale,
+// one linear scale for everything. Sizes are set here, distances in units.js. applyScales runs at
+// load and again on a change of mode: it gives every natural body its drawn "radius" (and a
+// modelled one its "model_scale"), every craft its "model_size", and readies every orbit.
+import { MISSION_MODEL_SIZE } from './config.js';
+import { SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, TRUE_KM_PER_UNIT, useDistances } from './units.js';
+import { auToScene, distanceFromBody, hillRadiusKm, kneeFor, lagrangeOffset, prepareOrbit } from './orbits.js';
 
+export const SCALE_MODES = ['diagram', 'true'];
+export let scaleMode = 'diagram';
+
+// Each mode's view settings, in scene units: how far the camera sees and may go, the distance a
+// flight takes its full length over, and how close to a system the Sun's shadows switch on at least.
+const VIEWS = {
+    diagram: { cameraFar: 1e6, maxDistance: 1e5, flightReach: 15000, shadowReachMin: 180 },
+    true: { cameraFar: 1e9, maxDistance: 1e7, flightReach: 1.5e6, shadowReachMin: 180 },
+};
+export let view = VIEWS.diagram;
+
+// --- DIAGRAM SIZES ---
 // The Sun: drawn at 25 units' radius (its own scale; on the planets' it would swamp Mercury's orbit).
 const STAR_UNITS_PER_KM = 25 / 695700;
 // Planets and moons drawn as spheres: radius compressed by a power law, Earth at 5 units, so the
@@ -26,22 +42,47 @@ const SMALL_BODY_KNEE_RANGE = [1, SMALL_BODY_KNEE_KM];
 // A halo orbit's lean along the Sun-Earth line, as a share of its width across it.
 const HALO_LEAN = 0.3;
 
-// The drawn radius of a natural body with a real size, in scene units.
-export function drawnRadius(item) {
-    const r = item.radius_km;
-    if (item.type === 'star') return r * STAR_UNITS_PER_KM;
-    if (item.model) return SMALL_BODY_UNITS * Math.pow(2 * r, SMALL_BODY_POWER) / 2;
-    return BODY_RADIUS_UNITS * Math.pow(r / BODY_RADIUS_KM, BODY_RADIUS_POWER);
-}
+// Each mode's sizes: a natural body's drawn radius, and a craft's drawn longest side.
+const SIZES = {
+    diagram: {
+        bodyRadius(item) {
+            const r = item.radius_km;
+            if (item.type === 'star') return r * STAR_UNITS_PER_KM;
+            if (item.model) return SMALL_BODY_UNITS * Math.pow(2 * r, SMALL_BODY_POWER) / 2;
+            return BODY_RADIUS_UNITS * Math.pow(r / BODY_RADIUS_KM, BODY_RADIUS_POWER);
+        },
+        // Every craft the same size, far larger than true, so all can be seen.
+        craftSize: () => MISSION_MODEL_SIZE,
+    },
+    true: {
+        bodyRadius: item => item.radius_km / TRUE_KM_PER_UNIT,
+        craftSize: item => (item.size_m ?? 1) / 1000 / TRUE_KM_PER_UNIT,
+    },
+};
 
-export function applyScales(data) {
+// The drawn radius of a natural body with a real size, in scene units, in the active mode.
+export function drawnRadius(item) { return SIZES[scaleMode].bodyRadius(item); }
+
+export function applyScales(data, mode = scaleMode) {
+    scaleMode = mode;
+    view = VIEWS[mode];
+    useDistances(mode);
+    const sizes = SIZES[mode];
     const byName = new Map(data.map(item => [item.name, item]));
     data.forEach(item => {
+        if (item.type === 'mission') {
+            // A craft's "radius" (its size until its model loads) is data.json's in Diagram mode.
+            item.radius_diagram ??= item.radius;
+            item.model_size = sizes.craftSize(item);
+            item.radius = mode === 'diagram' ? item.radius_diagram : item.model_size / 2;
+            return;
+        }
         if (!NATURAL_TYPES.has(item.type) || item.radius_km === undefined) return;
-        item.radius = drawnRadius(item);
+        item.radius = sizes.bodyRadius(item);
         if (item.model) item.model_scale = 2 * item.radius;   // a model is scaled by its longest side
     });
-    setKnees(data, byName);
+    if (mode === 'diagram') setKnees(data, byName);
+    else data.forEach(item => { delete item.knee; delete item.hill; });
     data.forEach(item => {
         const parent = byName.get(item.parent);
         // Saturn's rings are given in km; drawn in its radii.

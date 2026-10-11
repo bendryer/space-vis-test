@@ -8,6 +8,7 @@ import { camera, isInScene, renderer } from './scene.js';
 import { celestialMap } from './state.js';
 import { emitEngine } from './events.js';
 import { getKeplerPosition, getSystemRoot, orbitFarthest } from './orbits.js';
+import { view } from './scale.js';
 import { heldMotionTime, motionTime } from './time.js';
 import { loadModelForItem, preloadSystemModels, requestHighDetail } from './models.js';
 
@@ -141,7 +142,7 @@ export function getVisualRadius(celestialObj) {
         celestialObj.detailRoot.getWorldScale(_focusScale);
         return celestialObj.detailRadius * Math.max(_focusScale.x, _focusScale.y, _focusScale.z);
     }
-    if (celestialObj.data.type === 'mission') return MISSION_MODEL_SIZE * 0.6;
+    if (celestialObj.data.type === 'mission') return (celestialObj.data.model_size ?? MISSION_MODEL_SIZE) * 0.6;
     return celestialObj.data.radius || 1;
 }
 
@@ -151,7 +152,7 @@ export function getFocusPoint(mesh, out) {
     mesh.getWorldPosition(out);
     if (mesh.userData && mesh.userData.orbit_type === 'landed') {
         const obj = celestialMap.get(mesh.userData.name);
-        const localHeight = obj && obj.detailRoot ? obj.detailCenterY : MISSION_MODEL_SIZE * 0.3;
+        const localHeight = obj && obj.detailRoot ? obj.detailCenterY : (obj?.data.built?.modelSize ?? MISSION_MODEL_SIZE) * 0.3;   // times its scale, below
         mesh.getWorldScale(_focusScale);
         _focusUp.set(0, 1, 0).transformDirection(mesh.matrixWorld); // lander's up = surface normal
         out.addScaledVector(_focusUp, localHeight * Math.max(_focusScale.x, _focusScale.y, _focusScale.z));
@@ -390,7 +391,7 @@ export function setFlightPace(scale = USER_FLIGHT_SCALE) { flightPace = scale; }
 
 function estimateFlightDuration(travelDist) {
     const flightScale = prefersReducedMotion.matches ? 0 : flightPace;
-    return Math.max((1.5 + Math.min(travelDist / 15000, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
+    return Math.max((1.5 + Math.min(travelDist / view.flightReach, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
 }
 
 // arrivalTime: the motion-clock time destPos was computed for (the camera's slow orbit around
@@ -562,6 +563,7 @@ function updateCameraUp(dt) {
 // The camera's step each frame: a flight, riding along with the selection, or the overview's
 // slow turn. False when the selection's position isn't a number, and the frame is dropped.
 export function updateCamera(dt, elapsedTime) {
+    if (reframePending) reframeNow();
     updateCameraUp(dt);
 
     if (isTransitioning) {
@@ -830,8 +832,25 @@ export function showOverview({ animate = true } = {}) {
     }
 }
 
-// Dev only (holdMotion): put the camera straight where the motion clock at `time` says, so it has
-// nothing left to ease. Not during a flight, or while the visitor steers.
+// After a change of scale mode (setScaleMode): take the mode's view settings and cut to the
+// selection, or the overview, as now drawn. Done at the next camera step, once everything has been
+// moved to its new place. A flight under way ends there, at its destination.
+let reframePending = false;
+export function reframe() { reframePending = true; }
+function reframeNow() {
+    reframePending = false;
+    camera.far = view.cameraFar;
+    camera.updateProjectionMatrix();
+    controls.maxDistance = view.maxDistance;
+    releaseUserControl();
+    if (isTransitioning) {
+        if (solarSystemView) getSolarSystemView(transitionEndPos, transitionEndTarget);
+        transitionProgress = 1;
+    } else placeCameraAt(motionTime);
+}
+
+// Put the camera straight where the motion clock at `time` says, so it has nothing left to ease
+// (holdMotion, and a change of scale mode). Not during a flight, or while the visitor steers.
 export function placeCameraAt(time) {
     if (isTransitioning || userHasControl) return;
     if (isTracking && selectedObject) {
@@ -859,7 +878,7 @@ const _keyRight = new THREE.Vector3();
 export function initControls() {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.maxDistance = 100000;
+    controls.maxDistance = view.maxDistance;
 
     // Taking hold of the camera around a focused object hands steering to the visitor instead of
     // fighting them back onto the scripted orbit.

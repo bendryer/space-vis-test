@@ -5,6 +5,7 @@ import { DEBUG_SHADOWS, SURFACE_TYPES } from './config.js';
 import { activeSystem } from './visibility.js';
 import { camera, scene } from './scene.js';
 import { celestialMap } from './state.js';
+import { view } from './scale.js';
 import { controls, getFocusPoint, getSystemRadius, getVisualRadius, isTracking, isTransitioning, selectedObject } from './camera.js';
 
 const _sunPos = new THREE.Vector3(0, 0, 0);
@@ -219,7 +220,7 @@ export function updateSunShadow(dt) {
     const systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
     const baseRad = systemObj ? (systemObj.data.radius || 1) : 1;
     const inReach = systemObj
-        && camera.position.distanceTo(systemObj.group.position) < Math.max(baseRad * SUN_SHADOW_REACH, 180);
+        && camera.position.distanceTo(systemObj.group.position) < Math.max(baseRad * SUN_SHADOW_REACH, view.shadowReachMin);
     // A new system starts dark: the light is aimed at it, so it can't keep lighting the last one.
     if (systemObj !== shadowSystem) {
         sunShadowBlend = 0;

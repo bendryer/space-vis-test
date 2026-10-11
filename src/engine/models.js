@@ -297,7 +297,8 @@ export function buildModelLevel(item, effectiveModel, model) {
 
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    const targetSize = item.type === 'mission' ? MISSION_MODEL_SIZE : (item.model_scale || 1.0);
+    // At the size the object was built at (a change of scale mode scales its container, not this).
+    const targetSize = item.built?.modelSize ?? (item.type === 'mission' ? MISSION_MODEL_SIZE : (item.model_scale || 1.0));
     const finalScale = (1.0 / (maxDim || 1.0)) * targetSize;
     wrapper.scale.set(finalScale, finalScale, finalScale);
     if (item.model_offset) { wrapper.position.set(item.model_offset.x, item.model_offset.y, item.model_offset.z); }

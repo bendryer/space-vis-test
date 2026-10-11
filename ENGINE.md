@@ -83,6 +83,16 @@ The motion clock (camera orbit, spacecraft attitude, the Sun's surface) is separ
 | ✅ `setOrbitHighlights({ hovered, shown })` | Names whose orbits to light: `hovered` in the light blue of a choice (as the selection's is), `shown` in a quieter tint (a group on show). Replaces the last call; the engine keeps them right through selections and orbit-line changes. |
 | ✅ `setViewInsets({ left, right, top, bottom })` | How much of the screen the app's panels cover while something is selected, in CSS pixels from each edge (missing edges are 0). The engine frames selections to fit the rest, and while there's a selection (from `select` to `deselect`) it shifts the view so the selection sits in the middle of it. Call it again whenever the panels change size (the showcase does on resize, header resize and Cinematic Mode). |
 
+## Scale
+
+Two ways of drawing the same real data (`SCALE-PLAN.md`): `diagram`, the default (sizes and distances adjusted so everything is easy to see and reach), and `true` (one linear scale for everything, spacecraft included).
+
+| | |
+|---|---|
+| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. True scale isn't ready to show yet: it needs camera-relative rendering, a wider depth range and markers (stages 4 and 5 of the plan). |
+| ✅ `getScaleMode()` | The active mode. |
+| ✅ `scale-mode` `{ mode }` (event) | The scale mode changed. |
+
 ## Input
 
 | | |

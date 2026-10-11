@@ -146,6 +146,7 @@ function strandMaterial(settings, rays) {
     });
 }
 
+const _worldScale = new THREE.Vector3();
 export function createSun({ radius, renderer }) {
     const group = new THREE.Group();
     group.scale.setScalar(radius);
@@ -318,6 +319,8 @@ export function createSun({ radius, renderer }) {
     // time: shared clock (seconds); strandsTime lets loops and rays freeze under reduced motion.
     function update(time, camera, { strandsTime = time } = {}) {
         group.getWorldPosition(_centre);
+        // Its drawn radius now: a change of scale mode scales the container it sits in.
+        const radius = group.getWorldScale(_worldScale).x;
         const distance = camera.position.distanceTo(_centre);
         renderer.getSize(_size);
         const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);

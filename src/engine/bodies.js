@@ -64,6 +64,10 @@ function orbitLinePoints(orbitData, segments, days) {
     return points;
 }
 
+function orbitLineSegments(orbitData) {
+    return THREE.MathUtils.clamp(Math.ceil(2 * Math.PI * Math.sqrt(orbitFarthest(orbitData) / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
+}
+
 function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
     if (!orbitData || orbitData.a === 0 || orbitData.rate === 0) return null;
     // Enough points that each straight segment stays within ORBIT_LINE_MAX_SAG of the true
@@ -71,9 +75,7 @@ function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
     // Points are spread evenly in eccentric anomaly (evenly along the ellipse), not in time,
     // which bunched them at aphelion; each is still placed by getKeplerPosition, exactly as
     // the object itself moves.
-    const farthest = orbitFarthest(orbitData);
-    const segments = THREE.MathUtils.clamp(
-        Math.ceil(2 * Math.PI * Math.sqrt(farthest / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
+    const segments = orbitLineSegments(orbitData);
     const days = getDaysSinceJ2000(simulatedDate);
     const points = orbitLinePoints(orbitData, segments, days);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -101,8 +103,7 @@ export function refreshOrbitLine(line, days) {
     line.userData.days = days;
 }
 
-function createLissajousLine(orbitData) {
-    if (!orbitData?.amp || !orbitData.rate) return null;
+function lissajousPoints(orbitData) {
     const points = [];
     // Same sag limit as createOrbitLine; the path's flattest bend has radius at most a^2 / b.
     const { y, z } = orbitData.amp;
@@ -112,7 +113,12 @@ function createLissajousLine(orbitData) {
     for (let i = 0; i < segments; i++) {
         points.push(lissajousOffset(one, (i / segments) * (360 / orbitData.rate), new THREE.Vector3()));
     }
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    return points;
+}
+
+function createLissajousLine(orbitData) {
+    if (!orbitData?.amp || !orbitData.rate) return null;
+    const geometry = new THREE.BufferGeometry().setFromPoints(lissajousPoints(orbitData));
     const material = new THREE.LineBasicMaterial({
         color: new THREE.Color('#888888'),
         transparent: true,
@@ -154,16 +160,18 @@ export function getSuborbitalPosition(suborbitalData, parentRadius, days) {
     return vDir.multiplyScalar(h);
 }
 
-function createSuborbitalLine(data, parentRadius) {
-    if (!data.suborbital) return null;
+function suborbitalPoints(data, parentRadius) {
     const points = [];
     const segments = 128;
     for (let i = 0; i <= segments; i++) {
-        const fakeDays = data.suborbital.duration * (i / segments);
-        const pos = getSuborbitalPosition(data.suborbital, parentRadius, fakeDays);
-        points.push(pos);
+        points.push(getSuborbitalPosition(data.suborbital, parentRadius, data.suborbital.duration * (i / segments)));
     }
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    return points;
+}
+
+function createSuborbitalLine(data, parentRadius) {
+    if (!data.suborbital) return null;
+    const geometry = new THREE.BufferGeometry().setFromPoints(suborbitalPoints(data, parentRadius));
     const material = new THREE.LineDashedMaterial({
         color: 0xffaa00,
         dashSize: 2,
@@ -221,7 +229,7 @@ function createGenericSatellite(item) {
     if (item.status !== 'Planned') { panel.castShadow = false; panel.receiveShadow = true; }
     satGroup.add(panel);
     // Placeholder is 3 units wide; match the size the real model will load at.
-    const s = item.type === 'mission' ? MISSION_MODEL_SIZE / 3 : (item.radius || 1) * 0.5;
+    const s = item.type === 'mission' ? (item.model_size ?? MISSION_MODEL_SIZE) / 3 : (item.radius || 1) * 0.5;
     satGroup.scale.set(s, s, s);
     if (item.orbit_type === 'landed') satGroup.position.y = s / 2; // sit on the ground, not in it
     satGroup.traverse((c) => { c.userData = item; });
@@ -251,6 +259,9 @@ export function buildSystem(data) {
         meshGroup.add(visualContainer);
         group.add(meshGroup);
         celestialMap.set(item.name, { group, meshGroup, mesh: visualContainer, data: item, axis });
+        // The size it's built at: a change of scale mode scales its visual container from this
+        // (rescaleSystem), and models load at it (buildModelLevel).
+        item.built = { radius: item.radius, modelSize: item.type === 'mission' ? item.model_size : item.model_scale };
 
         // --- SUN ---
         if (item.type === 'star') {
@@ -322,7 +333,7 @@ export function buildSystem(data) {
             ring.receiveShadow = true; ring.castShadow = true;
             meshGroup.add(ring);
             // Kept for getSunOcclusion, which needs to know where a ring's shadow falls.
-            celestialMap.get(item.name).ring = { mesh: ring, innerRadius, outerRadius, opacity: item.ring.opacity || 0.9 };
+            celestialMap.get(item.name).ring = { mesh: ring, innerRadius, outerRadius, builtInner: innerRadius, builtOuter: outerRadius, opacity: item.ring.opacity || 0.9 };
         }
     });
 
@@ -411,3 +422,59 @@ export function updateTrajectoryLines(obj, arrived) {
         emitEngine('orbit-change', { data: obj.data });
     }
 }
+
+// --- A CHANGE OF SCALE MODE ---
+// After applyScales has set every size and orbit for the new mode: each object's visual container
+// (its sphere or model, night lights, the Sun's effect) is scaled from the size it was built at, a
+// planet's rings with it, and every line is redrawn. Landers are re-seated by the caller.
+export function rescaleSystem() {
+    celestialMap.forEach(obj => {
+        const { data } = obj;
+        const { built } = data;
+        if (!built) return;
+        const k = data.type === 'mission' ? (data.model_size ?? 1) / (built.modelSize ?? data.model_size ?? 1)
+            : built.radius ? data.radius / built.radius : 1;
+        obj.mesh.scale.setScalar(k);
+        if (obj.ring) {
+            obj.ring.mesh.scale.setScalar(k);
+            obj.ring.innerRadius = obj.ring.builtInner * k;
+            obj.ring.outerRadius = obj.ring.builtOuter * k;
+        }
+    });
+    redrawLines();
+}
+
+function setLinePoints(line, points) {
+    line.geometry.dispose();
+    line.geometry = new THREE.BufferGeometry().setFromPoints(points);
+}
+
+function redrawLines() {
+    const days = getDaysSinceJ2000(simulatedDate);
+    celestialMap.forEach(obj => {
+        const { data } = obj;
+        if (obj.trajectoryLines) {
+            obj.trajectoryPlan = null;
+            const plan = getTrajectoryPlan(obj);
+            if (obj.trajectoryLines.cruise) setLinePoints(obj.trajectoryLines.cruise, plan.samples.map(s => s.pos));
+            if (obj.trajectoryLines.arrived) redrawOrbitLine(obj.trajectoryLines.arrived, days);
+            return;
+        }
+        const line = obj.orbitLine;
+        if (!line) return;
+        if (data.orbit_type === 'lissajous') setLinePoints(line, lissajousPoints(data.orbit));
+        else if (data.orbit_type === 'suborbital') {
+            setLinePoints(line, suborbitalPoints(data, celestialMap.get(data.parent)?.data.radius || 1));
+            line.computeLineDistances();
+        } else redrawOrbitLine(line, days);
+    });
+}
+
+function redrawOrbitLine(line, days) {
+    const o = line.userData.orbit;
+    if (!o) return;
+    line.userData.segments = orbitLineSegments(o);
+    line.userData.days = days;
+    setLinePoints(line, orbitLinePoints(o, line.userData.segments, days));
+}
+
