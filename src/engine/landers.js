@@ -11,12 +11,14 @@ export const pendingLanders = [];
 
 // --- LANDER LOGIC ---
 // Where a lander touches the ground, in its own frame: its lowest points (leg ends, wheels), the
-// one farthest out in each of six directions round it, in order. Cached per detail level.
+// one farthest out in each of six directions round it, in order. Cached per detail level and size
+// (a change of scale mode resizes it).
 const SUPPORT_SECTORS = 6;
 function getLanderSupports(obj) {
     const level = obj && (obj.highLevel || obj.lowLevel);
     if (!level) return null;
-    if (obj.supportsLevel === level) return obj.supports;
+    if (obj.supportsLevel === level && obj.supportsScale === obj.mesh.scale.x) return obj.supports;
+    obj.supportsScale = obj.mesh.scale.x;
     obj.group.updateMatrixWorld(true);
     const toLander = new THREE.Matrix4().copy(obj.group.matrixWorld).invert();
     const m = new THREE.Matrix4(), v = new THREE.Vector3();

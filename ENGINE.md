@@ -89,7 +89,7 @@ Two ways of drawing the same real data (`SCALE-PLAN.md`): `diagram`, the default
 
 | | |
 |---|---|
-| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. True scale isn't ready to show yet: it needs camera-relative rendering, a wider depth range and markers (stages 4 and 5 of the plan). |
+| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. True scale draws correctly up close, but isn't ready to show yet: it needs markers, log-distance flights and its lighting checked (stage 5 of the plan). |
 | ✅ `getScaleMode()` | The active mode. |
 | ✅ `scale-mode` `{ mode }` (event) | The scale mode changed. |
 

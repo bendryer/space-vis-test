@@ -279,12 +279,20 @@ export function getFlightObstacles() {
     return obstacles;
 }
 
-// Pushes a camera position out of any body it's inside (other than the one being viewed).
+// Pushes a camera position out of any body it's inside (other than the one being viewed). The
+// margin above the ground never reaches past the object viewed: in True scale a lander (which may
+// stand below the sphere, in a crater), or a craft in a low orbit (the ISS), is closer to the
+// ground than FLIGHT_CLIP_RADII.
+const _keepTarget = new THREE.Vector3();
 function keepOutsideBodies(pos, exceptMesh) {
+    if (exceptMesh) getFocusPoint(exceptMesh, _keepTarget);
     celestialMap.forEach(obj => {
         if (!BODY_TYPES.includes(obj.data.type) || obj.mesh === exceptMesh) return;
         obj.group.getWorldPosition(_bodyCenter);
-        const minDist = (obj.data.radius || 1) * FLIGHT_CLIP_RADII;
+        const radius = obj.data.radius || 1;
+        const minDist = exceptMesh
+            ? Math.min(radius * FLIGHT_CLIP_RADII, _keepTarget.distanceTo(_bodyCenter))
+            : radius * FLIGHT_CLIP_RADII;
         const d = pos.distanceTo(_bodyCenter);
         if (d < minDist && d > 1e-6) pos.sub(_bodyCenter).multiplyScalar(minDist / d).add(_bodyCenter);
     });
@@ -839,6 +847,7 @@ let reframePending = false;
 export function reframe() { reframePending = true; }
 function reframeNow() {
     reframePending = false;
+    camera.near = view.cameraNear ?? camera.near;
     camera.far = view.cameraFar;
     camera.updateProjectionMatrix();
     controls.maxDistance = view.maxDistance;

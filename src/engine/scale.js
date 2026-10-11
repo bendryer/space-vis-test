@@ -11,11 +11,13 @@ import { auToScene, distanceFromBody, hillRadiusKm, kneeFor, lagrangeOffset, pre
 export const SCALE_MODES = ['diagram', 'true'];
 export let scaleMode = 'diagram';
 
-// Each mode's view settings, in scene units: how far the camera sees and may go, the distance a
-// flight takes its full length over, and how close to a system the Sun's shadows switch on at least.
+// Each mode's view settings, in scene units: the camera's near plane (null: set each frame from
+// what's nearest, draw.js) and how far it sees and may go, the distance a flight takes its full
+// length over, and how close to a system the Sun's shadows switch on at least. `relative`: drawn
+// relative to the camera, in slices of depth (draw.js).
 const VIEWS = {
-    diagram: { cameraFar: 1e6, maxDistance: 1e5, flightReach: 15000, shadowReachMin: 180 },
-    true: { cameraFar: 1e9, maxDistance: 1e7, flightReach: 1.5e6, shadowReachMin: 180 },
+    diagram: { cameraNear: 0.1, cameraFar: 1e6, maxDistance: 1e5, flightReach: 15000, shadowReachMin: 180, relative: false },
+    true: { cameraNear: null, cameraFar: 1e9, maxDistance: 1e7, flightReach: 1.5e6, shadowReachMin: 180, relative: true },
 };
 export let view = VIEWS.diagram;
 

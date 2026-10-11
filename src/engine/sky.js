@@ -75,6 +75,8 @@ const skyFragment = /* glsl */`
     }`;
 
 let skyMesh = null;
+// Whether the sky is drawn: draw.js leaves it out of all but the farthest slice of depth.
+export function drawSky(shown) { if (skyMesh) skyMesh.visible = shown; }
 function showSky(texture, isCube) {
     try { renderer.initTexture(texture); } catch (e) { console.warn('Sky upload failed', e); }
     const toSky = isCube ? GALACTIC_TO_CUBE.clone().multiply(SCENE_TO_GALACTIC) : SCENE_TO_GALACTIC.clone();

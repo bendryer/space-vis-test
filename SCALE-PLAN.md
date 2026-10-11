@@ -42,18 +42,19 @@ Both modes keep **Earth's radius at 5 units**. Everything measured in planet rad
 
 JavaScript works in doubles, and three.js keeps its matrices in plain arrays, so the engine's own logic (positions, framing, reticles, picking) works at any distance. The trouble is on the GPU, in float32. Shadow maps, the Sun's shaders and the atmosphere work from world positions, and 1 AU out a float32 world position is only good to about 0.01 units (16 km). That's far too coarse beside a craft 0.0001 units long.
 
-- **Fix:** put every object under one `world` group. Just before each render, shift `world` by minus the camera's position and put the camera at the origin. Shift both back after the render.
+- **Fix (done, `src/engine/draw.js`):** just before each render, shift the scene by minus the camera's position and put the camera at the origin. Shift both back after the render (and update the scene's matrices, so picking between frames sees them unshifted).
   - The rest of the engine keeps absolute coordinates and never sees the shift.
-  - Things are only ever shifted, never re-parented, so this works in both modes.
+  - Things are only ever shifted, never re-parented. Only True scale does it (`view.relative`): Diagram's distances don't need it, and it costs a second pass over the scene's matrices.
 - **Check:** the orbit lines' vertices stay in float32 relative to their parent. Near Neptune that's about 0.2 units (Neptune's radius is 19.4 units), which is acceptable.
 
 ### Depth
 
-Near objects can be 1e-5 units from the camera, and far ones 3.5 million. three r181 has `reversedDepthBuffer` (it needs `EXT_clip_control`), which with a float depth buffer handles that whole range.
+Near objects can be 1e-5 units from the camera, and far ones 3.5 million.
 
-- Fall back to `logarithmicDepthBuffer` where the reversed depth buffer isn't supported.
-- The custom ShaderMaterials (`sun.js`, `bodies.js`, `models.js`) need the matching depth chunks.
-- Set the camera's near plane each frame: a small fraction of the distance to the nearest surface or craft.
+- **Done instead of the first plan:** the depth range is drawn in slices, far to near, clearing depth between them, each slice at most 10,000 times deeper than its near plane (multi-frustum rendering, as Cesium does). The sky goes in the farthest slice only; shadow maps are drawn once; the colour background is left out after the first slice (three clears to it on every render).
+- **Why not reversed depth:** it only helps with a float depth buffer, which the canvas can't have. Drawing to a float target instead moves tone mapping and sRGB encoding after blending, which changes every transparent thing in Diagram mode, and Safari has no `EXT_clip_control` anyway. **Why not log depth:** it puts `gl_FragDepth` in every shader in both modes, and three measures it from 1 unit, so a craft 0.00002 units across gets only a few depth steps.
+- The near plane is set each frame in True scale: 5% of the gap to the nearest surface or craft, at least 1e-7 units (0.13 m). Diagram keeps 0.1.
+- Measured: 0.1–0.7 ms more GPU time per frame in True scale; Diagram is unchanged.
 
 ### Constants
 
@@ -150,7 +151,7 @@ Check every object against its source, recording each in `factcheck/sources.json
 1. ✅ **Data:** the additions above, plus the audit. The engine reads the new fields (L1/L2 from `lagrange`, Lissajous and OGRE in km) on today's scale, so nothing else changes yet.
 2. ✅ **Diagram mode fixes:** the Hill-sphere rule, framing on the body itself, and the small-body cap. Fixes the Moon and L1 near Venus, Earth looking tiny, and Hayabusa2/Stardust. Retake the smoke baseline once this is agreed.
 3. ✅ **Scale-mode switch in the engine:** `setScaleMode`, the mode objects, and the constants audit, with only Diagram mode wired up. The smoke test must show nothing visible changed.
-4. **Precision and depth:** rendering relative to the camera, the reversed depth buffer (log depth as the fallback), and a dynamic near plane. Nothing visible changes in Diagram mode.
+4. ✅ **Precision and depth:** rendering relative to the camera, depth in slices (in place of the reversed depth buffer), and a dynamic near plane. Nothing visible changes in Diagram mode. Also fixed on the way: the camera's keep-out margin above a body (`FLIGHT_CLIP_RADII`) no longer reaches past the object viewed (the ISS and landers sit inside it in True scale), and a lander's feet are measured again when its size changes.
 5. **True scale mode:** the linear rules, markers, log-distance flights, framing, and craft drawn at `size_m`. Smoke-test stops in True scale, and checks on weak hardware.
 6. **The switch in the UI:** a toggle in the showcase (desktop and phone layouts, to `DESIGN.md`), the presentation step `scale`, and `ENGINE.md`, `DATA.md` and `CLAUDE.md` updated.
 7. **Animated change** between the modes (optional).

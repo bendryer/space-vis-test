@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { MAX_MOTION_DT, prefersReducedMotion } from './config.js';
 import { advanceMotion, clock, heldMotionTime, motionTime, simulatedDate, timeScale } from './time.js';
 import { attemptToLand, pendingLanders } from './landers.js';
-import { camera, renderer, scene } from './scene.js';
+import { camera, renderer } from './scene.js';
 import { celestialMap } from './state.js';
 import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition, lissajousOffset } from './orbits.js';
 import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateTrajectoryLines } from './bodies.js';
@@ -14,6 +14,7 @@ import { updateCamera, updateViewOffset } from './camera.js';
 import { updateSelectionSpot, updateSunShadow } from './lighting.js';
 import { updateVisibility } from './visibility.js';
 import { uploadNextTexture } from './gpu.js';
+import { drawScene } from './draw.js';
 
 let animFrameCounter = 0;
 
@@ -247,7 +248,7 @@ export function animate() {
     if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
     const frameStart = performance.now();
     beginFrameTiming(frameStart);
-    renderer.render(scene, camera);
+    drawScene();
     endFrameTiming(frameStart);
 }
 
