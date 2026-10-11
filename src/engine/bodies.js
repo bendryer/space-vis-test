@@ -5,7 +5,7 @@ import { celestialMap, objects } from './state.js';
 import { DEBUG_LANDING, engineOptions, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
 import { createSun } from './sun.js';
-import { getDaysSinceJ2000, getKeplerPosition, getSystemRoot, getTrajectoryPlan, orbitFarthest, poleDirection } from './orbits.js';
+import { getDaysSinceJ2000, getKeplerPosition, getSystemRoot, getTrajectoryPlan, lissajousOffset, orbitFarthest, poleDirection } from './orbits.js';
 import { simulatedDate } from './time.js';
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
@@ -102,20 +102,15 @@ export function refreshOrbitLine(line, days) {
 }
 
 function createLissajousLine(orbitData) {
-    if (!orbitData || orbitData.a === 0 || orbitData.rate === 0) return null;
+    if (!orbitData?.amp || !orbitData.rate) return null;
     const points = [];
-    // Same sag limit as createOrbitLine; the path's flattest bend has radius ~6.25a.
-    const segments = THREE.MathUtils.clamp(
-        Math.ceil(2 * Math.PI * Math.sqrt(6.25 * orbitData.a / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
-    const fullPeriodDays = 360 / orbitData.rate;
+    // Same sag limit as createOrbitLine; the path's flattest bend has radius at most a^2 / b.
+    const { y, z } = orbitData.amp;
+    const bend = Math.max(y, z) ** 2 / Math.max(Math.min(y, z), 1e-6);
+    const segments = THREE.MathUtils.clamp(Math.ceil(2 * Math.PI * Math.sqrt(bend / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
+    const one = { ...orbitData, M0: 0 };
     for (let i = 0; i < segments; i++) {
-        const fakeDays = (i / segments) * fullPeriodDays;
-        const angle = (fakeDays * orbitData.rate) * (Math.PI / 180);
-        const radius = orbitData.a;
-        const y_off = radius * Math.sin(angle);
-        const z_off = radius * 2.5 * Math.cos(angle);
-        const x_off = radius * 0.5 * Math.sin(2 * angle);
-        points.push(new THREE.Vector3(x_off, y_off, z_off));
+        points.push(lissajousOffset(one, (i / segments) * (360 / orbitData.rate), new THREE.Vector3()));
     }
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineBasicMaterial({

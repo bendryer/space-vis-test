@@ -2,7 +2,7 @@
 // round a body); the engine draws each kind of thing at one fixed scale, set here and in orbits.js
 // (the distance scales). Run once at load, before the system is built: it gives every natural body
 // its drawn "radius" (and a modelled one its "model_scale"), and readies every orbit.
-import { auToScene, distanceFromBody, lagrangeOffset, prepareOrbit } from './orbits.js';
+import { SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, auToScene, distanceFromBody, hillRadiusKm, kneeFor, lagrangeOffset, prepareOrbit } from './orbits.js';
 
 // The Sun: drawn at 25 units' radius (its own scale; on the planets' it would swamp Mercury's orbit).
 const STAR_UNITS_PER_KM = 25 / 695700;
@@ -14,6 +14,17 @@ const BODY_RADIUS_UNITS = 5, BODY_RADIUS_KM = 6371, BODY_RADIUS_POWER = 0.62;
 const SMALL_BODY_UNITS = 1.49, SMALL_BODY_POWER = 0.7;
 
 const NATURAL_TYPES = new Set(['star', 'planet', 'moon', 'asteroid', 'comet']);
+
+// Each system is kept clear of its neighbours: a planet's Hill sphere (hillRadiusKm; Earth's reaches
+// 1.5 million km, where L1 and L2 sit) is drawn this share of the drawn gap to the nearest
+// neighbouring orbit (or the Sun's surface), perihelion to aphelion.
+const HILL_GAP_SHARE = 0.35;
+// A small body's Hill sphere is drawn this many of its drawn radii out, with its knee kept within
+// SMALL_BODY_KNEE_RANGE (km), so the craft that visit it stay close without close orbits squashing.
+const SMALL_BODY_HILL_RADII = 8;
+const SMALL_BODY_KNEE_RANGE = [1, SMALL_BODY_KNEE_KM];
+// A halo orbit's lean along the Sun-Earth line, as a share of its width across it.
+const HALO_LEAN = 0.3;
 
 // The drawn radius of a natural body with a real size, in scene units.
 export function drawnRadius(item) {
@@ -30,6 +41,7 @@ export function applyScales(data) {
         item.radius = drawnRadius(item);
         if (item.model) item.model_scale = 2 * item.radius;   // a model is scaled by its longest side
     });
+    setKnees(data, byName);
     data.forEach(item => {
         const parent = byName.get(item.parent);
         // Saturn's rings are given in km; drawn in its radii.
@@ -54,4 +66,48 @@ export function applyScales(data) {
         const waypoints = item.trajectory?.waypoints;
         if (waypoints?.length) prepareOrbit(item.trajectory.arrival_orbit, byName.get(waypoints[waypoints.length - 1].at));
     });
+    // Halo orbits round an L-point, once the points are placed.
+    data.forEach(item => {
+        if (item.orbit_type === 'lissajous') prepareHalo(item.orbit, byName.get(item.parent), byName);
+    });
+}
+
+// Each planet's and visited small body's knee (orbits.js), lowered where needed so the edge of its
+// Hill sphere is drawn where HILL_GAP_SHARE or SMALL_BODY_HILL_RADII puts it. A lower knee
+// compresses only far out: low orbits keep their true height.
+function setKnees(data, byName) {
+    const sun = byName.get('Sun');
+    const planets = data.filter(d => d.type === 'planet' && d.parent === 'Sun' && d.orbit?.a_au).sort((a, b) => a.orbit.a_au - b.orbit.a_au);
+    const near = p => auToScene(p.orbit.a_au * (1 - p.orbit.e)), far = p => auToScene(p.orbit.a_au * (1 + p.orbit.e));
+    planets.forEach((p, i) => {
+        if (!p.gm) return;
+        const inner = near(p) - (i ? far(planets[i - 1]) : sun.radius);
+        const outer = i < planets.length - 1 ? near(planets[i + 1]) - far(p) : Infinity;
+        p.hill = HILL_GAP_SHARE * Math.min(inner, outer);
+        p.knee = Math.min(SATELLITE_KNEE_KM, kneeFor(p.radius / p.radius_km, hillRadiusKm(p, sun) - p.radius_km, p.hill - p.radius));
+    });
+    data.forEach(b => {
+        if ((b.type !== 'asteroid' && b.type !== 'comet') || !b.gm || !b.orbit?.a_au) return;
+        b.hill = SMALL_BODY_HILL_RADII * b.radius;
+        const K = kneeFor(b.radius / b.radius_km, hillRadiusKm(b, sun) - b.radius_km, b.hill - b.radius);
+        b.knee = Math.min(Math.max(K, SMALL_BODY_KNEE_RANGE[0]), SMALL_BODY_KNEE_RANGE[1]);
+    });
+}
+
+// A halo orbit's drawn size: its real amplitudes ("amplitude_km") at the scale its L-point is drawn
+// at, which is the geometric mean of the scale along the line from the body (how fast drawn
+// distance grows there) and across it (drawn distance over real distance), so the loop keeps its
+// shape and sits in proportion to the gap between the point and its body. "a" is its widest reach,
+// for sorting and framing; "rate" comes from "period_days".
+function prepareHalo(orbit, point, byName) {
+    const body = byName.get(point.lagrange.body);
+    const rKm = hillRadiusKm(body, byName.get('Sun'));
+    const along = (distanceFromBody(body, rKm * 1.001) - distanceFromBody(body, rKm * 0.999)) / (rKm * 0.002);
+    const across = Math.abs(point.lagrange.offset) / rKm;
+    const s = Math.sqrt(along * across);
+    const { y, z } = orbit.amplitude_km;
+    orbit.amp = { x: HALO_LEAN * y * s, y: z * s, z: y * s };
+    orbit.a = Math.max(orbit.amp.y, orbit.amp.z);
+    orbit.rate = 360 / orbit.period_days;
+    orbit.M0 ??= 0;
 }

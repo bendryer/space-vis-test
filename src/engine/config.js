@@ -11,8 +11,11 @@ export const DEBUG_LANDING = false;
 export const MISSION_MODEL_SIZE = 0.3;
 // A selected spacecraft is framed so it fills about this fraction of the view.
 export const MISSION_VIEW_FILL = 0.5;
-// A selected body (star, planet, moon, asteroid, comet) is framed so it and everything orbiting
-// it fills this fraction of the view. The Sun is framed on its own: its "system" is everything.
+// A selected body (planet, moon, asteroid, comet) is framed on itself, with its rings, so it fills
+// this fraction of the view; its moons and craft are mostly out of shot.
+export const BODY_SELF_VIEW_FILL = 0.6;
+// A point with no body (Earth-Sun L2) is framed so everything orbiting it fills this fraction of
+// the view. The Sun is framed on its own: its "system" is everything.
 export const BODY_VIEW_FILL = 0.95;
 export const SUN_FRAME_RADII = 1.25; // out to the edge of its glowing atmosphere
 // The "Solar System" view (the default on load) keeps the Sun centred and fits every planet's

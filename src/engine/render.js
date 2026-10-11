@@ -6,7 +6,7 @@ import { advanceMotion, clock, heldMotionTime, motionTime, simulatedDate, timeSc
 import { attemptToLand, pendingLanders } from './landers.js';
 import { camera, renderer, scene } from './scene.js';
 import { celestialMap } from './state.js';
-import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition } from './orbits.js';
+import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition, lissajousOffset } from './orbits.js';
 import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateTrajectoryLines } from './bodies.js';
 import { getTumbleSpeed, updateMissionAttitude } from './motion.js';
 import { plannedMaterials, revealNextModel, updateModelDetail } from './models.js';
@@ -157,18 +157,16 @@ export function animate() {
             updateTrajectoryLines(obj, arrived);
         } else if (data.lagrange) {
             // On the line from the Sun through its body (scale.js sets the drawn offset).
+            // Its frame turns with that line (x away from the Sun), carrying the halo orbits round it.
             const body = celestialMap.get(data.lagrange.body).group.position;
             _tempVec1.copy(body).normalize().multiplyScalar(data.lagrange.offset);
             group.position.copy(body).add(_tempVec1);
+            obj.mesh.rotation.set(0, Math.atan2(-body.z, body.x), 0);
         } else if (data.orbit_type === 'lissajous') {
             const p = celestialMap.get(data.parent);
             if (p) {
-                const angle = (days * data.orbit.rate + data.orbit.M0) * (Math.PI / 180);
-                const radius = data.orbit.a;
-                const y_off = radius * Math.sin(angle);
-                const z_off = radius * 2.5 * Math.cos(angle);
-                const x_off = radius * 0.5 * Math.sin(2 * angle);
-                group.position.set(p.group.position.x + x_off, p.group.position.y + y_off, p.group.position.z + z_off);
+                lissajousOffset(data.orbit, days, _tempVec1).applyQuaternion(p.mesh.quaternion);
+                group.position.copy(p.group.position).add(_tempVec1);
             }
         } else if (data.orbit_type === 'suborbital') {
             const p = celestialMap.get(data.parent);

@@ -146,9 +146,9 @@ Check every object against its source, recording each in `factcheck/sources.json
 
 ## Stages
 
-0. **Commit the current branch** (`feature/satellite-orbits`): real sizes, real orbits round bodies, and the `scale.js` and `satelliteDistance` foundation. Diagram mode builds on it.
-1. **Data:** the additions above, plus the audit. The engine reads the new fields (L1/L2 from `lagrange`, Lissajous and OGRE in km) on today's scale, so nothing else changes yet.
-2. **Diagram mode fixes:** the Hill-sphere rule, framing on the body itself, and the small-body cap. Fixes the Moon and L1 near Venus, Earth looking tiny, and Hayabusa2/Stardust. Retake the smoke baseline once this is agreed.
+0. ✅ **Commit the current branch** (`feature/satellite-orbits`): real sizes, real orbits round bodies, and the `scale.js` and `satelliteDistance` foundation. Diagram mode builds on it.
+1. ✅ **Data:** the additions above, plus the audit. The engine reads the new fields (L1/L2 from `lagrange`, Lissajous and OGRE in km) on today's scale, so nothing else changes yet.
+2. ✅ **Diagram mode fixes:** the Hill-sphere rule, framing on the body itself, and the small-body cap. Fixes the Moon and L1 near Venus, Earth looking tiny, and Hayabusa2/Stardust. Retake the smoke baseline once this is agreed.
 3. **Scale-mode switch in the engine:** `setScaleMode`, the mode objects, and the constants audit, with only Diagram mode wired up. The smoke test must show nothing visible changed.
 4. **Precision and depth:** rendering relative to the camera, the reversed depth buffer (log depth as the fallback), and a dynamic near plane. Nothing visible changes in Diagram mode.
 5. **True scale mode:** the linear rules, markers, log-distance flights, framing, and craft drawn at `size_m`. Smoke-test stops in True scale, and checks on weak hardware.

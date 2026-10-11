@@ -32,9 +32,10 @@ const sceneToAu = units => SUN_SCALE_KNEE * (Math.exp(units / SUN_SCALE_UNITS) -
 // spreading across the Solar System. A height of h km is drawn as u * K * ln(1 + h / K), where u is
 // the body's scene units per km (its drawn radius over its real one) and K is the knee: a planet's
 // or moon's, or a small body's (whose orbiters are a few km out, not thousands). A craft is kept at
-// least its own size above the ground.
-const SATELLITE_KNEE_KM = 100000;
-const SMALL_BODY_KNEE_KM = 5;
+// least its own size above the ground. A body may have its own, lower knee ("knee", set by
+// scale.js) so that its system ends short of its neighbours' (its Hill sphere: see setKnees).
+export const SATELLITE_KNEE_KM = 100000;
+export const SMALL_BODY_KNEE_KM = 5;
 const SMALL_BODY_TYPES = new Set(['asteroid', 'comet']);
 function satelliteDistance(rKm, s) {
     const h = Math.max(0, rKm - s.radiusKm);
@@ -72,20 +73,46 @@ export function prepareOrbit(orbit, parent) {
 function bodyScale(body) {
     return {
         radius: body.radius, radiusKm: body.radius_km, unit: body.radius / body.radius_km,
-        knee: SMALL_BODY_TYPES.has(body.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM,
+        knee: body.knee ?? (SMALL_BODY_TYPES.has(body.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM),
     };
+}
+
+// The knee at which a height of `hKm` is drawn `span` scene units (at `unit` scene units per km):
+// the K for which unit * K * ln(1 + hKm / K) = span. Infinity where even true scale fits.
+export function kneeFor(unit, hKm, span) {
+    if (unit * hKm <= span) return Infinity;
+    let lo = 1e-4, hi = 1e9;
+    for (let k = 0; k < 80; k++) {
+        const K = Math.sqrt(lo * hi);
+        if (unit * K * Math.log(1 + hKm / K) > span) hi = K; else lo = K;
+    }
+    return Math.sqrt(lo * hi);
+}
+
+// A body's Hill sphere round the Sun, in km: a * (m / 3M)^(1/3), where the Sun's pull takes over
+// from the body's (the Earth-Sun L1 and L2 points sit at its edge).
+export function hillRadiusKm(body, sun) {
+    return body.orbit.a_au * AU_KM * Math.cbrt(body.gm / (3 * sun.gm));
 }
 
 // How far from a body's centre, in scene units, a point `rKm` km from it is drawn.
 export function distanceFromBody(body, rKm) { return satelliteDistance(rKm, bodyScale(body)); }
 
 // An Earth-Sun Lagrange point ("lagrange": { "body", "point" }): L1 sunward of the body and L2
-// beyond it, on the line from the Sun, at the edge of the body's Hill sphere, a * (m / 3M)^(1/3)
-// from it (from the body's and the Sun's "gm"). Gives the drawn distance, negative for L1.
+// beyond it, on the line from the Sun, at the edge of the body's Hill sphere (hillRadiusKm). Gives
+// the drawn distance, negative for L1.
 const AU_KM = 149597870.7;
 export function lagrangeOffset(body, sun, point) {
-    const rKm = body.orbit.a_au * AU_KM * Math.cbrt(body.gm / (3 * sun.gm));
-    return (point === 'L1' ? -1 : 1) * distanceFromBody(body, rKm);
+    return (point === 'L1' ? -1 : 1) * distanceFromBody(body, hillRadiusKm(body, sun));
+}
+
+// A halo orbit round an L-point ("lissajous"), in the point's own frame, which turns with the
+// Sun-Earth line (render.js): x away from the Sun, y out of the ecliptic, z along it. scale.js sets
+// "amp", the drawn amplitudes, and "rate" from "period_days". The path is a halo's: round the
+// Sun-Earth line, leaning a little along it (a third of its width).
+export function lissajousOffset(orbit, days, out) {
+    const t = (orbit.M0 + orbit.rate * days) * (Math.PI / 180);
+    return out.set(-orbit.amp.x * Math.cos(t), orbit.amp.y * Math.cos(t), orbit.amp.z * Math.sin(t));
 }
 
 // A reference plane's axes in the scene: its pole (Z), its ascending node on the ICRF equator (X)

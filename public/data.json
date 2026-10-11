@@ -491,10 +491,6 @@
     "color": "#ffaa00",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 5,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 0,
       "amplitude_km": {"y": 832000, "z": 520000},
       "period_days": 180
@@ -517,10 +513,6 @@
     "color": "#ffffff",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 8,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 0,
       "amplitude_km": {"y": 353500, "z": 185000},
       "period_days": 180
@@ -543,10 +535,6 @@
     "color": "#ff00ff",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 10,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 180,
       "amplitude_km": {"y": 800000, "z": 400000},
       "period_days": 180,
@@ -571,10 +559,6 @@
     "color": "#aa44ff",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 12,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 90,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -599,10 +583,6 @@
     "color": "#44ffaa",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 14,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 120,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -626,10 +606,6 @@
     "color": "#ffff00",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 9,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 270,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -653,10 +629,6 @@
     "color": "#cc0000",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 11,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 45,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -1210,10 +1182,6 @@
     "color": "#4400aa",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 12,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 120,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 178
@@ -1236,10 +1204,6 @@
     "color": "#aaaa00",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 7,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 300,
       "amplitude_km": {"y": 400000, "z": 400000},
       "period_days": 180
@@ -1283,10 +1247,6 @@
     "color": "#00ffaa",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 13,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 200,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -2108,10 +2068,6 @@
     "color": "#D4AF37",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 15,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 0,
       "amplitude_km": {"y": 780000, "z": 450000},
       "period_days": 180,
@@ -2135,10 +2091,6 @@
     "color": "#ffffaa",
     "orbit_type": "lissajous",
     "orbit": {
-      "a": 16,
-      "e": 0,
-      "i": 90,
-      "rate": 2,
       "M0": 330,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,

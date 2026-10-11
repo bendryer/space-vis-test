@@ -2,7 +2,7 @@
 // overview's slow turn, framing round the app's panels (view insets), and the visitor's steering.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, BODY_VIEW_FILL, CAMERA_FLY_SPEED, CAMERA_ORBIT_SPEED, HURRY_FLIGHT_SECONDS, LANDER_VIEW_ANGLE, MIN_FLIGHT_DURATION, MISSION_MODEL_SIZE, MISSION_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, SOLAR_SYSTEM_VIEW_FILL, SUN_FRAME_RADII, USER_FLIGHT_SCALE, prefersReducedMotion } from './config.js';
+import { AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, BODY_SELF_VIEW_FILL, BODY_VIEW_FILL, CAMERA_FLY_SPEED, CAMERA_ORBIT_SPEED, HURRY_FLIGHT_SECONDS, LANDER_VIEW_ANGLE, MIN_FLIGHT_DURATION, MISSION_MODEL_SIZE, MISSION_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, SOLAR_SYSTEM_VIEW_FILL, SUN_FRAME_RADII, USER_FLIGHT_SCALE, prefersReducedMotion } from './config.js';
 import { attemptToLand, onLanded } from './landers.js';
 import { camera, isInScene, renderer } from './scene.js';
 import { celestialMap } from './state.js';
@@ -170,16 +170,27 @@ function calculateFocusDistance(object) {
     }
     const obj = celestialMap.get(object.userData.name);
     if (!obj) return 20;
-    return getSystemRadius(obj) / Math.sin(BODY_VIEW_FILL * getMinFov() / 2);
+    // A body is framed on itself (its moons and craft would make it tiny); a point such as L2,
+    // which has no body, on what orbits it; the Sun out to its glow.
+    const type = obj.data.type;
+    if (type === 'reference_point' || type === 'star') return getSystemRadius(obj) / Math.sin(BODY_VIEW_FILL * getMinFov() / 2);
+    return getBodyRadius(obj) / Math.sin(BODY_SELF_VIEW_FILL * getMinFov() / 2);
+}
+
+// Radius of a body itself, with its rings, about its centre.
+function getBodyRadius(obj) {
+    const data = obj.data;
+    // Modelled bodies (asteroids, comets) use their measured size; data radius can be far off.
+    let radius = obj.detailRoot ? getVisualRadius(obj) : (data.radius || 1);
+    if (data.ring) radius = Math.max(radius, (data.radius || 1) * (data.ring.outer_radius || 2.5));
+    return radius;
 }
 
 // Radius of a body plus everything orbiting it, about the body's centre.
 export function getSystemRadius(obj) {
     const data = obj.data;
     if (data.type === 'star') return (data.radius || 1) * SUN_FRAME_RADII;
-    // Modelled bodies (asteroids, comets) use their measured size; data radius can be far off.
-    let radius = obj.detailRoot ? getVisualRadius(obj) : (data.radius || 1);
-    if (data.ring) radius = Math.max(radius, (data.radius || 1) * (data.ring.outer_radius || 2.5));
+    let radius = getBodyRadius(obj);
     const bodyRadius = radius;
     celestialMap.forEach(child => {
         const c = child.data;
@@ -188,7 +199,6 @@ export function getSystemRadius(obj) {
         let reach = 0;
         if (c.orbit_type === 'landed') reach = bodyRadius + childRadius * 2;
         else if (c.orbit_type === 'suborbital') reach = bodyRadius + (c.suborbital?.apogee || 1.5) + childRadius;
-        else if (c.orbit_type === 'lissajous') reach = (c.orbit?.a || 0) * 2.5 + childRadius; // widest axis of the path
         else if (c.orbit) reach = orbitFarthest(c.orbit) + childRadius; // farthest point of the orbit
         radius = Math.max(radius, reach);
     });
