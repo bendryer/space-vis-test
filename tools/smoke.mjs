@@ -112,7 +112,7 @@ async function waitForStill(timeout = 15000) {
 
 try {
     const t0 = Date.now();
-    await page.goto(url);
+    await page.goto(url, { waitUntil: 'commit', timeout: 120000 });   // then scene-ready, below
     if (!await waitFor(() => performance.getEntriesByName('scene-ready').length, 120000)) throw new Error('scene-ready never came');
     report.sceneReadyWallMs = Date.now() - t0;
     // Full resolution throughout, so screenshots and GPU times compare.
@@ -183,7 +183,7 @@ if (runPresent) {
         await page.close();
         page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
         listen(page);
-        await page.goto(presentUrl);
+        await page.goto(presentUrl, { waitUntil: 'commit', timeout: 120000 });
         if (!await waitFor(() => !document.getElementById('present-bar').hidden, 120000)) throw new Error('the presentation never became ready');
         await app(() => { window.__ouniverse.resolution.changedAt = 1e15; });
         await page.mouse.move(VIEWPORT.width / 2, 30);
@@ -218,9 +218,13 @@ if (!saveBaseline && fs.existsSync(baselineDir)) {
         if (baseState && JSON.stringify(baseState) !== JSON.stringify(stop.state)) {
             failures.push(`${stop.name}: state differs from the baseline: ${JSON.stringify(stop.state)}, was ${JSON.stringify(baseState)}`);
         }
-        const ref = path.join(baselineDir, stop.file ?? '');
+        // The baseline's screenshot of the same stop, by name: files are numbered by run order, so
+        // with --only the numbers differ.
+        const baseFile = baseReport.stops.find(s => s.name === stop.name)?.file;
+        const ref = path.join(baselineDir, baseFile ?? '');
         const cur = path.join(outDir, stop.file ?? '');
-        if (!stop.file || !fs.existsSync(ref) || !fs.existsSync(cur)) continue;
+        if (!stop.file || !fs.existsSync(cur)) continue;
+        if (!baseFile || !fs.existsSync(ref)) { failures.push(`${stop.name}: no baseline screenshot to compare with`); continue; }
         const toUrl = file => `data:image/png;base64,${fs.readFileSync(file).toString('base64')}`;
         stop.diff = await cmp.evaluate(async ([a, b, level, skip, limit]) => {
             const load = src => new Promise((res, rej) => { const img = new Image(); img.onload = () => res(img); img.onerror = rej; img.src = src; });
