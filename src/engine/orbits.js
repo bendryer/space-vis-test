@@ -22,7 +22,7 @@ export function getDaysSinceJ2000(date) { return (date - J2000_DATE) / 86400000;
 // them stay illustrative: they give "a" in scene units and are not rescaled.
 const SUN_SCALE_KNEE = 2.1;                                         // AU; below this, nearly proportional
 const SUN_SCALE_UNITS = 1000 / Math.log(1 + 1 / SUN_SCALE_KNEE);    // so that 1 AU = 1,000 units
-const auToScene = au => SUN_SCALE_UNITS * Math.log(1 + au / SUN_SCALE_KNEE);
+export const auToScene = au => SUN_SCALE_UNITS * Math.log(1 + au / SUN_SCALE_KNEE);
 const sceneToAu = units => SUN_SCALE_KNEE * (Math.exp(units / SUN_SCALE_UNITS) - 1);
 
 // --- DISTANCE SCALE ROUND A BODY ---
@@ -60,15 +60,32 @@ export function prepareOrbit(orbit, parent) {
     if (!orbit) return;
     if (orbit.a_au !== undefined) orbit.a = auToScene(orbit.a_au);
     if (orbit.a_km === undefined || !parent) return;
-    orbit.scale = {
-        radius: parent.radius, radiusKm: parent.radius_km, unit: parent.radius / parent.radius_km,
-        knee: SMALL_BODY_TYPES.has(parent.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM,
-    };
+    orbit.scale = bodyScale(parent);
     orbit.a = satelliteDistance(orbit.a_km, orbit.scale);
     orbit.node ??= 0;
     orbit.peri ??= 0;
     const plane = orbit.plane ?? parent.pole ?? 'ecliptic';
     orbit.frame = plane === 'ecliptic' ? null : planeFrame(plane);
+}
+
+// The distance scale round a body: its drawn size, and the knee for its kind.
+function bodyScale(body) {
+    return {
+        radius: body.radius, radiusKm: body.radius_km, unit: body.radius / body.radius_km,
+        knee: SMALL_BODY_TYPES.has(body.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM,
+    };
+}
+
+// How far from a body's centre, in scene units, a point `rKm` km from it is drawn.
+export function distanceFromBody(body, rKm) { return satelliteDistance(rKm, bodyScale(body)); }
+
+// An Earth-Sun Lagrange point ("lagrange": { "body", "point" }): L1 sunward of the body and L2
+// beyond it, on the line from the Sun, at the edge of the body's Hill sphere, a * (m / 3M)^(1/3)
+// from it (from the body's and the Sun's "gm"). Gives the drawn distance, negative for L1.
+const AU_KM = 149597870.7;
+export function lagrangeOffset(body, sun, point) {
+    const rKm = body.orbit.a_au * AU_KM * Math.cbrt(body.gm / (3 * sun.gm));
+    return (point === 'L1' ? -1 : 1) * distanceFromBody(body, rKm);
 }
 
 // A reference plane's axes in the scene: its pole (Z), its ascending node on the ICRF equator (X)

@@ -155,6 +155,11 @@ export function animate() {
         if (data.orbit_type === 'trajectory') {
             const arrived = getTrajectoryPosition(obj, days, group.position);
             updateTrajectoryLines(obj, arrived);
+        } else if (data.lagrange) {
+            // On the line from the Sun through its body (scale.js sets the drawn offset).
+            const body = celestialMap.get(data.lagrange.body).group.position;
+            _tempVec1.copy(body).normalize().multiplyScalar(data.lagrange.offset);
+            group.position.copy(body).add(_tempVec1);
         } else if (data.orbit_type === 'lissajous') {
             const p = celestialMap.get(data.parent);
             if (p) {

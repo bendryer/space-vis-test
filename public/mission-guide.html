@@ -687,10 +687,14 @@ function factsFor(item) {
   add('Radius', item.radius_km !== undefined
     ? `${item.radius_km} km${item.model ? ' (half its longest side)' : ''}${item.radius_estimated ? ', estimated from its brightness' : ''}`
     : item.radius !== undefined ? `${item.radius} (scene units)` : undefined);
+  add('Size', item.size_m !== undefined ? `${item.size_m} m longest side${item.size_estimated ? ' (estimated)' : ''}` : undefined);
+  add('GM', item.gm !== undefined ? `${item.gm} km³/s²${item.gm_estimated ? ' (estimated)' : ''}` : undefined);
+  add('Lagrange point', item.lagrange && `${item.lagrange.point} of the Sun and ${item.lagrange.body}`);
+  if (item.suborbital?.apogee_km !== undefined) add('Flight', `apogee ${item.suborbital.apogee_km} km · ${item.suborbital.duration_min} min${item.suborbital.illustrative ? ' · illustrative' : ''}`);
   add('Pole', item.pole && `RA ${item.pole.ra}°, Dec ${item.pole.dec}° (${fmt(axialTilt(item), 1)}° from the ecliptic's north)`);
   add('Tilt', item.tilt !== undefined ? `${item.tilt}°` : undefined);
   add('Rotation period', item.rot_period !== undefined ? `${item.rot_period} days` : undefined);
-  add('Ring', item.ring && `${item.ring.inner_radius}–${item.ring.outer_radius} × radius, opacity ${item.ring.opacity ?? 1}`);
+  add('Ring', item.ring && `${item.ring.inner_km}–${item.ring.outer_km} km from the centre, opacity ${item.ring.opacity ?? 1}`);
   if (item.orbit_type === 'landed') {
     const c = item.landed_coords;
     add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}` : `on ${item.parent} (no coordinates)`);
@@ -702,8 +706,11 @@ function factsFor(item) {
     const plane = o.plane === 'ecliptic' ? 'to the ecliptic' : o.plane ? 'to its Laplace plane' : '';
     add('Orbit', [item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a_km !== undefined ? `a ${fmt(o.a_km, 1)} km` : o.a !== undefined && `a ${fmt(o.a)}`,
       o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}° ${plane}`.trim(),
-      o.rate ? `period ${fmt(360 / o.rate, 3)} days` : o.a_km !== undefined && 'stationed'].filter(Boolean).join(' · '));
+      o.amplitude_km && `${fmt(o.amplitude_km.y)} × ${fmt(o.amplitude_km.z)} km across and out of the ecliptic`,
+      o.period_days ? `period ${o.period_days} days` : o.rate ? `period ${fmt(360 / o.rate, 3)} days` : o.a_km !== undefined && 'stationed',
+      o.illustrative && 'illustrative'].filter(Boolean).join(' · '));
   }
+  if (item.trajectory?.arrival_orbit?.illustrative) add('Arrival orbit', 'illustrative');
   if (item.motion) add('Attitude', [item.motion.mode, item.motion.axis && `axis ${item.motion.axis}`, item.motion.rate !== undefined && `rate ${item.motion.rate}`].filter(Boolean).join(' · '));
   add('Menu', [item.menu_parent && `under ${item.menu_parent}`, item.menu_order !== undefined && `order ${item.menu_order}`, item.menu_top_level && 'own group'].filter(Boolean).join(' · '));
   add('Loading', [item.preload && 'preloaded', item.system && `system ${item.system}`].filter(Boolean).join(' · '));

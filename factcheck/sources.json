@@ -206,6 +206,18 @@
    "status": "confirmed"
   },
   {
+   "object": "AKARI",
+   "field": "size_m",
+   "fact": "Solar paddles about 5.5 m wide when extended; 3.7 m high at launch, 3.3 m in orbit.",
+   "sources": [
+    "https://global.jaxa.jp/projects/sas/astro_f/index.html",
+    "https://arxiv.org/pdf/0708.1796"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "AlSat Nano",
    "field": "proposed-entry",
    "fact": "The credits already name “AlSat Nano mission, The Open University” (used for the UKube-1 image), but there is no entry. It carried the OU’s C3D2 camera. type: mission; parent: Earth; status: Complete; launch_year: 2016; orbit: 680 km sun-synchronous, launched 26 Sep 2016 on PSLV-C35; description: A joint UK–Algeria 3U CubeSat, built with Surrey Space Centre to train Algerian engineers and test UK payloads in orbit.; ou_involvement: The OU built the C3D2 camera with XCAM and e2v, a follow-on to the C3D flown on UKube-1. It carried three e2v Sapphire CMOS sensors and took AlSat Nano’s first colour image on 3 December 2016.",
@@ -240,6 +252,20 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Ariel",
+   "field": "size_m",
+   "fact": "1.1 x 0.7 m elliptical primary mirror, launch mass about 1,500 kg, operates round Sun-Earth L2; no overall dimensions found.",
+   "sources": [
+    "https://www.isas.JAXA.jp/en/missions/spacecraft/developing/ariel.html"
+   ],
+   "searched": [
+    "Ariel ESA exoplanet mission spacecraft dimensions metres"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "not-found"
   },
   {
    "object": "Beagle 2",
@@ -283,6 +309,17 @@
     "https://oro.open.ac.uk/5401"
    ],
    "checked": "2026-09-30",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Beagle 2",
+   "field": "size_m",
+   "fact": "Fully deployed about 1.7-1.9 m across (1.9 x 1.6 m footprint).",
+   "sources": [
+    "https://spaceflightnow.com/2015/01/16/lost-beagle-2-spacecraft-found-on-mars/"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -344,6 +381,17 @@
    "status": "confirmed"
   },
   {
+   "object": "BepiColombo",
+   "field": "size_m",
+   "fact": "Composite spacecraft 3.9 x 3.6 x 6.3 m, about 30 m across with the MTM solar wings deployed.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/BepiColombo_factsheet"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Callisto",
    "field": "description",
    "fact": "Heavily cratered and inactive, rock and ice, possible ocean, farther from Jupiter’s radiation.",
@@ -390,6 +438,17 @@
   },
   {
    "object": "CASTOR",
+   "field": "orbit",
+   "fact": "Proposed for a Sun-synchronous polar terminator (dawn-dusk) orbit at about 800 km; 1 m primary mirror; no overall spacecraft size published.",
+   "sources": [
+    "https://www.castormission.org/mission"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
+   "object": "CASTOR",
    "field": "ou_involvement",
    "fact": "CEI awarded £2.1 million for testing and space qualification of UV detectors for CASTOR, a Canadian-led 1 m telescope targeting about 2030.",
    "sources": [
@@ -429,6 +488,17 @@
     "https://university.open.ac.uk/science/research/cei/missions/past-missions/chandrayaan-1"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Chandrayaan-1",
+   "field": "size_m",
+   "fact": "A 1.5 m cuboid with one 2.15 x 1.8 m solar panel; overall span not clearly published.",
+   "sources": [
+    "https://keeptrack.space/satellite/33405"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -524,6 +594,20 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Comet Interceptor",
+   "field": "size_m",
+   "fact": "About 600 kg; no main-spacecraft dimensions published in the sources found.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/Comet_Interceptor/Comet_Interceptor_factsheet"
+   ],
+   "searched": [
+    "Comet Interceptor spacecraft dimensions metres solar array span"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "not-found"
   },
   {
    "object": "Comet Wild 2",
@@ -706,6 +790,17 @@
   },
   {
    "object": "EnVision",
+   "field": "orbit",
+   "fact": "Science orbit low and quasi-polar, inclination 87-89°, 220 x 510 km, period about 92 min; about 2 x 2 x 3 m stowed with two deployable solar arrays (15.7 m² in a 2018 study).",
+   "sources": [
+    "https://cosmos.esa.int/web/envision/envision-mission"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
+   "status": "confirmed"
+  },
+  {
+   "object": "EnVision",
    "field": "ou_involvement",
    "fact": "The £2.3 million grant and VenSpec-U detector testing are confirmed, but the team is Manish Patel’s Atmospheric Research and Space Exploration group, not the CEI. The source says the OU is “participating in” science preparations, not heading them.",
    "sources": [
@@ -724,6 +819,18 @@
     "https://www.esa.int/Science_Exploration/Space_Science/Euclid"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Euclid",
+   "field": "orbit",
+   "fact": "Large-amplitude (~1 million km) halo orbit round L2; its distance from the centre varies from about 400,000 to 800,000 km; period about half a year.",
+   "sources": [
+    "https://arxiv.org/pdf/2405.13491",
+    "https://sci.esa.int/web/euclid/-/46661-mission-operations"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -761,6 +868,17 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "correction"
+  },
+  {
+   "object": "Euclid",
+   "field": "size_m",
+   "fact": "About 4.7 m tall and 3.7 m in diameter.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/Euclid/Euclid_overview"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
   },
   {
    "object": "Europa",
@@ -831,6 +949,17 @@
    "status": "not-found"
   },
   {
+   "object": "ExoMars Rosalind Franklin",
+   "field": "size_m",
+   "fact": "The PanCam at the top of the mast is about 2 m above the surface; 310 kg; no overall length published in the sources found.",
+   "sources": [
+    "https://www.ucl.ac.uk/mssl/research-projects/2021/jun/exomars-2022-rover-rosalind-franklin"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "ExoMars TGO",
    "field": "description",
    "fact": "ESA-led orbiter mapping trace gases like methane, and a relay for Curiosity and Perseverance.",
@@ -899,6 +1028,18 @@
   },
   {
    "object": "Gaia",
+   "field": "orbit",
+   "fact": "Lissajous orbit round L2 inside a box of 263,000 x 707,000 x 370,000 km, once every 180 days (also given as typically 340,000 x 90,000 km).",
+   "sources": [
+    "https://blogs.esa.int/rocketscience/?p=984",
+    "https://sci.esa.int/web/gaia/31360-orbit/navigation"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Gaia",
    "field": "ou_involvement",
    "fact": "CEI modelled charge trapping before launch, analysed the BP/RP and RVS radiation campaigns and fed the pipeline. Less in-flight damage than predicted, still being investigated.",
    "sources": [
@@ -942,6 +1083,18 @@
    "status": "correction"
   },
   {
+   "object": "Genesis",
+   "field": "size_m",
+   "fact": "Solar panel span (longest dimension) 7.9 m; halo orbit round L1 with a Y-amplitude of about 780,000 km.",
+   "sources": [
+    "https://www.eoportal.org/satellite-missions/genesis",
+    "https://cse.cs.ucsb.edu/sites/default/files/publications/SerEtAl00.pdf"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Hayabusa2",
    "field": "description",
    "fact": "Deployed rovers, kinetic impactor, returned Ryugu surface and subsurface samples. “En Route” fits its extended mission to 1998 KY26.",
@@ -982,6 +1135,17 @@
     "https://www.heramission.space/team"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Hera",
+   "field": "size_m",
+   "fact": "Body 1.6 m a side; solar arrays 11.5 m across when deployed.",
+   "sources": [
+    "https://www.esa.int/Space_Safety/Hera/The_Hera_Spacecraft"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -1044,6 +1208,17 @@
    "checked": "2026-09-29",
    "volatile": true,
    "status": "correction"
+  },
+  {
+   "object": "Herschel",
+   "field": "orbit",
+   "fact": "Quasi-halo orbit round L2, average amplitude about 700,000 km, about 500,000 km above and below the ecliptic, up to 800,000 km either side; period about 178 days.",
+   "sources": [
+    "https://sci.esa.int/web/herschel/-/34699-orbit-navigation"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
   },
   {
    "object": "Herschel",
@@ -1169,6 +1344,20 @@
     "Open University Centre for Electronic Imaging HWO \"£400\""
    ],
    "checked": "2026-09-29",
+   "volatile": true,
+   "status": "not-found"
+  },
+  {
+   "object": "HWO",
+   "field": "size_m",
+   "fact": "Concept: a segmented primary mirror of about 6 m (6-8 m in various descriptions); no overall spacecraft size published.",
+   "sources": [
+    "https://www.teledyne.com/digital-imaging-space-science-monthly/the-habitable-worlds-observatory"
+   ],
+   "searched": [
+    "Habitable Worlds Observatory concept spacecraft size metres"
+   ],
+   "checked": "2026-10-11",
    "volatile": true,
    "status": "not-found"
   },
@@ -1343,6 +1532,17 @@
   },
   {
    "object": "JWST",
+   "field": "orbit",
+   "fact": "Distance from L2 varies from 250,000 to 832,000 km; up to 520,000 km above or below the ecliptic; period about 6 months.",
+   "sources": [
+    "https://jwst-docs.stsci.edu/jwst-observatory-characteristics/jwst-orbit"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "JWST",
    "field": "ou_involvement",
    "fact": "OU researchers contributed to the WASP-39b studies.",
    "sources": [
@@ -1374,6 +1574,17 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "LightShip-1",
+   "field": "orbit",
+   "fact": "LightShip tug's service orbit round Mars: 5,720 km altitude, 20° inclination (period about 7.34 h); launch planned 2032; Phase A/B1.",
+   "sources": [
+    "https://esa.int/Enabling_Support/Preparing_for_the_Future/Discovery_and_Preparation/Towards_low-cost_missions_to_Mars"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "LightShip-1",
@@ -1440,6 +1651,17 @@
     "https://www.ralspace.stfc.ac.uk/mission/rosetta-philae"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "LUPEX",
+   "field": "size_m",
+   "fact": "Rover 2.0 m long, 1.8 m wide, 3.3 m tall, 350 kg.",
+   "sources": [
+    "https://humans-in-space.jaxa.jp/en/biz-lab/tech/lupex/"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -1600,6 +1822,18 @@
    "status": "correction"
   },
   {
+   "object": "NewAthena",
+   "field": "parent",
+   "fact": "Will operate at the first Sun-Earth Lagrange point (L1) in a large halo orbit; single X-ray telescope with a 12 m focal length; launch planned 2037 on Ariane 6 (the newest ESA factsheet says 2039).",
+   "sources": [
+    "https://cosmos.esa.int/web/athena/about-athena",
+    "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
    "object": "OGRE",
    "field": "description",
    "fact": "Sub-orbital sounding rocket for high-resolution X-ray spectra (target Capella), a few minutes above the atmosphere.",
@@ -1632,6 +1866,17 @@
    "checked": "2026-09-29",
    "volatile": true,
    "status": "correction"
+  },
+  {
+   "object": "OGRE",
+   "field": "suborbital",
+   "fact": "Flies on a Black Brant IX sounding rocket, observing for about 5 minutes; the OU page gives no launch site or apogee.",
+   "sources": [
+    "https://university.open.ac.uk/science/research/cei/missions/ogre"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
+   "status": "confirmed"
   },
   {
    "object": "Open Science Observatories",
@@ -1803,6 +2048,17 @@
    "status": "confirmed"
   },
   {
+   "object": "Planck",
+   "field": "orbit",
+   "fact": "Lissajous orbit round L2 with an average amplitude of about 400,000 km.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/Herschel_and_Planck/Herschel_and_Planck_launch_timeline"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "PLATO",
    "field": "description",
    "fact": "26 cameras monitoring hundreds of thousands of bright stars for transits of Earth-sized planets.",
@@ -1848,6 +2104,17 @@
    "status": "confirmed"
   },
   {
+   "object": "PLATO",
+   "field": "size_m",
+   "fact": "About 3.5 x 3.6 x 3.7 m stowed, with a deployed wing span (sunshield) of about 9 m.",
+   "sources": [
+    "https://www.cosmos.esa.int/web/plato/spacecraft"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "PROSPECT",
    "field": "description",
    "fact": "Luna 27 is a Russian robotic south-polar lander with a drill for volatiles.",
@@ -1883,6 +2150,17 @@
    "status": "confirmed"
   },
   {
+   "object": "PROSPECT",
+   "field": "size_m",
+   "fact": "Flies on Intuitive Machines' Nova-C lander: 4.3 m tall, 1.57 m wide hexagonal body.",
+   "sources": [
+    "https://intuitivemachines.com/nova-c"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "PROSPECT (on Intuitive Machines IM-4)",
    "field": "proposed-entry",
    "fact": "The home of the OU-led ProSPA now that it no longer flies on Luna 27. Could replace or rename the Luna 27 entry. type: mission; parent: Moon; status: Planned; launch_year: 2027; orbit_type: landed; landed_coords: { lat: -84.5, lon: 31.5 } (current planned site, subject to NASA confirmation); description: ESA’s PROSPECT package will drill up to about 1 m into the regolith near the lunar south pole and analyse the samples for water and other volatiles. It flies on Intuitive Machines’ Nova-C lander under NASA’s CLPS programme (task CP-22).; ou_involvement: The Open University leads development of ProSPA, the package’s analytical laboratory, which heats drilled samples in sealed ovens and measures the gases with mass spectrometers.",
@@ -1908,6 +2186,17 @@
   },
   {
    "object": "Roman",
+   "field": "orbit",
+   "fact": "Quasi-halo orbit round Sun-Earth L2, 1.5 million km from Earth; no amplitude published in the sources found.",
+   "sources": [
+    "https://ntrs.nasa.gov/api/citations/20210018417/downloads/2022_IEEEAerospace_RST_Abstract_final.docx"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Roman",
    "field": "ou_involvement",
    "fact": "CEI worked under contract to JPL from 2014 to 2019 on the coronagraph EMCCD, resulting in the CCD311, a customised CCD201 selected for flight.",
    "sources": [
@@ -1916,6 +2205,17 @@
     "https://university.open.ac.uk/science/research/cei/missions/w-first"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Roman",
+   "field": "size_m",
+   "fact": "Stands over 12.8 m (42 ft) high with its deployable aperture cover up; solar panels over 4.3 m wide.",
+   "sources": [
+    "https://svs.gsfc.nasa.gov/14997"
+   ],
+   "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
   },
@@ -2053,6 +2353,18 @@
    "status": "confirmed"
   },
   {
+   "object": "Sentinel-2",
+   "field": "size_m",
+   "fact": "Body 3.4 x 1.8 x 2.35 m with a 2.2 x 4.1 m solar array; no deployed span published by ESA (a tracking catalogue gives about 5 m).",
+   "sources": [
+    "https://www.fe-lexikon.info/material/texte/sentinel_2_brochure.pdf",
+    "https://keeptrack.space/satellite/40697"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Sentinel-3",
    "field": "description",
    "fact": "Ocean and land monitoring: sea-surface topography, temperature and colour.",
@@ -2073,6 +2385,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "correction"
+  },
+  {
+   "object": "Sentinel-3",
+   "field": "size_m",
+   "fact": "Bus 3.71 x 2.20 x 2.21 m, one solar wing of 10.5 m²; deployed span not published by ESA (a tracking catalogue gives about 5 m).",
+   "sources": [
+    "https://spaceflight101.com/copernicus/?p=271",
+    "https://keeptrack.space/satellite/41335"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
   },
   {
    "object": "SMILE",
@@ -2131,6 +2455,17 @@
    "status": "correction"
   },
   {
+   "object": "SMILE",
+   "field": "size_m",
+   "fact": "4.8 x 9.8 x 3.5 m deployed in orbit; 3 m magnetometer boom.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/Smile/The_spacecraft"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Solar System",
    "field": "orbit",
    "fact": "Planet semi-major axes (J2000, AU): Mercury 0.38709927, Venus 0.72333566, Earth-Moon barycentre 1.00000261, Mars 1.52371034, Jupiter 5.20288700, Saturn 9.53667594, Uranus 19.18916464, Neptune 30.06992276.",
@@ -2151,6 +2486,17 @@
    "checked": "2026-09-29",
    "volatile": true,
    "status": "confirmed"
+  },
+  {
+   "object": "Spitzer",
+   "field": "orbit",
+   "fact": "Earth-trailing heliocentric orbit (Horizons, 2010-01-01): a 1.014426 AU, e 0.011286, i 1.135°, node 316.30°, argument of perihelion 196.01°, mean motion 0.9646578°/day.",
+   "sources": [
+    "https://ssd.jpl.nasa.gov/horizons/"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "Stardust",
@@ -2176,6 +2522,17 @@
    "status": "confirmed"
   },
   {
+   "object": "Stardust",
+   "field": "size_m",
+   "fact": "Main bus 1.7 x 0.66 x 0.66 m; solar arrays 4.8 m tip to tip.",
+   "sources": [
+    "https://www.jpl.nasa.gov/news/press_kits/stardustflyby.pdf"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Sun",
    "field": "description",
    "fact": "Yellow dwarf at the centre of the Solar System, holds it together by gravity, more than 99% of its mass.",
@@ -2195,6 +2552,17 @@
    ],
    "checked": "2026-09-29",
    "volatile": true,
+   "status": "confirmed"
+  },
+  {
+   "object": "Swift",
+   "field": "size_m",
+   "fact": "5.6 m high; 5.6 x 5.4 m.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Neil_Gehrels_Swift_Observatory"
+   ],
+   "checked": "2026-10-11",
+   "volatile": false,
    "status": "confirmed"
   },
   {
@@ -2252,6 +2620,19 @@
    ],
    "checked": "2026-09-29",
    "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "TRUTHS",
+   "field": "orbit",
+   "fact": "Polar, non-Sun-synchronous orbit at about 609-610 km, inclination 90°. Some databases list the mission as cancelled or its funding withdrawn; ESA's pages still describe it.",
+   "sources": [
+    "https://www.esa.int/Applications/Observing_the_Earth/TRUTHS/Facts_and_figures",
+    "https://www.eoportal.org/satellite-missions/truths",
+    "https://space.oscar.wmo.int/satellites/view/truths"
+   ],
+   "checked": "2026-10-11",
+   "volatile": true,
    "status": "confirmed"
   },
   {
@@ -2532,7 +2913,7 @@
   "https://en.wikipedia.org/wiki/Neil_Gehrels_Swift_Observatory": {
    "title": "Wikipedia: Neil Gehrels Swift Observatory",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-11"
   },
   "https://www.space.com/space-exploration/missions/nasas-doomed-swift-space-telescope-restarts-science-work-after-rescue-mission-fails": {
    "title": "Space.com: Swift restarts science",
@@ -2701,8 +3082,8 @@
   },
   "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet": {
    "title": "ESA: NewAthena factsheet",
-   "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
   },
   "https://university.open.ac.uk/science/research/cei/missions/athena": {
    "title": "OU CEI mission page: athena",
@@ -3120,9 +3501,9 @@
    "lastUsed": "2026-09-29"
   },
   "https://university.open.ac.uk/science/research/cei/missions/ogre": {
-   "title": "OU CEI mission page: ogre",
+   "title": "OU: OGRE",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-11"
   },
   "https://www.hayabusa2.jaxa.jp/en/": {
    "title": "JAXA: Hayabusa2",
@@ -3493,6 +3874,201 @@
    "title": "Famous Scientists: Jocelyn Bell Burnell",
    "firstUsed": "2026-10-02",
    "lastUsed": "2026-10-02"
+  },
+  "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo/BepiColombo_factsheet": {
+   "title": "ESA: BepiColombo factsheet",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.fe-lexikon.info/material/texte/sentinel_2_brochure.pdf": {
+   "title": "ESA Sentinel-2 brochure",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://keeptrack.space/satellite/40697": {
+   "title": "KeepTrack: Sentinel-2A",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://spaceflight101.com/copernicus/?p=271": {
+   "title": "Spaceflight101: Sentinel-3 overview",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://keeptrack.space/satellite/41335": {
+   "title": "KeepTrack: Sentinel-3A",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.castormission.org/mission": {
+   "title": "CASTOR mission",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Applications/Observing_the_Earth/TRUTHS/Facts_and_figures": {
+   "title": "ESA: TRUTHS facts and figures",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.eoportal.org/satellite-missions/truths": {
+   "title": "eoPortal: TRUTHS",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://space.oscar.wmo.int/satellites/view/truths": {
+   "title": "WMO OSCAR: TRUTHS",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Science_Exploration/Space_Science/Smile/The_spacecraft": {
+   "title": "ESA: The spacecraft (Smile)",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://keeptrack.space/satellite/33405": {
+   "title": "KeepTrack: Chandrayaan-1",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://humans-in-space.jaxa.jp/en/biz-lab/tech/lupex/": {
+   "title": "JAXA: LUPEX",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://intuitivemachines.com/nova-c": {
+   "title": "Intuitive Machines: Nova-C",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Science_Exploration/Space_Science/Euclid/Euclid_overview": {
+   "title": "ESA: Euclid overview",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://arxiv.org/pdf/2405.13491": {
+   "title": "Euclid. I. Overview of the Euclid mission",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://sci.esa.int/web/euclid/-/46661-mission-operations": {
+   "title": "ESA: Euclid mission operations",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://cosmos.esa.int/web/athena/about-athena": {
+   "title": "ESA Cosmos: Athena in a nutshell",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.cosmos.esa.int/web/plato/spacecraft": {
+   "title": "ESA Cosmos: PLATO spacecraft",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://svs.gsfc.nasa.gov/14997": {
+   "title": "NASA SVS: Roman fully deployed",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://ntrs.nasa.gov/api/citations/20210018417/downloads/2022_IEEEAerospace_RST_Abstract_final.docx": {
+   "title": "NASA NTRS: Roman observatory implementation",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.teledyne.com/digital-imaging-space-science-monthly/the-habitable-worlds-observatory": {
+   "title": "Teledyne: The Habitable Worlds Observatory",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://spaceflightnow.com/2015/01/16/lost-beagle-2-spacecraft-found-on-mars/": {
+   "title": "Spaceflight Now: Lost Beagle 2 spacecraft found on Mars",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.ucl.ac.uk/mssl/research-projects/2021/jun/exomars-2022-rover-rosalind-franklin": {
+   "title": "UCL MSSL: ExoMars rover Rosalind Franklin",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Space_Safety/Hera/The_Hera_Spacecraft": {
+   "title": "ESA: The Hera spacecraft",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://global.jaxa.jp/projects/sas/astro_f/index.html": {
+   "title": "JAXA: AKARI",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://arxiv.org/pdf/0708.1796": {
+   "title": "The Infrared Astronomical Mission AKARI",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://cosmos.esa.int/web/envision/envision-mission": {
+   "title": "ESA Cosmos: EnVision mission",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://esa.int/Enabling_Support/Preparing_for_the_Future/Discovery_and_Preparation/Towards_low-cost_missions_to_Mars": {
+   "title": "ESA: Towards low-cost missions to Mars",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Science_Exploration/Space_Science/Comet_Interceptor/Comet_Interceptor_factsheet": {
+   "title": "ESA: Comet Interceptor factsheet",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.isas.JAXA.jp/en/missions/spacecraft/developing/ariel.html": {
+   "title": "JAXA: Ariel",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.jpl.nasa.gov/news/press_kits/stardustflyby.pdf": {
+   "title": "JPL: Stardust flyby press kit",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.eoportal.org/satellite-missions/genesis": {
+   "title": "eoPortal: Genesis",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://cse.cs.ucsb.edu/sites/default/files/publications/SerEtAl00.pdf": {
+   "title": "Serban et al. (UCSB/Caltech)",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://jwst-docs.stsci.edu/jwst-observatory-characteristics/jwst-orbit": {
+   "title": "STScI: JWST Orbit",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://blogs.esa.int/rocketscience/?p=984": {
+   "title": "ESA Rocket Science blog",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://sci.esa.int/web/gaia/31360-orbit/navigation": {
+   "title": "ESA: Gaia orbit",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://sci.esa.int/web/herschel/-/34699-orbit-navigation": {
+   "title": "ESA: Herschel orbit",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://www.esa.int/Science_Exploration/Space_Science/Herschel_and_Planck/Herschel_and_Planck_launch_timeline": {
+   "title": "ESA: Herschel and Planck launch timeline",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
+  },
+  "https://ssd.jpl.nasa.gov/horizons/": {
+   "title": "JPL Horizons, object -79",
+   "firstUsed": "2026-10-11",
+   "lastUsed": "2026-10-11"
   }
  }
 }

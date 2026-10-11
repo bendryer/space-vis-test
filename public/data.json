@@ -4,6 +4,7 @@
     "type": "star",
     "status": "Natural",
     "radius_km": 695700,
+    "gm": 132712440041.94,
     "texture": "/textures/sun.jpg",
     "color": "#ffcc00",
     "pole": {"ra": 286.13, "dec": 63.87},
@@ -24,6 +25,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 2439.7,
+    "gm": 22031.87,
     "texture": "/textures/mercury.jpg",
     "color": "#aaaaaa",
     "orbit_color": "#a1a1a1",
@@ -54,6 +56,7 @@
     "motion": {"mode": "sun", "axis": "+x"},
     "model_scale": 2.5,
     "radius": 0.8,
+    "size_m": 30,
     "color": "#00aaff",
     "orbit": {
       "a_km": 3430.5,
@@ -75,6 +78,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 6051.8,
+    "gm": 324858.59,
     "texture": "/textures/venus.jpg",
     "color": "#e6c229",
     "orbit_color": "#e3bb76",
@@ -99,6 +103,7 @@
     "status": "Natural",
     "preload": true,
     "radius_km": 6371.0,
+    "gm": 398600.4355,
     "texture": "/textures/earth.jpg",
     "night_texture": "/textures/earth_night.jpg",
     "roughness_map": "/textures/earth.jpg",
@@ -133,6 +138,7 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.2,
     "radius": 0.5,
+    "size_m": 109,
     "color": "#ffffff",
     "orbit": {
       "a_km": 6795.6,
@@ -155,6 +161,7 @@
     "motion": {"mode": "spin", "axis": "+y", "tilt": 55},
     "model_scale": 1.5,
     "radius": 0.6,
+    "size_m": 13.2,
     "color": "#dddddd",
     "orbit": {
       "a_km": 6898.1,
@@ -176,6 +183,8 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 5,
+    "size_estimated": true,
     "color": "#44cc44",
     "orbit": {
       "a_km": 7164.1,
@@ -199,6 +208,8 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 5,
+    "size_estimated": true,
     "color": "#0088ff",
     "orbit": {
       "a_km": 7192.6,
@@ -223,13 +234,18 @@
     "motion": {"mode": "spin", "axis": "+z", "tilt": 50},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 4,
+    "size_estimated": true,
     "color": "#aa0000",
     "orbit": {
       "a_km": 7178.1,
-      "e": 0.0,
-      "i": 98,
+      "e": 0,
+      "i": 98.6,
       "M0": 0,
-      "rate": 5139.146596
+      "rate": 5139.106821,
+      "node": 10.46,
+      "node_rate": 0.9856474,
+      "illustrative": true
     }
   },
   {
@@ -245,6 +261,8 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 4,
+    "size_estimated": true,
     "color": "#00ffff",
     "orbit": {
       "a_km": 6987.1,
@@ -267,6 +285,7 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 9.8,
     "color": "#ff00aa",
     "orbit": {
       "a_km": 69378.1,
@@ -288,6 +307,7 @@
     "motion": {"mode": "spin", "axis": "+y", "tilt": 45, "wobble": 12},
     "model_scale": 1.2,
     "radius": 0.4,
+    "size_m": 5.6,
     "color": "#aa00ff",
     "orbit": {
       "a_km": 6833.1,
@@ -316,6 +336,7 @@
     "motion": {"mode": "tumble"},
     "model_scale": 0.8,
     "radius": 0.2,
+    "size_m": 0.34,
     "color": "#666666",
     "orbit": {
       "a_km": 7013.1,
@@ -332,6 +353,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 1737.4,
+    "gm": 4902.8,
     "texture": "/textures/moon.jpg",
     "color": "#aaaaaa",
     "orbit_color": "#888888",
@@ -366,6 +388,8 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1,
     "radius": 0.4,
+    "size_m": 2.2,
+    "size_estimated": true,
     "color": "#eeeeee",
     "orbit": {
       "a_km": 1837.4,
@@ -392,6 +416,8 @@
     "model": "/models/change5.glb",
     "model_scale": 0.4,
     "radius": 0.2,
+    "size_m": 4.5,
+    "size_estimated": true,
     "color": "#ffccaa"
   },
   {
@@ -411,6 +437,7 @@
     "model": "/models/luna27.glb",
     "model_scale": 0.3,
     "radius": 0.2,
+    "size_m": 4.3,
     "color": "#8888ff"
   },
   {
@@ -431,6 +458,7 @@
     "model": "/models/lupex.glb",
     "model_scale": 0.3,
     "radius": 0.2,
+    "size_m": 3.3,
     "color": "#aabbcc"
   },
   {
@@ -443,15 +471,7 @@
     "status": "Natural",
     "description": "Lagrange Point 2 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly opposite the Sun. It provides a perfect, quiet environment for space telescopes to observe the deep universe without interference from Earth's heat. Spacecraft at this location follow a halo or Lissajous orbit to maintain a constant line of sight for communication.",
     "radius": 1,
-    "orbit": {
-      "a": 1222,
-      "e": 0.01671,
-      "i": 0.0,
-      "M0": 357.527,
-      "rate": 0.9856003,
-      "node": 0.0,
-      "peri": 102.938
-    },
+    "lagrange": {"body": "Earth", "point": "L2"},
     "ou_involvement": "The OU uses this reference point as a virtual laboratory to study how deep-space environment conditions affect various satellite components. Academics monitor the performance of multiple OU-characterized missions that are stationed at this critical vantage point. This data is used to improve the design of future detectors for flagship missions currently under development at the university."
   },
   {
@@ -467,6 +487,7 @@
     "motion": {"mode": "sun", "axis": "-y", "rate": 1},
     "model_scale": 2.5,
     "radius": 1.2,
+    "size_m": 21.2,
     "color": "#ffaa00",
     "orbit_type": "lissajous",
     "orbit": {
@@ -474,7 +495,9 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 0
+      "M0": 0,
+      "amplitude_km": {"y": 832000, "z": 520000},
+      "period_days": 180
     }
   },
   {
@@ -490,6 +513,7 @@
     "motion": {"mode": "sun", "axis": "-y", "rate": 4, "wobble": 45, "period": 90},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 10,
     "color": "#ffffff",
     "orbit_type": "lissajous",
     "orbit": {
@@ -497,7 +521,9 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 0
+      "M0": 0,
+      "amplitude_km": {"y": 353500, "z": 185000},
+      "period_days": 180
     }
   },
   {
@@ -513,6 +539,7 @@
     "motion": {"mode": "spin", "axis": "+y", "tilt": 50},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 4.7,
     "color": "#ff00ff",
     "orbit_type": "lissajous",
     "orbit": {
@@ -520,12 +547,15 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 180
+      "M0": 180,
+      "amplitude_km": {"y": 800000, "z": 400000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
     "name": "NewAthena",
-    "parent": "Earth-Sun L2",
+    "parent": "Earth-Sun L1",
     "type": "mission",
     "status": "Planned",
     "launch_year": "In Dev",
@@ -536,6 +566,8 @@
     "motion": {"mode": "spin", "axis": "+z", "tilt": 40},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 15,
+    "size_estimated": true,
     "color": "#aa44ff",
     "orbit_type": "lissajous",
     "orbit": {
@@ -543,7 +575,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 90
+      "M0": 90,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -559,6 +594,8 @@
     "motion": {"mode": "spin", "axis": "+z", "tilt": 40, "rate": 1.5},
     "model_scale": 2.5,
     "radius": 1.2,
+    "size_m": 15,
+    "size_estimated": true,
     "color": "#44ffaa",
     "orbit_type": "lissajous",
     "orbit": {
@@ -566,7 +603,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 120
+      "M0": 120,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -582,6 +622,7 @@
     "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 9,
     "color": "#ffff00",
     "orbit_type": "lissajous",
     "orbit": {
@@ -589,7 +630,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 270
+      "M0": 270,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -605,6 +649,7 @@
     "motion": {"mode": "spin", "axis": "+x", "tilt": 45},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 12.8,
     "color": "#cc0000",
     "orbit_type": "lissajous",
     "orbit": {
@@ -612,7 +657,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 45
+      "M0": 45,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -621,6 +669,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 3389.5,
+    "gm": 42828.37,
     "texture": "/textures/mars.jpg",
     "color": "#cc3300",
     "orbit_color": "#ff4433",
@@ -651,6 +700,7 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 2,
     "radius": 0.8,
+    "size_m": 17.5,
     "color": "#ffffff",
     "orbit": {
       "a_km": 3796.2,
@@ -677,6 +727,7 @@
     "model": "/models/beagle2.glb",
     "model_scale": 0.2,
     "radius": 0.1,
+    "size_m": 1.9,
     "color": "#ff4444"
   },
   {
@@ -697,6 +748,7 @@
     "model": "/models/perseverance.glb",
     "model_scale": 0.2,
     "radius": 0.2,
+    "size_m": 3.0,
     "color": "#ffaa00"
   },
   {
@@ -717,6 +769,8 @@
     "model": "/models/exomars_rover.glb",
     "model_scale": 0.3,
     "radius": 0.2,
+    "size_m": 2.0,
+    "size_estimated": true,
     "color": "#ffaa00"
   },
   {
@@ -737,6 +791,7 @@
     "model": "/models/curiosity.glb",
     "model_scale": 0.3,
     "radius": 0.2,
+    "size_m": 3.0,
     "color": "#dd8822"
   },
   {
@@ -745,6 +800,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 69911,
+    "gm": 126686531.9,
     "texture": "/textures/jupiter.jpg",
     "color": "#d8ca9d",
     "orbit_color": "#e0a96d",
@@ -767,6 +823,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 1821.6,
+    "gm": 5959.92,
     "texture": "/textures/io.jpg",
     "color": "#ffff00",
     "orbit": {
@@ -788,6 +845,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 1560.8,
+    "gm": 3202.74,
     "texture": "/textures/europa.jpg",
     "color": "#dddddd",
     "orbit": {
@@ -811,6 +869,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 2631.2,
+    "gm": 9887.83,
     "texture": "/textures/ganymede.jpg",
     "color": "#aaaaaa",
     "orbit": {
@@ -834,6 +893,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 2410.3,
+    "gm": 7179.29,
     "texture": "/textures/callisto.jpg",
     "color": "#888888",
     "orbit": {
@@ -855,53 +915,8 @@
     "parent": "Sun",
     "orbit_type": "trajectory",
     "trajectory": {
-      "waypoints": [
-        {
-          "date": "2023-04-14",
-          "at": "Earth",
-          "label": "Launch"
-        },
-        {
-          "date": "2024-08-20",
-          "revs": 1,
-          "at": "Earth",
-          "label": "Lunar-Earth flyby",
-          "extreme": 1.25
-        },
-        {
-          "date": "2025-08-31",
-          "revs": 1,
-          "at": "Venus",
-          "label": "Venus flyby",
-          "extreme": 0.64
-        },
-        {
-          "date": "2026-09-28",
-          "revs": 0,
-          "at": "Earth",
-          "label": "Earth flyby"
-        },
-        {
-          "date": "2029-01-17",
-          "revs": 1,
-          "at": "Earth",
-          "label": "Earth flyby",
-          "extreme": 2.2
-        },
-        {
-          "date": "2031-07-21",
-          "revs": 0,
-          "at": "Jupiter",
-          "label": "Jupiter arrival"
-        }
-      ],
-      "arrival_orbit": {
-        "a_km": 2573712.0,
-        "e": 0.66667,
-        "i": 0.0,
-        "M0": 0,
-        "rate": 13.494652
-      }
+      "waypoints": [{"date": "2023-04-14", "at": "Earth", "label": "Launch"}, {"date": "2024-08-20", "revs": 1, "at": "Earth", "label": "Lunar-Earth flyby", "extreme": 1.25}, {"date": "2025-08-31", "revs": 1, "at": "Venus", "label": "Venus flyby", "extreme": 0.64}, {"date": "2026-09-28", "revs": 0, "at": "Earth", "label": "Earth flyby"}, {"date": "2029-01-17", "revs": 1, "at": "Earth", "label": "Earth flyby", "extreme": 2.2}, {"date": "2031-07-21", "revs": 0, "at": "Jupiter", "label": "Jupiter arrival"}],
+      "arrival_orbit": {"a_km": 2573712.0, "e": 0.66667, "i": 0.0, "M0": 0, "rate": 13.494652, "illustrative": true}
     },
     "menu_parent": "Jupiter",
     "type": "mission",
@@ -914,6 +929,7 @@
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 2.5,
     "radius": 1.5,
+    "size_m": 27,
     "color": "#00AAFF"
   },
   {
@@ -922,6 +938,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 58232,
+    "gm": 37931206.2,
     "texture": "/textures/saturn.jpg",
     "color": "#ead6b8",
     "orbit_color": "#f4d06f",
@@ -929,8 +946,8 @@
     "rot_period": 0.45,
     "ring": {
       "texture": "/textures/saturn_ring.png",
-      "inner_radius": 1.2,
-      "outer_radius": 2.3,
+      "inner_km": 74658,
+      "outer_km": 136775,
       "opacity": 0.9,
       "emissive": 0.2
     },
@@ -952,6 +969,7 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 2574.7,
+    "gm": 8978.14,
     "texture": "/textures/titan.jpg",
     "color": "#ff9900",
     "orbit": {
@@ -982,6 +1000,7 @@
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 2,
     "radius": 0.8,
+    "size_m": 6.8,
     "color": "#ccaa44",
     "orbit": {
       "a_km": 671618.0,
@@ -1008,6 +1027,7 @@
     "model": "/models/huygens.glb",
     "model_scale": 0.3,
     "radius": 0.2,
+    "size_m": 2.7,
     "color": "#ffaa00"
   },
   {
@@ -1016,6 +1036,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 25362,
+    "gm": 5793951.3,
     "texture": "/textures/uranus.jpg",
     "color": "#99ccff",
     "orbit_color": "#7de3e4",
@@ -1038,6 +1059,7 @@
     "type": "planet",
     "status": "Natural",
     "radius_km": 24622,
+    "gm": 6835099.5,
     "texture": "/textures/neptune.jpg",
     "color": "#3366ff",
     "orbit_color": "#4b70dd",
@@ -1066,13 +1088,15 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 2,
     "radius": 0.5,
+    "size_m": 32,
     "color": "#00aaff",
     "orbit": {
       "a_km": 30,
       "e": 0,
       "i": 90,
       "M0": 0,
-      "rate": 24.604662
+      "rate": 24.604662,
+      "illustrative": true
     }
   },
   {
@@ -1092,6 +1116,8 @@
     "model": "/models/philae.glb",
     "model_scale": 0.4,
     "radius": 0.2,
+    "size_m": 1.0,
+    "size_estimated": true,
     "color": "#cccccc"
   },
   {
@@ -1099,31 +1125,8 @@
     "parent": "Sun",
     "orbit_type": "trajectory",
     "trajectory": {
-      "waypoints": [
-        {
-          "date": "2024-10-07",
-          "at": "Earth",
-          "label": "Launch"
-        },
-        {
-          "date": "2025-03-12",
-          "at": "Mars",
-          "label": "Mars flyby"
-        },
-        {
-          "date": "2026-10-12",
-          "at": "Didymos",
-          "label": "Rendezvous with Didymos",
-          "extreme": 2.4
-        }
-      ],
-      "arrival_orbit": {
-        "a_km": 20,
-        "e": 0.1,
-        "i": 10,
-        "M0": 0,
-        "rate": 10.50129
-      }
+      "waypoints": [{"date": "2024-10-07", "at": "Earth", "label": "Launch"}, {"date": "2025-03-12", "at": "Mars", "label": "Mars flyby"}, {"date": "2026-10-12", "at": "Didymos", "label": "Rendezvous with Didymos", "extreme": 2.4}],
+      "arrival_orbit": {"a_km": 20, "e": 0.1, "i": 10, "M0": 0, "rate": 10.50129, "illustrative": true}
     },
     "menu_parent": "Didymos",
     "type": "mission",
@@ -1136,6 +1139,7 @@
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 11.5,
     "color": "#ff8800"
   },
   {
@@ -1151,6 +1155,7 @@
     "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
     "model_scale": 1.2,
     "radius": 0.5,
+    "size_m": 5.5,
     "color": "#ffaa44",
     "orbit": {
       "a_km": 7078.1,
@@ -1176,13 +1181,16 @@
     "motion": {"mode": "spin", "axis": "+y", "tilt": 50},
     "model_scale": 1.5,
     "radius": 0.6,
+    "size_m": 4.45,
     "color": "#8844ff",
     "orbit": {
-      "a_au": 1.025,
-      "e": 0.01,
-      "i": 1,
-      "M0": 340,
-      "rate": 0.95
+      "a_au": 1.014426,
+      "e": 0.011286,
+      "i": 1.1354,
+      "M0": 339.17,
+      "rate": 0.9646578,
+      "node": 316.2997,
+      "peri": 196.0108
     }
   },
   {
@@ -1198,6 +1206,7 @@
     "motion": {"mode": "spin", "axis": "+x", "tilt": 40},
     "model_scale": 2,
     "radius": 1,
+    "size_m": 7.5,
     "color": "#4400aa",
     "orbit_type": "lissajous",
     "orbit": {
@@ -1205,7 +1214,9 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 120
+      "M0": 120,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 178
     }
   },
   {
@@ -1221,6 +1232,7 @@
     "motion": {"mode": "sun", "axis": "-y", "rate": 6, "wobble": 8},
     "model_scale": 1.8,
     "radius": 0.8,
+    "size_m": 4.2,
     "color": "#aaaa00",
     "orbit_type": "lissajous",
     "orbit": {
@@ -1228,7 +1240,9 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 300
+      "M0": 300,
+      "amplitude_km": {"y": 400000, "z": 400000},
+      "period_days": 180
     }
   },
   {
@@ -1243,6 +1257,7 @@
     "model": "/models/peregrine.glb",
     "model_scale": 0.2,
     "radius": 0.1,
+    "size_m": 2.5,
     "color": "#cccccc",
     "orbit_type": "landed",
     "landed_coords": {
@@ -1263,6 +1278,8 @@
     "motion": {"mode": "spin", "axis": "+y", "tilt": 40, "rate": 1.5},
     "model_scale": 1.5,
     "radius": 0.6,
+    "size_m": 3,
+    "size_estimated": true,
     "color": "#00ffaa",
     "orbit_type": "lissajous",
     "orbit": {
@@ -1270,7 +1287,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 200
+      "M0": 200,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -1286,6 +1306,8 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.6,
+    "size_m": 14,
+    "size_estimated": true,
     "color": "#ffaa66",
     "orbit": {
       "a_km": 6431.8,
@@ -1308,13 +1330,15 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.6,
+    "size_m": 12,
+    "size_estimated": true,
     "color": "#44ffaa",
     "orbit": {
-      "a_km": 8396.2,
-      "e": 0.1191,
-      "i": 45,
+      "a_km": 9116.2,
+      "e": 0,
+      "i": 20,
       "M0": 300,
-      "rate": 1331.612874
+      "rate": 1177.013329
     }
   },
   {
@@ -1329,20 +1353,17 @@
     "model": "/models/ogre.glb",
     "model_scale": 0.8,
     "radius": 0.3,
+    "size_m": 17,
+    "size_estimated": true,
     "color": "#ff5500",
     "orbit_type": "suborbital",
     "suborbital": {
-      "start_coords": {
-        "lat": 40.8,
-        "lon": -77.8
-      },
-      "end_coords": {
-        "lat": 0,
-        "lon": -140
-      },
-      "apogee": 1.5,
-      "duration": 0.05,
-      "progress": 0.35
+      "start_coords": {"lat": 32.42, "lon": -106.32},
+      "end_coords": {"lat": 32.95, "lon": -106.4},
+      "apogee_km": 280,
+      "duration_min": 15,
+      "progress": 0.35,
+      "illustrative": true
     }
   },
   {
@@ -1358,6 +1379,7 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 6,
     "color": "#ddccaa",
     "orbit": {
       "a_km": 20,
@@ -1380,6 +1402,7 @@
     "motion": {"mode": "nadir", "axis": "-x", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 6.2,
     "color": "#44aaff",
     "orbit": {
       "a_km": 1.0,
@@ -1402,6 +1425,7 @@
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
     "radius": 0.5,
+    "size_m": 4.8,
     "color": "#ffdd44",
     "orbit": {
       "a_km": 237,
@@ -1418,6 +1442,7 @@
     "status": "Natural",
     "model": "/models/bennu.glb",
     "radius_km": 0.2524,
+    "gm": 4.892e-09,
     "color": "#444444",
     "rot_period": 4.3,
     "orbit": {
@@ -1438,6 +1463,7 @@
     "status": "Natural",
     "model": "/models/ryugu.glb",
     "radius_km": 0.502,
+    "gm": 3e-08,
     "color": "#555555",
     "rot_period": 7.6,
     "orbit": {
@@ -1458,6 +1484,7 @@
     "status": "Natural",
     "model": "/models/didymos.glb",
     "radius_km": 0.3985,
+    "gm": 3.6e-08,
     "color": "#8a8175",
     "rot_period": -0.094139,
     "orbit": {
@@ -1479,6 +1506,7 @@
     "status": "Natural",
     "model": "/models/dimorphos.glb",
     "radius_km": 0.0885,
+    "gm": 2.9e-10,
     "color": "#857d74",
     "rotation_mode": "locked",
     "orbit": {
@@ -1497,6 +1525,8 @@
     "status": "Natural",
     "model": "/models/wild2.glb",
     "radius_km": 2.75,
+    "gm": 1.52e-06,
+    "gm_estimated": true,
     "color": "#aaaaaa",
     "orbit": {
       "a_au": 3.44975,
@@ -1522,6 +1552,7 @@
       "z": 0
     },
     "radius_km": 2.17,
+    "gm": 6.67e-07,
     "color": "#aaaaaa",
     "tilt": 0,
     "rot_period": 0.5,
@@ -2058,15 +2089,7 @@
     "status": "Natural",
     "description": "Lagrange Point 1 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly between our planet and the Sun. It provides a constant, uninterrupted view of the Sun, making it the ideal location for solar monitoring satellites. Spacecraft at this point are essential for providing early warnings of solar flares and geomagnetic storms that could impact Earth.",
     "radius": 1,
-    "orbit": {
-      "a": 778,
-      "e": 0.01671,
-      "i": 0.0,
-      "M0": 357.527,
-      "rate": 0.9856003,
-      "node": 0.0,
-      "peri": 102.938
-    }
+    "lagrange": {"body": "Earth", "point": "L1"}
   },
   {
     "name": "Genesis",
@@ -2081,6 +2104,7 @@
     "motion": {"mode": "sun", "axis": "+y", "rate": 10, "wobble": 3},
     "model_scale": 1.5,
     "radius": 0.8,
+    "size_m": 7.9,
     "color": "#D4AF37",
     "orbit_type": "lissajous",
     "orbit": {
@@ -2088,7 +2112,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 0
+      "M0": 0,
+      "amplitude_km": {"y": 780000, "z": 450000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -2103,6 +2130,8 @@
     "motion": {"mode": "sun", "axis": "-y", "rate": 1},
     "model_scale": 1.5,
     "radius": 1,
+    "size_m": 3.3,
+    "size_estimated": true,
     "color": "#ffffaa",
     "orbit_type": "lissajous",
     "orbit": {
@@ -2110,7 +2139,10 @@
       "e": 0,
       "i": 90,
       "rate": 2,
-      "M0": 330
+      "M0": 330,
+      "amplitude_km": {"y": 800000, "z": 500000},
+      "period_days": 180,
+      "illustrative": true
     }
   },
   {
@@ -2130,6 +2162,8 @@
     "model": "/models/pirate.glb",
     "model_scale": 0.5,
     "radius": 0.2,
+    "size_m": 5,
+    "size_estimated": true,
     "color": "#ffaa00"
   },
   {
@@ -2154,6 +2188,8 @@
       "z": 0
     },
     "radius": 0.2,
+    "size_m": 20,
+    "size_estimated": true,
     "color": "#dd4422"
   },
   {
