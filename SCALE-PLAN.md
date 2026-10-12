@@ -158,7 +158,9 @@ Check every object against its source, recording each in `factcheck/sources.json
    - The Sun's shadow map in True scale covers down to 1e-8 units and reaches back only past the body nearest the view (`shadowLocal`): a craft still falls into its planet's shadow, but a moon's eclipse of its planet doesn't show in True scale.
    - Weak hardware (CPU slowed 4×, 1920×1080): True scale holds 60 fps at every smoke stop, as Diagram mode does, once the depth slices stopped recomputing every world matrix (later slices skip the update; the shift back is added to each matrix directly). Phones (390×844 @3): markers and framing checked.
    - Fixed on the way: a flight or overview asked for in the same frame as `setScaleMode` waits for its cut.
-6. **The switch in the UI:** a toggle in the showcase (desktop and phone layouts, to `DESIGN.md`), the presentation step `scale`, and `ENGINE.md`, `DATA.md` and `CLAUDE.md` updated.
+6. ✅ **The switch in the UI:** a toggle in the showcase (desktop and phone layouts, to `DESIGN.md`), the presentation step `scale`, and `ENGINE.md`, `DATA.md` and `CLAUDE.md` updated.
+   - Agreed 2026-10-11: visitors see the modes as **"Compressed"** (Diagram) and **"True scale"**. On larger screens a two-part switch at the top of the controls plate; on phones a round ruler button in the dock, which made the dock four round buttons (Explore lost its pill, to fit beside the logo on 360px phones).
+   - Presentations: a step's `"scale"` holds for the steps after it; the top-level `"scale"` sets the opening view's.
 7. **Animated change** between the modes (optional).
 
 ## Decisions (agreed 2026-10-11)

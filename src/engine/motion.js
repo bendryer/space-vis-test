@@ -33,6 +33,24 @@ export function getTumbleSpeed(name, totalSpeed = 0.25) {
     };
 }
 
+// --- ASTEROID AND COMET SPIN ---
+// Asteroids and comets turn on the simulated clock like the planets, so where one faces follows
+// the date (a tumble on the app's own clock would make the same moment look different each time).
+// One without a measured spin ("rot_period", "pole" or "tilt") gets an illustrative one, the
+// same every visit: a period of 5 to 19 hours, either way round, about a pole up to 60° off the
+// ecliptic's, at a starting angle. Fields it already has are kept.
+export function illustrativeSpin(name) {
+    const hash = getHash(name || 'asteroid');
+    const hours = 5 + ((hash & 0xFF) / 255) * 14;
+    const tilt = (((hash >> 8) & 0xFF) / 255) * (Math.PI / 3);
+    const heading = (((hash >> 16) & 0xFF) / 255) * Math.PI * 2;
+    return {
+        period: ((hash >> 24) & 1 ? 1 : -1) * hours / 24,   // days
+        pole: new THREE.Vector3(Math.sin(tilt) * Math.cos(heading), Math.cos(tilt), Math.sin(tilt) * Math.sin(heading)),
+        offset: hash % 360,
+    };
+}
+
 
 // --- SPACECRAFT ATTITUDE ---
 // How an orbiting spacecraft turns, from its "motion" in data.json. Each mode is how that kind

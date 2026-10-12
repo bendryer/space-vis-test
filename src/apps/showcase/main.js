@@ -16,6 +16,7 @@ import { populateMenu } from './menu.js';
 import { setupDetails } from './details.js';
 import { setupCredits } from './credits.js';
 import { setupCinematicControls } from './cinematic.js';
+import { setupScaleSwitch } from './scale.js';
 
 trackInputType();
 startSlowLoadNotice();
@@ -51,6 +52,7 @@ engine.on('built', ({ entries }) => {
     setupReticles(engine, document.getElementById('ui-layer'));
     populateMenu();
     setupCinematicControls();
+    setupScaleSwitch();
     setupCredits(entries.find(item => item.type === 'credits'));
     showSolarSystem({ animate: false });
 });

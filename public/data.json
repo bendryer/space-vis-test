@@ -1404,7 +1404,7 @@
     "radius_km": 0.2524,
     "gm": 4.892e-09,
     "color": "#444444",
-    "rot_period": 4.3,
+    "rot_period": -0.179,
     "orbit": {
       "a_au": 1.12639,
       "e": 0.2037,
@@ -1425,7 +1425,7 @@
     "radius_km": 0.502,
     "gm": 3e-08,
     "color": "#555555",
-    "rot_period": 7.6,
+    "rot_period": -0.318,
     "orbit": {
       "a_au": 1.19092,
       "e": 0.191,

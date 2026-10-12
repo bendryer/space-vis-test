@@ -77,6 +77,10 @@
     height: 40px;
 }
 
+/* True scale's markers go over the scene but under the bar, the logo and the loading cover. */
+body > .markers { z-index: 1; } /* markers.css loads later: outrank it */
+.present-bar, .present-logo { z-index: 2; }
+
 .visually-hidden {
     position: absolute !important;
     width: 1px;

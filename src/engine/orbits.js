@@ -135,12 +135,27 @@ export function poleDirection({ ra, dec }) {
 // when that should differ from `days` (an orbit line drawn as the orbit is now).
 export function getKeplerPosition(orbitData, days, precessDays = days) {
     if (!orbitData || orbitData.a === 0) return { x: 0, y: 0, z: 0 };
-    let M = (orbitData.M0 + (orbitData.rate * days)) % 360;
-    let M_rad = M * (Math.PI / 180);
-    const e = orbitData.e;
-    let E = M_rad;
-    for (let k = 0; k < 5; k++) E = M_rad + e * Math.sin(E);
+    const M = ((orbitData.M0 + (orbitData.rate * days)) % 360) * (Math.PI / 180);
+    return orbitPositionAt(orbitData, eccentricAnomaly(M, orbitData.e || 0), precessDays);
+}
 
+// Kepler's equation, M = E - e sin E, solved for E by Newton's method to full precision. (Five
+// rounds of plain iteration, as it was, left Comet 67P a tenth of a radian along its orbit from
+// where it should be: in True scale, millions of km.)
+function eccentricAnomaly(M, e) {
+    let E = e < 0.8 ? M : Math.PI;
+    for (let k = 0; k < 50; k++) {
+        const step = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+        E -= step;
+        if (Math.abs(step) < 1e-14) break;
+    }
+    return E;
+}
+
+// The point of the orbit at eccentric anomaly E (radians), relative to the parent: where its
+// body is when that's its E, and what an orbit line is drawn through.
+export function orbitPositionAt(orbitData, E, precessDays) {
+    const e = orbitData.e || 0;
     // A real orbit is worked out in AU (round the Sun) or km (round a body), then each point's
     // distance from the parent is rescaled.
     const inAu = orbitData.a_au !== undefined;
@@ -308,13 +323,19 @@ export function getTrajectoryPosition(obj, days, out) {
         if (host) out.add(host.group.position);
         return true;
     }
-    if (days <= S[0].days) { out.copy(S[0].pos); return false; }
+    cruiseAt(plan, days, out);
+    return false;
+}
+
+// The point on the cruise (the line through its samples) on the day `days`, into `out`.
+export function cruiseAt(plan, days, out) {
+    const S = plan.samples;
+    if (days <= S[0].days) return out.copy(S[0].pos);
     // Samples are evenly spaced in time within each leg, so a binary search finds the pair.
     let lo = 0, hi = S.length - 1;
     while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (S[mid].days <= days) lo = mid; else hi = mid; }
     const a = S[lo], b = S[hi];
-    out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1));
-    return false;
+    return out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1));
 }
 
 // The planet-level body an object belongs to: its own "system" if data.json gives one (the

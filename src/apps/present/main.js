@@ -1,9 +1,12 @@
 // The presentation: a set path from object to object, stepped through by the presenter with the
 // arrow keys or a clicker. It opens on the whole Solar System; each step flies to its target and
 // waits there. The steps come from public/presentations/<name>.json (?p=<name>, default "demo").
+// A step may set the scale ("scale": "true" or "diagram", SCALE-PLAN.md), which holds for the
+// steps after it until another changes it; the presentation's own "scale" sets the opening view's.
 import '../../base.css';
 import './present.css';
 import { createEngine } from '../../engine/index.js';
+import { setupMarkers, updateMarkers } from '../../features/markers/markers.js';
 
 const params = new URLSearchParams(location.search);
 const name = /^[\w-]+$/.test(params.get('p') ?? '') ? params.get('p') : 'demo';
@@ -41,7 +44,19 @@ engine.setUserControl(false);
 engine.setSceneVisible(false);
 
 let steps = [];
+let openingScale = 'diagram';
 let current = -1; // -1 is the opening view of the whole Solar System
+
+// In True scale, a dot and a name for everything too small to see.
+setupMarkers(engine, document.body);
+engine.onFrame(() => updateMarkers({ enabled: engine.getScaleMode() === 'true' }));
+
+// The scale at a step: its own, or the last one set before it.
+const SCALES = new Set(['diagram', 'true']);
+function scaleAt(index) {
+    for (let i = index; i >= 0; i--) if (SCALES.has(steps[i]?.scale)) return steps[i].scale;
+    return openingScale;
+}
 let flying = false;
 let ready = false;
 
@@ -59,6 +74,8 @@ Promise.all([presentation, new Promise(resolve => engine.on('ready', resolve))])
         return false;
     });
     if (data.title) document.title = `${data.title} · OUniverse`;
+    if (SCALES.has(data.scale)) openingScale = data.scale;
+    engine.setScaleMode(openingScale);
     ready = true;
     engine.setSceneVisible(true);
     loading.classList.add('is-leaving');
@@ -82,6 +99,7 @@ async function goTo(index) {
     current = Math.max(-1, Math.min(steps.length - 1, index));
     showWhere();
     announcer.textContent = titleEl.textContent;
+    engine.setScaleMode(scaleAt(current));   // a flight asked for next waits for the change
     if (current < 0) {
         flying = false;
         engine.showOverview();

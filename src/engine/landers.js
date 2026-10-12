@@ -96,6 +96,109 @@ export function relandLanders(obj) {
     attemptToLand();
 }
 
+// --- GROUND UP CLOSE (True scale) ---
+// A planet's or moon's sphere is stored in 32-bit floats round its centre, which at Mars's true
+// size is good to about a third of a metre: a 3 m rover visibly shook against the ground under it
+// (and its shadow with it) as the camera moved. And its triangles are hundreds of km across, so
+// the GPU worked out each point of the ground under a lander (where it is, how the spotlight and
+// the Sun light it, whether it's in shadow) from corners 100 km and more away, and those sums too
+// came out tens of centimetres astray, differently from one frame to the next: the light and the
+// shadows round a lander shimmered. So while a lander is shown in True scale, its body's surface
+// meshes are held relative to the landing site, and their triangles near it are split, finer the
+// nearer, so the corners round the lander are near it too. The surface is the same, point for
+// point (a flat triangle split is still flat, and its colours and shading are spread across it
+// just as before); only where its numbers count from, and how many corners it has, change.
+const REFINE_SHARE = 0.5;     // near the site, no triangle longer than this share of its distance from it
+const REFINE_FINEST = 1e-7;   // scene units (13 cm in True scale): no need to split smaller than this
+const _site = new THREE.Vector3();
+const _scale = new THREE.Vector3();
+export function centreSurfaceOn(landerObj) {
+    const body = celestialMap.get(landerObj.data.parent);
+    if (!body || body.surfaceSite === landerObj) return;
+    if (landerObj.group.parent !== body.meshGroup) return;   // not down yet
+    landerObj.group.getWorldPosition(_site);
+    body.mesh.updateWorldMatrix(true, true);
+    body.mesh.children.forEach(m => {
+        if (!m.isMesh || m.rotation.x || m.rotation.y || m.rotation.z || m.scale.x !== 1) return;
+        m.userData.surfaceGeometry ??= m.geometry;
+        // The site in the original geometry's numbers: this mesh's own, plus where it's moved to.
+        const origin = m.worldToLocal(_site.clone()).add(m.position);
+        const geometry = refineAround(m.userData.surfaceGeometry, origin, REFINE_FINEST / m.getWorldScale(_scale).x);
+        geometry.computeBoundingBox();
+        geometry.computeBoundingSphere();
+        if (m.geometry !== m.userData.surfaceGeometry) m.geometry.dispose();
+        m.geometry = geometry;
+        m.position.copy(origin);
+    });
+    body.surfaceSite = landerObj;
+}
+
+// A copy of `source` with `origin` taken off every position, and the triangles near it (now at
+// 0, 0, 0) split in four, again and again, until each is no longer than REFINE_SHARE of its
+// distance from it (or `finest`). Each new corner is a blend of the corners it lies between, in
+// every attribute (position, normal, texture position). A triangle left whole beside a split one
+// has the split one's new corners along their shared edge: it's fanned from its middle to meet
+// them, so the surface has no cracks.
+const _tri = new THREE.Triangle();
+const _nearest = new THREE.Vector3();
+const _ORIGIN = new THREE.Vector3();
+function refineAround(source, origin, finest) {
+    const names = Object.keys(source.attributes);
+    const sizes = names.map(n => source.attributes[n].itemSize);
+    const values = names.map(n => Array.from(source.attributes[n].array));
+    const position = values[names.indexOf('position')];
+    let count = source.attributes.position.count;
+    for (let i = 0; i < count; i++) {
+        position[3 * i] -= origin.x; position[3 * i + 1] -= origin.y; position[3 * i + 2] -= origin.z;
+    }
+    const blend = (ids, weights) => {
+        values.forEach((v, k) => {
+            const size = sizes[k];
+            for (let c = 0; c < size; c++) v.push(ids.reduce((sum, id, j) => sum + v[id * size + c] * weights[j], 0));
+        });
+        return count++;
+    };
+    const mids = new Map();
+    const key = (a, b) => (a < b ? a * 2 ** 26 + b : b * 2 ** 26 + a);
+    const mid = (a, b) => {
+        let m = mids.get(key(a, b));
+        if (m === undefined) { m = blend([a, b], [0.5, 0.5]); mids.set(key(a, b), m); }
+        return m;
+    };
+    const corner = (i, v) => v.set(position[3 * i], position[3 * i + 1], position[3 * i + 2]);
+    const tooBig = (a, b, c) => {
+        corner(a, _tri.a); corner(b, _tri.b); corner(c, _tri.c);
+        const longest = Math.max(_tri.a.distanceTo(_tri.b), _tri.b.distanceTo(_tri.c), _tri.c.distanceTo(_tri.a));
+        return longest > finest && longest > REFINE_SHARE * _tri.closestPointToPoint(_ORIGIN, _nearest).length();
+    };
+    const leaves = [];
+    const split = (a, b, c) => {
+        if (!tooBig(a, b, c)) { leaves.push(a, b, c); return; }
+        const ab = mid(a, b), bc = mid(b, c), ca = mid(c, a);
+        split(a, ab, ca); split(ab, b, bc); split(ca, bc, c); split(ab, bc, ca);
+    };
+    const index = source.index ? source.index.array : Array.from({ length: count }, (_, i) => i);
+    for (let i = 0; i < index.length; i += 3) split(index[i], index[i + 1], index[i + 2]);
+
+    const edge = (a, b, out) => {
+        const m = mids.get(key(a, b));
+        if (m === undefined) out.push(a); else { edge(a, m, out); edge(m, b, out); }
+    };
+    const triangles = [];
+    for (let i = 0; i < leaves.length; i += 3) {
+        const a = leaves[i], b = leaves[i + 1], c = leaves[i + 2];
+        const ring = [];
+        edge(a, b, ring); edge(b, c, ring); edge(c, a, ring);
+        if (ring.length === 3) { triangles.push(a, b, c); continue; }
+        const centre = blend([a, b, c], [1 / 3, 1 / 3, 1 / 3]);
+        ring.forEach((v, j) => triangles.push(v, ring[(j + 1) % ring.length], centre));
+    }
+    const geometry = new THREE.BufferGeometry();
+    names.forEach((n, k) => geometry.setAttribute(n, new THREE.BufferAttribute(new Float32Array(values[k]), sizes[k], source.attributes[n].normalized)));
+    geometry.setIndex(triangles);
+    return geometry;
+}
+
 // Called with each lander's data as it lands.
 const landedListeners = [];
 export function onLanded(listener) {
@@ -115,9 +218,11 @@ export function attemptToLand() {
         if (parentReady) {
             // The surface to land on: the parent's full-detail model once it has one (that's what
             // shows close up; its low-detail stand-in can be hundreds of triangles), else what it has.
+            // Its solid surface, not a see-through layer over it: Earth's night lights are a shell
+            // half a percent above the ground, which in True scale is 32 km up.
             let targetMesh = null;
             (parent.highLevel || parent.mesh).traverse((child) => {
-                if (child.isMesh && !targetMesh) targetMesh = child;
+                if (child.isMesh && !targetMesh && !child.material.transparent) targetMesh = child;
             });
 
             if (!targetMesh || !targetMesh.geometry) continue;

@@ -22,7 +22,7 @@ export function setupCinematicControls() {
         explore.type = 'button';
         explore.setAttribute('aria-controls', 'mission-menu');
         explore.setAttribute('aria-expanded', 'false');
-        explore.innerHTML = `${uiIcon('search', 'btn-icon')}<span>Explore</span>`;
+        explore.innerHTML = `${uiIcon('search', 'btn-icon')}<span class="btn-label">Explore</span>`;
         explore.onclick = () => openMenuSheet();
         controlsDiv.appendChild(explore);
     }

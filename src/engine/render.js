@@ -3,14 +3,15 @@
 import * as THREE from 'three';
 import { MAX_MOTION_DT, prefersReducedMotion } from './config.js';
 import { advanceMotion, clock, heldMotionTime, motionTime, simulatedDate, timeScale } from './time.js';
-import { attemptToLand, pendingLanders } from './landers.js';
+import { attemptToLand, centreSurfaceOn, pendingLanders } from './landers.js';
 import { camera, renderer } from './scene.js';
 import { celestialMap } from './state.js';
 import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition, lissajousOffset } from './orbits.js';
-import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateTrajectoryLines } from './bodies.js';
-import { getTumbleSpeed, updateMissionAttitude } from './motion.js';
+import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateNearLines, updateTrajectoryLines } from './bodies.js';
+import { view } from './scale.js';
+import { updateMissionAttitude } from './motion.js';
 import { plannedMaterials, revealNextModel, updateModelDetail } from './models.js';
-import { updateCamera, updateViewOffset } from './camera.js';
+import { selectedObject, updateCamera, updateViewOffset } from './camera.js';
 import { updateSelectionSpot, updateSunShadow } from './lighting.js';
 import { updateVisibility } from './visibility.js';
 import { uploadNextTexture } from './gpu.js';
@@ -115,6 +116,24 @@ export function onFrame(hook) {
     frameHooks.push(hook);
 }
 
+// Every object, each after the ones its place is worked out from (its parent, an L-point's body, a
+// cruise's arrival body). In data.json's order, one listed before its parent was placed from where
+// the parent was a frame before: Hera, at Didymos, sat 200 m off its own orbit line in True scale.
+let placing = null;
+function placingOrder() {
+    if (placing?.length === celestialMap.size) return placing;
+    const order = [], seen = new Set();
+    const visit = obj => {
+        if (!obj || seen.has(obj)) return;
+        seen.add(obj);
+        const d = obj.data;
+        [d.parent, d.lagrange?.body, d.trajectory?.waypoints?.at(-1)?.at].forEach(name => visit(celestialMap.get(name)));
+        order.push(obj);
+    };
+    celestialMap.forEach(visit);
+    return (placing = order);
+}
+
 export function animate() {
     requestAnimationFrame(animate);
     const realDt = clock.getDelta();
@@ -143,15 +162,14 @@ export function animate() {
     }
 
 
-    celestialMap.forEach(obj => {
+    placingOrder().forEach(obj => {
         const { group, meshGroup, data } = obj;
         if (data.orbit_type === 'landed') return;
         refreshOrbitLine(obj.orbitLine, days);   // an orbit that turns (the Moon's) is redrawn as it does
 
-        if (!group.visible && !data.isParent) {
-            return;
-        }
-
+        // Everything is kept in its place, shown or not: in True scale most objects are too small to
+        // be drawn but still have a marker (src/features/markers/), which needs where they are.
+        // Only turning is skipped for what isn't shown.
         let localPos;
         if (data.orbit_type === 'trajectory') {
             const arrived = getTrajectoryPosition(obj, days, group.position);
@@ -205,6 +223,7 @@ export function animate() {
                 group.position.set(localPos.x, localPos.y, localPos.z);
             }
         }
+        if (!group.visible && !data.isParent) return;
         if (data.rotation_mode === 'utc') {
             // Turned to the real time of day: longitude 0 faces the Sun at 12:00 UTC. The Sun's
             // direction is taken in the body's own frame, about its tilted axis.
@@ -219,13 +238,6 @@ export function animate() {
             spinAboutAxis(obj, (sunAngle - Math.PI / 2) + timeRotation);
         } else if (data.rotation_mode === 'locked' && data.orbit) {
             faceParent(meshGroup, data.orbit, days);
-        } else if ((data.type === 'asteroid' || data.type === 'comet') && data.rotation_mode !== 'spin') {
-            if (!obj.tumbleSpeed) {
-                obj.tumbleSpeed = getTumbleSpeed(data.name, 0.25);
-            }
-            meshGroup.rotateX(obj.tumbleSpeed.x * turnDt);
-            meshGroup.rotateY(obj.tumbleSpeed.y * turnDt);
-            meshGroup.rotateZ(obj.tumbleSpeed.z * turnDt);
         } else if (data.rot_period) {
             const theta = (days / data.rot_period) * Math.PI * 2;
             const offset = (data.rot_offset || 0) * (Math.PI / 180);
@@ -244,6 +256,12 @@ export function animate() {
     updateSunShadow(dt);
     updateSelectionSpot(dt);
     for (const hook of frameHooks) hook(dt);
+    if (view.relative) {
+        // True scale: orbit lines, and the ground under a lander, held precise up close.
+        updateNearLines(camera.position, days);
+        const shown = selectedObject && celestialMap.get(selectedObject.userData.name);
+        if (shown?.data.orbit_type === 'landed') centreSurfaceOn(shown);
+    }
     // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
     if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });
     const frameStart = performance.now();

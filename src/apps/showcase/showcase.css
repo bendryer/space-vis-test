@@ -592,6 +592,37 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 #cinematic-btn:hover { background: var(--accent-wash); border-color: rgba(255, 255, 255, 0.7); }
 #cinematic-btn[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); }
 
+/* The scale switch (scale.js): Compressed or True scale, two halves of one hairline pill at the
+   top of the plate. The chosen half takes the accent wash; the other rests in muted ink. On a
+   phone it gives way to one round button in the dock (#scale-btn). */
+.scale-switch {
+    display: flex;
+    padding: 2px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+}
+.scale-option {
+    min-height: 28px;
+    padding: 4px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.78125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+.scale-option:hover { color: var(--text); }
+.scale-option[aria-pressed="true"] { background: var(--accent-current); color: var(--text); }
+.scale-option:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+#scale-btn { display: none; }
+@media (pointer: coarse) {
+    .scale-option { min-height: 40px; }
+}
+
 /* --- SIDEBAR (Right) --- */
 #sidebar {
     position: fixed; /* fixed so the parked, off-screen panel doesn't widen the page on phones */
@@ -939,7 +970,8 @@ body:has(#sidebar.active) .coach {
         padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));
     }
 
-    /* The dock: Explore (the main way in), Cinematic Mode and the tips, as one plate. */
+    /* The dock: Explore (the main way in), Cinematic Mode, the scale switch and the tips, as one
+       plate of four round buttons, which fits beside the logo on the narrowest phones. */
     #controls,
     #controls.shifted {
         right: max(16px, env(safe-area-inset-right, 0px));
@@ -961,26 +993,11 @@ body:has(#sidebar.active) .coach {
         stroke-linecap: round;
         stroke-linejoin: round;
     }
-    #explore-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 0 20px 0 15px;
-        background: var(--ou-light);
-        border: none;
-        border-radius: 999px;
-        color: var(--ou-core);
-        font: inherit;
-        font-size: 0.9375rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.15s;
-    }
-    #explore-btn .btn-icon { stroke-width: 2.25; }
-    #explore-btn:active { background: var(--text); }
-    #explore-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+    #explore-btn { cursor: pointer; }
+    .scale-switch { display: none; }
+    #explore-btn,
     #cinematic-btn,
+    #scale-btn,
     #coach-btn {
         display: grid;
         place-items: center;
@@ -994,8 +1011,12 @@ body:has(#sidebar.active) .coach {
         color: var(--text);
         text-decoration: none;
     }
-    #coach-btn:active, #cinematic-btn:active { background: var(--accent-wash); }
+    #coach-btn:active, #cinematic-btn:active, #scale-btn:active, #explore-btn:active { background: var(--accent-wash); }
+    #scale-btn { cursor: pointer; }
+    #scale-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+    #explore-btn .btn-label,
     #cinematic-btn .btn-label,
+    #scale-btn .btn-label,
     #coach-btn .btn-label {
         position: absolute;
         width: 1px;
