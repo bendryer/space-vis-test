@@ -289,7 +289,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// --- Privacy toggle: kept in sync with USE_NAMED_ASTEROID_MODELS in src/main.js. ---
+// --- Privacy toggle: kept in sync with the engine's namedAsteroidModels option (src/engine/config.js). ---
 // When false, custom OU-researcher-named asteroid models are swapped for generic ones.
 const USE_NAMED_ASTEROID_MODELS = false;
 
@@ -307,7 +307,7 @@ function getHash(str) {
   return Math.abs(hash);
 }
 
-// Mirrors getEffectiveModel in src/main.js: a named asteroid's private model (`model_named`) is used
+// Mirrors getEffectiveModel in src/engine/config.js: a named asteroid's private model (`model_named`) is used
 // only when the toggle is on; otherwise its public generic `model`. Never load model_named otherwise.
 function getEffectiveModelPath(item) {
   if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
@@ -319,6 +319,15 @@ function getEffectiveModelPath(item) {
 // Resolve a data.json root-relative path ("/models/x.glb") against this document's own location,
 // so the page works whether it's served from a site root or a GitHub Pages sub-path.
 function fixPath(p) { return p ? p.replace(/^\/+/, '') : p; }
+
+// How far a body's north pole leans from the ecliptic's north, in degrees: from its "pole"
+// (right ascension and declination, as the app's poleDirection reads it), else its "tilt".
+function axialTilt(item) {
+  if (!item.pole) return item.tilt || 0;
+  const a = item.pole.ra * Math.PI / 180, d = item.pole.dec * Math.PI / 180, e = 23.4392911 * Math.PI / 180;
+  const zEcl = -Math.cos(d) * Math.sin(a) * Math.sin(e) + Math.sin(d) * Math.cos(e);
+  return Math.acos(Math.max(-1, Math.min(1, zEcl))) * 180 / Math.PI;
+}
 
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
@@ -455,7 +464,9 @@ function initPreview(container, item) {
     const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), material);
     group.add(sphere);
     if (item.ring) group.add(buildRing(item.ring));
-    group.rotation.z = THREE.MathUtils.degToRad(item.tilt || 0);
+    // Tilted, then spun about its own axis (ZYX: the spin about y comes before the tilt).
+    group.rotation.order = 'ZYX';
+    group.rotation.z = THREE.MathUtils.degToRad(axialTilt(item));
     setStatus(container, '');
   } else {
     setStatus(container, 'No 3D model available');
@@ -512,7 +523,7 @@ function wireLazyPreviews(root, byName) {
   root.querySelectorAll('.preview-wrap[data-name]').forEach(el => io.observe(el));
 }
 
-// --- Labels, status and icons: kept in step with src/main.js ---
+// --- Labels, status and icons: kept in step with the showcase (src/apps/showcase/) ---
 
 const TYPE_LABEL = {
   star: 'Star', planet: 'Planet', moon: 'Moon', mission: 'Mission',
@@ -525,7 +536,7 @@ const TYPE_PLURAL = {
 function typeLabel(t) { return TYPE_LABEL[t] || (t ? t.charAt(0).toUpperCase() + t.slice(1).replace(/_/g, ' ') : 'Object'); }
 function typePlural(t) { return TYPE_PLURAL[t] || typeLabel(t); }
 
-// Mirrors statusTone() in src/main.js, so a status reads the same here as in the app.
+// Mirrors statusTone() in src/apps/showcase/details.js, so a status reads the same here as in the app.
 function statusTone(status) {
   if (status === 'Planned') return 'planned';
   if (['Crashed', 'Landed', 'Decommissioned', 'Complete', 'Lost', 'Re-entered'].includes(status)) return 'ended';
@@ -550,7 +561,7 @@ const MENU_ICONS = {
     facility: '<path d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8"/><path d="M13 7l0 .01"/><path d="M17 7l0 .01"/><path d="M17 11l0 .01"/><path d="M17 15l0 .01"/>',
 };
 
-// Mirrors menuIconName / menuIconColor in src/main.js.
+// Mirrors menuIconName / menuIconColor in src/apps/showcase/menu.js.
 function menuIconName(data) {
   if (MENU_ICONS[data.icon]) return data.icon;
   switch (data.type) {
@@ -577,7 +588,7 @@ function iconSvg(name, color = null, extra = '') {
   return `<svg class="icon${tint}${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false"${style}>${MENU_ICONS[name]}</svg>`;
 }
 
-// --- The contents tree: the Explore menu's order and grouping (populateMenu in src/main.js) ---
+// --- The contents tree: the Explore menu's order and grouping (populateMenu in src/apps/showcase/menu.js) ---
 // Missions first, alphabetically, then bodies by "menu_order" or orbit size. Objects under their
 // "menu_parent" (else their parent); "menu_top_level" objects (the Moon) leave their parent for a
 // group of their own just after it; asteroids and comets gather into holders.
@@ -673,20 +684,33 @@ function factsFor(item) {
   add('Model', model && `${model}${item.model_scale ? ` (scale ${item.model_scale})` : ''}`);
   if (item.model_named) add('Named model', `${item.model_named} (private: not shown)`);
   add('Texture', item.texture);
-  add('Radius', item.radius !== undefined ? `${item.radius} (scene units)` : undefined);
+  add('Radius', item.radius_km !== undefined
+    ? `${item.radius_km} km${item.model ? ' (half its longest side)' : ''}${item.radius_estimated ? ', estimated from its brightness' : ''}`
+    : item.radius !== undefined ? `${item.radius} (scene units)` : undefined);
+  add('Size', item.size_m !== undefined ? `${item.size_m} m longest side${item.size_estimated ? ' (estimated)' : ''}` : undefined);
+  add('GM', item.gm !== undefined ? `${item.gm} km³/s²${item.gm_estimated ? ' (estimated)' : ''}` : undefined);
+  add('Lagrange point', item.lagrange && `${item.lagrange.point} of the Sun and ${item.lagrange.body}`);
+  if (item.suborbital?.apogee_km !== undefined) add('Flight', `apogee ${item.suborbital.apogee_km} km · ${item.suborbital.duration_min} min${item.suborbital.illustrative ? ' · illustrative' : ''}`);
+  add('Pole', item.pole && `RA ${item.pole.ra}°, Dec ${item.pole.dec}° (${fmt(axialTilt(item), 1)}° from the ecliptic's north)`);
   add('Tilt', item.tilt !== undefined ? `${item.tilt}°` : undefined);
   add('Rotation period', item.rot_period !== undefined ? `${item.rot_period} days` : undefined);
-  add('Ring', item.ring && `${item.ring.inner_radius}–${item.ring.outer_radius} × radius, opacity ${item.ring.opacity ?? 1}`);
+  add('Ring', item.ring && `${item.ring.inner_km}–${item.ring.outer_km} km from the centre, opacity ${item.ring.opacity ?? 1}`);
   if (item.orbit_type === 'landed') {
     const c = item.landed_coords;
-    add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}` : `on ${item.parent} (no coordinates)`);
+    add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}${c.illustrative ? ' · illustrative' : ''}` : `on ${item.parent} (no coordinates)`);
   } else if (item.orbit_type === 'trajectory') {
     const t = item.trajectory || {};
     add('Trajectory', `${(t.waypoints || []).length} waypoints${t.arrival_orbit ? ', then an arrival orbit' : ''}`);
   } else if (item.orbit) {
     const o = item.orbit;
-    add('Orbit', [item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a !== undefined && `a ${fmt(o.a)}`, o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}°`].filter(Boolean).join(' · '));
+    const plane = o.plane === 'ecliptic' ? 'to the ecliptic' : o.plane ? 'to its Laplace plane' : '';
+    add('Orbit', [o.kind ? `${o.kind} orbit round ${item.parent}` : item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a_km !== undefined ? `a ${fmt(o.a_km, 1)} km` : o.a !== undefined && `a ${fmt(o.a)}`,
+      o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}° ${plane}`.trim(),
+      o.amplitude_km && `${fmt(o.amplitude_km.y)} × ${fmt(o.amplitude_km.z)} km across and out of the ecliptic`,
+      o.period_days ? `period ${o.period_days} days` : o.rate ? `period ${fmt(360 / o.rate, 3)} days` : o.a_km !== undefined && 'stationed',
+      o.illustrative && 'illustrative'].filter(Boolean).join(' · '));
   }
+  if (item.trajectory?.arrival_orbit?.illustrative) add('Arrival orbit', 'illustrative');
   if (item.motion) add('Attitude', [item.motion.mode, item.motion.axis && `axis ${item.motion.axis}`, item.motion.rate !== undefined && `rate ${item.motion.rate}`].filter(Boolean).join(' · '));
   add('Menu', [item.menu_parent && `under ${item.menu_parent}`, item.menu_order !== undefined && `order ${item.menu_order}`, item.menu_top_level && 'own group'].filter(Boolean).join(' · '));
   add('Loading', [item.preload && 'preloaded', item.system && `system ${item.system}`].filter(Boolean).join(' · '));
@@ -801,7 +825,7 @@ async function main() {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(res.statusText);
     data = (await res.json()).filter(d => d.type !== 'credits'); // the credits dialog's content, not an object
-    // Mirrors applyStatusTimeline() in src/main.js: a dated status replaces `status` once its day has come.
+    // Mirrors applyStatusTimeline() in src/engine/index.js: a dated status replaces `status` once its day has come.
     const today = new Date().toISOString().slice(0, 10);
     data.forEach(d => (d.status_timeline || []).forEach(s => { if (s.from && s.status && s.from <= today) d.status = s.status; }));
   } catch (err) {

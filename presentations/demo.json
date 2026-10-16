@@ -1,0 +1,8 @@
+{
+  "title": "OUniverse demo",
+  "steps": [
+    { "target": "Earth", "title": "Earth" },
+    { "target": "Perseverance", "title": "Perseverance on Mars" },
+    { "target": "Philae", "title": "Philae on Comet 67P" }
+  ]
+}
