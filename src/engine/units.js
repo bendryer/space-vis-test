@@ -28,6 +28,11 @@ const diagram = {
         const h = Math.max(0, rKm - s.radiusKm);
         return s.radius + Math.hypot(s.unit * s.knee * Math.log(1 + h / s.knee), MISSION_MODEL_SIZE);
     },
+    // The other way: km from the centre of a point drawn `units` from it.
+    fromBody(units, s) {
+        const drawn = Math.sqrt(Math.max(0, (units - s.radius) ** 2 - MISSION_MODEL_SIZE ** 2));
+        return s.radiusKm + s.knee * Math.expm1(drawn / (s.unit * s.knee));
+    },
 };
 
 // --- TRUE SCALE ---
@@ -39,8 +44,40 @@ const trueScale = {
     au: au => au * AU_KM / TRUE_KM_PER_UNIT,
     toAu: units => units * TRUE_KM_PER_UNIT / AU_KM,
     aroundBody: rKm => rKm / TRUE_KM_PER_UNIT,
+    fromBody: units => units * TRUE_KM_PER_UNIT,
 };
 
 export const DISTANCE_RULES = { diagram, true: trueScale };
 export let distances = diagram;
 export function useDistances(mode) { distances = DISTANCE_RULES[mode]; }
+
+// --- BETWEEN THE TWO ---
+// While the mode changes (scale-change.js), distances are drawn part way from Diagram (x = 0) to
+// True scale (x = 1): geometrically between the two, so a distance 117 times longer in True scale
+// grows by the same factor each step, as a zoom does. Round a body, its height above the ground
+// changes so, from the ground as now drawn (the body's own size changes on its own schedule), so
+// nothing orbiting it ever passes inside it.
+export const between = (d, t, x) => (d > 0 && t > 0 ? d ** (1 - x) * t ** x : d + (t - d) * x);
+// A point `rKm` from a body's centre: its height above the ground in Diagram mode and in True scale.
+export function heightEnds(rKm, s) {
+    const inDiagram = { radius: s.radiusD, radiusKm: s.radiusKm, unit: s.radiusD / s.radiusKm, knee: s.knee };
+    return [diagram.aroundBody(rKm, inDiagram) - s.radiusD, Math.max(0, rKm - s.radiusKm) / TRUE_KM_PER_UNIT];
+}
+export function useMixedDistances(x) {
+    const au = a => (a > 0 ? between(diagram.au(a), trueScale.au(a), x) : 0);
+    distances = {
+        name: 'mixed',
+        au,
+        // Only a cruise's pacing reads this (orbits.js), and cruises keep their plan while the mode
+        // changes; found by bisection on the logarithm of the distance.
+        toAu(units) {
+            let lo = Math.log(1e-6), hi = Math.log(1e4);
+            for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; if (au(Math.exp(m)) > units) hi = m; else lo = m; }
+            return Math.exp((lo + hi) / 2);
+        },
+        aroundBody(rKm, s) {
+            const [heightD, heightT] = heightEnds(rKm, s);
+            return s.radius + between(heightD, heightT, x);
+        },
+    };
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Highlight OU courses informed by the research in the visualisation; add something about the OU’s mission. Simeon: an entry about our teaching (\"might be politic to highlight that we don’t do research entirely for the sake of it\"), and possibly one on knowledge exchange, terrestrial benefits and impact.",
+  "field": "teaching",
+  "id": "General-comments--4",
+  "kind": "claim",
+  "note": "Put the OU Campus on the map as a 'mission'. In the bottom right box add a \"Launch your next Mission\" button that brings up a modal with information to be populated- put in a placeholder",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:49:28.997Z",
+  "verdict": "unv"
+}

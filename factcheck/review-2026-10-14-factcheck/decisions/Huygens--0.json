@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"The OU was the Principal Investigator\"",
+  "field": "ou_involvement",
+  "id": "Huygens--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Huygens",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU was the Principal Investigator for the Surface Science Package (SSP)",
+      "to": "The OU provided the Principal Investigator for the Surface Science Package (SSP)"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:29.758Z",
+  "verdict": "fix"
+}

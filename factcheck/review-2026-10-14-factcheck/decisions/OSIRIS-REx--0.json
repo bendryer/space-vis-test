@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "OSIRIS-REx--0",
+  "kind": "claim",
+  "note": "",
+  "object": "OSIRIS-REx",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We worked with the OSIRIS-REx team to help choose Bennu’s Nightingale sample site, predicting surface temperatures so the spacecraft and samples wouldn’t overheat during collection. We’re also analysing the returned Bennu material to learn about the early Solar System’s chemistry and the origin of Earth’s water and organic molecules."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:17.069Z",
+  "verdict": "sty"
+}

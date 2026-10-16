@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "AKARI--0",
+  "kind": "claim",
+  "note": "",
+  "object": "AKARI",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We were one of the international partners on JAXA’s AKARI infrared satellite, alongside Nagoya University, the University of Tokyo, ESA and other UK institutions. We used its all-sky infrared survey and spectra to study interstellar dust, polycyclic aromatic hydrocarbons and the earliest star formation in galaxies: part of the cosmic chemical cycle that eventually leads to habitable worlds."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:06.661Z",
+  "verdict": "sty"
+}

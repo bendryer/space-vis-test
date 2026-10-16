@@ -1,0 +1,319 @@
+{
+ "lastReview": "2026-10-14",
+ "newObjects": [
+  "Didymos",
+  "Dimorphos"
+ ],
+ "changedFields": [
+  {
+   "name": "Sentinel-2",
+   "fields": [
+    "description",
+    "orbit"
+   ]
+  },
+  {
+   "name": "Sentinel-3",
+   "fields": [
+    "orbit"
+   ]
+  },
+  {
+   "name": "Jupiter",
+   "fields": [
+    "orbit",
+    "tilt"
+   ]
+  },
+  {
+   "name": "Io",
+   "fields": [
+    "description",
+    "orbit"
+   ]
+  },
+  {
+   "name": "Callisto",
+   "fields": [
+    "orbit"
+   ]
+  },
+  {
+   "name": "Uranus",
+   "fields": [
+    "description",
+    "orbit",
+    "tilt"
+   ]
+  },
+  {
+   "name": "Neptune",
+   "fields": [
+    "orbit",
+    "tilt"
+   ]
+  },
+  {
+   "name": "Comet Wild 2",
+   "fields": [
+    "orbit"
+   ]
+  },
+  {
+   "name": "Comet 67P",
+   "fields": [
+    "orbit"
+   ]
+  }
+ ],
+ "unchanged": 93,
+ "removedObjects": [
+  "ZefERO",
+  "General comments",
+  "General"
+ ],
+ "flagged": [
+  {
+   "name": "Earth",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU machine learning on satellite imagery"
+  },
+  {
+   "name": "Hubble",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU use of the Hubble archive"
+  },
+  {
+   "name": "Sentinel-2",
+   "field": "ou_involvement",
+   "status": "removed",
+   "since": "2026-09-30",
+   "claim": "OU machine learning for soil moisture, forest fire evolution and desertification risk, and student training.",
+   "reviewerNote": "For now, lets remove the OU involvement, so it flags as missing and we can address later."
+  },
+  {
+   "name": "Sentinel-3",
+   "field": "ou_involvement",
+   "status": "removed",
+   "since": "2026-09-30",
+   "claim": "OU combines Sentinel-3 and Sentinel-2 data for high-resolution evapotranspiration in forests.",
+   "reviewerNote": "remove OU involvement so I can check with internal teams"
+  },
+  {
+   "name": "TRUTHS",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "The CIS120 is \"being evaluated for TRUTHS\""
+  },
+  {
+   "name": "MAGPIE",
+   "field": "description",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Operates \"for up to 10 Earth days\""
+  },
+  {
+   "name": "Shackleton Rover",
+   "field": "launch_year",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "launch_year 2030"
+  },
+  {
+   "name": "Shackleton Rover",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU scientists help define the payload and mission"
+  },
+  {
+   "name": "Earth-Sun L2",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU uses L2 as a virtual laboratory"
+  },
+  {
+   "name": "I-MIM",
+   "field": "status",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Status Planned, launch TBC"
+  },
+  {
+   "name": "Beagle 2",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Lessons from Beagle 2 informed later landers including ExoMars"
+  },
+  {
+   "name": "Jupiter",
+   "field": "ou_involvement",
+   "status": "removed",
+   "since": "2026-09-30",
+   "claim": "OU leads multiple Jovian initiatives on atmospheric dynamics, aurorae and cloud chemistry.",
+   "reviewerNote": "take out ou involvement for now so it flags as missing"
+  },
+  {
+   "name": "JUICE",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "\"The OU is the UK National Lead for the JANUS instrument\""
+  },
+  {
+   "name": "Titan",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU astrobiologists study Titan as an ocean world"
+  },
+  {
+   "name": "DART",
+   "field": "landed_coords",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Impact site lat -8.84, lon 264.3 (illustrative)"
+  },
+  {
+   "name": "Planck",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "OU cosmology with Planck and Euclid"
+  },
+  {
+   "name": "LightShip-1",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "The same group \"leads the Dust Environment Spectral Imager\", imaging Mars every 10 minutes"
+  },
+  {
+   "name": "LightShip-1",
+   "field": "ou_involvement",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Group name \"Atmospheric Research and Space Exploration\""
+  },
+  {
+   "name": "20617 RichardGreenwood",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"asteroid honouring\"."
+  },
+  {
+   "name": "20626 Rider-Stokes",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"honouring\", \"analogues\"."
+  },
+  {
+   "name": "69423 OpenUni",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"Named in honour of\"."
+  },
+  {
+   "name": "10230 AndrewNorton",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"asteroid honouring\"."
+  },
+  {
+   "name": "9831 SimonGreen",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"asteroid honouring\"."
+  },
+  {
+   "name": "15614 Pillinger",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"Named in honour of\"."
+  },
+  {
+   "name": "20594 Pemartin",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"asteroid honouring\"."
+  },
+  {
+   "name": "17920 Zarnecki",
+   "field": "description",
+   "status": "disputed",
+   "since": "2026-10-14",
+   "claim": "UK spelling: \"Named in honour of\"."
+  },
+  {
+   "name": "11469 Rozitis",
+   "field": "description",
+   "status": "user-supplied",
+   "since": "2026-10-14",
+   "claim": "\"named after Benjamin Rozitis, [TO ADD: OU connection]\"",
+   "reviewerNote": "He was at the OU from 2007 to 2023 or so (PhD and Post doc)"
+  },
+  {
+   "name": "Ariel",
+   "field": "launch_year",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "Launch 2031"
+  },
+  {
+   "name": "Mars Yard",
+   "field": "launch_year",
+   "status": "unverified",
+   "since": "2026-10-14",
+   "claim": "launch_year 2017"
+  }
+ ],
+ "missingOu": [
+  "Sentinel-2",
+  "Sentinel-3",
+  "Swift"
+ ],
+ "timeSensitive": [
+  "BepiColombo: status En Route. Check the current phase.",
+  "BepiColombo: status_timeline 2026-11-21 → Operational (upcoming). Is the date still right?",
+  "BepiColombo: description has dated future wording. Re-check it.",
+  "SMILE: status Launched. Check the current phase.",
+  "Swift: status_timeline 2027-01-01 → Re-entered (upcoming). Is the date still right?",
+  "Swift: description has dated future wording. Re-check it.",
+  "PROSPECT: description has dated future wording. Re-check it.",
+  "LUPEX: description has dated future wording. Re-check it.",
+  "MAGPIE: description has dated future wording. Re-check it.",
+  "NewAthena: description has dated future wording. Re-check it.",
+  "Roman: status Launched. Check the current phase.",
+  "Roman: description has dated future wording. Re-check it.",
+  "JUICE: status En Route. Check the current phase.",
+  "JUICE: description has dated future wording. Re-check it.",
+  "Hera: status En Route. Check the current phase.",
+  "Hera: description has dated future wording. Re-check it.",
+  "Hayabusa2: status En Route. Check the current phase.",
+  "Hayabusa2: description has dated future wording. Re-check it.",
+  "OSIRIS-REx: status En Route. Check the current phase."
+ ],
+ "candidates": [
+  "Chandrayaan-2",
+  "AlSat Nano",
+  "ExoMars 2016 Schiaparelli",
+  "Mars Express",
+  "WSO-UVS (Spektr-UF)",
+  "International Mars Ice Mapper (I-MIM)",
+  "Apollo and Luna samples"
+ ]
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Fuller roles: co-PI for PanCam, Interdisciplinary Scientist, operations simulations and field trials.",
+  "field": "ou_involvement",
+  "id": "ExoMars-Rosalind-Franklin--0",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars Rosalind Franklin",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Open University researchers are members of the Rosalind Franklin rover's science team, serving as co-principal investigator for its PanCam camera system, as an Interdisciplinary Scientist, and more generally in support of PanCam and the Enfys spectrometer. OU researchers are also leading and contributing to mission preparations through operations simulations and field trials."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:54:06.885Z",
+  "verdict": "fix"
+}

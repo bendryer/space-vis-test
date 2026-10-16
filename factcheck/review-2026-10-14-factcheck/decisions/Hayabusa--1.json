@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Hovering 7 km from Itokawa (illustrative)",
+  "field": "orbit",
+  "id": "Hayabusa--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Hayabusa",
+  "suggestion": [
+    {
+      "f": "entry",
+      "from": "orbit.illustrative true",
+      "to": "remove illustrative (7 km home position is sourced)"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:45:58.505Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Chandrayaan-1--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Chandrayaan-1",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) assessed how protons would damage the 24 CCD54 X-ray detectors in the C1XS instrument, modelling the shielding, temperature and voltages they needed. We tested 14 candidate detector modules before launch, recommended the ten best for flight, and advised on how the detectors coped with radiation in orbit."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:56.910Z",
+  "verdict": "sty"
+}

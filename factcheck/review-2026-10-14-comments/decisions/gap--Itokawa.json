@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--Itokawa",
+  "kind": "new-entry",
+  "note": "",
+  "object": "Itokawa",
+  "suggestion": {
+    "description": "Itokawa is a small, peanut-shaped near-Earth asteroid about 535 metres long, named after Hideo Itokawa, the father of Japanese rocketry. In 2005 it was visited by JAXA's Hayabusa spacecraft, which in 2010 brought back the first samples ever collected from an asteroid. Its surface of boulders and gravel suggests it is a rubble pile, reassembled from the fragments of an earlier collision.",
+    "model": "/models/Asteroid2.glb (generic)",
+    "orbit": "from JPL SBDB: a_au 1.324052, e 0.280178, i 1.6209, node 69.0745, peri 162.8409, rate 0.646914, M0 44.3783",
+    "ou_involvement": "OU researchers have been allocated particles of Itokawa returned by Hayabusa, to study what the asteroid is made of and how it formed.",
+    "parent": "Sun",
+    "radius_km": "0.2675 (half its 535 m length)",
+    "rot_period": "0.50552 (12.13 h)",
+    "status": "Natural",
+    "type": "asteroid"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T20:00:03.788Z",
+  "verdict": null
+}

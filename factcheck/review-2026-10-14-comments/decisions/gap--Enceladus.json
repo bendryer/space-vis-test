@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--Enceladus",
+  "kind": "new-entry",
+  "note": "",
+  "object": "Enceladus",
+  "suggestion": {
+    "description": "Enceladus is a small, bright icy moon of Saturn, about 500 km across. Jets of water vapour and ice grains erupt from cracks near its south pole, fed by a salty ocean beneath its icy crust, and the Cassini spacecraft sampled them by flying through the plume. Its ocean contains many of the ingredients thought to be needed for life, making it a prime target in the search for habitable worlds.",
+    "gm": "7.211",
+    "orbit": "from JPL mean elements: a_km 238,400, e 0.0047, rate 262.7319; Laplace plane",
+    "ou_involvement": "(none yet: ask Rachael Hamp for a few words on the OU’s part in the proposed L4 Enceladus mission)",
+    "parent": "Saturn",
+    "radius_km": "252.1",
+    "status": "Natural",
+    "texture": "none (plain icy sphere)",
+    "type": "moon"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T20:00:17.602Z",
+  "verdict": null
+}

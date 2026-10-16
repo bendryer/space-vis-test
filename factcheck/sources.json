@@ -13,6 +13,30 @@
    "status": "confirmed"
   },
   {
+   "object": "11469 Rozitis",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Benjamin Rozitis (b. 1984) is a research fellow at the Open University (UK) studying the physical and dynamical characterization of asteroid surfaces through spacecraft data, modeling, and microgravity experiments.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=11469&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "11469 Rozitis",
+   "field": "description",
+   "fact": "The citation calls him an OU research fellow; the OU repository lists 63 of his papers, including recent ones. His current job title wasn’t found, so the wording stays general.",
+   "sources": [
+    "https://oro.open.ac.uk/view/person/br2427.html",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=11469&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "15614 Pillinger",
    "field": "description",
    "fact": "OU professor and planetary geochemist, light-element geochemistry, originator and PI of Beagle 2.",
@@ -22,6 +46,54 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "15834 McBride",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Neil McBride (b. 1966) has worked on many aspects of solar system dynamics, including meteor stream formation, interrelations between minor planets, comets and meteors, as well as the structure of the transneptunian region.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=15834&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "15834 McBride",
+   "field": "description",
+   "fact": "The OU textbook’s publisher lists him as a former OU lecturer and co-editor.",
+   "sources": [
+    "https://www.nhbs.com/title/183130",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=15834&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "158589 Snodgrass",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Colin Snodgrass (b. 1981) is an astronomer at the European Southern Observatory. His work centers on the characterization of inactive cometary nuclei through photometry, measuring their sizes, colors and rotation periods. He is also active in observing exoplanetary systems.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=158589&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "158589 Snodgrass",
+   "field": "description",
+   "fact": "His CV: OU posts 2014–2018 (Ernest Rutherford Fellow, then Senior Research Fellow); now at Edinburgh.",
+   "sources": [
+    "https://www.roe.ac.uk/~csn/snodgrass-CV.pdf",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=158589&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "17920 Zarnecki",
@@ -138,6 +210,89 @@
    "status": "confirmed"
   },
   {
+   "object": "25275 Jocelynbell",
+   "field": "orbit.rate",
+   "fact": "DATA.md asks for 6 decimals (a rounded rate drifts degrees since 2000); SBDB gives 0.270921.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=25275&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "30226 SamuelLeeJackson",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Samuel Lee Jackson (b. 1997) is a British researcher at The Open University, Milton Keynes, UK, who specializes in observations of near-Earth asteroids and the use of small robotic telescopes.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=30226&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "30226 SamuelLeeJackson",
+   "field": "description",
+   "fact": "OU news credits PhD student Samuel Jackson with imaging asteroid Openuni using the OU’s PIRATE telescope.",
+   "sources": [
+    "https://blog.stem.open.ac.uk/?p=6668",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=30226&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "3202 Graff",
+   "field": "description",
+   "fact": "No naming citation in JPL SBDB.",
+   "sources": [],
+   "searched": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=3202&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
+   "object": "3202 Graff",
+   "field": "description",
+   "fact": "Gareth V. Williams did his PhD at the OU, awarded in 2013. JPL holds no naming citation, so the paraphrase can be introduced as the reason for the name.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Gareth_V._Williams",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=3202&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "42772 Kokotanekova",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Rosita Kokotanekova (b. 1991) is a Research Fellow at ESO in Garching, Germany. She studies surface characteristics of comets, trans-Neptunian objects, and other small solar system bodies using ground-based photometry.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=42772&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "42772 Kokotanekova",
+   "field": "description",
+   "fact": "Her 2018 OU thesis: \"Bulk Properties and Evolution of Jupiter-Family Comet Nuclei\".",
+   "sources": [
+    "https://oro.open.ac.uk/57371",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=42772&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "4731 MonicaGrady",
    "field": "description",
    "fact": "Naming citation: NHM meteorite curator, carbon isotopes, meteorite recovery.",
@@ -160,6 +315,54 @@
    "status": "correction"
   },
   {
+   "object": "5497 SaraRussell",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "As a researcher at the Natural History Museum in London, Sara Russell (b. 1966) studies the chemistry and mineralogy of meteorites to investigate the early solar system and origin of interstellar grains. She has collected meteorites in both hot and cold deserts and is principal editor of the Meteoritical Bulletin.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=5497&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "5497 SaraRussell",
+   "field": "description",
+   "fact": "NHM profile: PhD, Open University, 1989–1992; Visiting Professor at the OU 2014–2019; her PhD was on presolar grains with Pillinger.",
+   "sources": [
+    "https://nhm.ac.uk/our-science/people/sara-russell.html",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=5497&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "6580 PhilBland",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Philip A. Bland (b. 1969), a research scientist at London's Imperial College, is involved in a variety of planetary and meteoritical studies. His fireball camera network offers an important glimpse into links between meteorites and minor planets.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=6580&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "6580 PhilBland",
+   "field": "description",
+   "fact": "He began with a three-year post as the OU’s curator of meteorites and was awarded his PhD there in 1995.",
+   "sources": [
+    "https://www.space.gov.au/Phil-Bland",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=6580&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "69423 OpenUni",
    "field": "description",
    "fact": "Founded 23 April 1969, over 2 million part-time students, space exploration history.",
@@ -170,6 +373,102 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "7552 Sephton",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Mark A. Sephton (b. 1966) is a researcher in organic geochemistry and meteoritics at Imperial College, London. Through his research, he has determined new techniques for the analysis of organics in meteorites.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7552&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "7552 Sephton",
+   "field": "description",
+   "fact": "Imperial profile: PhD, Open University 1993–1996; postdoc at the OU; Lecturer, Open University 2000–2005.",
+   "sources": [
+    "https://profiles.imperial.ac.uk/m.a.sephton",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7552&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "7635 CarolineSmith",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Caroline Smith (b. 1976) the Head of Earth Sciences Collections and Principal Curator of Meteorites at the Natural History Museum in London. She studies mineralogy of meteorites, notably ureilites, to understand planetary processes, collected meteorites in Australia and has been principal editor of the Meteoritical Bulletin.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7635&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "7635 CarolineSmith",
+   "field": "description",
+   "fact": "NHM profile: PhD, Open University (completed 2002).",
+   "sources": [
+    "https://www.nhm.ac.uk/our-science/people/caroline-smith",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7635&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "8463 NaomiMurdoch",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "Naomi Murdoch (b. 1984) completed her Ph.D. at The Open University, United Kingdom in 2012. Using microgravity flight experiments and numerical modeling, she investigated the behavior of granular material under minor-planet-like low-gravity surface conditions.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=8463&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "8463 NaomiMurdoch",
+   "field": "description",
+   "fact": "PhD 2009–2012 jointly at the OU and the Université Côte d’Azur.",
+   "sources": [
+    "https://pagespro.isae-supaero.fr/naomi-murdoch/",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=8463&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "9159 McDonnell",
+   "field": "description",
+   "fact": "Official naming citation (quoted in full in data.json).",
+   "quote": "J. A. M. (“Tony”) McDonnell (b. 1938) is recognized for his research on cosmic dust. With colleagues, he was the first to demonstrate the intact capture of space particulates in aerogel. He has flown instruments on a number of missions and has analyzed impact craters on lunar samples and satellite surfaces exposed to space.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=9159&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "9159 McDonnell",
+   "field": "description",
+   "fact": "He was Professor of Space Sciences at Kent and later Professor of Planetary and Space Sciences at the OU (inaugural lecture 2002).",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Tony_McDonnell_(space_scientist)",
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=9159&discovery=1"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "9831 SimonGreen",
@@ -231,6 +530,41 @@
    "status": "confirmed"
   },
   {
+   "object": "AlSat-Nano",
+   "field": "description",
+   "fact": "Confirmed: launched 26 September 2016 on PSLV-C35; UK Space Agency funded, Surrey Space Centre built the platform, part of a joint education programme with Algeria.",
+   "sources": [
+    "https://gov.uk/government/news/launch-success-for-alsat-nano",
+    "https://space.skyrocket.de/doc_sdat/alsat-nano.htm"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "AlSat-Nano",
+   "field": "orbit",
+   "fact": "The real orbit was 661 × 700 km at 98.2°, so a_km 7,058 is right (e ≈ 0.003): the orbit can drop its illustrative flag.",
+   "sources": [
+    "https://space.skyrocket.de/doc_sdat/alsat-nano.htm"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "AlSat-Nano",
+   "field": "ou_involvement",
+   "fact": "Confirmed: the OU’s Centre for Electronic Imaging led the C3D2 payload; it imaged the boom’s deployment. It also served as a remote experiment for the OU’s Open Science Laboratory.",
+   "sources": [
+    "https://oro.open.ac.uk/56500",
+    "https://space.skyrocket.de/doc_sdat/alsat-nano.htm"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Apollo and Luna samples",
    "field": "proposed-entry",
    "fact": "The OU’s evidence to Parliament cites OU discoveries from Apollo and Luna samples. An Apollo lander model already exists in the project’s models. type: mission; parent: Moon; status: Complete; launch_year: 1969 (Apollo 11); orbit_type: landed; landed_coords: Apollo 11: { lat: 0.674, lon: 23.473 }; ou_involvement: OU laboratories have analysed returned Apollo and Luna samples, for example water and oxygen isotopes in lunar rocks. Name specific studies before using this.",
@@ -252,6 +586,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Ariel",
+   "field": "launch_year",
+   "fact": "Jo Barstow gave 2031. A March 2026 Wikipedia snapshot says that as of January 2026 Ariel was \"likely to be delayed until 2031\"; the OU’s own news story on the move to implementation still gives 2029. No ESA source either way.",
+   "sources": [
+    "https://wiki.krisyotam.com/content/wikipedia_en_all_nopic_2026-03/ARIEL",
+    "https://www.open.ac.uk/blogs/news/science-mct/space/ariel-space-mission-moves-one-step-closer-to-reality/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "Ariel",
@@ -314,6 +660,30 @@
   },
   {
    "object": "Beagle 2",
+   "field": "ou_involvement",
+   "fact": "Beagle 2’s Environmental Sensors PI was at Leicester (as was the X-ray spectrometer’s); the OU led the mission and the Gas Analysis Package. OU scientists did work on the ESS: its description paper and the UV-sensor study (Patel et al. 2004) are OU-authored.",
+   "sources": [
+    "https://cordis.europa.eu/article/id/94546-beagle-2-leaves-the-uk-to-join-mars-express-for-mission-to-red-planet/de",
+    "https://oro.open.ac.uk/5401"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "Beagle 2",
+   "field": "ou_involvement",
+   "fact": "Still no source found (flagged since 2026-09-30).",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: Lessons from Beagle 2 informed later landers including ExoMars"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "not-found"
+  },
+  {
+   "object": "Beagle 2",
    "field": "size_m",
    "fact": "Fully deployed about 1.7-1.9 m across (1.9 x 1.6 m footprint).",
    "sources": [
@@ -333,6 +703,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Bennu",
+   "field": "radius_km",
+   "fact": "Bodies drawn from a model use half their longest side. Bennu is 565 × 535 × 508 m (NAIF’s newer shape: about 564 × 536 × 498 m), so half its longest side is 0.282 km; 0.2524 is closer to its mean radius.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/101955_Bennu",
+    "https://naif.jpl.nasa.gov/pub/naif/ORX/kernels/pck/bennu_v14.tpc"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "BepiColombo",
@@ -389,6 +771,18 @@
    ],
    "checked": "2026-10-11",
    "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "BepiColombo",
+   "field": "status_timeline",
+   "fact": "Still planned for 21 November 2026; the two orbiters separate on 9–10 December and the MPO reaches its science orbit in March 2027.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/BepiColombo",
+    "https://meetingorganizer.copernicus.org/EPSC2026/session/59247"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
    "status": "confirmed"
   },
   {
@@ -551,6 +945,17 @@
    "status": "correction"
   },
   {
+   "object": "Chang'e-5",
+   "field": "ou_involvement",
+   "fact": "Now sourced: OU news on Mahesh Anand’s loan of Chang’e-5 samples gives exactly these aims.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-space-expert-among-worlds-first-to-receive-moon-rock-samples-for-research"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Comet 67P",
    "field": "description",
    "fact": "Jupiter-family comet, two-lobed “rubber duck”, low density, dust and ices, jets near the Sun.",
@@ -617,6 +1022,52 @@
     "https://science.nasa.gov/solar-system/comets/81p-wild/"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "DART",
+   "field": "description",
+   "fact": "The measured change is 33 ± 1 minutes (32 was the first estimate); Didymos and Dimorphos already say 33.",
+   "sources": [
+    "https://ntrs.nasa.gov/citations/20230000707"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "DART",
+   "field": "landed_coords",
+   "fact": "The published impact site coordinates weren’t found in an accessible source; the PDS frame for Dimorphos may also differ from the model’s.",
+   "sources": [
+    "https://ntrs.nasa.gov/citations/20230000707"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "DART",
+   "field": "ou_involvement",
+   "fact": "Waiting for Simon Green.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: No OU text yet"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
+   "object": "DART",
+   "field": "ou_involvement",
+   "fact": "Simon F. Green (OU) is a co-author of Murphy et al. 2023, 'VLT/MUSE Characterization of Dimorphos Ejecta from the DART Impact' (PSJ), which followed the ejecta over 11 nights from 26 September to 25 October 2022, characterising the cone, spirals, wings, clumps and tails.",
+   "sources": [
+    "https://api.crossref.org/works/10.3847/PSJ/ad0a87",
+    "https://iopscience.iop.org/article/10.3847/PSJ/ad0a87"
+   ],
+   "checked": "2026-10-15",
    "volatile": false,
    "status": "confirmed"
   },
@@ -734,6 +1185,18 @@
    "status": "not-found"
   },
   {
+   "object": "Earth",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: OU machine learning on satellite imagery"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
    "object": "Earth-Sun L1",
    "field": "description",
    "fact": "L1 is unstable, as with L2.",
@@ -776,6 +1239,52 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Earth-Sun L2",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: OU uses L2 as a virtual laboratory"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
+   "object": "Enceladus",
+   "field": "orbit",
+   "fact": "JPL mean elements (SAT441, Laplace plane, epoch 2000-01-01.5): a 238,400 km, e 0.005, ω 119.5°, M 57.0°, i 0.0°, node 0.0°, P 1.370218 d, apsidal period 2.916 yr, Laplace pole RA 40.6°, Dec 83.5°.",
+   "sources": [
+    "https://ssd.jpl.nasa.gov/sats/elem/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Enceladus",
+   "field": "orbit",
+   "fact": "Matches JPL’s SAT441 mean elements (a 238,400 km, P 1.370218 d, Laplace pole RA 40.6°, Dec 83.5°).",
+   "sources": [
+    "https://ssd.jpl.nasa.gov/sats/elem/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Enceladus",
+   "field": "ou_involvement",
+   "fact": "Rachael Hamp (OU) sat on ESA’s Expert Committee for the L4 large mission, which in 2024 recommended Enceladus as the target: an orbiter and lander for launch in the early 2040s.",
+   "sources": [
+    "https://europeanspaceflight.com/wp-content/uploads/2024/04/ESA_L4_Expert_Committee_report_Voyage_2050_Moons_of_the_Giant_Planets.pdf",
+    "https://www.astronomy.com/science/target-enceladus/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "EnVision",
@@ -871,6 +1380,18 @@
   },
   {
    "object": "Euclid",
+   "field": "ou_involvement",
+   "fact": "Now sourced: OU news names Stephen Serjeant and Ruby Pearce-Casey in the Euclid lens search, and the 2025 A&A CNN lens-finding paper has the OU as first affiliation.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/euclid-mission-reveals-spectacular-new-space-discoveries",
+    "https://www.aanda.org/10.1051/0004-6361/202453152"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Euclid",
    "field": "size_m",
    "fact": "About 4.7 m tall and 3.7 m in diameter.",
    "sources": [
@@ -899,6 +1420,29 @@
     "https://eos.org/articles/lipids-from-europas-ocean-could-be-detectable-on-the-surface"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Europa",
+   "field": "ou_involvement",
+   "fact": "OU researchers (Sym, Ramkissoon, Fox-Powell, Pearson, with Melwani Daswani) modelled how the composition and habitability of Europa's ocean changed over its ~4.5-billion-year history as the rock beneath was altered; conference abstracts, 2023 and 2024.",
+   "sources": [
+    "https://oro.open.ac.uk/95401",
+    "https://oro.open.ac.uk/95399"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Europa",
+   "field": "ou_involvement",
+   "fact": "OU conference abstracts by Sym, Ramkissoon, Fox-Powell, Pearson and Melwani Daswani; not yet a peer-reviewed paper.",
+   "sources": [
+    "https://oro.open.ac.uk/95401"
+   ],
+   "checked": "2026-10-14",
    "volatile": false,
    "status": "confirmed"
   },
@@ -947,6 +1491,17 @@
    "checked": "2026-09-30",
    "volatile": false,
    "status": "not-found"
+  },
+  {
+   "object": "ExoMars Rosalind Franklin",
+   "field": "ou_involvement",
+   "fact": "The OU’s own news gives Matt Balme’s role as Deputy Principal Investigator of PanCam; Susanne Schwenzer is a Co-Investigator and one of the UK’s Interdisciplinary Scientists.",
+   "sources": [
+    "https://research.open.ac.uk/news/ou-support-mission-search-signs-ancient-life-mars"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "ExoMars Rosalind Franklin",
@@ -1095,6 +1650,28 @@
    "status": "confirmed"
   },
   {
+   "object": "Hayabusa",
+   "field": "description",
+   "fact": "Confirmed.",
+   "sources": [
+    "https://darts.isas.jaxa.jp/planet/project/hayabusa"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Hayabusa",
+   "field": "orbit",
+   "fact": "JAXA: Hayabusa moved to its \"home position\" about 7 km from the surface on 30 September 2005. The orbit can drop its illustrative flag.",
+   "sources": [
+    "https://darts.isas.jaxa.jp/planet/project/hayabusa"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "Hayabusa2",
    "field": "description",
    "fact": "Deployed rovers, kinetic impactor, returned Ryugu surface and subsurface samples. “En Route” fits its extended mission to 1998 KY26.",
@@ -1104,6 +1681,18 @@
    "checked": "2026-09-29",
    "volatile": true,
    "status": "confirmed"
+  },
+  {
+   "object": "Hayabusa2",
+   "field": "description",
+   "fact": "The description is all in the past tense, but the spacecraft is on an extended mission (Hayabusa2#): it flew past asteroid Torifune on 5 July 2026 and is due at the 11-metre asteroid 1998 KY26 in 2031, after Earth flybys in 2027 and 2028.",
+   "sources": [
+    "https://www.planetary.org/space-missions/hayabusa2",
+    "https://www.dlr.de/en/latest/news/2026/hayabusa2-asteroid-probe-spectacular-high-speed-flyby-of-the-mini-asteroid-torifune"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "Hayabusa2",
@@ -1199,6 +1788,19 @@
    "status": "not-found"
   },
   {
+   "object": "Hera",
+   "field": "trajectory",
+   "fact": "ESA now says Hera arrives in November 2026, a month earlier than first planned; its operations page still describes an \"impulsive rendezvous\" in October, and secondary reports put the braking burns in late October. The app has Hera reaching Didymos on 12 October, before today, so it already shows Hera in orbit.",
+   "sources": [
+    "https://www.esa.int/Space_Safety/Hera/ESA_s_Hera_targets_early_arrival_at_Didymos_asteroids",
+    "https://www.esa.int/Enabling_Support/Operations/Hera_operations",
+    "https://www.space.com/astronomy/asteroids/like-accelerating-from-stationary-to-supersonic-flight-europes-hera-probe-boosts-speed-stays-on-course-for-november-asteroid-rendezvous"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
    "object": "Herschel",
    "field": "description",
    "fact": "True at launch (3.5 m). JWST (6.5 m, 2021) is now the largest. Suggest “the largest infrared telescope launched until JWST”.",
@@ -1266,6 +1868,18 @@
    "status": "confirmed"
   },
   {
+   "object": "Hubble",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: OU use of the Hubble archive"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
    "object": "Huygens",
    "field": "description",
    "fact": "ESA probe, the only landing in the outer Solar System, 2005, a descent of about 2.5 hours, pebbles shaped by liquid methane.",
@@ -1299,6 +1913,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Huygens",
+   "field": "ou_involvement",
+   "fact": "An institution can’t be a PI; the source says the OU provided the PI (John Zarnecki).",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: \"The OU was the Principal Investigator\""
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
   },
   {
    "object": "HWO",
@@ -1360,6 +1986,40 @@
    "checked": "2026-10-11",
    "volatile": true,
    "status": "not-found"
+  },
+  {
+   "object": "I-MIM",
+   "field": "description",
+   "fact": "NASA withdrew its funding in its FY2023 budget proposal (March 2022). The OU’s December 2025 news describes I-MIM as \"led by the space agencies of Canada, the USA, Japan, Italy and the Netherlands\", with the OU representing the UK alongside the University of Bern.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-1-2-million-to-advance-imaging-technology-supporting-the-future-human-exploration-of-mars/",
+    "https://en.wikipedia.org/wiki/International_Mars_Ice_Mapper_Mission"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "I-MIM",
+   "field": "ou_involvement",
+   "fact": "No source names CHROMA-D. The OU’s news: Manish Patel’s group won £1.2 million from the UK Space Agency (December 2025) to develop a combined visible-infrared imager, with a Teledyne e2v detector, for missions such as I-MIM and LightShip-1; it can tell water ice from carbon dioxide ice.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-1-2-million-to-advance-imaging-technology-supporting-the-future-human-exploration-of-mars/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "I-MIM",
+   "field": "status",
+   "fact": "No 2026 status found; NASA’s funding was withdrawn in 2022 and Wikipedia’s launch window (2031–2033) is unsourced.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/International_Mars_Ice_Mapper_Mission"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "International Mars Ice Mapper (I-MIM)",
@@ -1441,6 +2101,30 @@
    "status": "confirmed"
   },
   {
+   "object": "Itokawa",
+   "field": "description",
+   "fact": "Confirmed by the naming citation and the mission record.",
+   "sources": [
+    "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=25143&discovery=1",
+    "https://darts.isas.jaxa.jp/planet/project/hayabusa"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Itokawa",
+   "field": "ou_involvement",
+   "fact": "True but thin. Monica Grady co-authored the 2021 Scientific Reports paper (led by Royal Holloway) that found water and extraterrestrial organic matter in an Itokawa grain; the OU did the initial Raman spectroscopy on the allocated particles.",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7933418/",
+    "https://ntrs.nasa.gov/citations/20210022845"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "JUICE",
    "field": "description",
    "fact": "ESA mission launched 2023, arrives 2031, studies Ganymede, Europa and Callisto.",
@@ -1476,6 +2160,18 @@
   },
   {
    "object": "JUICE",
+   "field": "ou_involvement",
+   "fact": "The OU supplies and characterises JANUS’s UK-built detectors (Palumbo, Italy, leads JANUS with a consortium including the UK), but no public source uses \"UK National Lead\".",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/the-janus-camera-on-the-juice-spacecraft-observes-a-cosmic-visitor-on-its-way-to-jupiter/",
+    "https://university.open.ac.uk/science/research/cei/missions/juice"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "JUICE",
    "field": "trajectory",
    "fact": "Waypoints: launch 14 April 2023, lunar–Earth flyby 20 August 2024, Venus 31 August 2025, Earth 28 September 2026, Earth January 2029, Jupiter July 2031.",
    "sources": [
@@ -1494,6 +2190,17 @@
     "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_to_fly_past_Earth_for_third_gravity_assist"
    ],
    "checked": "2026-09-30",
+   "volatile": true,
+   "status": "confirmed"
+  },
+  {
+   "object": "JUICE",
+   "field": "trajectory",
+   "fact": "Confirmed: closest approach over the Indian Ocean on 28 September 2026 at 11:45 UTC, about 8,640 km up. Next: Earth again in January 2029, then Jupiter in July 2031.",
+   "sources": [
+    "https://www.skyatnightmagazine.com/news/juice-earth-flyby-2026"
+   ],
+   "checked": "2026-10-14",
    "volatile": true,
    "status": "confirmed"
   },
@@ -1610,6 +2317,28 @@
    "status": "not-found"
   },
   {
+   "object": "LightShip-1",
+   "field": "ou_involvement",
+   "fact": "No source found for this instrument (searched OU news, ESA LightShip and SpotLight material). HiRIME is confirmed.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-leads-the-way-to-future-high-resolution-orbital-imaging-of-mars/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "LightShip-1",
+   "field": "ou_involvement",
+   "fact": "The OU’s December 2025 news calls Manish Patel’s group the \"Atmospheric Research and Surface Exploration\" group; earlier OU news used \"Space Exploration\". EnVision uses the same name.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-1-2-million-to-advance-imaging-technology-supporting-the-future-human-exploration-of-mars/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "LUPEX",
    "field": "description",
    "fact": "LUPEX looks for water ice and other volatiles, not liquid water. Drop “liquid”.",
@@ -1628,6 +2357,17 @@
     "https://en.wikipedia.org/wiki/Lunar_Polar_Exploration_Mission"
    ],
    "checked": "2026-09-29",
+   "volatile": true,
+   "status": "confirmed"
+  },
+  {
+   "object": "LUPEX",
+   "field": "description",
+   "fact": "A JAXA-ISRO review in July 2026 kept the 2028 target (secondary sources).",
+   "sources": [
+    "https://theprint.in/science/jaxa-isro-scientists-mission-interface-chandrayaan-5-partnership/3001095/"
+   ],
+   "checked": "2026-10-14",
    "volatile": true,
    "status": "confirmed"
   },
@@ -1656,6 +2396,17 @@
   },
   {
    "object": "LUPEX",
+   "field": "ou_involvement",
+   "fact": "Simon Sheridan’s OU profile: science lead developing the EMS-L mass spectrometer for JAXA’s LUPEX mission.",
+   "sources": [
+    "https://profiles.open.ac.uk/simon-sheridan"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "LUPEX",
    "field": "size_m",
    "fact": "Rover 2.0 m long, 1.8 m wide, 3.3 m tall, 350 kg.",
    "sources": [
@@ -1664,6 +2415,40 @@
    "checked": "2026-10-11",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "MAGPIE",
+   "field": "description",
+   "fact": "MAGPIE (Mission for Advanced Geophysics and Polar Ice Exploration) flies on ispace’s own Mission 4 lander in 2029, under a €65 million ESA contract to ispace-EUROPE. Nothing links it to Intuitive Machines.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/MAGPIE_(rover)",
+    "https://www.ispace-inc.com/2026/07/24/esa-awards-ispace-europe-contract-for-execution-of-magpie-esas-first-lunar-rover/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
+   "object": "MAGPIE",
+   "field": "description",
+   "fact": "No source found for MAGPIE’s surface lifetime (searched ESA, ispace and Wikipedia).",
+   "sources": [
+    "https://en.wikipedia.org/wiki/MAGPIE_(rover)"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "MAGPIE",
+   "field": "ou_involvement",
+   "fact": "TUM, which leads the drill, calls it the Lunar Volatiles Scout (LVS): an instrumented drill with a built-in ion-trap mass spectrometer, the Volatile Analyser provided by the OU.",
+   "sources": [
+    "https://www.asg.ed.tum.de/en/lpe/research/lvs-on-magpie/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
   },
   {
    "object": "Mars",
@@ -1684,6 +2469,18 @@
     "https://profiles.open.ac.uk/manish-patel"
    ],
    "checked": "2026-09-29",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Mars",
+   "field": "ou_involvement",
+   "fact": "Now sourced for ExoMars: OU researchers (Balme, Fawdon) were on the Oxia Planum selection paper and lead its geological mapping. Sample-return site selection still has no source.",
+   "sources": [
+    "https://oro.open.ac.uk/74820",
+    "https://oro.open.ac.uk/97016"
+   ],
+   "checked": "2026-10-14",
    "volatile": false,
    "status": "confirmed"
   },
@@ -1709,6 +2506,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Mars Yard",
+   "field": "launch_year",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: launch_year 2017"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "not-found"
   },
   {
    "object": "Mercury",
@@ -1807,6 +2616,18 @@
     "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet"
    ],
    "checked": "2026-09-29",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
+   "object": "NewAthena",
+   "field": "description",
+   "fact": "Today’s comments changed 2037 to 2038, but ESA’s factsheet says \"Planned launch: 2037 on an Ariane 6.4\", and the schedule page gives adoption in early 2027 with launch in early 2037.",
+   "sources": [
+    "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet",
+    "https://www.cosmos.esa.int/web/athena/schedule"
+   ],
+   "checked": "2026-10-14",
    "volatile": true,
    "status": "correction"
   },
@@ -1936,6 +2757,41 @@
    "status": "confirmed"
   },
   {
+   "object": "OU Campus",
+   "field": "description",
+   "fact": "The OU’s published mission is \"to be open to people, places, methods and ideas\".",
+   "sources": [
+    "https://about.open.ac.uk/node/16"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "OU Campus",
+   "field": "launch_year",
+   "fact": "The OU was established in 1969; its Walton Hall land was leased from 1 September 1969.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Open_University",
+    "https://university.open.ac.uk/estates/our-estate/walton-hall-east-campus"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "confirmed"
+  },
+  {
+   "object": "OU Campus",
+   "field": "ou_involvement",
+   "fact": "S284 Astronomy, S283 Planetary science and the search for life (final start October 2026; replaced by S287 Planetary science from October 2027) and SXPS288 Remote experiments in physics and space (projects with the ARROW radio telescope in Milton Keynes or PIRATE in Tenerife) are level 2 modules in the BSc Natural Sciences (Astronomy and Planetary Science).",
+   "sources": [
+    "https://www.open.ac.uk/courses/science/degrees/bsc-natural-sciences-astronomy-planetary-science-q64-ast",
+    "https://www.open.ac.uk/courses/qualifications/details/s283?orig=w82"
+   ],
+   "checked": "2026-10-15",
+   "volatile": true,
+   "status": "confirmed"
+  },
+  {
    "object": "Peregrine",
    "field": "description",
    "fact": "Astrobotic lander, propellant leak after launch in January 2024, payloads operated, re-entered.",
@@ -2003,6 +2859,17 @@
    "status": "confirmed"
   },
   {
+   "object": "Perseverance",
+   "field": "ou_involvement",
+   "fact": "Confirmed: Susanne Schwenzer (OU) is one of the 16 members of the NASA/ESA Mars Sample Return Campaign Science Group.",
+   "sources": [
+    "https://www.open.ac.uk/blogs/news/science-mct/ou-academic-joins-international-team-of-experts-to-advise-on-samples-to-be-returned-from-mars"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
    "object": "Philae",
    "field": "description",
    "fact": "First landing on a comet nucleus in 2014, ten instruments, bounced, then hibernated.",
@@ -2059,6 +2926,18 @@
    "status": "confirmed"
   },
   {
+   "object": "Planck",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: OU cosmology with Planck and Euclid"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
    "object": "PLATO",
    "field": "description",
    "fact": "26 cameras monitoring hundreds of thousands of bright stars for transits of Earth-sized planets.",
@@ -2079,6 +2958,17 @@
    "checked": "2026-09-29",
    "volatile": true,
    "status": "correction"
+  },
+  {
+   "object": "PLATO",
+   "field": "launch_year",
+   "fact": "ESA now plans launch at the start of 2027 (January) on Ariane 6.",
+   "sources": [
+    "https://www.esa.int/ESA_Multimedia/Videos/2026/03/Plato_s_launch_on_Ariane_6"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "confirmed"
   },
   {
    "object": "PLATO",
@@ -2124,6 +3014,19 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "PROSPECT",
+   "field": "launch_year",
+   "fact": "Today’s comments changed this from 2027 to 2028, but NASA still lists IM-4 for 2027, and ESA’s June 2026 Prospect video still describes the IM-4 flight. No public source gives 2028. Keep 2028 only if the PROSPECT team has newer information.",
+   "sources": [
+    "https://www.nasa.gov/event/clps-flight-intuitive-machines-im-4",
+    "https://www.esa.int/ESA_Multimedia/Videos/2026/06/Prospect_mission",
+    "https://www.esa.int/Newsroom/Press_Releases/European_drill_and_mini_lab_secure_ride_to_the_Moon"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "PROSPECT",
@@ -2183,6 +3086,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "Roman",
+   "field": "description",
+   "fact": "Roman launched on a Falcon Heavy on 30 August 2026, bound for Sun-Earth L2. \"Launched\" is right; the description doesn’t say it has flown.",
+   "sources": [
+    "https://www.sci.news/astronomy/roman-space-telescope-launch-15027.html",
+    "https://spacepolicyonline.com/news/nasa-sets-launch-date-for-roman-space-telescope/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
   },
   {
    "object": "Roman",
@@ -2331,6 +3246,41 @@
    "status": "correction"
   },
   {
+   "object": "Schiaparelli",
+   "field": "description",
+   "fact": "Confirmed: the heat shield and parachute worked, but the parachute was released early and the thrusters fired only briefly.",
+   "sources": [
+    "https://research.unipd.it/bitstream/11577/3277352/2/ExoMars-2016-Schiaparelli-Module-Trajectory-and-Atmospheric-Profiles-Reconstruction-Analysis-of-the-Onboard-Inertial-and-Radar-Measurements2018Space-Science-Reviews.pdf"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Schiaparelli",
+   "field": "landed_coords",
+   "fact": "MRO imaged the impact mark at 2.07° S, 353.79° E (6.21° W), about 5.4 km west of the intended landing point.",
+   "sources": [
+    "https://www.sci.news/space/schiaparellis-crash-site-04299.html"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
+   "object": "Schiaparelli",
+   "field": "ou_involvement",
+   "fact": "ESA’s credit for DREAMS lists INAF, CISAS, LATMOS, ESA-ESTEC, Oxford, FMI and INTA; no source puts the OU on it. The OU’s documented role is AMELIA: Stephen Lewis (OU) was a co-PI of the team that reconstructed the atmosphere from Schiaparelli’s entry and descent data.",
+   "sources": [
+    "https://exploration.esa.int/web/mars/-/56538-metmast-with-sensors-annotated",
+    "https://www.open.ac.uk/library/digital-archive/program/video:SHL00095",
+    "https://research.unipd.it/bitstream/11577/3277352/2/ExoMars-2016-Schiaparelli-Module-Trajectory-and-Atmospheric-Profiles-Reconstruction-Analysis-of-the-Onboard-Inertial-and-Radar-Measurements2018Space-Science-Reviews.pdf"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "Sentinel-2",
    "field": "description",
    "fact": "Three now: Sentinel-2C launched 5 September 2024, and 2A continues in an extended campaign alongside 2B and 2C.",
@@ -2399,6 +3349,39 @@
    "status": "confirmed"
   },
   {
+   "object": "Shackleton Rover",
+   "field": "description",
+   "fact": "The project’s site describes it as the first British mission to the Moon’s surface, aimed at the south pole, with Shackleton’s granddaughter Alexandra Shackleton as patron.",
+   "sources": [
+    "https://shackletonrover.co.uk/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "Shackleton Rover",
+   "field": "launch_year",
+   "fact": "Typed into the spreadsheet; the project’s site gives no launch date.",
+   "sources": [
+    "https://shackletonrover.co.uk/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
+   "object": "Shackleton Rover",
+   "field": "ou_involvement",
+   "fact": "From Simeon Barber’s comment; not on the project’s public site.",
+   "sources": [
+    "https://shackletonrover.co.uk/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "correction"
+  },
+  {
    "object": "SMILE",
    "field": "description",
    "fact": "Launched 19 May 2026 on Vega-C. The 9 April date was postponed.",
@@ -2418,6 +3401,17 @@
    ],
    "checked": "2026-09-29",
    "volatile": false,
+   "status": "confirmed"
+  },
+  {
+   "object": "SMILE",
+   "field": "description",
+   "fact": "Confirmed: launched 03:52 UTC on 19 May 2026 from Kourou on Vega-C (one secondary source; ESA pages agree on the May launch).",
+   "sources": [
+    "https://cislunarspace.cn/en/space-news/2026/05/2026-05-19-smile-satellite-launch-success/"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
    "status": "confirmed"
   },
   {
@@ -2556,6 +3550,18 @@
   },
   {
    "object": "Swift",
+   "field": "description",
+   "fact": "NASA and Katalyst called off the reboost on 19 August 2026 after Katalyst’s LINK spacecraft lost attitude control. NASA says Swift will likely re-enter later in 2026; no date has been published. Most science operations were paused in February 2026 to slow the decay.",
+   "sources": [
+    "https://spacepolicyonline.com/?p=90438",
+    "https://www.natureworldnews.com/articles/73189/20260821/nasa-says-swift-observatory-will-likely-reenter-earths-atmosphere-this-year-after-commercial-boost.htm"
+   ],
+   "checked": "2026-10-14",
+   "volatile": true,
+   "status": "correction"
+  },
+  {
+   "object": "Swift",
    "field": "size_m",
    "fact": "5.6 m high; 5.6 x 5.4 m.",
    "sources": [
@@ -2612,6 +3618,18 @@
    "status": "correction"
   },
   {
+   "object": "Titan",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: OU astrobiologists study Titan as an ocean world"
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
+  },
+  {
    "object": "TRUTHS",
    "field": "description",
    "fact": "UK-led, delivered by ESA, a “gold standard” climate calibration mission measuring incoming and reflected radiation.",
@@ -2645,6 +3663,18 @@
    "checked": "2026-09-29",
    "volatile": false,
    "status": "confirmed"
+  },
+  {
+   "object": "TRUTHS",
+   "field": "ou_involvement",
+   "fact": "Searched again today; still no public source.",
+   "sources": [],
+   "searched": [
+    "web search 2026-10-14: The CIS120 is \"being evaluated for TRUTHS\""
+   ],
+   "checked": "2026-10-14",
+   "volatile": false,
+   "status": "not-found"
   },
   {
    "object": "UKube-1",
@@ -2768,7 +3798,7 @@
   "https://en.wikipedia.org/wiki/BepiColombo": {
    "title": "Wikipedia: BepiColombo",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-14"
   },
   "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo": {
    "title": "ESA: BepiColombo",
@@ -3081,9 +4111,9 @@
    "lastUsed": "2026-09-29"
   },
   "https://www.esa.int/Science_Exploration/Space_Science/NewAthena_factsheet": {
-   "title": "ESA: NewAthena factsheet",
+   "title": "ESA: NewAthena factsheet (launch 2037)",
    "firstUsed": "2026-10-11",
-   "lastUsed": "2026-10-11"
+   "lastUsed": "2026-10-14"
   },
   "https://university.open.ac.uk/science/research/cei/missions/athena": {
    "title": "OU CEI mission page: athena",
@@ -3271,9 +4301,9 @@
    "lastUsed": "2026-09-29"
   },
   "https://university.open.ac.uk/science/research/cei/missions/juice": {
-   "title": "OU CEI mission page: juice",
+   "title": "CEI: JUICE",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-14"
   },
   "https://science.nasa.gov/saturn/facts/": {
    "title": "NASA: Saturn facts",
@@ -3486,9 +4516,9 @@
    "lastUsed": "2026-09-29"
   },
   "https://www.open.ac.uk/blogs/news/science-mct/ou-leads-the-way-to-future-high-resolution-orbital-imaging-of-mars/": {
-   "title": "OU news: HiRIME",
+   "title": "OU news: OU leads the way to future high-resolution orbital imaging of Mars",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-14"
   },
   "https://meetings-archive.aps.org/smt/2025/apr-h01/2/": {
    "title": "APS 2025: OGRE overview",
@@ -3741,9 +4771,9 @@
    "lastUsed": "2026-09-29"
   },
   "https://www.open.ac.uk/blogs/news/science-mct/ou-space-researchers-awarded-1-2-million-to-advance-imaging-technology-supporting-the-future-human-exploration-of-mars/": {
-   "title": "OU news: £1.2M follow-on",
+   "title": "OU news: £1.2 million for Mars imaging technology (Dec 2025)",
    "firstUsed": "2026-09-29",
-   "lastUsed": "2026-09-29"
+   "lastUsed": "2026-10-14"
   },
   "https://committees.parliament.uk/writtenevidence/140492/pdf/": {
    "title": "OU written evidence to Parliament, April 2025 (PDF)",
@@ -3768,7 +4798,7 @@
   "https://www.esa.int/Enabling_Support/Operations/Hera_operations": {
    "title": "ESA: Hera operations",
    "firstUsed": "2026-09-30",
-   "lastUsed": "2026-09-30"
+   "lastUsed": "2026-10-14"
   },
   "https://issfd.org/ISSFD_2024/ISSFD2024_18-4.pdf": {
    "title": "Muñoz, Acedo & Khan, Hera Trajectory Design (ISSFD 2024)",
@@ -3776,9 +4806,9 @@
    "lastUsed": "2026-09-30"
   },
   "https://www.esa.int/Space_Safety/Hera/ESA_s_Hera_targets_early_arrival_at_Didymos_asteroids": {
-   "title": "ESA: Hera targets early arrival at Didymos asteroids (7 Oct 2025)",
+   "title": "ESA: Hera targets early arrival at Didymos",
    "firstUsed": "2026-09-30",
-   "lastUsed": "2026-09-30"
+   "lastUsed": "2026-10-14"
   },
   "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=65803&full-prec=1": {
    "title": "JPL SBDB: 65803 Didymos",
@@ -3806,9 +4836,9 @@
    "lastUsed": "2026-09-30"
   },
   "https://oro.open.ac.uk/5401": {
-   "title": "Towner et al.: The Beagle 2 environmental sensors (ORO)",
+   "title": "ORO: The Beagle 2 environmental sensors",
    "firstUsed": "2026-09-30",
-   "lastUsed": "2026-09-30"
+   "lastUsed": "2026-10-14"
   },
   "https://oro.open.ac.uk/103379/3/103379.pdf": {
    "title": "Palumbo et al. 2025: The JANUS imager for JUICE (ORO)",
@@ -4069,6 +5099,426 @@
    "title": "JPL Horizons, object -79",
    "firstUsed": "2026-10-11",
    "lastUsed": "2026-10-11"
+  },
+  "https://oro.open.ac.uk/95401": {
+   "title": "ORO 95401: Composition and habitability of Europa’s ocean over time",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/95399": {
+   "title": "ORO 95399: Composition and Habitability of Europa’s Ocean Through Time",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd.jpl.nasa.gov/sats/elem/": {
+   "title": "JPL: Planetary satellite mean elements",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=9159&discovery=1": {
+   "title": "JPL SBDB: 9159",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=158589&discovery=1": {
+   "title": "JPL SBDB: 158589",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=15834&discovery=1": {
+   "title": "JPL SBDB: 15834",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=8463&discovery=1": {
+   "title": "JPL SBDB: 8463",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=11469&discovery=1": {
+   "title": "JPL SBDB: 11469",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=30226&discovery=1": {
+   "title": "JPL SBDB: 30226",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=5497&discovery=1": {
+   "title": "JPL SBDB: 5497",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=6580&discovery=1": {
+   "title": "JPL SBDB: 6580",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7552&discovery=1": {
+   "title": "JPL SBDB: 7552",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7635&discovery=1": {
+   "title": "JPL SBDB: 7635",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=42772&discovery=1": {
+   "title": "JPL SBDB: 42772",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.space.com/astronomy/asteroids/like-accelerating-from-stationary-to-supersonic-flight-europes-hera-probe-boosts-speed-stays-on-course-for-november-asteroid-rendezvous": {
+   "title": "Space.com: Hera on course for November rendezvous",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://spacepolicyonline.com/?p=90438": {
+   "title": "SpacePolicyOnline: No-go for Katalyst reboost of Swift",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.natureworldnews.com/articles/73189/20260821/nasa-says-swift-observatory-will-likely-reenter-earths-atmosphere-this-year-after-commercial-boost.htm": {
+   "title": "Nature World News: Swift will likely re-enter this year",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.sci.news/astronomy/roman-space-telescope-launch-15027.html": {
+   "title": "Sci.News: Roman launches",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://spacepolicyonline.com/news/nasa-sets-launch-date-for-roman-space-telescope/": {
+   "title": "SpacePolicyOnline: NASA sets launch date for Roman",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://cislunarspace.cn/en/space-news/2026/05/2026-05-19-smile-satellite-launch-success/": {
+   "title": "Cislunar Space: SMILE launched 19 May 2026",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://meetingorganizer.copernicus.org/EPSC2026/session/59247": {
+   "title": "EPSC 2026 session TP18: BepiColombo nears Mercury",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.skyatnightmagazine.com/news/juice-earth-flyby-2026": {
+   "title": "Sky at Night: Juice Earth flyby, 28 September 2026",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/blogs/news/science-mct/the-janus-camera-on-the-juice-spacecraft-observes-a-cosmic-visitor-on-its-way-to-jupiter/": {
+   "title": "OU news: the JANUS camera on JUICE",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.esa.int/ESA_Multimedia/Videos/2026/03/Plato_s_launch_on_Ariane_6": {
+   "title": "ESA: Plato’s launch on Ariane 6 (start of 2027)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.planetary.org/space-missions/hayabusa2": {
+   "title": "Planetary Society: Hayabusa2",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.dlr.de/en/latest/news/2026/hayabusa2-asteroid-probe-spectacular-high-speed-flyby-of-the-mini-asteroid-torifune": {
+   "title": "DLR: Hayabusa2# flyby of Torifune (July 2026)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.nasa.gov/event/clps-flight-intuitive-machines-im-4": {
+   "title": "NASA: CLPS flight Intuitive Machines IM-4 (2027)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.esa.int/ESA_Multimedia/Videos/2026/06/Prospect_mission": {
+   "title": "ESA video: Prospect mission (June 2026)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.esa.int/Newsroom/Press_Releases/European_drill_and_mini_lab_secure_ride_to_the_Moon": {
+   "title": "ESA: European drill and mini lab secure ride to the Moon",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.cosmos.esa.int/web/athena/schedule": {
+   "title": "ESA Cosmos: NewAthena schedule",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://wiki.krisyotam.com/content/wikipedia_en_all_nopic_2026-03/ARIEL": {
+   "title": "Wikipedia (March 2026 snapshot): Ariel, likely delayed to 2031",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/blogs/news/science-mct/space/ariel-space-mission-moves-one-step-closer-to-reality/": {
+   "title": "OU news: Ariel space mission moves one step closer to reality",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://theprint.in/science/jaxa-isro-scientists-mission-interface-chandrayaan-5-partnership/3001095/": {
+   "title": "ThePrint: JAXA-ISRO Chandrayaan-5 review",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://profiles.open.ac.uk/simon-sheridan": {
+   "title": "OU profile: Simon Sheridan (EMS-L, LUPEX)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/MAGPIE_(rover)": {
+   "title": "Wikipedia: MAGPIE (rover)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.ispace-inc.com/2026/07/24/esa-awards-ispace-europe-contract-for-execution-of-magpie-esas-first-lunar-rover/": {
+   "title": "ispace: ESA awards ispace-EUROPE contract for MAGPIE",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.asg.ed.tum.de/en/lpe/research/lvs-on-magpie/": {
+   "title": "TUM: Lunar Volatiles Scout on MAGPIE (OU Volatile Analyzer)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://shackletonrover.co.uk/": {
+   "title": "Shackleton Rover (pitch site)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://research.unipd.it/bitstream/11577/3277352/2/ExoMars-2016-Schiaparelli-Module-Trajectory-and-Atmospheric-Profiles-Reconstruction-Analysis-of-the-Onboard-Inertial-and-Radar-Measurements2018Space-Science-Reviews.pdf": {
+   "title": "Aboudan et al. 2018, Space Sci. Rev.: Schiaparelli trajectory and atmosphere reconstruction",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.sci.news/space/schiaparellis-crash-site-04299.html": {
+   "title": "Sci.News: Schiaparelli crash site (2.07° S, 353.79° E)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://exploration.esa.int/web/mars/-/56538-metmast-with-sensors-annotated": {
+   "title": "ESA: DREAMS MetMast (team credit)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/library/digital-archive/program/video:SHL00095": {
+   "title": "OU digital archive: AMELIA (Schiaparelli descent)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/International_Mars_Ice_Mapper_Mission": {
+   "title": "Wikipedia: International Mars Ice Mapper",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://gov.uk/government/news/launch-success-for-alsat-nano": {
+   "title": "UK Space Agency: launch success for AlSat-Nano",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://space.skyrocket.de/doc_sdat/alsat-nano.htm": {
+   "title": "Gunter’s Space Page: AlSat-Nano (orbit 661 × 700 km, 98.2°)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/56500": {
+   "title": "ORO: Development and flight results from the C3D2 imager on AlSat Nano",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ntrs.nasa.gov/citations/20230000707": {
+   "title": "NASA NTRS: DART impact site",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=25143&discovery=1": {
+   "title": "JPL SBDB: 25143",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://darts.isas.jaxa.jp/planet/project/hayabusa": {
+   "title": "JAXA DARTS: Hayabusa (home position about 7 km)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7933418/": {
+   "title": "Chan et al. 2021, Sci. Rep.: Organic matter and water from asteroid Itokawa",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ntrs.nasa.gov/citations/20210022845": {
+   "title": "NASA NTRS: Itokawa organics (OU Raman spectroscopy)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://europeanspaceflight.com/wp-content/uploads/2024/04/ESA_L4_Expert_Committee_report_Voyage_2050_Moons_of_the_Giant_Planets.pdf": {
+   "title": "ESA L4 Expert Committee report: Moons of the Giant Planets (2024)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.astronomy.com/science/target-enceladus/": {
+   "title": "Astronomy: Inside ESA’s L4 mission to Enceladus",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/Open_University": {
+   "title": "Wikipedia: The Open University",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://university.open.ac.uk/estates/our-estate/walton-hall-east-campus": {
+   "title": "OU Estates: Walton Hall",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://about.open.ac.uk/node/16": {
+   "title": "OU: Mission, vision and values",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/Tony_McDonnell_(space_scientist)": {
+   "title": "Wikipedia: Tony McDonnell",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.roe.ac.uk/~csn/snodgrass-CV.pdf": {
+   "title": "Colin Snodgrass CV",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.nhbs.com/title/183130": {
+   "title": "NHBS: An Introduction to the Solar System (editors)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://pagespro.isae-supaero.fr/naomi-murdoch/": {
+   "title": "ISAE-SUPAERO: Naomi Murdoch",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/view/person/br2427.html": {
+   "title": "ORO: Benjamin Rozitis",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://blog.stem.open.ac.uk/?p=6668": {
+   "title": "OU STEM blog: asteroid officially named after the OU",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://nhm.ac.uk/our-science/people/sara-russell.html": {
+   "title": "NHM: Sara Russell",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.space.gov.au/Phil-Bland": {
+   "title": "Australian Space Agency: Phil Bland career story",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://profiles.imperial.ac.uk/m.a.sephton": {
+   "title": "Imperial: Mark Sephton",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.nhm.ac.uk/our-science/people/caroline-smith": {
+   "title": "NHM: Caroline Smith",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/57371": {
+   "title": "ORO: Kokotanekova PhD thesis (2018)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/Gareth_V._Williams": {
+   "title": "Wikipedia: Gareth V. Williams",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=3202&discovery=1": {
+   "title": "JPL SBDB: 3202",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://research.open.ac.uk/news/ou-support-mission-search-signs-ancient-life-mars": {
+   "title": "OU research news: OU to support mission to search for signs of ancient life on Mars",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/blogs/news/science-mct/ou-academic-joins-international-team-of-experts-to-advise-on-samples-to-be-returned-from-mars": {
+   "title": "OU news: OU academic joins team advising on Mars samples",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://cordis.europa.eu/article/id/94546-beagle-2-leaves-the-uk-to-join-mars-express-for-mission-to-red-planet/de": {
+   "title": "CORDIS: Beagle 2 leaves the UK (ESS PI: Leicester)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/blogs/news/science-mct/ou-space-expert-among-worlds-first-to-receive-moon-rock-samples-for-research": {
+   "title": "OU news: OU space expert among world’s first to receive Moon rock samples",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.open.ac.uk/blogs/news/science-mct/euclid-mission-reveals-spectacular-new-space-discoveries": {
+   "title": "OU news: Euclid mission reveals spectacular new space discoveries",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://www.aanda.org/10.1051/0004-6361/202453152": {
+   "title": "A&A 696, A214 (2025): Euclid strong lenses with CNNs (OU first affiliation)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/74820": {
+   "title": "ORO: ExoMars landing site selection (Quantin-Nataf et al. 2021)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://oro.open.ac.uk/97016": {
+   "title": "ORO: High-resolution map of Oxia Planum (Fawdon et al. 2024)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://en.wikipedia.org/wiki/101955_Bennu": {
+   "title": "Wikipedia: 101955 Bennu (565 × 535 × 508 m)",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://naif.jpl.nasa.gov/pub/naif/ORX/kernels/pck/bennu_v14.tpc": {
+   "title": "NAIF: Bennu shape constants",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=25275&discovery=1": {
+   "title": "JPL SBDB: 25275",
+   "firstUsed": "2026-10-14",
+   "lastUsed": "2026-10-14"
+  },
+  "https://api.crossref.org/works/10.3847/PSJ/ad0a87": {
+   "title": "Crossref: 10.3847/PSJ/ad0a87",
+   "firstUsed": "2026-10-15",
+   "lastUsed": "2026-10-15"
+  },
+  "https://iopscience.iop.org/article/10.3847/PSJ/ad0a87": {
+   "title": "IOPscience: VLT/MUSE characterization of Dimorphos ejecta",
+   "firstUsed": "2026-10-15",
+   "lastUsed": "2026-10-15"
+  },
+  "https://www.open.ac.uk/courses/science/degrees/bsc-natural-sciences-astronomy-planetary-science-q64-ast": {
+   "title": "OU: BSc Natural Sciences (Astronomy and Planetary Science)",
+   "firstUsed": "2026-10-15",
+   "lastUsed": "2026-10-15"
+  },
+  "https://www.open.ac.uk/courses/qualifications/details/s283?orig=w82": {
+   "title": "OU: S283 Planetary science and the search for life",
+   "firstUsed": "2026-10-15",
+   "lastUsed": "2026-10-15"
   }
  }
 }

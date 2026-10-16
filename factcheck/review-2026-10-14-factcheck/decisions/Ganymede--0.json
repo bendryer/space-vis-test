@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Ganymede--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ganymede",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) helped develop and tested the image sensor in JANUS, the camera on ESA’s JUICE mission, which will study Ganymede from orbit."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:15.495Z",
+  "verdict": "sty"
+}

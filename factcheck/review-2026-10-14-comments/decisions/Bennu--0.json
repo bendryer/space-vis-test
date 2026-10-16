@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Bennu was OSIRIS-REx’s target, so the OU information is the same as for that mission. Are separate entries needed?",
+  "field": "ou_involvement",
+  "id": "Bennu--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Bennu",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "OU researchers helped choose where NASA's OSIRIS-REx spacecraft would sample Bennu, and are analysing the material it brought back to Earth (see OSIRIS-REx)."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:55:58.162Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "rate 0.2709",
+  "field": "orbit.rate",
+  "id": "25275-Jocelynbell--0",
+  "kind": "claim",
+  "note": "",
+  "object": "25275 Jocelynbell",
+  "suggestion": [
+    {
+      "f": "orbit.rate",
+      "from": "0.2709",
+      "to": "0.270921"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:26.447Z",
+  "verdict": "fix"
+}

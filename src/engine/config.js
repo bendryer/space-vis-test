@@ -22,6 +22,9 @@ export const SUN_FRAME_RADII = 1.25; // out to the edge of its glowing atmospher
 // orbit within this fraction of the screen, seen from this angle above the plane of the orbits.
 export const SOLAR_SYSTEM_VIEW_FILL = 0.88;
 export const SOLAR_SYSTEM_VIEW_ELEVATION = 25 * Math.PI / 180;
+// A group on show in the overview (showOverview's `frame`): its orbits fill this share of the part
+// of the screen the app leaves them.
+export const GROUP_VIEW_FILL = 0.9;
 
 // Orbit lines may cut inside the true orbit by at most this much (world units, 1% of a craft).
 export const ORBIT_LINE_MAX_SAG = 0.003;

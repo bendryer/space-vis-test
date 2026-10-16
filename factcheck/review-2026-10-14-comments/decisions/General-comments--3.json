@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Simon Green’s rule for asteroid captions (OU connection first, then the official citation) is applied below to the 11 asteroids in the spreadsheet. Fourteen more honorary asteroids in the app were not in the spreadsheet: 3202 Graff, 9159 McDonnell, 158589 Snodgrass, 15834 McBride, 8463 NaomiMurdoch, 11469 Rozitis, 30226 SamuelLeeJackson, 5497 SaraRussell, 6580 PhilBland, 7552 Sephton, 7635 CarolineSmith, 42772 Kokotanekova.",
+  "field": "honorary asteroids",
+  "id": "General-comments--3",
+  "kind": "claim",
+  "note": "Same treatment but put a placeholder to remind me to look up the information",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:47:34.891Z",
+  "verdict": "unv"
+}

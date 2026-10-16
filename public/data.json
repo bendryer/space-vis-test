@@ -16,8 +16,8 @@
       "M0": 0,
       "rate": 0
     },
-    "description": "The Sun is a yellow dwarf star that sits at the centre of our Solar System and provides the energy necessary for life on Earth. Its gravity holds the entire system together, keeping everything from the largest planets to the smallest debris in orbit. As a massive ball of glowing gas, it accounts for more than 99 percent of the total mass of the Solar System.",
-    "ou_involvement": "The Open University studies how the solar wind interacts with Earth's magnetic field through the ESA–CAS SMILE mission, whose X-ray camera detectors were developed and tested at the OU's Centre for Electronic Imaging. How particles from the Sun damage the cameras and detectors on spacecraft is a core research area for the Centre, which tests detectors against space radiation for missions across the Solar System."
+    "description": "The Sun is a yellow dwarf star that sits at the centre of our Solar System and provides the energy necessary for life on Earth. Its gravity holds the entire system together, keeping everything from the largest planets to the smallest debris in orbit. As a massive ball of glowing gas, it accounts for more than 99 per cent of the total mass of the Solar System.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) developed and tested the X-ray camera detectors on SMILE, the ESA–CAS mission studying how the solar wind meets Earth’s magnetic field. How particles from the Sun damage detectors in space is one of the CEI’s core research areas, and we test detectors against space radiation for missions across the Solar System."
   },
   {
     "name": "Mercury",
@@ -26,7 +26,7 @@
     "status": "Natural",
     "radius_km": 2439.7,
     "gm": 22031.87,
-    "texture": "/textures/mercury.jpg",
+    "texture": "/textures/mercury.webp",
     "color": "#aaaaaa",
     "orbit_color": "#a1a1a1",
     "pole": {"ra": 281.0103, "dec": 61.4155},
@@ -41,7 +41,7 @@
       "peri": 29.127
     },
     "description": "Mercury is the smallest planet in our solar system and the closest to the Sun, resulting in extreme temperature variations. Its heavily cratered surface resembles Earth's Moon, indicating that the planet has been geologically quiet for billions of years. Despite its small size, it has a global magnetic field, which is surprising for such a small planet, and a high density that suggests a massive metallic core.",
-    "ou_involvement": "OU scientists have spent decades studying Mercury’s surface composition to understand the early volcanic history of the planet. Researchers use advanced spectroscopy to interpret data from visiting spacecraft and map the distribution of chemical elements. An OU scientist is the UK lead for BepiColombo's MIXS X-ray spectrometer, which will map the elements on Mercury's surface."
+    "ou_involvement": "We have studied Mercury’s surface composition for decades, using spectroscopy of data from visiting spacecraft to map its chemical elements and trace the planet’s early volcanic history. Our scientists are Co-Investigators on BepiColombo’s MIXS X-ray spectrometer, which will map the elements on its surface."
   },
   {
     "name": "BepiColombo",
@@ -50,8 +50,8 @@
     "status": "En Route",
     "launch_year": "2018",
     "image_url": "/images/bepicolumbo_science.jpg",
-    "description": "BepiColombo is a joint mission between ESA and JAXA that is due to enter orbit around Mercury on 21 November 2026. The mission utilizes two separate orbiters to perform the most comprehensive study of the planet's surface, composition, and magnetic field to date. By mapping the planet at various wavelengths, scientists aim to solve the mystery of Mercury's oversized core and its unique geological evolution.",
-    "ou_involvement": "OU academics are members of BepiColombo's M-CAM monitoring camera team, analysing images returned during the spacecraft's Mercury flybys. The Open University was also a development partner, alongside instrument lead the University of Leicester, in building the Mercury Imaging X-ray Spectrometer (MIXS).",
+    "description": "BepiColombo, a joint ESA-JAXA mission, is due to enter orbit around Mercury on 21 November 2026 and to be fully commissioned by April 2027. Its two orbiters will make the most complete study yet of Mercury’s surface, composition and magnetic field, mapping it at many wavelengths to explain the planet’s oversized core and its richness in volatile materials. The model shows the moment JAXA’s Mio orbiter is released; after that, the MOSIF sunshield separates and ESA’s Mercury Planetary Orbiter (MPO) flies free.",
+    "ou_involvement": "We were on BepiColombo’s M-CAM monitoring camera team, analysing images from its Mercury flybys, and have led ESA’s Mercury Surface and Composition Working Group. With instrument lead the University of Leicester, we helped build the Mercury Imaging X-ray Spectrometer (MIXS). Our scientists are now Co-Investigators on MIXS and on MERTIS, the Mercury Thermal Infrared Spectrometer, and associates on SIMBIO-SYS, the orbiter’s imaging and spectrometer system.",
     "model": "/models/bepicolombo.glb",
     "motion": {"mode": "sun", "axis": "+x"},
     "model_scale": 2.5,
@@ -79,7 +79,7 @@
     "status": "Natural",
     "radius_km": 6051.8,
     "gm": 324858.59,
-    "texture": "/textures/venus.jpg",
+    "texture": "/textures/venus.webp",
     "color": "#e6c229",
     "orbit_color": "#e3bb76",
     "pole": {"ra": 272.76, "dec": 67.16},
@@ -93,8 +93,8 @@
       "node": 76.68,
       "peri": 54.923
     },
-    "description": "Venus is often called Earth’s twin due to its similar size and density, but it possesses a thick, toxic atmosphere that creates a runaway greenhouse effect. The planet rotates backwards on its axis and suffers from surface temperatures hot enough to melt lead. Its surface is hidden by thick clouds of sulfuric acid, which are only penetrable by radar and specialized spectrometers.",
-    "ou_involvement": "The Open University is helping to prepare ESA's EnVision mission to Venus. With a £2.3 million ESA grant, an OU team leads the testing and characterisation of the detectors in the VenSpec-U ultraviolet spectrometer, which will study the sulphur chemistry of Venus's clouds, and takes part in science preparations for the mission."
+    "description": "Venus is often called Earth’s twin due to its similar size and density, but it possesses a thick, toxic atmosphere that creates a runaway greenhouse effect. The planet rotates backwards on its axis and suffers from surface temperatures hot enough to melt lead. Its surface is hidden by thick clouds of sulfuric acid, which are only penetrable by radar and specialised spectrometers.",
+    "ou_involvement": "We’re helping to prepare ESA’s EnVision mission to Venus. With a £2.3 million ESA grant, our team leads the testing of the detectors in the VenSpec-U ultraviolet spectrometer, which will study the sulphur chemistry of Venus’s clouds, and we take part in the mission’s science preparations."
   },
   {
     "name": "Earth",
@@ -104,9 +104,9 @@
     "preload": true,
     "radius_km": 6371.0,
     "gm": 398600.4355,
-    "texture": "/textures/earth.jpg",
-    "night_texture": "/textures/earth_night.jpg",
-    "roughness_map": "/textures/earth.jpg",
+    "texture": "/textures/earth.webp",
+    "night_texture": "/textures/earth_night.webp",
+    "roughness_map": "/textures/earth.webp",
     "segments": 48,
     "color": "#2244ff",
     "orbit_color": "#4a90e2",
@@ -122,8 +122,8 @@
       "node": 0.0,
       "peri": 102.938
     },
-    "description": "Earth is the only known planet to support life and is characterized by its vast oceans and nitrogen-oxygen atmosphere. It features a dynamic surface shaped by plate tectonics and an active climate system that regulates temperatures for its diverse ecosystems. Our home planet sits within the Sun's habitable zone, allowing water to exist in liquid form on the surface.",
-    "ou_involvement": "The Open University uses Earth observation data to monitor environmental changes and support international climate conservation efforts. Academics develop machine learning algorithms to analyse satellite imagery for tracking deforestation, urban growth, and glacial retreat. This research provides a critical foundation for teaching students about the intersection of technology and environmental sustainability."
+    "description": "Earth is the only known planet to support life and is characterised by its vast oceans and nitrogen-oxygen atmosphere. It features a dynamic surface shaped by plate tectonics and an active climate system that regulates temperatures for its diverse ecosystems. Our home planet sits within the Sun's habitable zone, allowing water to exist in liquid form on the surface.",
+    "ou_involvement": "We use Earth observation data to monitor environmental change, developing machine learning to track deforestation, urban growth and glacial retreat in satellite images. The work also feeds our teaching on technology and environmental sustainability."
   },
   {
     "name": "ISS",
@@ -133,7 +133,7 @@
     "launch_year": "1998",
     "image_url": "/images/ISS_science.webp",
     "description": "The International Space Station is a modular research laboratory that orbits the Earth and serves as a home for international crews. It provides a unique microgravity environment where scientists can conduct experiments that would be impossible on the ground. The station is a symbol of international cooperation, involving space agencies from the United States, Russia, Europe, Japan, and Canada.",
-    "ou_involvement": "OU scientists took part in the DLR-led BIOlogy and Mars Experiment (BIOMEX) aboard the ISS's EXPOSE-R2 facility, mounted outside the Zvezda module, exposing bacteria, algae, lichens and fungi to the vacuum, UV radiation and temperature extremes of space for about 18 months. The samples returned to Earth with British astronaut Tim Peake in June 2016, and results helped assess whether such organisms (and, by extension, life on Mars) could survive interplanetary transfer.",
+    "ou_involvement": "Our scientists took part in BIOMEX, a DLR-led experiment outside the ISS that exposed bacteria, algae, lichens and fungi to the vacuum, UV radiation and temperature extremes of space for about 18 months. The samples came home with British astronaut Tim Peake in June 2016, and the results helped show whether such organisms (and, by extension, life on Mars) could survive travelling between planets.",
     "model": "/models/iss.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.2,
@@ -155,8 +155,8 @@
     "status": "Operational",
     "launch_year": "1990",
     "image_url": "/images/hubble_science.jpg",
-    "description": "Hubble is one of NASA's most successful space telescopes and has spent over three decades providing iconic images of the deep universe. It orbits above the Earth's atmosphere to capture clear views of galaxies, nebulae, and planets without the distortion caused by our air. The mission has fundamentally changed our understanding of the age of the universe and the existence of dark energy.",
-    "ou_involvement": "OU astronomers actively use Hubble's extensive archive to research stellar populations and the evolution of distant galaxies, work that also feeds directly into the university's astronomy curriculum. The high-performance CCDs in Hubble's WFC3 camera are built by Teledyne e2v, the same UK manufacturer that partners closely with the OU's Centre for Electronic Imaging on the characterisation and radiation-hardening of space CCDs.",
+    "description": "Hubble, a joint NASA/ESA mission, is one of the most successful space telescopes ever built, and has spent over three decades providing iconic images of the deep universe. It orbits above the Earth's atmosphere to capture clear views of galaxies, nebulae, and planets without the distortion caused by our air. The mission has fundamentally changed our understanding of the age of the universe and the existence of dark energy.",
+    "ou_involvement": "Our astronomers use Hubble’s archive to study stellar populations and how distant galaxies evolve, and the work feeds into our astronomy teaching. The CCDs in Hubble’s WFC3 camera were built by Teledyne e2v, the UK company that partners with our Centre for Electronic Imaging on testing and radiation-hardening space detectors.",
     "model": "/models/hubble.glb",
     "motion": {"mode": "spin", "axis": "+y", "tilt": 55},
     "model_scale": 1.5,
@@ -172,53 +172,24 @@
     }
   },
   {
-    "name": "Sentinel-2",
+    "name": "Sentinel-4",
     "parent": "Earth",
     "type": "mission",
-    "status": "Operational",
-    "launch_year": "2015",
-    "image_url": "/images/sentinel2_science.jpg",
-    "description": "Sentinel-2 is a constellation of satellites, currently three, designed to provide high-resolution optical imagery for the European Copernicus program. The mission monitors Earth's land surfaces to provide data on vegetation, soil, and water cover for environmental and security monitoring. Its frequent revisit time allows for the tracking of rapid changes such as agricultural growth or natural disasters.",
-    "model": "/models/sentinel2.glb",
-    "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
-    "model_scale": 1.5,
+    "status": "Launched",
+    "launch_year": "2025",
+    "description": "Sentinel-4 is a Copernicus mission to monitor air quality over Europe from geostationary orbit, 36,000 km above the equator. Its ultraviolet, visible and near-infrared spectrometer flies on EUMETSAT’s Meteosat Third Generation Sounder satellite (MTG-S1), launched on 1 July 2025, and measures ozone, nitrogen dioxide, sulphur dioxide, formaldehyde and aerosols every hour.",
+    "ou_involvement": "[TO ADD: OU involvement, needs input]",
     "radius": 0.5,
     "size_m": 5,
     "size_estimated": true,
-    "color": "#44cc44",
+    "color": "#66ddaa",
     "orbit": {
-      "a_km": 7164.1,
-      "e": 0.0,
-      "i": 98.62,
-      "M0": 120,
-      "rate": 5154.218243,
-      "node": 77.96,
-      "node_rate": 0.9856474
-    }
-  },
-  {
-    "name": "Sentinel-3",
-    "parent": "Earth",
-    "type": "mission",
-    "status": "Operational",
-    "launch_year": "2016",
-    "image_url": "/images/sentinel3_science.jpg",
-    "description": "Sentinel-3 is a multi-instrument mission intended to provide high-accuracy data for ocean and land monitoring. It measures sea-surface topography, ocean temperature, and land-surface colour to support ocean forecasting and climate research. The mission is essential for tracking marine pollution and observing the impact of climate change on coastal ecosystems.",
-    "model": "/models/sentinel3.glb",
-    "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
-    "model_scale": 1.5,
-    "radius": 0.5,
-    "size_m": 5,
-    "size_estimated": true,
-    "color": "#0088ff",
-    "orbit": {
-      "a_km": 7192.6,
-      "e": 0.0,
-      "i": 98.65,
-      "M0": 240,
-      "rate": 5123.613954,
-      "node": 70.46,
-      "node_rate": 0.9856474
+      "a_km": 42164.2,
+      "e": 0,
+      "i": 0,
+      "M0": 0,
+      "rate": 360.985647,
+      "illustrative": true
     }
   },
   {
@@ -229,7 +200,7 @@
     "launch_year": "In Dev",
     "image_url": "/images/castor_science.jpg",
     "description": "CASTOR is a proposed Canadian-led space telescope designed to perform high-resolution imaging in the ultraviolet and blue-optical wavelengths. It will feature a wide-field view that is significantly larger than Hubble's, enabling it to survey vast portions of the sky. The mission aims to address fundamental questions in cosmology, including the nature of dark energy and the formation of galaxies.",
-    "ou_involvement": "The CEI at the Open University was awarded £2.1 million to lead testing and space-qualification of the CIS303 and CIS120 UV detectors (built by Teledyne e2v) for CASTOR, a Canadian-led 1-metre UV/optical space telescope targeting launch around 2030. This includes electro-optical testing, optimising the detectors' performance, and measuring how well different UV coatings and enhancement technologies work and how they degrade, to raise the sensors' readiness for spaceflight.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) won £2.1 million to lead the testing and space qualification of the CIS303 and CIS120 UV detectors, built by Teledyne e2v, for CASTOR, a Canadian-led 1-metre UV/optical telescope targeting launch around 2030. We test and optimise the detectors, and measure how well different UV coatings work and how they degrade, to get the sensors ready for spaceflight.",
     "model": "/models/castor.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 50},
     "model_scale": 1.5,
@@ -249,6 +220,27 @@
     }
   },
   {
+    "name": "Spektr-UV",
+    "parent": "Earth",
+    "type": "mission",
+    "status": "Planned",
+    "launch_year": "2031",
+    "description": "Spektr-UV, also known as the World Space Observatory–Ultraviolet (WSO-UV), is a planned Russian-led space telescope with a 1.7-metre mirror. It will observe at ultraviolet wavelengths, between 115 and 310 nanometres, that are blocked by our atmosphere, taking spectra and images of stars, galaxies and planets. After many delays, it is now expected to launch no earlier than 2031.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) contributed to the detector technology for WSO-UV’s Spectrographs Unit. Its CCD cameras must collect light for up to an hour and read out very faint signals with very little noise, and we studied how radiation damage in orbit would affect the sensors’ ability to do that.",
+    "radius": 0.5,
+    "size_m": 8,
+    "size_estimated": true,
+    "color": "#9966ff",
+    "orbit": {
+      "a_km": 42164.2,
+      "e": 0,
+      "i": 51.6,
+      "M0": 120,
+      "rate": 360.985647,
+      "illustrative": true
+    }
+  },
+  {
     "name": "TRUTHS",
     "parent": "Earth",
     "type": "mission",
@@ -256,7 +248,7 @@
     "launch_year": "In Dev",
     "image_url": "/images/truths_science.jpg",
     "description": "TRUTHS is a UK-led mission delivered by ESA that aims to create a 'gold standard' reference point for climate measurements in space. It will measure the Sun's incoming radiation and Earth's reflected radiation with unprecedented accuracy to calibrate other satellites. This high-precision data will significantly increase our confidence in long-term climate change data and environmental forecasting.",
-    "ou_involvement": "The CEI carries out experimental radiation-damage characterisation of the Teledyne e2v CIS120 CMOS sensor being evaluated for TRUTHS and other next-generation missions, testing dark current, noise and quantum efficiency both before and after gamma and proton irradiation across a range of operating temperatures. This work helps confirm the detector technology can maintain the high calibration accuracy TRUTHS needs throughout a multi-year mission.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) tests how radiation damages the Teledyne e2v CIS120 CMOS sensor, which is being evaluated for TRUTHS and other next-generation missions. We measure its dark current, noise and sensitivity before and after gamma and proton irradiation, at a range of temperatures, to check it can keep the high calibration accuracy TRUTHS needs over a multi-year mission.",
     "model": "/models/truths.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -280,7 +272,7 @@
     "launch_year": "2026",
     "image_url": "/images/smile_science.jpg",
     "description": "The Solar wind Magnetosphere Ionosphere Link Explorer is a collaborative mission between ESA and CAS that launched on 19 May 2026. It is designed to provide the first global images of the Earth's magnetosphere and its dynamic interaction with the solar wind. By observing X-ray emissions, the mission aims to reveal how solar activity impacts our planet's magnetic shield and atmosphere.",
-    "ou_involvement": "The Centre for Electronic Imaging developed and tested the twin CCD370 detectors (4510×4510-pixel, 18-micron-pixel sensors derived from the CCD270s developed for PLATO) that form the focal plane of SMILE's Soft X-ray Imager (SXI), running noise, charge-transfer-inefficiency and defect-mapping tests before flight. The OU is now part of the mission's operations team, working closely with the SXI team to get the most science from the detectors.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) developed and tested the twin CCD370 detectors (4,510 × 4,510 pixels, derived from the CCD270s developed for PLATO) at the heart of SMILE’s Soft X-ray Imager. We’re now part of the mission’s operations team, working with the imager’s team to get the most science from the detectors.",
     "model": "/models/smile.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -302,7 +294,7 @@
     "status": "Operational",
     "launch_year": "2004",
     "image_url": "/images/swift_science.jpg",
-    "description": "Swift is a multi-wavelength space observatory dedicated to detecting and localizing gamma-ray bursts within seconds. It rapidly reorients itself to observe the afterglow of these massive cosmic explosions across X-ray and optical wavelengths. The mission has been operating for over 20 years, contributing significantly to our understanding of black hole formation and neutron star mergers.",
+    "description": "Swift is a multi-wavelength space observatory dedicated to detecting and localising gamma-ray bursts within seconds. It rapidly reorients itself to observe the afterglow of these massive cosmic explosions across X-ray and optical wavelengths. Over more than 20 years it has transformed our understanding of black hole formation and neutron star mergers. With its orbit decaying faster than expected, a commercial mission to boost it was called off in August 2026, and Swift is expected to re-enter the atmosphere by the end of the year.",
     "model": "/models/swift.glb",
     "motion": {"mode": "spin", "axis": "+y", "tilt": 45, "wobble": 12},
     "model_scale": 1.2,
@@ -331,7 +323,7 @@
     "launch_year": "2014",
     "image_url": "/images/ukube_science.jpeg",
     "description": "UKube-1 was the first mission commissioned by the UK Space Agency to demonstrate advanced CubeSat technologies in orbit. It served as a way maker for the UK small satellite industry by testing payloads for space weather monitoring and secure communications. The mission provided invaluable hands-on experience for researchers and students across multiple British universities.",
-    "ou_involvement": "The CEI's Compact CMOS Camera Demonstrator (C3D) flew on UKube-1, the UK Space Agency's first CubeSat, after CEI won one of only three science payload slots. Launched in July 2014, its three cameras achieved the first in-orbit demonstration of a European 0.18-micron CMOS imaging technology, and radiation testing showed the sensor suffered dark-current and flatband-voltage degradation similar to CCDs while also revealing CMOS-specific effects like single-event upsets. This data has since informed the design of more radiation-tolerant space CMOS sensors.",
+    "ou_involvement": "Our Compact CMOS Camera Demonstrator (C3D) won one of only three science payload slots on UKube-1, the UK Space Agency’s first CubeSat. Launched in July 2014, its three cameras made the first in-orbit demonstration of a European 0.18-micron CMOS imaging technology. Radiation testing showed the sensor degrading much like a CCD, along with effects unique to CMOS such as single-event upsets, and the data has since informed the design of more radiation-tolerant space CMOS sensors.",
     "model": "/models/ukube.glb",
     "motion": {"mode": "tumble"},
     "model_scale": 0.8,
@@ -347,6 +339,28 @@
     }
   },
   {
+    "name": "AlSat-Nano",
+    "parent": "Earth",
+    "type": "mission",
+    "status": "Complete",
+    "launch_year": "2016",
+    "description": "AlSat-Nano was a joint UK-Algerian mission to build and operate a 3U CubeSat, launched in 2016. The project was designed to train Algerian students, drawing on UK engineering experience.",
+    "ou_involvement": "We provided AlSat-Nano’s C3D2 camera, a successor to the C3D camera on UKube-1. Its three cameras imaged the Earth, tested commercial camera sensors in space and watched the CubeSat’s AstroTube boom unfold, and it also served as a remote experiment for our students in the Open Science Laboratory.",
+    "model": "/models/cubesat.glb",
+    "motion": {"mode": "tumble"},
+    "radius": 0.2,
+    "size_m": 0.34,
+    "color": "#999999",
+    "orbit": {
+      "a_km": 7058,
+      "e": 0,
+      "i": 98.2,
+      "M0": 120,
+      "rate": 5270.875786,
+      "node_rate": 0.9856
+    }
+  },
+  {
     "name": "Moon",
     "parent": "Earth",
     "menu_top_level": true,
@@ -354,7 +368,7 @@
     "status": "Natural",
     "radius_km": 1737.4,
     "gm": 4902.8,
-    "texture": "/textures/moon.jpg",
+    "texture": "/textures/moon.webp",
     "color": "#aaaaaa",
     "orbit_color": "#888888",
     "tilt": 6.68,
@@ -372,8 +386,8 @@
       "peri_rate": 0.1643532,
       "plane": "ecliptic"
     },
-    "description": "The Moon is Earth's only natural satellite and has a significant influence on our planet's tides and rotational stability. Its surface is covered in regolith and ancient lava plains, recording billions of years of solar system history without atmospheric erosion. As the only celestial body humans have visited, it remains the primary target for future deep-space exploration and colonization.",
-    "ou_involvement": "OU analysis of rock samples returned by the Apollo missions helped show that the Moon is not as dry as once thought, and that water is locked inside lunar minerals. Building on instrument experience from missions such as Beagle 2 and Rosetta, OU teams now develop miniature laboratories to measure what the Moon is made of. They also research in-situ resource utilisation: how lunar regolith could supply water, oxygen and fuel, and how it could be used to build on the Moon. This work supports plans for sustainable future exploration of the Moon."
+    "description": "Since its formation 4.5 billion years ago, the Moon has been our nearest neighbour in space. Its cratered surface preserves a historical record of the near-Earth environment long since lost on our home planet. The Moon influences our planet's tides and rotational stability, our culture and our scientific understanding of our place in the Universe. It is the only celestial body that humans have visited, and is widely regarded as a potential stepping stone into deep space.",
+    "ou_involvement": "Our analysis of Apollo samples helped show that the Moon is not as dry as once thought: water is locked inside lunar minerals. Drawing on instruments we built for Beagle 2 and Rosetta, we now develop miniature laboratories to measure what the Moon is made of. We also study how lunar soil could supply water, oxygen and fuel, and be used to build on the Moon, to support sustainable exploration."
   },
   {
     "name": "Chandrayaan-1",
@@ -383,7 +397,7 @@
     "launch_year": "2008",
     "image_url": "/images/chandrayaan_science.jpg",
     "description": "Chandrayaan-1 was India's first lunar probe and was instrumental in discovering widespread evidence of water molecules on the Moon. It carried a suite of international instruments to create a detailed three-dimensional map of the lunar surface and its mineral composition. The mission successfully reached lunar orbit and operated for nearly a year before its mission was completed.",
-    "ou_involvement": "The Centre for Electronic Imaging performed the proton radiation-damage assessment for the C1XS instrument's 24 CCD54 X-ray detectors, using ESA's SPENVIS software to model shielding, operating temperature, and voltage requirements. The team pre-flight characterised 14 candidate detector modules and recommended the ten best-performing units for flight, and continues to provide advisory support on the detectors' in-orbit radiation performance.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) assessed how protons would damage the 24 CCD54 X-ray detectors in the C1XS instrument, modelling the shielding, temperature and voltages they needed. We tested 14 candidate detector modules before launch, recommended the ten best for flight, and advised on how the detectors coped with radiation in orbit.",
     "model": "/models/chandrayaan1.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1,
@@ -400,6 +414,27 @@
     }
   },
   {
+    "name": "Chandrayaan-2",
+    "parent": "Moon",
+    "type": "mission",
+    "status": "Operational",
+    "launch_year": "2019",
+    "description": "Chandrayaan-2 is India’s second mission to the Moon, launched in July 2019. Its lander, Vikram, crashed during its descent that September, but the orbiter has been mapping the Moon ever since from a polar orbit about 100 km up, studying its surface, its minerals and the elements it is made of.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) helped prepare the CCD236 X-ray detectors in the orbiter’s CLASS spectrometer, the successor to Chandrayaan-1’s C1XS, which maps the elements in the Moon’s surface. We characterised the detectors and tested them against radiation, and by finding the best temperatures, readout speeds and voltages we doubled their resistance to radiation damage.",
+    "radius": 0.4,
+    "size_m": 3,
+    "size_estimated": true,
+    "color": "#ffcc66",
+    "orbit": {
+      "a_km": 1837.4,
+      "e": 0,
+      "i": 90,
+      "M0": 180,
+      "rate": 4401.015474,
+      "node": 90
+    }
+  },
+  {
     "name": "Chang'e-5",
     "parent": "Moon",
     "type": "mission",
@@ -412,7 +447,7 @@
     "launch_year": "2020",
     "image_url": "/images/change5_science.jpg",
     "description": "Chang'e-5 was a landmark Chinese mission that successfully returned approximately two kilograms of lunar soil and rocks to Earth in late 2020. It targeted a younger region of the Moon called Oceanus Procellarum to provide insights into late-stage lunar volcanic activity. The mission involved a complex series of manoeuvres, including an automated docking in lunar orbit for the return journey.",
-    "ou_involvement": "In April 2025 the Open University was one of only seven institutions outside China selected to borrow samples from the Chang'e-5 mission. The OU team is using the university's laboratory facilities to determine the isotopic composition of carbon, nitrogen, oxygen, and noble gases within the grains. This research aims to test the giant-impact theory of the Moon's origin and reveal the history of volatiles in the Earth-Moon system.",
+    "ou_involvement": "In April 2025 we became one of only seven institutions outside China chosen to borrow Chang’e-5 samples. In our laboratories we’re measuring the isotopes of carbon, nitrogen, oxygen and noble gases in the grains, to test the giant-impact theory of the Moon’s origin and trace the history of volatiles in the Earth-Moon system.",
     "model": "/models/change5.glb",
     "model_scale": 0.4,
     "radius": 0.2,
@@ -432,8 +467,8 @@
       "lon": 31.5
     },
     "image_url": "/images/luna27_science.jpg",
-    "description": "PROSPECT is an ESA package that will drill up to about a metre into the ground near the Moon's south pole and analyse the samples for water ice and other volatiles. It will fly on Intuitive Machines' Nova-C lander (IM-4) under NASA's Commercial Lunar Payload Services programme, with launch planned for 2027. It was first built for Russia's Luna 27 lander, until ESA ended that cooperation in 2022.",
-    "ou_involvement": "The Open University leads the development of ProSPA, the sample-processing instrument of ESA's PROSPECT lunar-volatiles package. The OU-led team heats and chemically analyses drilled polar samples via mass spectrometry to characterise lunar volatiles such as water ice, supported by STFC RAL Space, Airbus Defence and Space, and German partners at the Max Planck Institute and TU Munich.",
+    "description": "PROSPECT is the European Space Agency's exploration science payload for finding and analysing water ice and other materials on the Moon. An Italian drill collects samples from up to a metre below the surface, for analysis in the OU-provided ProSPA instrument. The package will be delivered to a south polar region of the Moon by the Intuitive Machines IM-4 lander, planned for 2027.",
+    "ou_involvement": "We lead the design and development of ProSPA, a miniature laboratory that will analyse samples on the Moon itself. It heats lunar soil just as meteorites and returned samples are analysed in laboratories on Earth, and its mass spectrometers identify, measure and isotopically characterise water ice and other volatiles.",
     "model": "/models/luna27.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -446,20 +481,60 @@
     "type": "mission",
     "icon": "rover",
     "status": "Planned",
-    "launch_year": "In Dev",
+    "launch_year": "2028",
     "orbit_type": "landed",
     "landed_coords": {
       "lat": -77,
       "lon": -148.5
     },
     "image_url": "/images/lupex_science.jpg",
-    "description": "The Lunar Polar Exploration mission is a joint project between ISRO and JAXA designed to search for water ice and other volatiles at the lunar south pole. It will deploy a rover capable of drilling into the lunar surface to collect samples for analysis. The mission is critical for identifying resources that could support future long-term lunar habitation and exploration.",
-    "ou_involvement": "The Open University is developing the Exploration Mass Spectrometer (EMS-L), an instrument for JAXA's LUPEX rover mission to the lunar south pole, targeted for 2028. The instrument will measure the concentration and type of volatiles released from excavated subsurface material to help assess the Moon's potential for in-situ resource utilisation. This work builds on the OU's established heritage in space-instrument development, including flight hardware for the Rosetta and Beagle 2 missions.",
+    "description": "LUPEX is a joint JAXA-ISRO mission to look for water and other resources at the Moon’s south pole. Due to launch no earlier than 2028, its rover will explore sites with different lighting, temperatures and geology, measuring how much water there is, where, and in what form, down to about 1.5 metres. It should work for about 3.5 months after landing, and possibly for up to a year.",
+    "ou_involvement": "We’re developing EMS-L, the Exospheric Mass Spectrometer for LUPEX, an ESA instrument on the JAXA-ISRO rover. Building on our heritage in miniature ion-trap mass spectrometry, it will measure water and other volatiles in the thin lunar exosphere and those released as the rover drives and drills, to show how volatiles are spread and behave at the Moon’s south pole.",
     "model": "/models/lupex.glb",
     "model_scale": 0.3,
     "radius": 0.2,
     "size_m": 3.3,
     "color": "#aabbcc"
+  },
+  {
+    "name": "MAGPIE",
+    "parent": "Moon",
+    "type": "mission",
+    "icon": "rover",
+    "status": "Planned",
+    "launch_year": "2029",
+    "orbit_type": "landed",
+    "landed_coords": {
+      "lat": -85.5,
+      "lon": -30,
+      "illustrative": true
+    },
+    "description": "MAGPIE is ESA's first lunar rover, designed to operate for up to 10 Earth days at the lunar south pole, where it will drill into the subsurface to analyse material for water and other volatiles. The rover is being built by ispace Europe and is due to fly on ispace’s Mission 4 lander in 2029.",
+    "ou_involvement": "We’re developing the Volatile Analyser, the ion-trap mass spectrometer in the Lunar Volatiles Scout drill on ESA’s MAGPIE rover. Building on our heritage in ion-trap mass spectrometry, it will identify and measure water and other volatiles in lunar soil, and how they vary with depth at the Moon’s south pole.",
+    "radius": 0.2,
+    "size_m": 2,
+    "size_estimated": true,
+    "color": "#99ddff"
+  },
+  {
+    "name": "Shackleton Rover",
+    "parent": "Moon",
+    "type": "mission",
+    "icon": "rover",
+    "status": "Planned",
+    "launch_year": "2030",
+    "orbit_type": "landed",
+    "landed_coords": {
+      "lat": -89.2,
+      "lon": 130,
+      "illustrative": true
+    },
+    "description": "Taking inspiration from Sir Ernest Shackleton's 1914 expedition, and in coordination with his family, Shackleton Rover is a proposed UK-led mission to the lunar south pole. It would showcase and develop the UK's technological, scientific and industrial capabilities in space exploration while inspiring the next generation of space scientists and engineers. By establishing a long-lived experiment on the Moon, it would also give the UK a voice in the responsible exploration of the Moon and its resources.",
+    "ou_involvement": "We’re helping to define the payload and the mission for Shackleton Rover, a concept for a rover system for the lunar south pole that would be built and operated entirely in the UK.",
+    "radius": 0.2,
+    "size_m": 2,
+    "size_estimated": true,
+    "color": "#aaddcc"
   },
   {
     "name": "Earth-Sun L2",
@@ -469,10 +544,10 @@
     "show_orbit": false,
     "system": "Earth",
     "status": "Natural",
-    "description": "Lagrange Point 2 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly opposite the Sun. It provides a perfect, quiet environment for space telescopes to observe the deep universe without interference from Earth's heat. Spacecraft at this location follow a halo or Lissajous orbit to maintain a constant line of sight for communication.",
+    "description": "Lagrange Point 2 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometres away from the Earth, directly opposite the Sun. It provides a perfect, quiet environment for space telescopes to observe the deep universe without interference from Earth's heat. Spacecraft at this location follow a halo or Lissajous orbit to maintain a constant line of sight for communication.",
     "radius": 1,
     "lagrange": {"body": "Earth", "point": "L2"},
-    "ou_involvement": "The OU uses this reference point as a virtual laboratory to study how deep-space environment conditions affect various satellite components. Academics monitor the performance of multiple OU-characterized missions that are stationed at this critical vantage point. This data is used to improve the design of future detectors for flagship missions currently under development at the university."
+    "ou_involvement": "We treat L2 as a natural laboratory for how deep space affects spacecraft components, following the performance of detectors we characterised for missions stationed there. What we learn improves the detectors we’re developing for future flagship missions."
   },
   {
     "name": "JWST",
@@ -481,16 +556,17 @@
     "status": "Operational",
     "launch_year": "2021",
     "image_url": "/images/jwst_science.jpeg",
-    "description": "The James Webb Space Telescope is the premier space observatory of the decade, designed to solve mysteries in our solar system and beyond. It uses a massive gold-coated mirror to capture faint infrared light from the very first stars and galaxies formed after the Big Bang. Since its launch in 2021, it has revolutionized our understanding of exoplanet atmospheres and galactic evolution.",
-    "ou_involvement": "OU astronomers use JWST to study the atmospheres of planets around other stars. They were part of the international teams that analysed JWST's first detailed observations of the giant planet WASP-39b, which revealed its clouds and chemistry, and OU-funded research has studied the small rocky planet L 98-59 d, where JWST found possible signs of volcanic gases.",
+    "description": "The James Webb Space Telescope is the premier space observatory of the decade, designed to solve mysteries in our solar system and beyond. It uses a massive gold-coated mirror to capture faint infrared light from the very first stars and galaxies formed after the Big Bang. Since its launch in 2021, it has revolutionised our understanding of exoplanet atmospheres and galactic evolution.",
+    "ou_involvement": "Our astronomers use JWST to study the atmospheres of planets around other stars. We were part of the international teams that analysed JWST’s first detailed observations of the giant planet WASP-39b, revealing its clouds and chemistry, and research we funded has studied the small rocky planet L 98-59 d, where JWST found possible signs of volcanic gases.",
     "model": "/models/jwst.glb",
     "motion": {"mode": "sun", "axis": "-y", "rate": 1},
     "model_scale": 2.5,
     "radius": 1.2,
     "size_m": 21.2,
     "color": "#ffaa00",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "halo",
       "M0": 0,
       "amplitude_km": {"y": 832000, "z": 520000},
       "period_days": 180
@@ -504,15 +580,16 @@
     "launch_year": "2013",
     "image_url": "/images/gaia_science.png",
     "description": "Gaia is an ambitious ESA mission designed to create the largest and most precise three-dimensional map of our galaxy. By surveying nearly two billion stars, it provides data on their positions, distances, and motions with incredible accuracy. This massive dataset allows astronomers to reconstruct the history and future of the Milky Way across billions of years.",
-    "ou_involvement": "The CEI modelled the charge-trapping effects of radiation damage in Gaia's CCD detectors ahead of launch, and has since analysed in-flight data from the BP/RP and RVS radiation campaigns, feeding directly into the mission's data-processing pipeline. In-orbit measurements showed Gaia's detectors accumulating less radiation damage than ground-based testing had predicted, a discrepancy the CEI is still investigating to improve how future missions are radiation-tested before launch. OU PhD students separately use Gaia's vast catalogues to study stellar clusters and binary star systems, and OU researchers use Gaia's science alerts to find transient objects. Gaia is a core case study in the OU's S818 Space Science module, where students use Gaia data to make follow-up observations with the OU's remote telescope in Tenerife.",
+    "ou_involvement": "Before launch, our Centre for Electronic Imaging (CEI) modelled how radiation damage would trap charge in Gaia’s CCDs, and we’ve since analysed its in-flight radiation data for the mission’s data processing. Gaia’s detectors turned out less damaged than ground tests predicted, a puzzle we’re still investigating to improve how future missions are tested. Our PhD students use Gaia’s catalogues to study star clusters and binary stars, our researchers use its alerts to find transient objects, and students on our S818 Space Science module follow up Gaia targets with our remote telescope in Tenerife.",
     "model": "/models/gaia.glb",
     "motion": {"mode": "sun", "axis": "-y", "rate": 4, "wobble": 45, "period": 90},
     "model_scale": 2,
     "radius": 1,
     "size_m": 10,
     "color": "#ffffff",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "lissajous",
       "M0": 0,
       "amplitude_km": {"y": 353500, "z": 185000},
       "period_days": 180
@@ -526,15 +603,16 @@
     "launch_year": "2023",
     "image_url": "/images/euclid_science.jpg",
     "description": "Euclid is an ESA space telescope designed to investigate the 'Dark Universe' by observing the shapes and distances of billions of galaxies. It maps the structure of the cosmos out to 10 billion light-years to track how dark matter and dark energy influence the expansion of the universe. The mission provides high-resolution imaging that allows scientists to detect the subtle effects of gravitational lensing.",
-    "ou_involvement": "The CEI played a lead role in characterising the CCD273 detectors for the VIS instrument and developed 'trap pumping', now used in orbit: a method that pinpoints individual radiation-damage defects in the detectors with sub-pixel precision, giving an accurate measure of how the detectors degrade in space so that images can be corrected and kept at science quality. This OU-developed calibration method is essential for correcting the mission's imaging data and preserving the high-precision shape measurements needed to trace dark matter through gravitational lensing. OU astronomers also lead research groups that use Euclid's wide-field surveys to identify rare gravitational lenses.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) played a lead role in characterising the CCD273 detectors in Euclid’s VIS instrument, and developed ‘trap pumping’, now used in orbit. It pinpoints individual radiation-damage defects in the detectors to within a fraction of a pixel, so images can be corrected and kept precise enough to trace dark matter through gravitational lensing. Our astronomers also lead searches of Euclid’s surveys for rare gravitational lenses.",
     "model": "/models/euclid.glb",
     "motion": {"mode": "spin", "axis": "+y", "tilt": 50},
     "model_scale": 2,
     "radius": 1,
     "size_m": 4.7,
     "color": "#ff00ff",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "halo",
       "M0": 180,
       "amplitude_km": {"y": 800000, "z": 400000},
       "period_days": 180,
@@ -548,8 +626,8 @@
     "status": "Planned",
     "launch_year": "In Dev",
     "image_url": "/images/athena_science.jpg",
-    "description": "NewAthena is a planned ESA X-ray observatory, due for launch around 2037, designed to answer fundamental questions about the 'Hot and Energetic Universe.' It will observe massive black holes, galaxy clusters, and the hot gas that fills the space between galaxies to see how they evolve over time. The telescope will feature a massive collecting area and high-spectral resolution to detect the movement of matter under extreme gravity.",
-    "ou_involvement": "The CEI is working with institutions around the world on the design and experimental testing of graded-Z shielding for the mission's Wide Field Imager (WFI) instrument, layering high- and low-Z materials to block high-energy particles and the secondary radiation they produce. Researchers use the GEANT4 simulation toolkit, validated against real detector tests, to model how this shielding will perform in orbit before launch.",
+    "description": "NewAthena is a planned ESA X-ray observatory, due for launch in 2037, designed to answer fundamental questions about the 'Hot and Energetic Universe.' It will observe massive black holes, galaxy clusters, and the hot gas that fills the space between galaxies to see how they evolve over time. The telescope will feature a massive collecting area and high-spectral resolution to detect the movement of matter under extreme gravity.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) is working with partners worldwide to design and test graded-Z shielding for NewAthena’s Wide Field Imager: layers of heavy and light materials that block high-energy particles and the secondary radiation they produce. We model how the shielding will perform in orbit with the GEANT4 toolkit, checked against real detector tests.",
     "model": "/models/athena.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 40},
     "model_scale": 2,
@@ -557,8 +635,9 @@
     "size_m": 15,
     "size_estimated": true,
     "color": "#aa44ff",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "halo",
       "M0": 90,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -572,8 +651,8 @@
     "status": "Planned",
     "launch_year": "2040s",
     "image_url": "/images/hwo_science.jpeg",
-    "description": "The Habitable Worlds Observatory is a future flagship NASA telescope designed to find and characterize Earth-like planets around other stars. It will use a massive, stable mirror and a coronagraph to block out starlight, allowing it to image faint planets in the habitable zone. The mission's primary goal is to search for biosignatures like oxygen and methane in the atmospheres of distant worlds.",
-    "ou_involvement": "The CEI is developing high-precision, low-noise UV and photon-counting detectors for HWO's extremely faint imaging tasks, building on the university's CASTOR mission heritage. The OU is also part of the UK consortium that received £3 million in 2026 to develop one of the telescope's core instruments. This long-term research keeps the OU at the forefront of the international search for life beyond our solar system.",
+    "description": "The Habitable Worlds Observatory is a future flagship NASA telescope designed to find and characterise Earth-like planets around other stars. It will use a massive, stable mirror and a coronagraph to block out starlight, allowing it to image faint planets in the habitable zone. The mission's primary goal is to search for biosignatures like oxygen and methane in the atmospheres of distant worlds.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) is developing low-noise UV and photon-counting detectors for HWO’s faint imaging, building on our CASTOR work. We’re also part of the UK consortium awarded £3 million in 2026 to develop one of the telescope’s core instruments.",
     "model": "/models/hwo.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 40, "rate": 1.5},
     "model_scale": 2.5,
@@ -581,7 +660,7 @@
     "size_m": 15,
     "size_estimated": true,
     "color": "#44ffaa",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
       "M0": 120,
       "amplitude_km": {"y": 800000, "z": 500000},
@@ -596,15 +675,15 @@
     "status": "Planned",
     "launch_year": "2027",
     "image_url": "/images/plato_science.jpg",
-    "description": "PLATO is an upcoming ESA mission designed to detect and characterize Earth-sized exoplanets orbiting bright, Sun-like stars. It will use 26 separate cameras to monitor hundreds of thousands of stars for the tiny dip in brightness caused by a planet passing in front. The mission aims to find worlds in the habitable zone where liquid water could exist on the surface.",
-    "ou_involvement": "Open University researchers lead population studies to identify and filter out astrophysical false positives (such as blended eclipsing binaries) that could otherwise be mistaken for planets in PLATO's target fields, work supported by UK Space Agency funding for the mission's Development Phase. The team also contributes detector performance, calibration, and radiation-tolerance studies through the university's Centre for Electronic Imaging. The OU's own robotic telescopes could provide follow-up observations of candidate stars once the mission is flying.",
+    "description": "PLATO is an upcoming ESA mission designed to detect and characterise Earth-sized exoplanets orbiting bright, Sun-like stars. It will use 26 separate cameras to monitor hundreds of thousands of stars for the tiny dip in brightness caused by a planet passing in front. The mission aims to find worlds in the habitable zone where liquid water could exist on the surface.",
+    "ou_involvement": "We lead population studies, funded by the UK Space Agency, to weed out false positives such as blended eclipsing binaries that could be mistaken for planets in PLATO’s fields. Our Centre for Electronic Imaging (CEI) also works on the detectors’ performance, calibration and radiation tolerance, and our robotic telescopes could follow up candidate stars once PLATO is flying.",
     "model": "/models/plato.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
     "model_scale": 2,
     "radius": 1,
     "size_m": 9,
     "color": "#ffff00",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
       "M0": 270,
       "amplitude_km": {"y": 800000, "z": 500000},
@@ -619,16 +698,17 @@
     "status": "Launched",
     "launch_year": "2026",
     "image_url": "/images/roman_science.jpg",
-    "description": "The Nancy Grace Roman Space Telescope will provide a field of view 100 times larger than Hubble's while maintaining the same high-resolution quality. It is designed to perform massive surveys that will help scientists understand dark energy and the distribution of exoplanets in our galaxy. The mission also carries a technology demonstration coronagraph to test new ways of directly imaging planets around other stars.",
-    "ou_involvement": "CEI researchers at the Open University worked under contract to JPL from 2014 to 2019 to characterise, design and test the EM-CCD sensor for Roman's coronagraph instrument, resulting in the CCD311, a customised, radiation-hardened variant of the CCD201 selected for flight. The team continues to refine the 'trap-pumping' calibration techniques developed for Euclid to mitigate the effects of cosmic radiation on these sensors throughout the mission.",
+    "description": "The Nancy Grace Roman Space Telescope, launched on 30 August 2026, will provide a field of view 100 times larger than Hubble's while maintaining the same high-resolution quality. It is designed to perform massive surveys that will help scientists understand dark energy and the distribution of exoplanets in our galaxy. The mission also carries a technology demonstration coronagraph to test new ways of directly imaging planets around other stars.",
+    "ou_involvement": "From 2014 to 2019, under contract to JPL, our Centre for Electronic Imaging (CEI) characterised, designed and tested the EM-CCD sensor for Roman’s coronagraph, leading to the CCD311 chosen for flight: a radiation-hardened version of the CCD201. We continue to refine the ‘trap-pumping’ techniques we developed for Euclid to counter radiation damage to these sensors.",
     "model": "/models/roman.glb",
     "motion": {"mode": "spin", "axis": "+x", "tilt": 45},
     "model_scale": 2,
     "radius": 1,
     "size_m": 12.8,
     "color": "#cc0000",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "quasi-halo",
       "M0": 45,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
@@ -642,7 +722,7 @@
     "status": "Natural",
     "radius_km": 3389.5,
     "gm": 42828.37,
-    "texture": "/textures/mars.jpg",
+    "texture": "/textures/mars.webp",
     "color": "#cc3300",
     "orbit_color": "#ff4433",
     "pole": {"ra": 317.2692, "dec": 54.4325},
@@ -657,7 +737,7 @@
       "peri": 286.497
     },
     "description": "Mars is known as the Red Planet due to the iron oxide on its surface and features the largest volcanoes and deepest canyons in the Solar System. Its thin atmosphere and frozen polar caps suggest a world that was once much warmer and wetter billions of years ago. Today, it is the focus of intense robotic exploration as scientists look for signs of ancient microbial life.",
-    "ou_involvement": "The Open University has a long history of Martian research, ranging from the design of lander instruments to the analysis of orbital atmospheric data. Academics lead research into the planet's volatile cycles and the potential habitability of its subsurface environments. This research is used to support international space agencies in selecting landing sites for future rover and sample return missions."
+    "ou_involvement": "We have a long history of Mars research, from building lander instruments to analysing atmospheric data from orbit. Our researchers study the planet’s volatile cycles and whether its subsurface could be habitable, and help space agencies choose landing sites, as for the Rosalind Franklin rover at Oxia Planum."
   },
   {
     "name": "ExoMars TGO",
@@ -667,7 +747,7 @@
     "launch_year": "2016",
     "image_url": "/images/tgo_science.jpg",
     "description": "The ExoMars Trace Gas Orbiter is an ESA-led mission designed to map the presence of trace gases, like methane, in the Martian atmosphere. It orbits the planet to identify potential biological or geological sources of these gases while studying the atmosphere's composition and structure. The orbiter also serves as a vital communications relay for rovers on the surface, including NASA's Perseverance and Curiosity.",
-    "ou_involvement": "The Open University designed and led the development of the UVIS ultraviolet channel of the NOMAD spectrometer suite, and an OU planetary scientist serves as a Co-Principal Investigator for NOMAD. The OU also helps operate the CaSSIS stereo imager aboard ExoMars TGO. Researchers at the university use the UVIS data to track ozone, water vapour, and trace gases including methane in the Martian atmosphere, helping to understand how water escapes into space. This work involves international collaboration to validate atmospheric models and support the search for life on the Red Planet.",
+    "ou_involvement": "We designed and led the development of UVIS, the ultraviolet channel of TGO’s NOMAD spectrometer, and one of our planetary scientists is a Co-Principal Investigator for NOMAD. We also help operate the CaSSIS stereo camera. We use UVIS data to track ozone, water vapour and trace gases such as methane, to understand how Mars loses its water to space. Some measurements are timed with other spacecraft: TGO measures methane from orbit while Curiosity measures it on the ground.",
     "model": "/models/tgo.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 2,
@@ -683,6 +763,45 @@
     }
   },
   {
+    "name": "Schiaparelli",
+    "parent": "Mars",
+    "type": "mission",
+    "icon": "lander",
+    "status": "Crashed",
+    "launch_year": "2016",
+    "orbit_type": "landed",
+    "landed_coords": {
+      "lat": -2.07,
+      "lon": -6.21
+    },
+    "description": "Schiaparelli was ESA's Entry, Descent and Landing Demonstrator Module, carried to Mars with the ExoMars Trace Gas Orbiter in 2016. It returned data throughout its descent through the Martian atmosphere, but a fault in its guidance software ended its parachute phase too early, and it crashed onto Meridiani Planum on 19 October 2016.",
+    "ou_involvement": "We co-led AMELIA, the team that used Schiaparelli’s entry and descent data to reconstruct the Martian atmosphere it flew through, measuring its density, pressure and temperature from higher up than ever before.",
+    "radius": 0.2,
+    "size_m": 2.4,
+    "color": "#cccccc"
+  },
+  {
+    "name": "I-MIM",
+    "parent": "Mars",
+    "type": "mission",
+    "status": "Planned",
+    "launch_year": "TBC",
+    "description": "The International Mars Ice Mapper (I-MIM) is a proposed orbiter, planned by the space agencies of Canada, the USA, Japan, Italy and the Netherlands, that would use radar to map water ice buried near the surface of Mars and help choose landing sites for future human missions.",
+    "ou_involvement": "We’re developing a combined visible-infrared imager, with a detector made by Teledyne e2v, for future Mars missions such as I-MIM and ESA’s LightShip-1. It can tell water ice from carbon dioxide ice on the surface, and in December 2025 the UK Space Agency awarded us £1.2 million for the next phase.",
+    "radius": 0.3,
+    "size_m": 10,
+    "size_estimated": true,
+    "color": "#88ccff",
+    "orbit": {
+      "a_km": 3796.2,
+      "e": 0,
+      "i": 90,
+      "M0": 200,
+      "rate": 4380.044477,
+      "illustrative": true
+    }
+  },
+  {
     "name": "Beagle 2",
     "parent": "Mars",
     "type": "mission",
@@ -695,7 +814,7 @@
     },
     "image_url": "/images/beagle2_science.jpg",
     "description": "Beagle 2 was a UK-led Mars lander that was deployed from the Mars Express spacecraft in 2003 but failed to transmit data after landing. The spacecraft was thought to be lost until 2015, when high-resolution images from NASA's MRO showed the lander had partially deployed on the Martian surface. It was designed to search for signs of past life by analysing the isotopic composition of carbon in Martian rocks.",
-    "ou_involvement": "The Beagle 2 mission was conceived and led by an Open University professor, who designed the lander's Gas Analysis Package (GAP): a miniaturised, twelve-oven stepped-combustion mass spectrometer built to detect isotopic signatures of past life in Martian soil. Fitting a laboratory-scale instrument into a probe the size of a dinner plate required major feats of miniaturisation. The OU also led the Environmental Sensor Suite (ESS), designed to measure the weather at the surface of Mars and the presence of dust devils. Though contact with the lander was lost after its 2003 touchdown, the technical lessons learned went on to inform later international planetary landers, including ExoMars.",
+    "ou_involvement": "Beagle 2 was conceived and led by our own Colin Pillinger, and we designed its Gas Analysis Package (GAP): a miniaturised mass spectrometer with twelve ovens, built to detect isotopic signs of past life in Martian soil. Fitting a laboratory-scale instrument into a probe the size of a dinner plate took major feats of miniaturisation. Our scientists also worked on its Environmental Sensor Suite, which was to measure the weather and look for dust devils. Contact was lost after the 2003 landing, but the lessons learned informed later landers, including ExoMars.",
     "model": "/models/beagle2.glb",
     "model_scale": 0.2,
     "radius": 0.1,
@@ -716,7 +835,7 @@
     "launch_year": "2020",
     "image_url": "/images/perseverance_science.jpg",
     "description": "Perseverance is NASA's most advanced Mars rover and is currently exploring the Jezero Crater for signs of ancient microbial life. It is equipped with a sophisticated drill and a sample caching system to collect and store Martian rocks for a future return to Earth. The rover also carried the Ingenuity helicopter, which demonstrated the first powered flight on another planet.",
-    "ou_involvement": "An Open University researcher is part of the international NASA/ESA Mars Sample Return Campaign Science Group advising on which samples collected by Perseverance in Jezero Crater should be prioritised for return to Earth. OU researchers also use the rover's remote sensing and imaging data to study the mineralogy of the ancient river delta, including clay and carbonate minerals linked to past water activity, sharing this research with students through the OU's distance-learning platform.",
+    "ou_involvement": "Our researchers were on the NASA/ESA Mars Sample Return Campaign Science Group and worked on planetary protection, planning how best to bring Perseverance’s Jezero Crater samples to Earth and analyse them. We also use the rover’s images and remote sensing to study the minerals of the ancient river delta, including clays and carbonates formed by water, and share this research with our students.",
     "model": "/models/perseverance.glb",
     "model_scale": 0.2,
     "radius": 0.2,
@@ -736,8 +855,8 @@
       "lon": 335.7
     },
     "image_url": "/images/exomars_science.jpg",
-    "description": "The Rosalind Franklin rover is a major ESA mission designed to search for signs of life in the Martian subsurface at Oxia Planum. It features a unique drill that can reach up to two meters underground to collect samples protected from harsh surface radiation. The rover will carry a suite of scientific instruments to analyse the geology, mineralogy, and chemistry of these ancient samples.",
-    "ou_involvement": "Open University researchers are members of the science team for the rover's PanCam camera system and the Enfys spectrometer. Operations for PanCam and Enfys are also supported from the OU.",
+    "description": "The Rosalind Franklin rover is a major ESA mission designed to search for signs of life in the Martian subsurface at Oxia Planum. It features a unique drill that can reach up to two metres underground to collect samples protected from harsh surface radiation. The rover will carry a suite of scientific instruments to analyse the geology, mineralogy, and chemistry of these ancient samples.",
+    "ou_involvement": "We’re on the Rosalind Franklin rover’s science team: as deputy principal investigator for its PanCam camera system, as one of the UK’s Interdisciplinary Scientists, and in support of PanCam and the Enfys spectrometer. We’re also leading and contributing to preparations through operations simulations and field trials.",
     "model": "/models/exomars_rover.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -758,8 +877,8 @@
       "lon": 137.4
     },
     "image_url": "/images/curiosity_science.jpg",
-    "description": "The Mars Science Laboratory, known as Curiosity, is a car-sized rover that has been exploring Gale Crater since 2012. Its primary goal is to determine if Mars ever had an environment capable of supporting microbial life by studying its geology and climate. The mission has successfully identified evidence of ancient freshwater lakes and complex organic molecules on the Martian surface.",
-    "ou_involvement": "OU academics are members of the Mars Science Laboratory science team, focusing on noble-gas studies and the chemical interactions between Martian rocks and ancient water relevant to habitability. Other OU researchers combine the rover's atmospheric data with ExoMars Trace Gas Orbiter observations to model Mars's dust and water cycles. This work is part of a broader international effort at the OU to understand the long-term habitability of the Red Planet.",
+    "description": "The Mars Science Laboratory, known as Curiosity, is a car-sized rover that has been exploring Gale Crater since 2012, recently passing 5,000 sols (Martian days) on the surface. Its primary goal is to determine if Mars ever had an environment capable of supporting microbial life by studying its geology and climate. The mission has successfully identified evidence of ancient freshwater lakes and complex organic molecules on the Martian surface.",
+    "ou_involvement": "Our academics are on Curiosity’s science and operations teams, focusing on noble gases and on how Martian rocks reacted with ancient water, which bears on whether Mars was habitable. Others combine the rover’s weather data with ExoMars Trace Gas Orbiter observations to model Mars’s dust and water cycles.",
     "model": "/models/curiosity.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -773,7 +892,7 @@
     "status": "Natural",
     "radius_km": 69911,
     "gm": 126686531.9,
-    "texture": "/textures/jupiter.jpg",
+    "texture": "/textures/jupiter.webp",
     "color": "#d8ca9d",
     "orbit_color": "#e0a96d",
     "pole": {"ra": 268.0566, "dec": 64.4953},
@@ -809,7 +928,7 @@
       "peri_rate": 0.7394046,
       "plane": {"ra": 268.1, "dec": 64.5}
     },
-    "description": "Io is the innermost of Jupiter's four large Galilean moons and is the most geologically active body in the Solar System. Its surface is constantly reshaped by hundreds of volcanoes, which are fueled by the intense tidal heating caused by Jupiter's gravity. The moon's yellow-orange color is a result of the sulfur and sulfur dioxide frost that covers its entire surface."
+    "description": "Io is the innermost of Jupiter's four large Galilean moons and is the most geologically active body in the Solar System. Its surface is constantly reshaped by hundreds of volcanoes, which are fuelled by the intense tidal heating caused by Jupiter's gravity. The moon's yellow-orange colour is a result of the sulfur and sulfur dioxide frost that covers its entire surface."
   },
   {
     "name": "Europa",
@@ -833,7 +952,7 @@
       "plane": {"ra": 268.1, "dec": 64.5}
     },
     "description": "Europa is an icy moon of Jupiter that is believed to hide a massive liquid water ocean beneath its frozen crust. Its smooth surface is crisscrossed by cracks and streaks, suggesting that the ice shell is dynamic and relatively young. Scientists consider Europa one of the best candidates in the Solar System for finding habitable environments beyond Earth.",
-    "ou_involvement": "Open University astrobiologists research Europa as one of the Solar System's most promising 'ocean worlds', developing novel cryo-analytical laboratory techniques and planetary simulation facilities to study icy surface materials at the molecular and micro-scale. Fieldwork in polar environments such as the Canadian High Arctic helps researchers understand how ice and salts delivered to the surface by cryovolcanism can reveal what conditions exist in the ocean far below."
+    "ou_involvement": "Our astrobiologists study Europa as one of the Solar System’s most promising ocean worlds. We develop new cryogenic laboratory techniques and simulation facilities to study icy surface materials down to the microscale, and our fieldwork in polar places such as the Canadian High Arctic shows how ice and salts brought to the surface by cryovolcanism can reveal conditions in the ocean far below. We also model how the ocean’s chemistry, and how habitable it is, may have changed over 4.5 billion years as the water reacted with the rock beneath."
   },
   {
     "name": "Ganymede",
@@ -857,7 +976,7 @@
       "plane": {"ra": 268.2, "dec": 64.6}
     },
     "description": "Ganymede is the largest moon in the Solar System and is even bigger than the planet Mercury. It is the only known moon to possess its own magnetic field, which creates brilliant aurorae around its poles. The moon features a mix of dark, cratered regions and lighter, grooved terrain that indicates a complex geological history.",
-    "ou_involvement": "Ganymede is one of the icy 'ocean worlds' studied by Open University astrobiologists, whose research develops cryo-analytical lab techniques and planetary-simulation facilities to analyse the ice and salts that reach such moons' surfaces via cryovolcanism. This research aims to reveal the chemistry of the vast subsurface ocean thought to lie beneath Ganymede's ice shell, complementing the OU's separate technical contribution to the JUICE mission that will study the moon directly."
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) helped develop and tested the image sensor in JANUS, the camera on ESA’s JUICE mission, which will study Ganymede from orbit."
   },
   {
     "name": "Callisto",
@@ -896,7 +1015,7 @@
     "launch_year": "2023",
     "image_url": "/images/juice_science.jpg",
     "description": "The JUpiter ICy moons Explorer is a major ESA mission launched in 2023 to investigate the habitability of Jupiter's large moons. It is currently cruising through the solar system and will arrive at Jupiter in 2031 to perform detailed studies of Ganymede, Europa, and Callisto. The mission aims to understand how habitable environments could arise around gas giant planets in the outer Solar System.",
-    "ou_involvement": "The Open University's Centre for Electronic Imaging, working with detector manufacturer Teledyne e2v, developed and characterised the CIS115 CMOS image sensor at the heart of the JANUS camera system, testing it against the intense radiation, vibration and thermal extremes of the journey to Jupiter. The OU is the UK National Lead for the JANUS instrument.",
+    "ou_involvement": "Working with Teledyne e2v, our Centre for Electronic Imaging (CEI) helped develop and characterise the CIS115 sensor at the heart of the JANUS camera, testing it against the radiation, vibration and temperature extremes of the journey to Jupiter. We are the UK National Lead for JANUS.",
     "model": "/models/juice.glb",
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 2.5,
@@ -911,7 +1030,7 @@
     "status": "Natural",
     "radius_km": 58232,
     "gm": 37931206.2,
-    "texture": "/textures/saturn.jpg",
+    "texture": "/textures/saturn.webp",
     "color": "#ead6b8",
     "orbit_color": "#f4d06f",
     "pole": {"ra": 40.589, "dec": 83.537},
@@ -933,7 +1052,7 @@
       "peri": 338.936
     },
     "description": "Saturn is a massive gas giant famous for its spectacular ring system, which is composed primarily of ice and rock particles. It is the second-largest planet in the Solar System and has a diverse collection of hundreds of moons, including the massive, orange-hued Titan. Despite its great size, the planet has a very low density and would theoretically float if placed in a large enough ocean.",
-    "ou_involvement": "OU researchers have studied dust in the Saturn system with Cassini's Cosmic Dust Analyser, helping to calibrate the instrument and analysing the composition of dust around the planet. An OU scientist also led the Surface Science Package on the Huygens probe, which landed on Titan, Saturn's largest moon."
+    "ou_involvement": "We helped calibrate Cassini’s Cosmic Dust Analyser and studied the composition of dust around Saturn. One of our scientists, John Zarnecki, led the Surface Science Package on the Huygens probe, which landed on Titan, Saturn’s largest moon."
   },
   {
     "name": "Titan",
@@ -942,7 +1061,7 @@
     "status": "Natural",
     "radius_km": 2574.7,
     "gm": 8978.14,
-    "texture": "/textures/titan.jpg",
+    "texture": "/textures/titan.webp",
     "color": "#ff9900",
     "orbit": {
       "a_km": 1221900.0,
@@ -957,7 +1076,29 @@
       "plane": {"ra": 36.4, "dec": 84.0}
     },
     "description": "Titan is the largest moon of Saturn and the only moon in the Solar System to possess a thick atmosphere and liquid lakes on its surface. These lakes are composed of liquid methane and ethane, creating a weather cycle similar to Earth's but at much colder temperatures. Its thick, orange haze hides a complex surface that features vast dunes, mountains, and potentially even cryovolcanoes.",
-    "ou_involvement": "Titan's first global geomorphological map, published in Nature Astronomy in 2019, used Cassini data to identify six major terrain types across the moon's surface, from plains to dune fields. Titan is also one of the icy 'ocean worlds' studied by OU astrobiologists, whose research explores how its surface chemistry and methane cycle could relate to conditions for life. This body-focused research sits alongside the OU's separate instrument-development work on the Cassini and Huygens missions."
+    "ou_involvement": "Titan’s first global geomorphological map, published in Nature Astronomy in 2019, used Cassini data to identify six major terrain types, from plains to dune fields. Our astrobiologists study Titan as one of the icy ocean worlds, exploring how its surface chemistry and methane cycle relate to conditions for life."
+  },
+  {
+    "name": "Enceladus",
+    "parent": "Saturn",
+    "type": "moon",
+    "status": "Natural",
+    "radius_km": 252.1,
+    "gm": 7.211,
+    "color": "#f4f6fa",
+    "orbit": {
+      "a_km": 238400,
+      "e": 0.0047,
+      "i": 0,
+      "M0": 57,
+      "rate": 262.731916,
+      "node": 0,
+      "peri": 119.5,
+      "peri_rate": 0.338006,
+      "plane": {"ra": 40.6, "dec": 83.5}
+    },
+    "description": "Enceladus is a small, bright icy moon of Saturn, about 500 km across. Jets of water vapour and ice grains erupt from cracks near its south pole, fed by a salty ocean beneath its icy crust, and the Cassini spacecraft sampled them by flying through the plume. Its ocean contains many of the ingredients thought to be needed for life, making it a prime target in the search for habitable worlds.",
+    "ou_involvement": "One of our planetary scientists sat on ESA’s Expert Committee that, in 2024, recommended Enceladus as the target of ESA’s next large mission: an orbiter and lander to search for signs of life, for launch in the early 2040s."
   },
   {
     "name": "Cassini",
@@ -967,7 +1108,7 @@
     "launch_year": "1997",
     "image_url": "/images/cassini_science.jpg",
     "description": "The Cassini-Huygens mission was a landmark international collaboration that spent 13 years exploring the Saturnian system in incredible detail. It discovered active geysers on the moon Enceladus and provided our first clear views of Titan's surface through its thick atmosphere. The mission concluded in 2017 with a deliberate plunge into Saturn's atmosphere to protect its moons from contamination.",
-    "ou_involvement": "OU planetary scientists utilized Cassini's extensive datasets to conduct world-leading research on the habitability and chemistry of Saturn's icy moons. OU researchers helped calibrate Cassini's Cosmic Dust Analyser and studied the composition of dust around Saturn. This research continues today as the university uses Cassini's archival data to train students in planetary science and data interpretation.",
+    "ou_involvement": "Our planetary scientists use Cassini’s datasets to study the habitability and chemistry of Saturn’s icy moons. We helped calibrate its Cosmic Dust Analyser and studied the dust around Saturn, and we still use Cassini’s archive to train students in planetary science.",
     "model": "/models/cassini.glb",
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 2,
@@ -995,7 +1136,7 @@
     "launch_year": "1997",
     "image_url": "/images/huygens_science.jpg",
     "description": "The Huygens probe was an ESA spacecraft that performed the first and only landing in the outer Solar System on Saturn's moon Titan in 2005. It successfully transmitted data and images during its two-hour descent through the moon's thick nitrogen-rich atmosphere. The landing revealed a world of riverbeds and rounded pebbles that were shaped by the flow of liquid methane.",
-    "ou_involvement": "The Open University was the Principal Investigator for the Surface Science Package (SSP), which recorded the first-ever in situ data from the surface of Titan, measuring its density, temperature and physical state on impact. OU academics have continued to lead analysis of this historic dataset to understand Titan's surface properties and organic chemistry.",
+    "ou_involvement": "One of our scientists, John Zarnecki, was Principal Investigator for the Surface Science Package (SSP), which made the first measurements on Titan’s surface: its density, temperature and physical state as Huygens landed. We have continued to lead analysis of this unique dataset to understand Titan’s surface and organic chemistry.",
     "model": "/models/huygens.glb",
     "model_scale": 0.3,
     "radius": 0.2,
@@ -1009,7 +1150,7 @@
     "status": "Natural",
     "radius_km": 25362,
     "gm": 5793951.3,
-    "texture": "/textures/uranus.jpg",
+    "texture": "/textures/uranus.webp",
     "color": "#99ccff",
     "orbit_color": "#7de3e4",
     "pole": {"ra": 257.311, "dec": -15.175},
@@ -1023,7 +1164,7 @@
       "node": 74.017,
       "peri": 96.937
     },
-    "description": "Uranus is an ice giant planet that is uniquely characterized by its extreme axial tilt, causing it to rotate almost on its side. Its pale blue-green color is a result of the methane in its atmosphere, which absorbs red light and reflects blue and green. It features a faint ring system and a diverse family of 29 known moons, most of which are composed of ice and rock."
+    "description": "Uranus is an ice giant planet that is uniquely characterised by its extreme axial tilt, causing it to rotate almost on its side. Its pale blue-green colour is a result of the methane in its atmosphere, which absorbs red light and reflects blue and green. It features a faint ring system and a diverse family of 29 known moons, most of which are composed of ice and rock."
   },
   {
     "name": "Neptune",
@@ -1032,7 +1173,7 @@
     "status": "Natural",
     "radius_km": 24622,
     "gm": 6835099.5,
-    "texture": "/textures/neptune.jpg",
+    "texture": "/textures/neptune.webp",
     "color": "#3366ff",
     "orbit_color": "#4b70dd",
     "pole": {"ra": 299.36, "dec": 43.46},
@@ -1054,8 +1195,8 @@
     "status": "Complete",
     "launch_year": "2004",
     "image_url": "/images/rosetta_science.jpg",
-    "description": "The Rosetta mission was a ground-breaking ESA project that performed the first successful long-term study of a comet's nucleus. It orbited Comet 67P for over two years, observing its transformation as it travelled through the inner Solar System. The mission provided unprecedented data on the physical and chemical properties of comets and their role in the origin of life.",
-    "ou_involvement": "The Open University co-developed the Ptolemy gas-analysis instrument on the Philae lander with RAL Space to measure the isotopic composition of cometary carbon, nitrogen and oxygen. OU scientists also contributed to the MUPUS surface-properties instrument and the GIADA dust analyser, and coordinated the mission's international ground-based observing campaign. Other OU research has explored why comet 67P's dust and gas jets follow a day-night cycle as it approaches the Sun.",
+    "description": "ESA’s Rosetta made the first long-term study of a comet’s nucleus, orbiting Comet 67P for over two years as it travelled through the inner Solar System. Its lander, Philae, studied the surface directly, giving ground truth for the orbiter’s measurements. Together they revealed the physical and chemical make-up of comets and their possible part in the origin of life.",
+    "ou_involvement": "With RAL Space, we co-developed Ptolemy, the gas analyser on the Philae lander that measured the isotopes of carbon, nitrogen and oxygen in the comet. We also contributed to the MUPUS and GIADA instruments, coordinated the mission’s worldwide campaign of ground-based observations, and have explored why comet 67P’s dust and gas jets follow a day-night cycle.",
     "model": "/models/rosetta.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 2,
@@ -1084,7 +1225,7 @@
     "launch_year": "2004",
     "image_url": "/images/philae_science.jpg",
     "description": "Philae was the robotic lander carried by the Rosetta spacecraft and became the first mission to land successfully on a comet's nucleus in 2014. It carried a suite of ten instruments designed to perform in-situ analysis of the comet's surface and subsurface materials. Despite a bounce during landing, it successfully transmitted data back to Earth before entering hibernation.",
-    "ou_involvement": "Together with RAL Space, the OU designed and built the Ptolemy gas analyser, which with the COSAC instrument made the first chemical analysis of the organic matter found on a comet's surface. Academics at the university lead the interpretation of this data to search for the chemical building blocks of life. This involvement has established the OU as a world leader in miniaturized planetary laboratory technology and cometary science.",
+    "ou_involvement": "With RAL Space, we designed and built the Ptolemy gas analyser, which with the COSAC instrument made the first analysis of organic matter on a comet’s surface. Our academics lead the interpretation of its data in the search for life’s chemical building blocks, work that has made our name in miniature planetary laboratories and comet science.",
     "model": "/models/philae.glb",
     "model_scale": 0.4,
     "radius": 0.2,
@@ -1097,7 +1238,7 @@
     "parent": "Sun",
     "orbit_type": "trajectory",
     "trajectory": {
-      "waypoints": [{"date": "2024-10-07", "at": "Earth", "label": "Launch"}, {"date": "2025-03-12", "at": "Mars", "label": "Mars flyby"}, {"date": "2026-10-12", "at": "Didymos", "label": "Rendezvous with Didymos", "extreme": 2.4}],
+      "waypoints": [{"date": "2024-10-07", "at": "Earth", "label": "Launch"}, {"date": "2025-03-12", "at": "Mars", "label": "Mars flyby"}, {"date": "2026-11-01", "at": "Didymos", "label": "Rendezvous with Didymos", "extreme": 2.4}],
       "arrival_orbit": {"a_km": 20, "e": 0.1, "i": 10, "M0": 0, "rate": 10.50129, "illustrative": true}
     },
     "menu_parent": "Didymos",
@@ -1105,8 +1246,8 @@
     "status": "En Route",
     "launch_year": "2024",
     "image_url": "/images/hera_science.png",
-    "description": "Hera is an ESA planetary defence mission launched in 2024 to investigate the binary asteroid system Didymos and its moon Dimorphos. It will study the results of NASA's DART mission, which successfully impacted Dimorphos to demonstrate a kinetic deflection technique. The spacecraft will characterize the crater and the asteroid's internal structure to help refine our planetary defence strategies.",
-    "ou_involvement": "Open University researchers were on the Hera Science Team's management board.",
+    "description": "Hera is an ESA planetary defence mission launched in 2024 to investigate the binary asteroid system Didymos and its moon Dimorphos. It will study the results of NASA's DART mission, which successfully impacted Dimorphos to demonstrate a kinetic deflection technique. The spacecraft will characterise the crater and the asteroid's internal structure to help refine our planetary defence strategies.",
+    "ou_involvement": "Our researchers were on the Hera Science Team’s management board.",
     "model": "/models/hera.glb",
     "motion": {"mode": "sun", "axis": "+y"},
     "model_scale": 1.5,
@@ -1115,14 +1256,33 @@
     "color": "#ff8800"
   },
   {
+    "name": "DART",
+    "parent": "Dimorphos",
+    "menu_parent": "Didymos",
+    "type": "mission",
+    "status": "Complete",
+    "launch_year": "2021",
+    "orbit_type": "landed",
+    "landed_coords": {
+      "lat": -8.84,
+      "lon": 264.3,
+      "illustrative": true
+    },
+    "description": "NASA's Double Asteroid Redirection Test (DART) was the first test of planetary defence by changing an asteroid's path. Launched in November 2021, it deliberately crashed into Dimorphos, the small moon of the asteroid Didymos, on 26 September 2022, shortening its orbit by about 33 minutes. ESA's Hera mission was sent to study the aftermath.",
+    "radius": 0.3,
+    "size_m": 19,
+    "color": "#bbbbbb",
+    "ou_involvement": "Our planetary scientists helped study the aftermath of the impact from the ground, using the MUSE spectrograph on the Very Large Telescope to follow the cloud of debris thrown off Dimorphos over the following month, mapping its cone, spirals, clumps and tails."
+  },
+  {
     "name": "AKARI",
     "parent": "Earth",
     "type": "mission",
     "status": "Decommissioned",
     "launch_year": "2006",
     "image_url": "/images/akari_science.jpg",
-    "description": "AKARI was a Japanese infrared astronomy satellite that performed an all-sky survey at various infrared wavelengths. It was designed to study the formation and evolution of stars and galaxies across the history of the universe. The mission produced high-quality catalogs that continue to be a vital resource for astronomers worldwide.",
-    "ou_involvement": "The Open University was one of the international partner institutes on JAXA's AKARI infrared satellite, alongside Nagoya University, the University of Tokyo, ESA and other UK institutions. OU researchers used AKARI's all-sky infrared survey and near-infrared spectroscopy to study interstellar dust, polycyclic aromatic hydrocarbons, and the earliest stages of star formation in galaxies, work that helps build a clearer picture of the cosmic chemical cycle that eventually leads to habitable worlds.",
+    "description": "AKARI was a Japanese infrared astronomy satellite that performed an all-sky survey at various infrared wavelengths. It was designed to study the formation and evolution of stars and galaxies across the history of the universe. The mission produced high-quality catalogues that continue to be a vital resource for astronomers worldwide.",
+    "ou_involvement": "We were one of the international partners on JAXA’s AKARI infrared satellite, alongside Nagoya University, the University of Tokyo, ESA and other UK institutions. We used its all-sky infrared survey and spectra to study interstellar dust, polycyclic aromatic hydrocarbons and the earliest star formation in galaxies: part of the cosmic chemical cycle that eventually leads to habitable worlds.",
     "model": "/models/akari.glb",
     "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
     "model_scale": 1.2,
@@ -1147,8 +1307,8 @@
     "status": "Decommissioned",
     "launch_year": "2003",
     "image_url": "/images/spitzer_science.jpg",
-    "description": "The Spitzer Space Telescope was one of NASA's Great Observatories and was optimized for observing the infrared universe. It made numerous high-profile discoveries, including the detection of the TRAPPIST-1 system's Earth-sized exoplanets. The mission operated for over 16 years, providing our clearest views of planet-forming disks and distant, dusty galaxies.",
-    "ou_involvement": "OU scientists analyze Spitzer's archival light curves to characterize the atmospheres and orbits of transiting exoplanets. Academics at the university use this data to teach students about infrared astronomy and the search for habitable worlds. This research remains a core component of the OU's astronomy research and is used to inform the target selection for new missions like Ariel.",
+    "description": "The Spitzer Space Telescope was one of NASA's Great Observatories and was optimised for observing the infrared universe. It made numerous high-profile discoveries, including the detection of the TRAPPIST-1 system's Earth-sized exoplanets. The mission operated for over 16 years, providing our clearest views of planet-forming disks and distant, dusty galaxies.",
+    "ou_involvement": "Our scientists analyse Spitzer’s archived light curves to study the atmospheres and orbits of transiting exoplanets, and use the data to teach infrared astronomy and the search for habitable worlds. The work also helps choose targets for new missions such as Ariel.",
     "model": "/models/spitzer.glb",
     "motion": {"mode": "spin", "axis": "+y", "tilt": 50},
     "model_scale": 1.5,
@@ -1173,15 +1333,16 @@
     "launch_year": "2009",
     "image_url": "/images/herschel_science.jpg",
     "description": "Herschel was the largest infrared telescope launched until JWST and was designed to study the coolest objects in the universe. It observed the formation of stars and galaxies across cosmic time and provided our first clear detection of water molecules in star-forming regions. The mission's huge mirror and sensitive detectors allowed it to peer through dust that blocks visible light.",
-    "ou_involvement": "The Open University's astronomy group used data from SPIRE, the camera and spectrometer built for Herschel by an international consortium led by Cardiff University. Academics at the university lead research into sub-millimetre observations of distant galaxies to study the history of star formation. This heritage in infrared instrumentation is used today to train the next generation of space engineers and astronomers.",
+    "ou_involvement": "Our astronomers used data from SPIRE, the camera and spectrometer built for Herschel by an international consortium led by Cardiff University, to study distant galaxies at sub-millimetre wavelengths and trace the history of star formation.",
     "model": "/models/herschel.glb",
     "motion": {"mode": "spin", "axis": "+x", "tilt": 40},
     "model_scale": 2,
     "radius": 1,
     "size_m": 7.5,
     "color": "#4400aa",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "quasi-halo",
       "M0": 120,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 178
@@ -1195,15 +1356,16 @@
     "launch_year": "2009",
     "image_url": "/images/planck_science.jpeg",
     "description": "The Planck mission was an ESA satellite designed to map the Cosmic Microwave Background (CMB) with unprecedented precision. It captured the oldest light in the universe, providing a detailed 'baby picture' of the cosmos just 380,000 years after the Big Bang. The mission's data has been essential for refining our understanding of the universe's age, composition, and expansion rate.",
-    "ou_involvement": "OU researchers use Planck's high-resolution maps of the cosmic microwave background to study the large-scale structure of the early universe and the distribution of galaxy clusters. The university's cosmology group contributes to research into dark matter and dark energy that draws on Planck's data alongside more recent missions like Euclid. This work provides a fundamental framework for teaching cosmology and the history of the universe at the Open University.",
+    "ou_involvement": "We use Planck’s maps of the cosmic microwave background to study the large-scale structure of the early Universe and how galaxy clusters are spread. Our cosmologists combine Planck’s data with newer missions such as Euclid to research dark matter and dark energy, and it underpins our teaching of cosmology.",
     "model": "/models/planck.glb",
     "motion": {"mode": "sun", "axis": "-y", "rate": 6, "wobble": 8},
     "model_scale": 1.8,
     "radius": 0.8,
     "size_m": 4.2,
     "color": "#aaaa00",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "lissajous",
       "M0": 300,
       "amplitude_km": {"y": 400000, "z": 400000},
       "period_days": 180
@@ -1216,8 +1378,8 @@
     "status": "Lost",
     "launch_year": "2024",
     "image_url": "/images/peregrine_science.jpeg",
-    "description": "Peregrine was a US commercial lunar lander developed by Astrobotic but suffered a propellant leak shortly after its launch in early 2024. Despite the leak, the team successfully operated several scientific payloads in deep space before the spacecraft re-entered Earth's atmosphere. It was intended to demonstrate a new low-cost delivery service to the lunar surface for commercial and scientific customers.",
-    "ou_involvement": "The Open University, working with STFC RAL Space under ESA contract, developed the Exospheric Mass Spectrometer (PITMS) to make the first in-situ measurements of the lunar exosphere. Although a propulsion failure meant Peregrine never landed, OU researchers kept the instrument running throughout its unplanned journey through deep space, demonstrating full functionality and returning valuable engineering and calibration data. This work has directly informed the design of more robust spectrometers for upcoming lunar landing missions.",
+    "description": "Peregrine-1 was developed by Astrobotic under NASA's Artemis and Commercial Lunar Payload Services programmes. Launched in 2024, it aimed to be the first commercially developed spacecraft to land on the Moon. However, a propulsion system fault after launch ruled out a landing attempt, and instead the spacecraft was operated as a test flight for a week before a controlled disposal in Earth's atmosphere.",
+    "ou_involvement": "We proposed and developed the Exospheric Mass Spectrometer (EMS), Europe’s contribution to NASA’s PITMS instrument, with ESA funding and RAL Space, on a fast track to meet a tight budget and timescale. It was built to measure the Moon’s thin exosphere and how it changes over the lunar day and with the lander’s own effects. When Peregrine couldn’t land, we ran EMS in space to help diagnose the spacecraft, proving the technology ready to fly again on PROSPECT.",
     "model": "/models/peregrine.glb",
     "model_scale": 0.2,
     "radius": 0.1,
@@ -1237,7 +1399,7 @@
     "launch_year": "2029",
     "image_url": "/images/cometinterceptor_science.jpg",
     "description": "Comet Interceptor is a unique ESA mission designed to 'ambush' a pristine comet that is entering the inner Solar System for the first time. It will wait at the Earth-Sun L2 point for a suitable target to be discovered by new surveys before being deployed to perform a flyby. The mission aims to study a comet that has never been altered by the Sun's heat, providing a clear look at early Solar System material.",
-    "ou_involvement": "The Open University's School of Physical Sciences is a Co-Investigator institution for the DISC dust impact instrument, which will measure the size, mass and velocity of cometary dust particles during the spacecraft's high-speed flyby. The university operates a Light-Gas Gun facility, firing particles at several kilometres per second to verify the instrument's dust shield can survive real hypervelocity impacts.",
+    "ou_involvement": "We’re a Co-Investigator institution for DISC, the instrument that will measure the size, mass and speed of dust particles as the spacecraft flies past its comet. Our Light-Gas Gun fires particles at several kilometres per second to check DISC’s dust shield can survive real high-speed impacts.",
     "model": "/models/comet_interceptor.glb",
     "motion": {"mode": "spin", "axis": "+y", "tilt": 40, "rate": 1.5},
     "model_scale": 1.5,
@@ -1245,7 +1407,7 @@
     "size_m": 3,
     "size_estimated": true,
     "color": "#00ffaa",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
       "M0": 200,
       "amplitude_km": {"y": 800000, "z": 500000},
@@ -1260,8 +1422,8 @@
     "status": "Planned",
     "launch_year": "2031",
     "image_url": "/images/envision_science.jpg",
-    "description": "EnVision is a planned ESA orbiter mission designed to provide a comprehensive look at Venus' surface geology and atmospheric dynamics. It will feature high-resolution radar and specialized spectrometers to see through the planet's thick clouds and search for signs of active volcanism. The mission aims to determine if Venus was once a habitable planet with liquid water oceans and plate tectonics.",
-    "ou_involvement": "The Open University's Atmospheric Research and Space Exploration group leads the testing and characterisation of the UV detectors for the VenSpec-U instrument, part of the VenSpec suite, funded by a £2.3 million ESA grant. The team also takes part in science preparations for the mission ahead of launch in the early 2030s.",
+    "description": "EnVision is a planned ESA orbiter mission designed to provide a comprehensive look at Venus' surface geology and atmospheric dynamics. It will feature high-resolution radar and specialised spectrometers to see through the planet's thick clouds and search for signs of active volcanism. The mission aims to determine if Venus was once a habitable planet with liquid water oceans and plate tectonics.",
+    "ou_involvement": "Our Atmospheric Research and Space Exploration group leads the testing of the UV detectors for VenSpec-U, part of EnVision’s VenSpec suite, with a £2.3 million ESA grant. We also take part in the mission’s science preparations ahead of its launch in the early 2030s.",
     "model": "/models/envision.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -1285,7 +1447,7 @@
     "launch_year": "2032",
     "image_url": "/images/lightship1_science.jpg",
     "description": "ESA’s LightShip-1 is an innovative electric-propulsion tug designed to deliver spacecraft directly into Mars orbit. Once its primary delivery mission is complete, the spacecraft will establish the Mars Communication and Navigation Infrastructure (MARCONI) while also engaging in exploration science through its onboard instruments.",
-    "ou_involvement": "The Open University’s Atmospheric Research and Space Exploration group is leading the design phase for the High-Resolution Imager for Mars Exploration (HiRIME) telescope carried by LightShip. The OU’s work is critical to delivering high-resolution imagery of the Martian surface for planetary geology. The same group also leads the Dust Environment Spectral Imager instrument on LightShip, which will take global images of Mars about every 10 minutes to monitor the global atmosphere and dust storms.",
+    "ou_involvement": "Our Atmospheric Research and Space Exploration group is leading the design phase of HiRIME, the High-Resolution Imager for Mars Exploration, which will take detailed images of the Martian surface for geology. The same group also leads the Dust Environment Spectral Imager, which will image the whole of Mars about every 10 minutes to watch its atmosphere and dust storms.",
     "model": "/models/lightship1.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -1302,6 +1464,33 @@
     }
   },
   {
+    "name": "MMX",
+    "parent": "Mars",
+    "type": "mission",
+    "status": "Planned",
+    "launch_year": "2026",
+    "description": "Martian Moons eXploration (MMX) is a JAXA mission to Mars’s two moons, Phobos and Deimos, due to launch in October 2026 and reach Mars about a year later. It will study both moons from close by, land on Phobos to collect at least 10 grams of its surface and bring the sample back to Earth in 2031, to help settle whether the moons are captured asteroids or debris from a giant impact on Mars. It also carries IDEFIX, a small French-German rover that will drive on Phobos.",
+    "ou_involvement": "One of our planetary scientists is on MMX’s science team. In 2023 ESA chose nine European scientists to join the mission’s Science Strategy Teams, and ours is the member for Mars science.",
+    "radius": 0.4,
+    "size_m": 4,
+    "size_estimated": true,
+    "color": "#ff9966",
+    "orbit": {
+      "a_km": 9376,
+      "e": 0.0151,
+      "i": 1.08,
+      "M0": 60,
+      "rate": 1128.8445,
+      "illustrative": true
+    },
+    "status_timeline": [
+      {
+        "from": "2026-10-20",
+        "status": "En Route"
+      }
+    ]
+  },
+  {
     "name": "OGRE",
     "parent": "Earth",
     "type": "mission",
@@ -1309,7 +1498,7 @@
     "launch_year": "In Dev",
     "image_url": "/images/ogre_science.png",
     "description": "The Off-plane Grating Rocket Experiment is a sub-orbital sounding rocket mission designed to capture the highest-resolution X-ray spectra of stellar sources. It will be launched from a rocket to fly above the Earth's atmosphere for several minutes of precise observations before returning to the ground. The mission aims to study the hot and energetic gas around stars and galaxies to understand their chemical evolution.",
-    "ou_involvement": "The CEI characterises and optimises the four EM-CCD sensors in OGRE's X-ray camera, which is built by the UK company XCAM, engineered to survive the violent vibrations of a rocket launch. Academics at the university lead research into radiation damage, charge transfer efficiency, and the use of these high-speed detectors for photon counting in the soft X-ray regime. This work is part of a broader OU initiative to develop new technologies for high-energy astrophysics and stellar research.",
+    "ou_involvement": "Our Centre for Electronic Imaging (CEI) characterises and optimises the four EM-CCD sensors in OGRE’s X-ray camera, built by the UK company XCAM to survive the violent vibrations of launch. We research radiation damage, charge transfer and photon counting with these fast detectors for soft X-ray astronomy.",
     "model": "/models/ogre.glb",
     "model_scale": 0.8,
     "radius": 0.3,
@@ -1333,8 +1522,8 @@
     "status": "En Route",
     "launch_year": "2014",
     "image_url": "/images/hayabusa2_science.png",
-    "description": "Hayabusa2 was a Japanese mission that successfully deployed multiple rovers and returned samples from the near-Earth asteroid Ryugu. It used a series of innovative techniques, including a kinetic impactor, to collect material from both the surface and subsurface of the asteroid. The mission provided invaluable insights into the composition of carbon-rich asteroids and the history of the early Solar System.",
-    "ou_involvement": "The Open University's oxygen isotope laboratory was one of the international groups invited to join \"Team Kochi,\" one of the three Japanese-led initial analysis teams for the returned Ryugu samples. OU researchers are using the university's laboratory facilities to measure oxygen isotopes in the grains, showing that Ryugu-like material may have delivered water to the early Earth.",
+    "description": "Hayabusa2 was a Japanese mission that successfully deployed multiple rovers and returned samples from the near-Earth asteroid Ryugu. It used a series of innovative techniques, including a kinetic impactor, to collect material from both the surface and subsurface of the asteroid. The mission provided invaluable insights into the composition of carbon-rich asteroids and the history of the early Solar System. The spacecraft is now on an extended mission: it flew past asteroid Torifune on 5 July 2026 and is due to reach the tiny asteroid 1998 KY26 in 2031.",
+    "ou_involvement": "Our oxygen isotope laboratory was invited to join \"Team Kochi\", one of three Japanese-led teams that made the first analyses of the Ryugu samples. We’re measuring oxygen isotopes in the grains, showing that Ryugu-like material may have delivered water to the early Earth.",
     "model": "/models/hayabusa2.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -1357,7 +1546,7 @@
     "launch_year": "2016",
     "image_url": "/images/osirisrex_science.jpg",
     "description": "OSIRIS-REx was a NASA mission that successfully collected a massive sample of rocks and dust from the carbon-rich asteroid Bennu. It returned the samples to Earth in late 2023, providing scientists with pristine material that dates back to the very beginning of our Solar System. The spacecraft has since been renamed OSIRIS-APEX and is now on a new mission to study the asteroid Apophis in 2029.",
-    "ou_involvement": "OU researchers worked with NASA's OSIRIS-REx team to help select Bennu's Nightingale sample site, producing detailed temperature predictions to ensure the spacecraft and its samples didn't overheat during collection. Open University academics are also involved in analysing the returned Bennu material to investigate the early Solar System's chemistry and the origin of Earth's water and organic molecules.",
+    "ou_involvement": "We worked with the OSIRIS-REx team to help choose Bennu’s Nightingale sample site, predicting surface temperatures so the spacecraft and samples wouldn’t overheat during collection. We’re also analysing the returned Bennu material to learn about the early Solar System’s chemistry and the origin of Earth’s water and organic molecules.",
     "model": "/models/osiris_rex.glb",
     "motion": {"mode": "nadir", "axis": "-x", "along": "+z"},
     "model_scale": 1.5,
@@ -1380,7 +1569,7 @@
     "launch_year": "1999",
     "image_url": "/images/stardust_science.jpg",
     "description": "Stardust was the first mission designed to collect and return samples from a comet's coma and interstellar dust to Earth. It used a unique silica aerogel collector to capture the tiny particles at high speeds without destroying them during the encounter. The mission's return capsule successfully landed in 2006, providing the first clear look at cometary material in a laboratory.",
-    "ou_involvement": "OU researchers were among the first scientists worldwide to analyse material from the Stardust mission, using infrared, UV/visible and Raman spectroscopy to study the mineralogy of dust grains captured from Comet Wild 2 in the aerogel collector. This work, alongside studies of the sample's organic content, helped establish the OU as a leading UK centre for cometary sample science.",
+    "ou_involvement": "We were among the first in the world to analyse material from Stardust, using infrared, UV/visible and Raman spectroscopy to study the minerals in dust grains captured from Comet Wild 2 in aerogel. With studies of the samples’ organic content, this work made us a leading UK centre for comet sample science.",
     "model": "/models/stardust.glb",
     "motion": {"mode": "nadir", "axis": "-y", "along": "+z"},
     "model_scale": 1.5,
@@ -1401,7 +1590,7 @@
     "type": "asteroid",
     "status": "Natural",
     "model": "/models/bennu.glb",
-    "radius_km": 0.2524,
+    "radius_km": 0.282,
     "gm": 4.892e-09,
     "color": "#444444",
     "rot_period": -0.179,
@@ -1414,7 +1603,8 @@
       "node": 2.06,
       "peri": 66.22
     },
-    "description": "Bennu is a diamond-shaped, carbon-rich near-Earth asteroid that is believed to contain primitive material from the birth of our Solar System. Its surface is covered in loose rocks and dust, suggesting it is a 'rubble pile' held together by very weak gravity. The asteroid is a primary target for scientists who are looking to understand the role of asteroids in delivering life's building blocks to Earth."
+    "description": "Bennu is a diamond-shaped, carbon-rich near-Earth asteroid that is believed to contain primitive material from the birth of our Solar System. Its surface is covered in loose rocks and dust, suggesting it is a 'rubble pile' held together by very weak gravity. The asteroid is a primary target for scientists who are looking to understand the role of asteroids in delivering life's building blocks to Earth.",
+    "ou_involvement": "We helped choose where OSIRIS-REx sampled Bennu, and we’re analysing the material it brought back to Earth (see OSIRIS-REx)."
   },
   {
     "name": "Ryugu",
@@ -1435,7 +1625,48 @@
       "node": 251.29,
       "peri": 211.61
     },
-    "description": "Ryugu is a dark, diamond-shaped asteroid that has an orbit that crosses Earth's and is composed primarily of carbon-rich material. Its low density and porous structure indicate that it is a rubble-pile asteroid with significant void spaces in its interior. The asteroid's surface features a mix of large boulders and fine dust, recording a complex history of impacts and space weathering."
+    "description": "Ryugu is a dark, diamond-shaped asteroid that has an orbit that crosses Earth's and is composed primarily of carbon-rich material. Its low density and porous structure indicate that it is a rubble-pile asteroid with significant void spaces in its interior. The asteroid's surface features a mix of large boulders and fine dust, recording a complex history of impacts and space weathering.",
+    "ou_involvement": "Our oxygen isotope laboratory is one of the international groups analysing Ryugu samples returned by JAXA’s Hayabusa2 (see Hayabusa2)."
+  },
+  {
+    "name": "Itokawa",
+    "parent": "Sun",
+    "type": "asteroid",
+    "status": "Natural",
+    "model": "/models/Asteroid2.glb",
+    "radius_km": 0.2675,
+    "color": "#8a7f70",
+    "rot_period": 0.50552,
+    "orbit": {
+      "a_au": 1.324052,
+      "e": 0.280178,
+      "i": 1.6209,
+      "M0": 44.3783,
+      "rate": 0.646914,
+      "node": 69.0745,
+      "peri": 162.8409
+    },
+    "description": "Itokawa is a small, peanut-shaped near-Earth asteroid about 535 metres long, named after Hideo Itokawa, the father of Japanese rocketry. In 2005 it was visited by JAXA's Hayabusa spacecraft, which in 2010 brought back the first samples ever collected from an asteroid. Its surface of boulders and gravel suggests it is a rubble pile, reassembled from the fragments of an earlier collision.",
+    "ou_involvement": "We analysed particles of Itokawa returned by Hayabusa, carrying out the first Raman spectroscopy on the grains we were allocated. With a team led by Royal Holloway, University of London, we found water and organic matter of extraterrestrial origin in one of them."
+  },
+  {
+    "name": "Hayabusa",
+    "parent": "Itokawa",
+    "type": "mission",
+    "status": "Complete",
+    "launch_year": "2003",
+    "description": "Hayabusa was a JAXA mission that launched in 2003 and reached the near-Earth asteroid Itokawa in 2005. Despite many technical setbacks, it returned a capsule containing tiny grains of the asteroid to Earth in 2010: the first asteroid samples ever brought back.",
+    "ou_involvement": "We study grains of Itokawa returned by Hayabusa (see Itokawa).",
+    "radius": 0.3,
+    "size_m": 5.7,
+    "color": "#ddccaa",
+    "orbit": {
+      "a_km": 7,
+      "e": 0,
+      "i": 0,
+      "M0": 100,
+      "rate": 0
+    }
   },
   {
     "name": "Didymos",
@@ -1545,7 +1776,7 @@
       "node": 282.01,
       "peri": 139.11
     },
-    "description": "A main-belt asteroid named after planetary scientist Monica Grady. Monica is Emeritus Professor at the Open University, and curator of the meteorite collection at the Natural History Museum in London, she studies carbon isotopes in a wide range of meteorites with a focus on understanding the geologic processes leading to their formation. She is also actively involved in meteorite recovery efforts around the world. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Monica Grady, Emeritus Professor at the OU. Its official citation, written while she was curator of the meteorite collection at the Natural History Museum in London, reads: “Monica Grady (b. 1958), curator of the meteorite collection at the Natural History Museum in London, studies carbon isotopes in a wide range of meteorites with a focus on understanding the geologic processes leading to their formation. She is also actively involved in meteorite recovery efforts around the world.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
     "model_named": "/models/Grady.glb"
   },
@@ -1568,7 +1799,7 @@
       "node": 112.07,
       "peri": 18.86
     },
-    "description": "A main-belt asteroid named in honor of Ian Franchi. Ian is a British cosmochemist and emeritus professor at The Open University. He has forty years experience studying the origin and evolution of the early Solar System using advanced analytical techniques, and in particular, high-precision oxygen isotope measurements, on extraterrestrial materials. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Ian Franchi, Emeritus Professor at the OU. Its official naming citation reads: “Ian Alan Franchi (b. 1961) is a British cosmochemist and emeritus professor at The Open University. He has forty years experience studying the origin and evolution of the early Solar System using advanced analytical techniques, and in particular, high-precision oxygen isotope measurements, on extraterrestrial materials.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Franchi.glb"
   },
@@ -1590,7 +1821,7 @@
       "node": 350.1,
       "peri": 80.68
     },
-    "description": "A main-belt asteroid honoring Richard Greenwood. Richard is an English senior research fellow at The Open University who specializes in using oxygen isotopic analyses of extraterrestrial material to understand the origin and early evolution of the Solar System. He has also written a book on meteorites that was geared towards a general audience. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Richard Greenwood, a senior research fellow at the OU. Its official naming citation reads: “Richard Greenwood (b. 1957) is an English senior research fellow at The Open University who specializes in using oxygen isotopic analyses of extraterrestrial material to understand the origin and early evolution of the Solar System. He has also written a book on meteorites that was geared towards a general audience.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Greenwood.glb"
   },
@@ -1612,7 +1843,7 @@
       "node": 8.88,
       "peri": 270.67
     },
-    "description": "A main-belt asteroid honoring Ben Rider-Stokes. Ben is an English post-doctoral researcher at The Open University specializing in understanding the timing of magmatic differentiation and volatile accretion of achondrites. He evaluates the spectral characteristics of meteorites in the ultraviolet, visible, and near-infrared to identify meteoritic analogs for asteroids. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Ben Rider-Stokes, a post-doctoral researcher at the OU. Its official naming citation reads: “Ben Gabriel Rider-Stokes (b. 1997) is an English post-doctoral researcher at The Open University specializing in understanding the timing of magmatic differentiation and volatile accretion of achondrites. He evaluates the spectral characteristics of meteorites in the ultraviolet, visible, and near-infrared to identify meteoritic analogs for asteroids.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
     "model_named": "/models/Rider-Stokes.glb"
   },
@@ -1630,11 +1861,11 @@
       "e": 0.1099,
       "i": 7.98,
       "M0": 84.64,
-      "rate": 0.2709,
+      "rate": 0.270921,
       "node": 97.4,
       "peri": 320.82
     },
-    "description": "A main-belt asteroid named after British astrophysicist Susan Jocelyn Bell Burnell (b. 1943). Jocelyn discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Antony Hewish. She served as Head of Physics at the Open University (1991–2001) and has been President of the Royal Astronomical Society (2002–2004), the Institute of Physics (2008–2010) and the Royal Society of Edinburgh (2014–2018). In August 2006 she presided over the IAU’s adoption of resolutions defining the terms “planet” and “dwarf planet”. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after astrophysicist Jocelyn Bell Burnell, Head of Physics at the OU from 1991 to 2001. Its official naming citation reads: “British astrophysicist Susan Jocelyn Bell Burnell (b. 1943) discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Anthony Hewish. In Aug. 2006 she presided over the IAU's adoption of resolutions defining the terms “planet” and “dwarf planet”.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
     "model_named": "/models/Bell.glb"
   },
@@ -1656,7 +1887,7 @@
       "node": 80.14,
       "peri": 59.83
     },
-    "description": "Named in honor of the Open University. The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after the OU itself. Its official naming citation reads: “The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
     "model_named": "/models/OU.glb"
   },
@@ -1679,7 +1910,7 @@
       "node": 357.71,
       "peri": 218.3
     },
-    "description": "A main-belt asteroid honoring Andrew Norton. Andrew is an English astrophysicist and was Professor at the Open University where he led major teaching and outreach initiatives, and carried out research into the time-domain astrophysics of compact binary stars. He led the SuperWASP Variable Stars citizen science project, supervised numerous Ph.D. students and won the RAS Higher Education Award. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Andrew Norton, formerly a Professor at the OU. Its official naming citation reads: “Andrew Norton (b. 1964) is an English astrophysicist at the Open University where he led major teaching and outreach initiatives, and carried out research into the time-domain astrophysics of compact binary stars. He led the SuperWASP Variable Stars citizen science project, supervised numerous Ph.D. students and won the RAS Higher Education Award.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
     "model_named": "/models/Norton.glb"
   },
@@ -1702,7 +1933,7 @@
       "node": 168.4,
       "peri": 188.35
     },
-    "description": "A main-belt asteroid honoring Simon Green. Simon is Emeritus Professor at the Open University and has carried out observations of minor planets and transneptunian objects for over 20 years, starting with the use of the IRAS satellite to detect fast-moving objects. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Simon Green, Emeritus Professor at the OU. Its official naming citation reads: “Simon F. Green (b. 1959) has carried out observations of minor planets and transneptunian objects for over 20 years, starting with the use of the IRAS satellite to detect fast-moving objects.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Green.glb"
   },
@@ -1724,7 +1955,7 @@
       "node": 148.14,
       "peri": 148.85
     },
-    "description": "Named in honor of Colin Pillinger. Colin was a Professor at the Open University and a planetary geochemist who made significant discoveries in the light-element geochemistry of meteorites, diamonds, lunar samples and terrestrial samples. He was the originator and principal investigator of the Beagle 2 Mars lander. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Colin Pillinger (1943-2014), Professor at the OU and principal investigator (PI) of the Beagle 2 Mars lander. Its official naming citation reads: “Colin T. Pillinger (b. 1943), a planetary geochemist, made significant discoveries in the light-element geochemistry of meteorites, diamonds, lunar samples and terrestrial samples. He is the originator and principal investigator of the Beagle 2 Mars lander. The name was suggested by E. K. Gibson.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
     "model_named": "/models/Pillinger.glb"
   },
@@ -1747,7 +1978,7 @@
       "node": 163.12,
       "peri": 114.25
     },
-    "description": "A main-belt asteroid honoring Pierre-Etienne Martin. Pierre-Etienne is a French planetary scientist and research fellow at the Open University, investigating micron- to submicron-sized inclusions in Martian and carbonaceous meteorites (CMs). During his Ph.D., he studied refractory inclusions to assess aqueous alteration in CMs and joined the Hayabusa2 returned-samples analysis team. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    "description": "A main-belt asteroid named after Pierre-Etienne Martin, now a Postdoctoral Research Associate at the OU, for his earlier work. Its official naming citation reads: “Pierre-Etienne Martin (b. 1993) is a French planetary scientist at the University of Bern, investigating micron- to submicron-sized inclusions in Martian and carbonaceous meteorites. During his Ph.D., he studied refractory inclusions to assess aqueous alteration in CMs and joined the Hayabusa2 returned-samples analysis team.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
   },
   {
     "name": "17920 Zarnecki",
@@ -1767,7 +1998,7 @@
       "node": 184.69,
       "peri": 59.5
     },
-    "description": "Named in honor of space scientist John Zarnecki. While at The Open University, he developed spacecraft instrumentation to study the surfaces and atmospheres of planets, satellites and small bodies. He was a PI for the Huygens probe/lander on the Cassini mission to Saturn and Saturn VI (Titan). John has also served as a Director of the International Space Science Institute. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after space scientist John Zarnecki, formerly of the OU. Its official naming citation reads: “John C. Zarnecki (b. 1949), of the Open University, Milton Keynes, has developed spacecraft instrumentation to study the surfaces and atmospheres of planets, satellites and small bodies. He is a PI for the Huygens probe/lander on the Cassini mission to Saturn and Saturn VI (Titan).” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
     "model_named": "/models/Zarnecki.glb"
   },
@@ -1789,7 +2020,7 @@
       "node": 205.1,
       "peri": 267.66
     },
-    "description": "An outer main-belt asteroid of the Hilda group, named in honor of Gareth (Graff) Vaughan Williams before he came to the Open University. Working from Leighton Buzzard, England, he identified several low-numbered minor planets among objects that had been given provisional designations, and in 1990 he continued this work at the Minor Planet Center, correcting its files of old observations of low-numbered minor planets. The identification of this asteroid itself was made by C. M. Bardwell. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "An outer main-belt asteroid of the Hilda group, named after Gareth (Graff) Vaughan Williams, who later did his PhD at the OU. It was named for his earlier work: working from Leighton Buzzard, England, he identified several low-numbered minor planets among objects that had been given provisional designations, and in 1990 he continued this work at the Minor Planet Center, correcting its files of old observations of low-numbered minor planets. The identification of this asteroid itself was made by C. M. Bardwell. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
     "model_named": "/models/Graff.glb"
   },
@@ -1812,7 +2043,7 @@
       "node": 207.47,
       "peri": 183.8
     },
-    "description": "A main-belt asteroid named in honor of J. A. M. (Tony) McDonnell before he came to the Open University. Tony is recognised for his research on cosmic dust: with colleagues, he was the first to demonstrate the intact capture of space particles in aerogel. He has flown instruments on a number of missions and has analysed impact craters on lunar samples and on satellite surfaces exposed to space. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after J. A. M. (Tony) McDonnell, formerly Professor of Planetary and Space Sciences at the OU. Its official naming citation reads: “J. A. M. (“Tony”) McDonnell (b. 1938) is recognised for his research on cosmic dust. With colleagues, he was the first to demonstrate the intact capture of space particulates in aerogel. He has flown instruments on a number of missions and has analysed impact craters on lunar samples and satellite surfaces exposed to space.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
     "model_named": "/models/McDonnell.glb"
   },
@@ -1835,7 +2066,7 @@
       "node": 149.92,
       "peri": 151.84
     },
-    "description": "A main-belt asteroid named in honor of Colin Snodgrass before he came to the Open University. When it was named, Colin was an astronomer at the European Southern Observatory, working on the characterisation of inactive comet nuclei through photometry, measuring their sizes, colours and rotation periods, and also observing exoplanetary systems. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Colin Snodgrass, a research fellow at the OU from 2014 to 2018. Its official naming citation reads: “Colin Snodgrass (b. 1981) is an astronomer at the European Southern Observatory. His work centers on the characterization of inactive cometary nuclei through photometry, measuring their sizes, colors and rotation periods. He is also active in observing exoplanetary systems.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Snodgrass.glb"
   },
@@ -1857,7 +2088,7 @@
       "node": 270.1,
       "peri": 300.94
     },
-    "description": "A main-belt asteroid on a steeply inclined orbit, named in honor of Neil McBride while he was at the Open University. Neil has worked on many aspects of Solar System dynamics, including how meteor streams form, the links between minor planets, comets and meteors, and the structure of the region beyond Neptune. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid on a steeply inclined orbit named after Neil McBride, formerly a lecturer at the OU and co-editor of its textbook An Introduction to the Solar System. Its official naming citation reads: “Neil McBride (b. 1966) has worked on many aspects of solar system dynamics, including meteor stream formation, interrelations between minor planets, comets and meteors, as well as the structure of the transneptunian region.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
     "model_named": "/models/McBride.glb"
   },
@@ -1879,7 +2110,7 @@
       "node": 137.96,
       "peri": 351.74
     },
-    "description": "An outer main-belt asteroid named in honor of Naomi Murdoch, who completed her Ph.D. at the Open University in 2012. Using microgravity flight experiments and numerical modelling, she investigated how granular material behaves under the low gravity found on the surfaces of minor planets. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "An outer main-belt asteroid named after Naomi Murdoch, who did her PhD at the OU. Its official naming citation reads: “Naomi Murdoch (b. 1984) completed her Ph.D. at The Open University, United Kingdom in 2012. Using microgravity flight experiments and numerical modeling, she investigated the behavior of granular material under minor-planet-like low-gravity surface conditions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
     "model_named": "/models/Murdoch.glb"
   },
@@ -1902,7 +2133,7 @@
       "node": 187.97,
       "peri": 87.34
     },
-    "description": "A main-belt asteroid named in honor of Benjamin Rozitis while he was a research fellow at the Open University. Ben studies the physical and dynamical characterisation of asteroid surfaces through spacecraft data, modelling and microgravity experiments. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Benjamin Rozitis, who did his PhD and postdoctoral research at the OU. Its official naming citation reads: “Benjamin Rozitis (b. 1984) is a research fellow at the Open University (UK) studying the physical and dynamical characterization of asteroid surfaces through spacecraft data, modeling, and microgravity experiments.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
     "model_named": "/models/Rozitis.glb"
   },
@@ -1924,7 +2155,7 @@
       "node": 56.32,
       "peri": 273.19
     },
-    "description": "A main-belt asteroid named in honor of Samuel Lee Jackson, a British researcher at the Open University who specialises in observations of near-Earth asteroids and the use of small robotic telescopes. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Samuel Lee Jackson, who did his PhD at the OU, observing asteroids with its PIRATE telescope in Tenerife. Its official naming citation reads: “Samuel Lee Jackson (b. 1997) is a British researcher at The Open University, Milton Keynes, UK, who specializes in observations of near-Earth asteroids and the use of small robotic telescopes.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Jackson.glb"
   },
@@ -1946,7 +2177,7 @@
       "node": 195.12,
       "peri": 301.39
     },
-    "description": "A main-belt asteroid named in honor of Sara Russell after she left the Open University. When it was named, Sara was a researcher at the Natural History Museum in London, studying the chemistry and mineralogy of meteorites to investigate the early Solar System and the origin of interstellar grains. She has collected meteorites in both hot and cold deserts, and was principal editor of the Meteoritical Bulletin. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Sara Russell, who did her PhD at the OU with Colin Pillinger and was later a Visiting Professor there. Its official naming citation reads: “As a researcher at the Natural History Museum in London, Sara Russell (b. 1966) studies the chemistry and mineralogy of meteorites to investigate the early solar system and origin of interstellar grains. She has collected meteorites in both hot and cold deserts and is principal editor of the Meteoritical Bulletin.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
     "model_named": "/models/Russell.glb"
   },
@@ -1968,7 +2199,7 @@
       "node": 219.22,
       "peri": 1.15
     },
-    "description": "A main-belt asteroid named in honor of Philip Bland after he left the Open University. When it was named, Phil was a research scientist at Imperial College London, working on a variety of planetary and meteorite studies. His fireball camera network offers an important glimpse into the links between meteorites and the minor planets they come from. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Philip Bland, who was the OU’s curator of meteorites and did his PhD there. Its official naming citation reads: “Philip A. Bland (b. 1969), a research scientist at London's Imperial College, is involved in a variety of planetary and meteoritical studies. His fireball camera network offers an important glimpse into links between meteorites and minor planets.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
     "model_named": "/models/Bland.glb"
   },
@@ -1991,7 +2222,7 @@
       "node": 159.42,
       "peri": 321.46
     },
-    "description": "A main-belt asteroid named in honor of Mark Sephton after he left the Open University. When it was named, Mark was a researcher in organic geochemistry and meteoritics at Imperial College London, where he developed new techniques for analysing the organic matter in meteorites. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Mark Sephton, who did his PhD at the OU and was a lecturer there from 2000 to 2005. Its official naming citation reads: “Mark A. Sephton (b. 1966) is a researcher in organic geochemistry and meteoritics at Imperial College, London. Through his research, he has determined new techniques for the analysis of organics in meteorites.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
     "model_named": "/models/Sephton.glb"
   },
@@ -2013,7 +2244,7 @@
       "node": 78.76,
       "peri": 318.8
     },
-    "description": "A main-belt asteroid named in honor of Caroline Smith after she left the Open University. When it was named, Caroline was Head of Earth Sciences Collections and Principal Curator of Meteorites at the Natural History Museum in London. She studies the mineralogy of meteorites, notably ureilites, to understand planetary processes, has collected meteorites in Australia, and has been principal editor of the Meteoritical Bulletin. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Caroline Smith, who did her PhD at the OU. Its official naming citation reads: “Caroline Smith (b. 1976) the Head of Earth Sciences Collections and Principal Curator of Meteorites at the Natural History Museum in London. She studies mineralogy of meteorites, notably ureilites, to understand planetary processes, collected meteorites in Australia and has been principal editor of the Meteoritical Bulletin.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
     "model_named": "/models/Smith.glb"
   },
@@ -2035,7 +2266,7 @@
       "node": 172.52,
       "peri": 217.83
     },
-    "description": "A main-belt asteroid named in honor of Rosita Kokotanekova after she left the Open University. When it was named, Rosita was a Research Fellow at the European Southern Observatory in Garching, Germany, studying the surfaces of comets, trans-Neptunian objects and other small Solar System bodies with ground-based photometry. The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "description": "A main-belt asteroid named after Rosita Kokotanekova, who did her PhD at the OU on the nuclei of comets. Its official naming citation reads: “Rosita Kokotanekova (b. 1991) is a Research Fellow at ESO in Garching, Germany. She studies surface characteristics of comets, trans-Neptunian objects, and other small solar system bodies using ground-based photometry.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
     "model_named": "/models/Kokotanekova.glb"
   },
@@ -2047,7 +2278,7 @@
     "type": "reference_point",
     "system": "Earth",
     "status": "Natural",
-    "description": "Lagrange Point 1 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometers away from the Earth, directly between our planet and the Sun. It provides a constant, uninterrupted view of the Sun, making it the ideal location for solar monitoring satellites. Spacecraft at this point are essential for providing early warnings of solar flares and geomagnetic storms that could impact Earth.",
+    "description": "Lagrange Point 1 is a point where the pull of the Sun and Earth balances a spacecraft's orbital motion, located approximately 1.5 million kilometres away from the Earth, directly between our planet and the Sun. It provides a constant, uninterrupted view of the Sun, making it the ideal location for solar monitoring satellites. Spacecraft at this point are essential for providing early warnings of solar flares and geomagnetic storms that could impact Earth.",
     "radius": 1,
     "lagrange": {"body": "Earth", "point": "L1"}
   },
@@ -2058,16 +2289,17 @@
     "status": "Complete",
     "launch_year": "2001",
     "image_url": "/images/genesis_science.jpg",
-    "description": "Genesis was a NASA mission that spent over two years at the Earth-Sun L1 point collecting samples of the solar wind to analyse the Sun's composition. It used specialized collector arrays to capture individual solar particles before returning them to Earth in a sample return capsule. Despite a hard landing in Utah, the mission successfully provided the first precise measurements of the Sun's oxygen and nitrogen isotopes.",
-    "ou_involvement": "Genesis showed that the Sun is richer in oxygen-16 than the Earth, Moon, Mars and meteorites. This is a key reference point for OU research on oxygen isotopes in meteorites and returned samples.",
+    "description": "Genesis was a NASA mission that spent over two years at the Earth-Sun L1 point collecting samples of the solar wind to analyse the Sun's composition. It used specialised collector arrays to capture individual solar particles before returning them to Earth in a sample return capsule. Despite a hard landing in Utah, the mission successfully provided the first precise measurements of the Sun's oxygen and nitrogen isotopes.",
+    "ou_involvement": "Our scientists were on the Genesis Science Team. We developed some of the collectors that captured the solar wind and new techniques to analyse the returned samples, and after the capsule’s crash landing we worked extensively to characterise and clean off the contamination. The contamination stopped us making meaningful measurements, but Genesis’s finding that the Sun is richer in oxygen-16 than the Earth, Moon, Mars and meteorites is a key reference point for our oxygen isotope research.",
     "model": "/models/genesis.glb",
     "motion": {"mode": "sun", "axis": "+y", "rate": 10, "wobble": 3},
     "model_scale": 1.5,
     "radius": 0.8,
     "size_m": 7.9,
     "color": "#D4AF37",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
+      "kind": "halo",
       "M0": 0,
       "amplitude_km": {"y": 780000, "z": 450000},
       "period_days": 180,
@@ -2079,7 +2311,7 @@
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Planned",
-    "launch_year": "2029",
+    "launch_year": "2031",
     "image_url": "/images/ariel_science.jpg",
     "description": "Ariel is a planned ESA mission designed to perform the first large-scale survey of the chemical composition of exoplanet atmospheres. It will observe over a thousand diverse worlds in visible and infrared wavelengths to understand how planets form and evolve across the galaxy. The mission aims to find links between the atmospheres of planets and their parent stars and host environments.",
     "model": "/models/ariel.glb",
@@ -2089,13 +2321,14 @@
     "size_m": 3.3,
     "size_estimated": true,
     "color": "#ffffaa",
-    "orbit_type": "lissajous",
+    "orbit_type": "libration",
     "orbit": {
       "M0": 330,
       "amplitude_km": {"y": 800000, "z": 500000},
       "period_days": 180,
       "illustrative": true
-    }
+    },
+    "ou_involvement": "Our astronomers have served on Ariel’s science advisory team and led its working groups. Ariel will study the atmospheres of about 1,000 exoplanets, the first large survey of its kind, to show how planets form and evolve."
   },
   {
     "name": "Open Science Observatories",
@@ -2110,7 +2343,7 @@
     "launch_year": "2008",
     "image_url": "/images/pirate_science.png",
     "description": "The Open Science Observatories consist of two robotic telescopes, PIRATE and COAST, located at the Teide Observatory in Tenerife. They are designed to be operated remotely by students and researchers from anywhere in the world through a web-based interface. The facility is used for both undergraduate teaching and professional astronomical research, including the search for transiting exoplanets.",
-    "ou_involvement": "The telescopes are owned and operated by the Open University and serve as a cornerstone of its distance-learning astronomy curriculum. Academics use the facility to conduct long-term monitoring of variable stars and to provide ground-based support for international space missions like Ariel. This unique educational resource allows students to gain real-world experience in astronomical data collection and analysis.",
+    "ou_involvement": "We own and run these telescopes, a cornerstone of our distance-learning astronomy teaching. Our academics use them to monitor variable stars and to support space missions such as Ariel from the ground, and students use them to gain real experience of collecting and analysing astronomical data.",
     "model": "/models/pirate.glb",
     "model_scale": 0.5,
     "radius": 0.2,
@@ -2130,8 +2363,8 @@
     },
     "launch_year": "2017",
     "image_url": "/images/marsyard_science.jpeg",
-    "description": "The Mars Yard is a specialized planetary simulation facility located on the Open University's campus in Milton Keynes, UK. It features a large area filled with regolith simulant and obstacles designed to mimic the challenging terrain found on the Martian surface. The site is used for autonomous rover testing, including navigation algorithms, and to train future planetary mission operators.",
-    "ou_involvement": "The facility is integrated into the university's teaching program, allowing students to operate robotic rovers across a simulated Martian landscape from their own homes. This innovative teaching tool is part of the OU's broad commitment to making space science accessible and interactive for a global audience.",
+    "description": "The Mars Yard is a specialised planetary simulation facility located on the OU's campus in Milton Keynes, UK. It features a large area filled with regolith simulant and obstacles designed to mimic the challenging terrain found on the Martian surface. The site is used for autonomous rover testing, including navigation algorithms, and to train future planetary mission operators.",
+    "ou_involvement": "Part of our teaching, the Mars Yard lets students drive robotic rovers across a simulated Martian landscape from their own homes, making space science hands-on for learners anywhere.",
     "model": "/models/marsyard.glb",
     "model_scale": 0.5,
     "model_offset": {
@@ -2143,6 +2376,24 @@
     "size_m": 20,
     "size_estimated": true,
     "color": "#dd4422"
+  },
+  {
+    "name": "OU Campus",
+    "parent": "Earth",
+    "type": "mission",
+    "status": "Operational",
+    "launch_year": "1969",
+    "orbit_type": "landed",
+    "landed_coords": {
+      "lat": 52.0247,
+      "lon": -0.7105
+    },
+    "description": "The OU's campus at Walton Hall, Milton Keynes, is home to its planetary and space science laboratories and to the teams who write its distance-learning courses. The OU’s mission is to be open to people, places, methods and ideas.",
+    "ou_involvement": "Research in this visualisation feeds into our teaching. On our BSc Natural Sciences (Astronomy and Planetary Science), students take modules such as Astronomy (S284) and Planetary science and the search for life (S283, becoming Planetary science, S287, from October 2027), and on Remote experiments in physics and space (SXPS288) they run their own projects with our radio telescope in Milton Keynes or our PIRATE telescope in Tenerife. Postgraduates on our S818 Space Science module work with real mission data, such as Gaia’s.",
+    "radius": 0.2,
+    "size_m": 20,
+    "size_estimated": true,
+    "color": "#3399ff"
   },
   {
     "type": "credits",
@@ -2444,20 +2695,6 @@
             "licence": "CC BY-SA 3.0 IGO",
             "url": "",
             "confirmed": false
-          },
-          {
-            "subject": "Sentinel-2",
-            "credit": "ESA/ATG medialab",
-            "licence": "",
-            "url": "",
-            "confirmed": false
-          },
-          {
-            "subject": "Sentinel-3",
-            "credit": "Contains modified Copernicus Sentinel data (2018), processed by ESA",
-            "licence": "CC BY-SA 3.0 IGO",
-            "url": "https://www.esa.int/ESA_Multimedia/Images/2018/06/Tandem_in_images",
-            "confirmed": true
           },
           {
             "subject": "SMILE",

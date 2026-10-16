@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Operates \"for up to 10 Earth days\"",
+  "field": "description",
+  "id": "MAGPIE--1",
+  "kind": "claim",
+  "note": "",
+  "object": "MAGPIE",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:37:36.941Z",
+  "verdict": "unv"
+}

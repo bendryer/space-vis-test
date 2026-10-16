@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Lessons from Beagle 2 informed later landers including ExoMars",
+  "field": "ou_involvement",
+  "id": "Beagle-2--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Beagle 2",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:49:06.331Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "OU-Campus--2",
+  "kind": "claim",
+  "note": "Find out this information yourself and add in",
+  "object": "OU Campus",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our research in this visualisation feeds into our teaching. [TO ADD: the courses it informs, e.g. modules in astronomy and planetary science, and how students take part.]"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:47:10.600Z",
+  "verdict": "sty"
+}

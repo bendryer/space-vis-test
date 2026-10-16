@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Roman--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Roman",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "From 2014 to 2019, under contract to JPL, our Centre for Electronic Imaging (CEI) characterised, designed and tested the EM-CCD sensor for Roman’s coronagraph, leading to the CCD311 chosen for flight: a radiation-hardened version of the CCD201. We continue to refine the ‘trap-pumping’ techniques we developed for Euclid to counter radiation damage to these sensors."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T08:05:13.423Z",
+  "verdict": "sty"
+}

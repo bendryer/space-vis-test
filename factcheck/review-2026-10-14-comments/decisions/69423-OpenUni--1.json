@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "69423-OpenUni--1",
+  "kind": "claim",
+  "note": "",
+  "object": "69423 OpenUni",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after the Open University itself. Its official naming citation reads: “The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:57:45.520Z",
+  "verdict": "fix"
+}

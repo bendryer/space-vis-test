@@ -15,7 +15,7 @@
 .reticle-mark {
     fill: var(--ou-light);
     fill-opacity: 0;
-    stroke: rgba(255, 255, 255, 0.85);
+    stroke: var(--reticle-ring);
     stroke-width: 1.5;
     stroke-dashoffset: 0;
     transform-box: fill-box;
@@ -29,7 +29,7 @@
 }
 .reticle-leader {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.55);
+    stroke: var(--reticle-leader);
     stroke-width: 1;
     stroke-dasharray: 1 1;
     stroke-dashoffset: 0;
@@ -81,13 +81,13 @@
    tint its orbits are lit in, so none reads as the thing that's chosen; names come one at a time
    on hover. The rings step back while anything is pointed at, so the hover stays the loudest. */
 .reticle-mark.reticle--info {
-    stroke: rgba(166, 181, 248, 0.85);
+    stroke: var(--reticle-info);
     stroke-width: 1;
     stroke-dasharray: 1.5 2.5;
     transition: opacity 0.2s;
 }
 .reticle-mark.reticle--info.is-dot {
-    fill: #A6B5F8;
+    fill: var(--ou-tint);
     stroke: var(--ou-core);
     stroke-dasharray: none;
 }

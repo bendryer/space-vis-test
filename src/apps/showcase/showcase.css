@@ -26,8 +26,8 @@
     display: grid;
     grid-template-columns: minmax(0, calc(40rem + 2 * var(--pad))) minmax(0, 1fr);
     overflow: hidden auto;
-    color: #fff;
-    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--text);
+    font-family: var(--font);
 }
 .splash[hidden] { display: none; }
 /* The Core blue ground. The drawing carries its own copy with a hole under the world (.splash-ground),
@@ -60,15 +60,20 @@
     overflow: visible;
 }
 .splash-ground { fill: var(--ou-core); }
+/* The OU gradients' stops: mid blue to lilac (the world), green to light blue (the orbit). */
+.splash-stop-mid { stop-color: var(--ou-mid); }
+.splash-stop-lilac { stop-color: var(--ou-lilac); }
+.splash-stop-green { stop-color: var(--ou-green); }
+.splash-stop-light { stop-color: var(--ou-light); }
 .splash-world {
     fill: url(#splash-world-grad);
-    stroke: #000;
+    stroke: var(--space);
     stroke-width: 1.5;
     stroke-opacity: 0;
 }
 .splash-orbit-track {
     fill: none;
-    stroke: rgba(102, 238, 250, 0.3);
+    stroke: var(--accent-track);
     stroke-width: 1.5;
 }
 .splash-orbit-progress {
@@ -81,7 +86,7 @@
     transition: stroke-dashoffset 0.5s var(--ease-out);
 }
 .splash-craft {
-    fill: #fff;
+    fill: var(--text);
     opacity: 0;
     transition: opacity 0.6s ease;
 }
@@ -113,7 +118,7 @@
 }
 .splash-facts {
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-soft);
     font-size: clamp(1rem, 1.25vw, 1.125rem);
     line-height: 1.55;
     text-wrap: pretty;
@@ -122,7 +127,7 @@
 /* The thank-you to every mission's partners: a quieter line under the facts. */
 .splash-together {
     margin: 0.85em 0 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-soft);
     font-size: clamp(1rem, 1.25vw, 1.125rem);
     line-height: 1.55;
     text-wrap: pretty;
@@ -144,7 +149,7 @@
     min-height: 52px;
     padding: 0 22px 0 18px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--text-faint);
     border-radius: 999px;
     color: var(--text);
     font-size: 1rem;
@@ -181,8 +186,8 @@
 .splash-retry:hover { background: var(--text); }
 #splash-start:active:not(:disabled) { transform: scale(0.97); }
 #splash-start:disabled {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.75);
+    background: var(--fill-disabled);
+    color: var(--text-muted);
     cursor: progress;
 }
 #splash-start:focus-visible,
@@ -190,14 +195,14 @@
 #splash-start[hidden] { display: none; }
 .splash-status {
     margin: 0;
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--text-muted);
     font-size: 0.9375rem;
     font-variant-numeric: tabular-nums;
 }
 .splash-note {
     max-width: 32rem;
     margin: 1rem 0 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-soft);
     font-size: 0.9375rem;
     line-height: 1.5;
 }
@@ -240,9 +245,9 @@
     transition: fill-opacity 0.45s ease-in-out, stroke-opacity 0.45s ease-in-out;
 }
 /* The orbit's gradient stops are recoloured rather than the stroke swapped, so it fades to black. */
-.splash.is-open #splash-signal-grad stop { stop-color: #000; transition: stop-color 0.45s ease-in-out; }
-.splash.is-open .splash-orbit-track { stroke: #000; transition: stroke 0.45s ease-in-out; }
-.splash.is-open .splash-craft { fill: #000; transition: fill 0.45s ease-in-out; }
+.splash.is-open #splash-signal-grad stop { stop-color: var(--space); transition: stop-color 0.45s ease-in-out; }
+.splash.is-open .splash-orbit-track { stroke: var(--space); transition: stroke 0.45s ease-in-out; }
+.splash.is-open .splash-craft { fill: var(--space); transition: fill 0.45s ease-in-out; }
 .splash.is-through .splash-orbit {
     scale: var(--fly-scale);
     transition: translate 0.9s cubic-bezier(0.65, 0, 0.35, 1), scale 1s cubic-bezier(0.6, 0, 0.9, 0.4);
@@ -273,7 +278,7 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
         z-index: 1;
         margin: 0 calc(var(--pad) * -1);
         padding: 28px var(--pad) calc(16px + env(safe-area-inset-bottom, 0px));
-        background: linear-gradient(to bottom, rgba(6, 6, 69, 0), var(--ou-core) 26px);
+        background: linear-gradient(to bottom, transparent, var(--ou-core) 26px);
     }
     /* With the full screen choice, the two buttons share one row. */
     .splash-start:has(.splash-fullscreen:not([hidden])) { flex-wrap: nowrap; gap: 10px; }
@@ -313,7 +318,7 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
     .splash-copy h1 { font-size: clamp(2rem, 11vh, 3rem); }
     .splash-logo { grid-column: 1; grid-row: 2; position: relative; left: auto; bottom: auto; margin: 0 var(--pad) 20px; height: 36px; }
     /* In the app the menu may run down to just above the logo, not stop at two rows. */
-    body #mission-menu { max-height: calc(100vh - 84px - 76px); max-height: calc(100dvh - 84px - 76px); }
+    body #mission-menu { max-height: calc(100vh - var(--menu-top, 84px) - 76px); max-height: calc(100dvh - var(--menu-top, 84px) - 76px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -336,7 +341,7 @@ body.is-arriving > canvas { scale: 0.88; transition: none; }
 /* --- HEADER --- */
 /* The title and clock sit straight on the scene, so a soft dark halo keeps them readable over a
    bright planet or the Sun. */
-#header { pointer-events: auto; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.5); }
+#header { pointer-events: auto; text-shadow: var(--halo); }
 h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
 #clock-line {
     margin: 2px 0 0;
@@ -350,12 +355,12 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 #mission-menu {
     pointer-events: auto;
     position: absolute;
-    top: 84px;
+    top: var(--menu-top, 84px); /* under the header, however tall it grows (layout.js) */
     left: 20px;
     z-index: 1000; /* above the reticles (999), like the other plates */
     width: 256px;
-    max-height: min(68vh, calc(100vh - 200px));
-    max-height: min(68dvh, calc(100dvh - 200px));
+    max-height: min(68vh, calc(100vh - var(--menu-top, 84px) - 116px));
+    max-height: min(68dvh, calc(100dvh - var(--menu-top, 84px) - 116px));
     display: flex;
     flex-direction: column;
     background: var(--surface-menu);
@@ -399,7 +404,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     width: 100%;
     min-height: 36px;
     padding: 7px 10px 7px 34px;
-    background: rgba(166, 181, 248, 0.08);
+    background: var(--field);
     border: 1px solid var(--line);
     border-radius: 8px;
     color: var(--text);
@@ -408,7 +413,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     caret-color: var(--accent);
 }
 #menu-filter::placeholder { color: var(--text-faint); opacity: 1; }
-#menu-filter:hover { border-color: rgba(166, 181, 248, 0.4); }
+#menu-filter:hover { border-color: var(--line-strong); }
 #menu-filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
 
 .menu-hint { color: var(--text-faint); font-size: 0.8125rem; }
@@ -420,7 +425,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     overscroll-behavior: contain;
     padding-bottom: 6px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    scrollbar-color: var(--scrollbar) transparent;
 }
 
 .menu-list { list-style: none; margin: 0; padding: 0; }
@@ -468,13 +473,13 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     gap: 1px;
     height: 22px;
     padding: 0 3px 0 8px;
-    border: 1px solid rgba(166, 181, 248, 0.38);
+    border: 1px solid var(--line-strong);
     border-radius: 999px;
-    background: rgba(166, 181, 248, 0.08);
+    background: var(--field);
     transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 .menu-toggle:hover .menu-chip { color: var(--text); border-color: var(--accent); background: var(--accent-wash); }
-.menu-toggle[aria-expanded="true"] .menu-chip { border-color: rgba(102, 238, 250, 0.5); background: var(--accent-wash); }
+.menu-toggle[aria-expanded="true"] .menu-chip { border-color: var(--accent-edge); background: var(--accent-wash); }
 .menu-chevron {
     width: 16px;
     height: 16px;
@@ -548,7 +553,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 #controls {
     position: absolute;
     bottom: 20px;
-    right: 20px; /* Default position when sidebar is closed */
+    right: 20px;
     pointer-events: auto;
     background: var(--surface);
     padding: 12px;
@@ -558,13 +563,13 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    transition: right 0.45s var(--ease-out);
+    transition: transform 0.45s var(--ease-out);
     z-index: 1001; /* Ensure it sits above the sidebar */
 }
 
-/* Moves the controls clear of the open sidebar */
+/* Moves the controls clear of the open sidebar: 350px sidebar width + 30px buffer, less its own 20px inset */
 #controls.shifted {
-    right: 380px; /* 350px sidebar width + 30px buffer */
+    transform: translateX(-360px);
 }
 /* Below the width where the sidebar sits beside the scene (SIDEBAR_BESIDE_MIN_WIDTH in config.js) it
    covers the scene, so the controls have nowhere to go: they wait until it closes. */
@@ -573,7 +578,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 }
 /* Fingers need 44px targets; the compact 36px rows are for a mouse. */
 @media (pointer: coarse) {
-    #menu-filter, .mission-btn, .menu-toggle, #cinematic-btn { min-height: 44px; }
+    #menu-filter, .mission-btn, .menu-toggle, #cinematic-btn, #launch-btn { min-height: 44px; }
     #credits-btn, #coach-btn { min-height: 44px; padding: 2px 12px; }
 }
 
@@ -581,7 +586,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     min-height: 36px;
     padding: 8px 16px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--edge-ghost);
     border-radius: 999px;
     color: var(--text);
     font-size: 0.8125rem;
@@ -589,7 +594,24 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     cursor: pointer;
     transition: background-color 0.15s, border-color 0.15s;
 }
-#cinematic-btn:hover { background: var(--accent-wash); border-color: rgba(255, 255, 255, 0.7); }
+#cinematic-btn:hover { background: var(--accent-wash); border-color: var(--edge-ghost-hover); }
+
+/* "Launch your next mission" (launch.js): the invitation to study, in the accent. */
+#launch-btn {
+    min-height: 36px;
+    padding: 8px 16px;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+#launch-btn:hover { background: var(--accent-current); }
+.launch-content p { margin: 0 0 4px; }
+.launch-content .launch-lede { color: var(--text); }
 #cinematic-btn[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); }
 
 /* The scale switch (scale.js): Compressed or True scale, two halves of one hairline pill at the
@@ -623,30 +645,74 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     .scale-option { min-height: 40px; }
 }
 
+/* While the scale changes (three seconds), the controls rest greyed out (scale.js marks them
+   aria-disabled and holds their clicks, keeping keyboard focus where it was) and a hairline bar along the foot of the screen fills with the change, under a
+   small caption. */
+#controls.is-busy > * { opacity: 0.4; transition: opacity 0.3s; }
+#controls.is-busy button { cursor: default; }
+.scale-progress {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+}
+.scale-progress.is-active { opacity: 1; }
+.scale-progress-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+}
+.scale-progress-track {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: var(--line);
+}
+.scale-progress-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+}
+@media (max-width: 720px) {
+    .scale-progress-label { display: none; }
+}
+
 /* --- SIDEBAR (Right) --- */
 #sidebar {
     position: fixed; /* fixed so the parked, off-screen panel doesn't widen the page on phones */
     top: 0;
-    right: -400px;
+    right: 0;
     width: min(350px, 100vw);
     height: 100vh;
     height: 100dvh;
     background: var(--surface-solid);
     color: var(--text);
     padding: 28px;
-    transition: right 0.45s var(--ease-out);
+    transform: translateX(calc(100% + 50px)); /* parked off screen; slides by transform, not layout */
+    transition: transform 0.45s var(--ease-out);
     border-left: 1px solid var(--line);
     box-sizing: border-box;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    scrollbar-color: var(--scrollbar) transparent;
     z-index: 1000;
 }
 
-#sidebar.active { right: 0; }
+#sidebar.active { transform: none; }
 
 #sidebar-close,
-#credits-close {
+#credits-close,
+#launch-close {
     position: absolute;
     width: 44px;
     height: 44px;
@@ -661,9 +727,11 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     transition: background-color 0.15s, color 0.15s;
 }
 #sidebar-close { top: 16px; right: 16px; }
-#credits-close { top: 14px; right: 14px; }
+#credits-close,
+#launch-close { top: 14px; right: 14px; }
 #sidebar-close:hover,
-#credits-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+#credits-close:hover,
+#launch-close:hover { background: var(--wash-neutral); color: var(--text); }
 
 #sidebar h2 {
     margin: 0 0 4px;
@@ -720,7 +788,7 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
     border-radius: 8px;
     overflow: hidden;
 }
-.info-image img { display: block; width: 100%; }
+.info-image img { display: block; width: 100%; height: auto; } /* its width and height attributes keep the room */
 
 .info-description {
     margin: 0;
@@ -737,18 +805,6 @@ h1 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em;
 }
 
 /* --- ACCESSIBILITY UTILITIES --- */
-.visually-hidden {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-}
-
 button:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -774,7 +830,6 @@ button:focus-visible {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--plate-radius);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
     padding: 10px 10px 14px 18px;
     display: flex;
     flex-direction: column;
@@ -838,7 +893,7 @@ body:has(#sidebar.active) .coach {
     line-height: inherit;
     text-align: left;
     text-decoration: underline;
-    text-decoration-color: rgba(102, 238, 250, 0.5);
+    text-decoration-color: var(--accent-edge);
     text-underline-offset: 3px;
     cursor: pointer;
     transition: text-decoration-color 0.15s;
@@ -856,7 +911,7 @@ body:has(#sidebar.active) .coach {
     /* Here the details panel covers the scene and the controls wait for it to close; so does the coach. */
     body:has(#sidebar.active) .coach { visibility: hidden; opacity: 0; pointer-events: none; }
     body.coach-open #mission-menu {
-        max-height: min(68dvh, calc(100dvh - 84px - var(--controls-h, 96px) - var(--coach-h, 160px) - 56px));
+        max-height: min(68dvh, calc(100dvh - var(--menu-top, 84px) - var(--controls-h, 96px) - var(--coach-h, 160px) - 56px));
     }
 }
 @media (max-width: 560px) {
@@ -879,7 +934,7 @@ body:has(#sidebar.active) .coach {
     color: var(--text-faint);
     font-size: 0.78125rem;
     text-decoration: underline;
-    text-decoration-color: rgba(255, 255, 255, 0.25);
+    text-decoration-color: var(--underline-quiet);
     text-underline-offset: 3px;
     cursor: pointer;
     transition: color 0.15s, text-decoration-color 0.15s;
@@ -887,7 +942,8 @@ body:has(#sidebar.active) .coach {
 #credits-btn:hover,
 #coach-btn:hover { color: var(--text); text-decoration-color: currentColor; }
 
-#credits-dialog {
+#credits-dialog,
+#launch-dialog {
     width: min(640px, calc(100% - 32px));
     max-height: min(80vh, 760px);
     padding: 0;
@@ -896,13 +952,16 @@ body:has(#sidebar.active) .coach {
     color: var(--text);
     border: 1px solid var(--line);
     border-radius: var(--plate-radius);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-modal);
     overflow: hidden;
 }
-#credits-dialog[open] { display: flex; flex-direction: column; }
-#credits-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+#credits-dialog[open],
+#launch-dialog[open] { display: flex; flex-direction: column; }
+#credits-dialog::backdrop,
+#launch-dialog::backdrop { background: var(--backdrop); }
 
-#credits-title {
+#credits-title,
+#launch-title {
     margin: 0;
     padding: 26px 76px 14px 28px;
     font-size: 1.5rem;
@@ -911,14 +970,15 @@ body:has(#sidebar.active) .coach {
     letter-spacing: -0.01em;
 }
 
-#credits-content {
+#credits-content,
+.launch-content {
     overflow-y: auto;
     padding: 0 28px 24px;
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--text-muted);
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    scrollbar-color: var(--scrollbar) transparent;
 }
 .credits-intro { margin: 0 0 8px; color: var(--text); }
 /* The crew: a short list above the image credits, closed off by a hairline. */
@@ -928,7 +988,8 @@ body:has(#sidebar.active) .coach {
 .credits-crew dd { color: var(--text-muted); }
 .credits-note { margin: 12px 0 0; color: var(--text-faint); font-size: 0.8125rem; line-height: 1.55; }
 .credits-footer { margin: 20px 0 0; color: var(--text-faint); font-size: 0.8125rem; }
-#credits-content h3 {
+#credits-content h3,
+.launch-content h3 {
     margin: 22px 0 8px;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -950,8 +1011,8 @@ body:has(#sidebar.active) .coach {
 
 @media (max-width: 560px) {
     .credits-list > div { grid-template-columns: 1fr; gap: 0; }
-    #credits-title { padding: 20px 70px 12px 20px; }
-    #credits-content { padding: 0 20px 20px; }
+    #credits-title, #launch-title { padding: 20px 70px 12px 20px; }
+    #credits-content, .launch-content { padding: 0 20px 20px; }
 }
 
 /* --- PHONES (up to 720px wide; isPhone() in config.js) --- */
@@ -974,6 +1035,7 @@ body:has(#sidebar.active) .coach {
        plate of four round buttons, which fits beside the logo on the narrowest phones. */
     #controls,
     #controls.shifted {
+        transform: none;
         right: max(16px, env(safe-area-inset-right, 0px));
         bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         flex-direction: row;
@@ -997,6 +1059,7 @@ body:has(#sidebar.active) .coach {
     .scale-switch { display: none; }
     #explore-btn,
     #cinematic-btn,
+    #launch-btn,
     #scale-btn,
     #coach-btn {
         display: grid;
@@ -1006,16 +1069,18 @@ body:has(#sidebar.active) .coach {
         min-height: 44px;
         padding: 0;
         background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.45);
+        border: 1px solid var(--edge-ghost);
         border-radius: 50%;
         color: var(--text);
         text-decoration: none;
     }
-    #coach-btn:active, #cinematic-btn:active, #scale-btn:active, #explore-btn:active { background: var(--accent-wash); }
+    #coach-btn:active, #launch-btn:active, #cinematic-btn:active, #scale-btn:active, #explore-btn:active { background: var(--accent-wash); }
     #scale-btn { cursor: pointer; }
+    #launch-btn { border-color: var(--accent); color: var(--accent); }
     #scale-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
     #explore-btn .btn-label,
     #cinematic-btn .btn-label,
+    #launch-btn .btn-label,
     #scale-btn .btn-label,
     #coach-btn .btn-label {
         position: absolute;
@@ -1051,7 +1116,7 @@ body:has(#sidebar.active) .coach {
         position: fixed;
         inset: 0;
         z-index: 1002;
-        background: rgba(0, 0, 0, 0.55);
+        background: var(--scrim);
         opacity: 0;
         visibility: hidden;
         pointer-events: auto;
@@ -1073,7 +1138,6 @@ body:has(#sidebar.active) .coach {
         padding-bottom: env(safe-area-inset-bottom, 0px);
         border-width: 1px 0 0;
         border-radius: var(--radius-shield) var(--radius) 0 0;
-        box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
         transform: translateY(calc(100% + 16px));
         visibility: hidden;
         transition: transform 0.42s var(--ease-out), visibility 0s linear 0.42s;
@@ -1091,7 +1155,7 @@ body:has(#sidebar.active) .coach {
         height: 4px;
         margin: 0 auto 4px;
         border-radius: 2px;
-        background: rgba(255, 255, 255, 0.35);
+        background: var(--grip);
     }
     .menu-title { padding: 0 6px 4px 20px; }
     #mission-menu h2 { margin: 0; font-size: 1.0625rem; }
@@ -1106,7 +1170,7 @@ body:has(#sidebar.active) .coach {
         color: var(--text-muted);
         cursor: pointer;
     }
-    .sheet-close:active { background: rgba(255, 255, 255, 0.1); color: var(--text); }
+    .sheet-close:active { background: var(--wash-neutral); color: var(--text); }
     .sheet-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .menu-search { margin: 0 16px 8px; }
     #menu-filter { min-height: 44px; font-size: 1rem; } /* 16px, so iOS doesn't zoom into the field */
@@ -1138,7 +1202,7 @@ body:has(#sidebar.active) .coach {
         font: inherit;
         font-size: 0.875rem;
         text-decoration: underline;
-        text-decoration-color: rgba(255, 255, 255, 0.3);
+        text-decoration-color: var(--underline-quiet);
         text-underline-offset: 3px;
         cursor: pointer;
     }
@@ -1165,11 +1229,10 @@ body:has(#sidebar.active) .coach {
         border-left: none;
         border-top: 1px solid var(--line);
         border-radius: var(--radius-shield) var(--radius) 0 0;
-        box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
         transform: translateY(calc(100% + 120px));
         transition: transform 0.45s var(--ease-out);
     }
-    #sidebar.active { right: 0; transform: translateY(var(--peek-drop)); }
+    #sidebar.active { transform: translateY(var(--peek-drop)); }
     #sidebar.active.is-full { transform: none; }
     #sidebar.is-dragging { transition: none; }
     .sheet-handle {
@@ -1193,7 +1256,7 @@ body:has(#sidebar.active) .coach {
         height: 4px;
         margin-left: -18px;
         border-radius: 2px;
-        background: rgba(255, 255, 255, 0.35);
+        background: var(--grip);
     }
     .sheet-handle:focus-visible { outline-offset: -4px; }
     #sidebar-close { top: 12px; right: 8px; }

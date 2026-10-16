@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Rosetta--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Rosetta",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "With RAL Space, we co-developed Ptolemy, the gas analyser on the Philae lander that measured the isotopes of carbon, nitrogen and oxygen in the comet. We also contributed to the MUPUS and GIADA instruments, coordinated the mission’s worldwide campaign of ground-based observations, and have explored why comet 67P’s dust and gas jets follow a day-night cycle."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:22.151Z",
+  "verdict": "sty"
+}

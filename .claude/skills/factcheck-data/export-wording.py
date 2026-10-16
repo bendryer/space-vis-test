@@ -1,4 +1,4 @@
-import json, math, re
+import json, math, re, sys
 from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -7,7 +7,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 PROJECT = Path(__file__).resolve().parents[3]
 DATA = PROJECT / "public" / "data.json"
 REG = PROJECT / "factcheck" / "registry.json"
-OUT = PROJECT / "factcheck" / "OUniverse wording - comments welcome.xlsx"
+OUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else PROJECT / "factcheck" / "OUniverse wording - comments welcome.xlsx"
 
 data = [o for o in json.load(open(DATA, encoding="utf-8")) if o.get("type") != "credits"]
 reg = json.load(open(REG, encoding="utf-8"))

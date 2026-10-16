@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New general text from the sheet (the sheet calls it Peregrine-1).",
+  "field": "description",
+  "id": "Peregrine--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Peregrine",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "Peregrine-1 was developed by Astrobotic under NASA's Artemis and Commercial Lunar Payload Services programmes. Launched in 2024, it aimed to be the first commercially developed spacecraft to land on the Moon. However, a propulsion system fault after launch ruled out a landing attempt, and instead the spacecraft was operated as a test flight for a week before a controlled disposal in Earth's atmosphere."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:22.991Z",
+  "verdict": "fix"
+}

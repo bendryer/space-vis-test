@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Comet-Interceptor--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Comet Interceptor",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We’re a Co-Investigator institution for DISC, the instrument that will measure the size, mass and speed of dust particles as the spacecraft flies past its comet. Our Light-Gas Gun fires particles at several kilometres per second to check DISC’s dust shield can survive real high-speed impacts."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:12.639Z",
+  "verdict": "sty"
+}

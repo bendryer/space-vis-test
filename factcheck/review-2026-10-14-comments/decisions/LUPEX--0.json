@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New OU text from the sheet. It names the instrument the Exospheric Mass Spectrometer (EMS-L), an ESA instrument; the app says \"Exploration Mass Spectrometer\", an instrument for JAXA.",
+  "field": "ou_involvement",
+  "id": "LUPEX--0",
+  "kind": "claim",
+  "note": "",
+  "object": "LUPEX",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The Open University is developing the Exospheric Mass Spectrometer for LUPEX (EMS-L), an ESA instrument for the JAXA-ISRO Lunar Polar Exploration (LUPEX) rover mission, currently targeted for launch no earlier than 2028. Building on the OU's heritage in miniature ion-trap mass spectrometry, EMS-L will measure water and other volatile species in the lunar exosphere and those released from the surface and subsurface during rover and drilling activities, helping to characterise the distribution and behaviour of volatiles in the Moon's south polar region."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:33.503Z",
+  "verdict": "bad"
+}

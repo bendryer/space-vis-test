@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Planck--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Planck",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We use Planck’s maps of the cosmic microwave background to study the large-scale structure of the early Universe and how galaxy clusters are spread. Our cosmologists combine Planck’s data with newer missions such as Euclid to research dark matter and dark energy, and it underpins our teaching of cosmology."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:59.146Z",
+  "verdict": "sty"
+}

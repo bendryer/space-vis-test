@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Mention coordinated experiments with other spacecraft, such as measuring methane from orbit at the same time as Curiosity on the ground.",
+  "field": "ou_involvement",
+  "id": "ExoMars-TGO--0",
+  "kind": "claim",
+  "note": "accept suggestion but make it snappier.",
+  "object": "ExoMars TGO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "This work involves international collaboration",
+      "to": "Occasionally, coordinated experiments are carried out with other spacecraft, such as measuring methane from orbit at the same time as the Curiosity rover measures it on the ground. This work involves international collaboration"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:53:38.950Z",
+  "verdict": "fix"
+}

@@ -7,6 +7,7 @@ import { camera, renderer } from './scene.js';
 import { CLOSED_BODY_TYPES, HIGH_DETAIL_HIDE_PX, HIGH_DETAIL_SHOW_PX, MISSION_MODEL_SIZE, getEffectiveModel } from './config.js';
 import { lazyGltfLoader, fixPath } from './assets.js';
 import { prepareForGPU } from './gpu.js';
+import { vertexReader } from './vertices.js';
 import { relandLanders } from './landers.js';
 import { getSystemRoot } from './orbits.js';
 
@@ -154,11 +155,13 @@ function getAreaCentroid(root) {
         if (!m.isMesh) return;
         const pos = m.geometry.attributes.position, index = m.geometry.index;
         const count = (index ? index.count : pos.count) / 3;
+        const corner = vertexReader(pos, m.matrixWorld);
+        const ids = index ? index.array : null;
         for (let block = 0; block < count; block += step) {
             const i = Math.min(count - 1, Math.floor(block + (step > 1 ? jitter() * step : 0))) * 3;
-            a.fromBufferAttribute(pos, index ? index.getX(i) : i).applyMatrix4(m.matrixWorld);
-            b.fromBufferAttribute(pos, index ? index.getX(i + 1) : i + 1).applyMatrix4(m.matrixWorld);
-            c.fromBufferAttribute(pos, index ? index.getX(i + 2) : i + 2).applyMatrix4(m.matrixWorld);
+            corner(a, ids ? ids[i] : i);
+            corner(b, ids ? ids[i + 1] : i + 1);
+            corner(c, ids ? ids[i + 2] : i + 2);
             const area = ab.subVectors(b, a).cross(ac.subVectors(c, a)).length() / 2;
             sum.addScaledVector(a.add(b).add(c), area / 3);
             totalArea += area;
@@ -304,6 +307,7 @@ export function buildModelLevel(item, effectiveModel, model) {
     if (item.model_offset) { wrapper.position.set(item.model_offset.x, item.model_offset.y, item.model_offset.z); }
 
     processModelMeshes(item, model);
+    wrapper.userData.detailLevel = true;   // its insides' matrices are left while it's hidden (draw.js)
     return wrapper;
 }
 

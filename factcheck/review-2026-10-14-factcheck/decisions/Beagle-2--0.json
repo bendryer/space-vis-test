@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"The OU also led the Environmental Sensor Suite (ESS)\"",
+  "field": "ou_involvement",
+  "id": "Beagle-2--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Beagle 2",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "The OU also led the Environmental Sensor Suite (ESS),",
+      "to": "OU scientists also worked on the Environmental Sensor Suite (ESS),"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:49:03.647Z",
+  "verdict": "bad"
+}

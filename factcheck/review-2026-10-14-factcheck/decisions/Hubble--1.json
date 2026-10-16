@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Hubble--1",
+  "kind": "claim",
+  "note": "Accept but in the mission info it should be NASA/ESA",
+  "object": "Hubble",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our astronomers use Hubble’s archive to study stellar populations and how distant galaxies evolve, and the work feeds into our astronomy teaching. The CCDs in Hubble’s WFC3 camera were built by Teledyne e2v, the UK company that partners with our Centre for Electronic Imaging on testing and radiation-hardening space detectors."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:56.145Z",
+  "verdict": "sty"
+}

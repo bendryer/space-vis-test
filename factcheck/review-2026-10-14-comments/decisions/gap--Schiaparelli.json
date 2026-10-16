@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--Schiaparelli",
+  "kind": "new-entry",
+  "note": "",
+  "object": "Schiaparelli",
+  "suggestion": {
+    "description": "Schiaparelli was ESA's Entry, Descent and Landing Demonstrator Module, carried to Mars with the ExoMars Trace Gas Orbiter in 2016. It returned data throughout its descent through the Martian atmosphere, but a fault in its guidance software ended its parachute phase too early, and it crashed onto Meridiani Planum on 19 October 2016.",
+    "landed_coords": "{\"lat\":-2.052,\"lon\":-6.208} (crash site, Meridiani Planum)",
+    "launch_year": "2016",
+    "model": "none yet (generic placeholder); icon lander",
+    "orbit_type": "landed",
+    "ou_involvement": "The OU was part of the team behind DREAMS, Schiaparelli's suite of environmental sensors designed to measure the weather at the surface of Mars. OU scientists were also heavily involved in analysing the entry, descent and landing data to work out the state of the Martian atmosphere when it arrived.",
+    "parent": "Mars",
+    "status": "Crashed",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:59:40.876Z",
+  "verdict": null
+}

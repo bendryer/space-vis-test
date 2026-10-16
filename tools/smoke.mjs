@@ -177,7 +177,9 @@ try {
     // True scale (SCALE-PLAN.md): its Solar System view and a few stops, flown to in that mode,
     // then back to Diagram mode, which must look as it did.
     if (runTrue) {
+        // The change is animated (about ten seconds, after any flight under way lands).
         await app(() => window.__ouniverse.engine.setScaleMode('true'));
+        if (!await waitFor(() => !window.__ouniverse.engine.isChangingScale(), 60000)) failures.push('change to True scale never finished');
         for (const name of TRUE_STOPS) {
             const stop = { name: `true ${name}` };
             const start = Date.now();
@@ -192,6 +194,7 @@ try {
             });
         }
         await app(() => window.__ouniverse.engine.setScaleMode('diagram'));
+        if (!await waitFor(() => !window.__ouniverse.engine.isChangingScale(), 60000)) failures.push('change back to Diagram mode never finished');
         const back = { name: 'diagram again ISS' };
         const backStart = Date.now();
         await app(() => { window.__ouniverse.engine.flyTo('ISS'); });   // not awaiting the arrival here

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Mercury--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Mercury",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We have studied Mercury’s surface composition for decades, using spectroscopy of data from visiting spacecraft to map its chemical elements and trace the planet’s early volcanic history. Our scientists are Co-Investigators on BepiColombo’s MIXS X-ray spectrometer, which will map the elements on its surface."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:29.777Z",
+  "verdict": "sty"
+}

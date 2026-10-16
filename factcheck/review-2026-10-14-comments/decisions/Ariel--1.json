@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Jo says Ariel is due to launch in 2031; the app says 2029.",
+  "field": "launch_year",
+  "id": "Ariel--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Ariel",
+  "suggestion": [
+    {
+      "f": "launch_year",
+      "from": "2029",
+      "to": "2031"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:20.689Z",
+  "verdict": "bad"
+}

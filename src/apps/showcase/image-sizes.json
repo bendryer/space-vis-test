@@ -1,0 +1,190 @@
+{
+  "ISS_science": [
+    1280,
+    720
+  ],
+  "akari_science": [
+    625,
+    313
+  ],
+  "ariel_science": [
+    1600,
+    1194
+  ],
+  "athena_science": [
+    1600,
+    923
+  ],
+  "beagle2_science": [
+    1000,
+    750
+  ],
+  "bepicolumbo_science": [
+    1500,
+    1500
+  ],
+  "cassini_science": [
+    1001,
+    1001
+  ],
+  "castor_science": [
+    1600,
+    703
+  ],
+  "chandrayaan_science": [
+    1600,
+    1600
+  ],
+  "change5_science": [
+    1024,
+    576
+  ],
+  "cometinterceptor_science": [
+    1600,
+    899
+  ],
+  "curiosity_science": [
+    1600,
+    900
+  ],
+  "envision_science": [
+    800,
+    800
+  ],
+  "euclid_science": [
+    1600,
+    797
+  ],
+  "exomars_science": [
+    1600,
+    1000
+  ],
+  "gaia_science": [
+    1600,
+    858
+  ],
+  "genesis_science": [
+    960,
+    800
+  ],
+  "hayabusa2_science": [
+    655,
+    437
+  ],
+  "hera_science": [
+    1600,
+    900
+  ],
+  "herschel_science": [
+    1159,
+    1337
+  ],
+  "hubble_science": [
+    1024,
+    361
+  ],
+  "huygens_science": [
+    516,
+    387
+  ],
+  "hwo_science": [
+    600,
+    352
+  ],
+  "juice_science": [
+    1600,
+    1183
+  ],
+  "jwst_science": [
+    1600,
+    927
+  ],
+  "luna27_science": [
+    1600,
+    1392
+  ],
+  "lupex_science": [
+    600,
+    338
+  ],
+  "marsyard_science": [
+    960,
+    720
+  ],
+  "ogre_science": [
+    454,
+    337
+  ],
+  "osirisrex_science": [
+    800,
+    600
+  ],
+  "peregrine_science": [
+    692,
+    463
+  ],
+  "perseverance_science": [
+    1600,
+    900
+  ],
+  "philae_science": [
+    800,
+    613
+  ],
+  "pirate_science": [
+    967,
+    977
+  ],
+  "planck_science": [
+    259,
+    194
+  ],
+  "plato_science": [
+    300,
+    212
+  ],
+  "roman_science": [
+    1024,
+    1024
+  ],
+  "rosetta_science": [
+    1200,
+    800
+  ],
+  "sentinel2_science": [
+    1600,
+    1200
+  ],
+  "sentinel3_science": [
+    1600,
+    880
+  ],
+  "smile_science": [
+    768,
+    768
+  ],
+  "spitzer_science": [
+    1600,
+    1290
+  ],
+  "stardust_science": [
+    1600,
+    1063
+  ],
+  "swift_science": [
+    1280,
+    1284
+  ],
+  "tgo_science": [
+    875,
+    500
+  ],
+  "truths_science": [
+    520,
+    390
+  ],
+  "ukube_science": [
+    875,
+    489
+  ]
+}

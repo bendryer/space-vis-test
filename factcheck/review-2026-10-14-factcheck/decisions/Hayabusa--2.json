@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Hayabusa--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Hayabusa",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We study grains of Itokawa returned by Hayabusa (see Itokawa)."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:46:00.985Z",
+  "verdict": "sty"
+}

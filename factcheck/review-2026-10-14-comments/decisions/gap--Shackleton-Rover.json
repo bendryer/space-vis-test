@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--Shackleton-Rover",
+  "kind": "new-entry",
+  "note": "",
+  "object": "Shackleton Rover",
+  "suggestion": {
+    "description": "Taking inspiration from Sir Ernest Shackleton's 1914 expedition, and in coordination with his family, Shackleton Rover is a proposed UK-led mission to the lunar south pole. It would showcase and develop the UK's technological, scientific and industrial capabilities in space exploration while inspiring the next generation of space scientists and engineers. By establishing a long-lived experiment on the Moon, it would also give the UK a voice in the responsible exploration of the Moon and its resources.",
+    "landed_coords": "illustrative, near Shackleton crater at the south pole",
+    "launch_year": "2030",
+    "model": "none yet (hologram placeholder); icon rover",
+    "orbit_type": "landed",
+    "ou_involvement": "Open University scientists are involved in defining the payload and the mission for the Shackleton Rover, a concept for an entirely UK-built and operated rover system for the lunar south pole.",
+    "parent": "Moon",
+    "status": "Planned",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T20:00:01.398Z",
+  "verdict": null
+}

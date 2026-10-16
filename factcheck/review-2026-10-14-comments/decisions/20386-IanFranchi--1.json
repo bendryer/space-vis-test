@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "20386-IanFranchi--1",
+  "kind": "claim",
+  "note": "",
+  "object": "20386 IanFranchi",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Ian Franchi, Emeritus Professor at the Open University. Its official naming citation reads: “Ian Alan Franchi (b. 1961) is a British cosmochemist and emeritus professor at The Open University. He has forty years experience studying the origin and evolution of the early Solar System using advanced analytical techniques, and in particular, high-precision oxygen isotope measurements, on extraterrestrial materials.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:57:17.878Z",
+  "verdict": "fix"
+}

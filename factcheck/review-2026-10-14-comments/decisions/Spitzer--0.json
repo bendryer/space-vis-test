@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "UK spelling.",
+  "field": "ou_involvement",
+  "id": "Spitzer--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Spitzer",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "OU scientists analyze",
+      "to": "OU scientists analyse"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:26.317Z",
+  "verdict": "fix"
+}

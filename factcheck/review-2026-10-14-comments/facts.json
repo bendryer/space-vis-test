@@ -1,0 +1,210 @@
+[
+ {
+  "object": "Europa",
+  "field": "ou_involvement",
+  "fact": "OU researchers (Sym, Ramkissoon, Fox-Powell, Pearson, with Melwani Daswani) modelled how the composition and habitability of Europa's ocean changed over its ~4.5-billion-year history as the rock beneath was altered; conference abstracts, 2023 and 2024.",
+  "sources": [
+   {
+    "t": "ORO 95401: Composition and Habitability of Europa’s Ocean Over Time",
+    "u": "https://oro.open.ac.uk/95401"
+   },
+   {
+    "t": "ORO 95399: Composition and Habitability of Europa’s Ocean Through Time",
+    "u": "https://oro.open.ac.uk/95399"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "Enceladus",
+  "field": "orbit",
+  "fact": "JPL mean elements (SAT441, Laplace plane, epoch 2000-01-01.5): a 238,400 km, e 0.005, ω 119.5°, M 57.0°, i 0.0°, node 0.0°, P 1.370218 d, apsidal period 2.916 yr, Laplace pole RA 40.6°, Dec 83.5°.",
+  "sources": [
+   {
+    "t": "JPL Planetary Satellite Mean Elements",
+    "u": "https://ssd.jpl.nasa.gov/sats/elem/"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "9159 McDonnell",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "J. A. M. (“Tony”) McDonnell (b. 1938) is recognized for his research on cosmic dust. With colleagues, he was the first to demonstrate the intact capture of space particulates in aerogel. He has flown instruments on a number of missions and has analyzed impact craters on lunar samples and satellite surfaces exposed to space.",
+  "sources": [
+   {
+    "t": "JPL SBDB 9159",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=9159&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "158589 Snodgrass",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Colin Snodgrass (b. 1981) is an astronomer at the European Southern Observatory. His work centers on the characterization of inactive cometary nuclei through photometry, measuring their sizes, colors and rotation periods. He is also active in observing exoplanetary systems.",
+  "sources": [
+   {
+    "t": "JPL SBDB 158589",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=158589&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "15834 McBride",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Neil McBride (b. 1966) has worked on many aspects of solar system dynamics, including meteor stream formation, interrelations between minor planets, comets and meteors, as well as the structure of the transneptunian region.",
+  "sources": [
+   {
+    "t": "JPL SBDB 15834",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=15834&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "8463 NaomiMurdoch",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Naomi Murdoch (b. 1984) completed her Ph.D. at The Open University, United Kingdom in 2012. Using microgravity flight experiments and numerical modeling, she investigated the behavior of granular material under minor-planet-like low-gravity surface conditions.",
+  "sources": [
+   {
+    "t": "JPL SBDB 8463",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=8463&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "11469 Rozitis",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Benjamin Rozitis (b. 1984) is a research fellow at the Open University (UK) studying the physical and dynamical characterization of asteroid surfaces through spacecraft data, modeling, and microgravity experiments.",
+  "sources": [
+   {
+    "t": "JPL SBDB 11469",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=11469&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "30226 SamuelLeeJackson",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Samuel Lee Jackson (b. 1997) is a British researcher at The Open University, Milton Keynes, UK, who specializes in observations of near-Earth asteroids and the use of small robotic telescopes.",
+  "sources": [
+   {
+    "t": "JPL SBDB 30226",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=30226&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "5497 SaraRussell",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "As a researcher at the Natural History Museum in London, Sara Russell (b. 1966) studies the chemistry and mineralogy of meteorites to investigate the early solar system and origin of interstellar grains. She has collected meteorites in both hot and cold deserts and is principal editor of the Meteoritical Bulletin.",
+  "sources": [
+   {
+    "t": "JPL SBDB 5497",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=5497&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "6580 PhilBland",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Philip A. Bland (b. 1969), a research scientist at London's Imperial College, is involved in a variety of planetary and meteoritical studies. His fireball camera network offers an important glimpse into links between meteorites and minor planets.",
+  "sources": [
+   {
+    "t": "JPL SBDB 6580",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=6580&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "7552 Sephton",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Mark A. Sephton (b. 1966) is a researcher in organic geochemistry and meteoritics at Imperial College, London. Through his research, he has determined new techniques for the analysis of organics in meteorites.",
+  "sources": [
+   {
+    "t": "JPL SBDB 7552",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7552&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "7635 CarolineSmith",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Caroline Smith (b. 1976) the Head of Earth Sciences Collections and Principal Curator of Meteorites at the Natural History Museum in London. She studies mineralogy of meteorites, notably ureilites, to understand planetary processes, collected meteorites in Australia and has been principal editor of the Meteoritical Bulletin.",
+  "sources": [
+   {
+    "t": "JPL SBDB 7635",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=7635&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "42772 Kokotanekova",
+  "field": "description",
+  "fact": "Official naming citation (quoted in full in data.json).",
+  "quote": "Rosita Kokotanekova (b. 1991) is a Research Fellow at ESO in Garching, Germany. She studies surface characteristics of comets, trans-Neptunian objects, and other small solar system bodies using ground-based photometry.",
+  "sources": [
+   {
+    "t": "JPL SBDB 42772",
+    "u": "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=42772&discovery=1"
+   }
+  ],
+  "checked": "2026-10-14",
+  "volatile": false,
+  "status": "confirmed"
+ },
+ {
+  "object": "3202 Graff",
+  "field": "description",
+  "status": "not-found",
+  "fact": "No naming citation in JPL SBDB.",
+  "searched": [
+   "https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=3202&discovery=1"
+  ],
+  "checked": "2026-10-14",
+  "volatile": false
+ }
+]

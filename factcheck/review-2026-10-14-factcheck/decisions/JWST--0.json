@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "JWST--0",
+  "kind": "claim",
+  "note": "",
+  "object": "JWST",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our astronomers use JWST to study the atmospheres of planets around other stars. We were part of the international teams that analysed JWST’s first detailed observations of the giant planet WASP-39b, revealing its clouds and chemistry, and research we funded has studied the small rocky planet L 98-59 d, where JWST found possible signs of volcanic gases."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:59.205Z",
+  "verdict": "sty"
+}

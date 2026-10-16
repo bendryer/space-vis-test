@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Titan--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Titan",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Titan’s first global geomorphological map, published in Nature Astronomy in 2019, used Cassini data to identify six major terrain types, from plains to dune fields. Our astrobiologists study Titan as one of the icy ocean worlds, exploring how its surface chemistry and methane cycle relate to conditions for life."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:02.264Z",
+  "verdict": "sty"
+}

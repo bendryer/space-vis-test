@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "25275-Jocelynbell--0",
+  "kind": "claim",
+  "note": "",
+  "object": "25275 Jocelynbell",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after astrophysicist Jocelyn Bell Burnell, Head of Physics at the Open University from 1991 to 2001. Its official naming citation reads: “British astrophysicist Susan Jocelyn Bell Burnell (b. 1943) discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Anthony Hewish. In Aug. 2006 she presided over the IAU's adoption of resolutions defining the terms “planet” and “dwarf planet”.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:59:08.419Z",
+  "verdict": "fix"
+}

@@ -697,14 +697,14 @@ function factsFor(item) {
   add('Ring', item.ring && `${item.ring.inner_km}–${item.ring.outer_km} km from the centre, opacity ${item.ring.opacity ?? 1}`);
   if (item.orbit_type === 'landed') {
     const c = item.landed_coords;
-    add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}` : `on ${item.parent} (no coordinates)`);
+    add('Landed at', c ? `${c.lat}° lat, ${c.lon}° lon on ${item.parent}${c.illustrative ? ' · illustrative' : ''}` : `on ${item.parent} (no coordinates)`);
   } else if (item.orbit_type === 'trajectory') {
     const t = item.trajectory || {};
     add('Trajectory', `${(t.waypoints || []).length} waypoints${t.arrival_orbit ? ', then an arrival orbit' : ''}`);
   } else if (item.orbit) {
     const o = item.orbit;
     const plane = o.plane === 'ecliptic' ? 'to the ecliptic' : o.plane ? 'to its Laplace plane' : '';
-    add('Orbit', [item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a_km !== undefined ? `a ${fmt(o.a_km, 1)} km` : o.a !== undefined && `a ${fmt(o.a)}`,
+    add('Orbit', [o.kind ? `${o.kind} orbit round ${item.parent}` : item.orbit_type, o.a_au !== undefined ? `a ${fmt(o.a_au, 3)} AU` : o.a_km !== undefined ? `a ${fmt(o.a_km, 1)} km` : o.a !== undefined && `a ${fmt(o.a)}`,
       o.e !== undefined && `e ${fmt(o.e, 3)}`, o.i !== undefined && `i ${fmt(o.i)}° ${plane}`.trim(),
       o.amplitude_km && `${fmt(o.amplitude_km.y)} × ${fmt(o.amplitude_km.z)} km across and out of the ecliptic`,
       o.period_days ? `period ${o.period_days} days` : o.rate ? `period ${fmt(360 / o.rate, 3)} days` : o.a_km !== undefined && 'stationed',

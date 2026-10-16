@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "The same group \"leads the Dust Environment Spectral Imager\", imaging Mars every 10 minutes",
+  "field": "ou_involvement",
+  "id": "LightShip-1--0",
+  "kind": "claim",
+  "note": "",
+  "object": "LightShip-1",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:49:15.283Z",
+  "verdict": "unv"
+}

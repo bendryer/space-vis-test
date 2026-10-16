@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Jo’s suggested OU text (the app has none).",
+  "field": "ou_involvement",
+  "id": "Ariel--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ariel",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Members of the OU Astronomy group have served as science advisory team members and working group leads for Ariel, which will study the atmospheres of about 1,000 exoplanets. It will allow the first large population studies of exoplanet atmospheres, helping us understand more about how planets form and evolve."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:15.931Z",
+  "verdict": "fix"
+}

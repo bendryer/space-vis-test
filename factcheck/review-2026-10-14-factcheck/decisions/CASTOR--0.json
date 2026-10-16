@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "CASTOR--0",
+  "kind": "claim",
+  "note": "",
+  "object": "CASTOR",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) won £2.1 million to lead the testing and space qualification of the CIS303 and CIS120 UV detectors, built by Teledyne e2v, for CASTOR, a Canadian-led 1-metre UV/optical telescope targeting launch around 2030. We test and optimise the detectors, and measure how well different UV coatings work and how they degrade, to get the sensors ready for spaceflight."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:48.622Z",
+  "verdict": "sty"
+}

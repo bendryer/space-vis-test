@@ -1,0 +1,24 @@
+{
+  "choice": "accept",
+  "claim": "launch_year 2028 (and \"by the Intuitive Machines IM-4 lander in 2028\")",
+  "field": "launch_year",
+  "id": "PROSPECT--0",
+  "kind": "claim",
+  "note": "",
+  "object": "PROSPECT",
+  "suggestion": [
+    {
+      "f": "launch_year",
+      "from": "2028",
+      "to": "2027"
+    },
+    {
+      "f": "description",
+      "from": "by the Intuitive Machines IM-4 lander in 2028",
+      "to": "by the Intuitive Machines IM-4 lander, planned for 2027"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:36:46.954Z",
+  "verdict": "bad"
+}

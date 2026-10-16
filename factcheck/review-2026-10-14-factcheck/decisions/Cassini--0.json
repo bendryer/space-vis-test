@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Cassini--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Cassini",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our planetary scientists use Cassini’s datasets to study the habitability and chemistry of Saturn’s icy moons. We helped calibrate its Cosmic Dust Analyser and studied the dust around Saturn, and we still use Cassini’s archive to train students in planetary science."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:18.771Z",
+  "verdict": "sty"
+}

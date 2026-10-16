@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "ISS--0",
+  "kind": "claim",
+  "note": "",
+  "object": "ISS",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our scientists took part in BIOMEX, a DLR-led experiment outside the ISS that exposed bacteria, algae, lichens and fungi to the vacuum, UV radiation and temperature extremes of space for about 18 months. The samples came home with British astronaut Tim Peake in June 2016, and the results helped show whether such organisms (and, by extension, life on Mars) could survive travelling between planets."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:34.048Z",
+  "verdict": "sty"
+}

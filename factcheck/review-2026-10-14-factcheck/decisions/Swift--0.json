@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Swift is still operating; it re-enters on 1 January 2027 (status_timeline)",
+  "field": "description",
+  "id": "Swift--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Swift",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "The mission has been operating for over 20 years, contributing significantly to our understanding of black hole formation and neutron star mergers.",
+      "to": "Over more than 20 years it has transformed our understanding of black hole formation and neutron star mergers. With its orbit decaying faster than expected, a commercial mission to boost it was called off in August 2026, and Swift is expected to re-enter the atmosphere by the end of the year."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T07:37:31.827Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New OU text from the sheet.",
+  "field": "ou_involvement",
+  "id": "PROSPECT--0",
+  "kind": "claim",
+  "note": "",
+  "object": "PROSPECT",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The OU is leading the design and development of ProSPA, a miniature laboratory to analyse samples in situ on the Moon. The instrument heats and processes lunar soil in the same way that meteorites and returned samples are analysed in laboratories on Earth. Its mass spectrometers identify, quantify and isotopically characterise water ice and other volatiles of high interest for science and exploration."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:05.287Z",
+  "verdict": "fix"
+}

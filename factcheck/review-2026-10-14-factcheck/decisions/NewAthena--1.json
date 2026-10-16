@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "NewAthena--1",
+  "kind": "claim",
+  "note": "",
+  "object": "NewAthena",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) is working with partners worldwide to design and test graded-Z shielding for NewAthena’s Wide Field Imager: layers of heavy and light materials that block high-energy particles and the secondary radiation they produce. We model how the shielding will perform in orbit with the GEANT4 toolkit, checked against real detector tests."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:00.608Z",
+  "verdict": "sty"
+}

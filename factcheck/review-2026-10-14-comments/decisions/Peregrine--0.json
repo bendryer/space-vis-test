@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New OU text from the sheet.",
+  "field": "ou_involvement",
+  "id": "Peregrine--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Peregrine",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The OU proposed and developed the Exospheric Mass Spectrometer (EMS) as a European contribution to NASA's PITMS instrument. EMS was funded by ESA and developed with RAL Space, on a fast-track process to meet tight budget and timescale constraints. Its aim was to measure the thin lunar exosphere and how it changes with both natural phenomena (such as the lunar day-night cycle) and the lander's own effects. OU researchers successfully operated the instrument in space to help diagnose the health of the spacecraft, and proved the technology ready for re-use on the upcoming PROSPECT mission."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:20.245Z",
+  "verdict": "fix"
+}

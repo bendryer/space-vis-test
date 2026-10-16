@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Europa--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Europa",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our astrobiologists study Europa as one of the Solar System’s most promising ocean worlds. We develop new cryogenic laboratory techniques and simulation facilities to study icy surface materials down to the microscale, and our fieldwork in polar places such as the Canadian High Arctic shows how ice and salts brought to the surface by cryovolcanism can reveal conditions in the ocean far below. We also model how the ocean’s chemistry, and how habitable it is, may have changed over 4.5 billion years as the water reacted with the rock beneath."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:59.653Z",
+  "verdict": "sty"
+}

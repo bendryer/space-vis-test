@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Status Planned, launch TBC",
+  "field": "status",
+  "id": "I-MIM--2",
+  "kind": "claim",
+  "note": "",
+  "object": "I-MIM",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:38:41.167Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Samuel Lee Jackson, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "30226-SamuelLeeJackson--0",
+  "kind": "claim",
+  "note": "",
+  "object": "30226 SamuelLeeJackson",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Samuel Lee Jackson, [TO ADD: OU connection]",
+      "to": "named after Samuel Lee Jackson, who did his PhD at the OU, observing asteroids with its PIRATE telescope in Tenerife"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:19.951Z",
+  "verdict": "fix"
+}

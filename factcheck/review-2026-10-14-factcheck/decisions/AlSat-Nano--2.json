@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Orbit a_km 7,058, i 98.2 (illustrative)",
+  "field": "orbit",
+  "id": "AlSat-Nano--2",
+  "kind": "claim",
+  "note": "",
+  "object": "AlSat-Nano",
+  "suggestion": [
+    {
+      "f": "entry",
+      "from": "orbit.illustrative true",
+      "to": "remove illustrative (orbit is sourced)"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:44:43.260Z",
+  "verdict": "fix"
+}

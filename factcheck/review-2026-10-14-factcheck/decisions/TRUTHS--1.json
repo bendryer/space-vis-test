@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "TRUTHS--1",
+  "kind": "claim",
+  "note": "",
+  "object": "TRUTHS",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) tests how radiation damages the Teledyne e2v CIS120 CMOS sensor, which is being evaluated for TRUTHS and other next-generation missions. We measure its dark current, noise and sensitivity before and after gamma and proton irradiation, at a range of temperatures, to check it can keep the high calibration accuracy TRUTHS needs over a multi-year mission."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:05.419Z",
+  "verdict": "sty"
+}

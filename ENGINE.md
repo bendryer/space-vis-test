@@ -33,9 +33,9 @@ Status marks: ✅ in place, ⏳ planned (with the phase that adds it).
 | | |
 |---|---|
 | ✅ `flyTo(name)` → `Promise<boolean>` | Selects an object and flies to it. Resolves `true` on arrival, `false` if another `flyTo`, `showOverview` or `deselect` comes first, or the name is unknown. A lander whose body hasn't loaded waits for it, then flies. Planned options: `{ view, duration }` (a framing preset, and a flight time), when the presentation app needs them. |
-| ✅ `showOverview({ animate = true })` | Lets go of any selection and shows the whole Solar System. `animate: false` jumps straight there. |
+| ✅ `showOverview({ animate = true, frame })` | Lets go of any selection and shows the whole Solar System. `animate: false` jumps straight there. `frame: { names, insets }` frames those objects' orbits instead (the showcase's asteroid and comet groups): they fill `GROUP_VIEW_FILL` (90%) of the screen less `insets` (CSS pixels from each edge), with the Sun in the middle of that part. |
 | ✅ `deselect()` | Lets go of the selection and stops any flight to it. The camera stays where it is. |
-| ✅ `hurry()` | Brings a flight in to land within `HURRY_FLIGHT_SECONDS` (0.6 s). Does nothing between flights. |
+| ✅ `hurry()` | Brings a flight in to land within `HURRY_FLIGHT_SECONDS` (0.6 s), and an animated change of scale mode to its end within 0.6 s. Does nothing otherwise. |
 | ✅ `setFlightPace(scale)` | How unhurried flights are, as a multiple of the base duration (`USER_FLIGHT_SCALE` 3, the showcase's tour 5). With no `scale`, back to `USER_FLIGHT_SCALE`. |
 
 ## Events
@@ -75,12 +75,13 @@ The motion clock (camera orbit, spacecraft attitude, the Sun's surface) is separ
 | ✅ `getOrbitColor(name)` | The CSS colour of the object's orbit line, unlit. |
 | ✅ `pick(x, y)` → name or `null` | The object under a point on screen, in CSS pixels. Only what's drawn counts. |
 | ✅ `projectBody(name)` → `{ x, y, radius, distance }` or `null` | Where the object is on screen: centre and radius in CSS pixels, including the view shift from `setViewInsets`, and its centre's distance from the camera in scene units. `null` when it's behind the camera or not in the scene. Tiny when far away; not hidden behind other bodies. |
+| ✅ `isHidden(name)` → `boolean` | Whether a planet, moon, asteroid or comet stands between the camera and the object, judged in 3D (near a surface a body's centre is behind the camera, so `projectBody` gives it no disc to test against). The bodies are measured once a frame. |
 
 ## Layout
 
 | | |
 |---|---|
-| ✅ `setOrbitHighlights({ hovered, shown })` | Names whose orbits to light: `hovered` in the light blue of a choice (as the selection's is), `shown` in a quieter tint (a group on show). Replaces the last call; the engine keeps them right through selections and orbit-line changes. |
+| ✅ `setOrbitHighlights({ hovered, shown })` | Names whose orbits to light, in the light blue of a choice (as the selection's is): `hovered`, and `shown` (a group on show). A selected Earth-Sun L1 or L2 lights its craft's orbits too. Replaces the last call; the engine keeps them right through selections and orbit-line changes. |
 | ✅ `setViewInsets({ left, right, top, bottom })` | How much of the screen the app's panels cover while something is selected, in CSS pixels from each edge (missing edges are 0). The engine frames selections to fit the rest, and while there's a selection (from `select` to `deselect`) it shifts the view so the selection sits in the middle of it. Call it again whenever the panels change size (the showcase does on resize, header resize and Cinematic Mode). |
 
 ## Scale
@@ -89,9 +90,13 @@ Two ways of drawing the same real data (`SCALE-PLAN.md`): `diagram`, the default
 
 | | |
 |---|---|
-| ✅ `setScaleMode(mode)` | `'diagram'` or `'true'`. Works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. In True scale flights are timed on the logarithm of distance, and an app shows the markers (below) for what's too small to see. A flight or overview asked for in the same frame as the change waits for the cut. |
-| ✅ `getScaleMode()` | The active mode. |
-| ✅ `scale-mode` `{ mode }` (event) | The scale mode changed. |
+| ✅ `setScaleMode(mode, { animate })` | `'diagram'` or `'true'`. With `animate: false` (or under reduced motion; animated otherwise, below): works out every size and orbit again, redraws the lines, re-seats the landers and cuts to the selection (or the overview) as now drawn; a flight under way ends at its destination. Emits `scale-mode`. Ignored before the system is built. In True scale flights are paced on the logarithm of distance (the camera's speed in proportion to its distance from the nearest thing) and come down to a lander along its line of sight after going round the planet, and an app shows the markers (below) for what's too small to see. A flight or overview asked for in the same frame as the change waits for the cut. |
+| ✅ `setScaleMode(mode)` animated (the default) | Over `SCALE_CHANGE_SECONDS` (3 s, `scale-change.js`) everything grows or shrinks from one mode's sizes and distances to the other's, geometrically between the two: into True scale the orbits open out first, then bodies and craft take their true sizes; back, the other way round. The camera holds on what it shows: it rides with the selection at a distance in proportion to its drawn size, so it keeps its size and place on screen, easing into its usual view in the new mode; with nothing selected the view is scaled about the Sun to keep the whole system framed. A flight under way is hurried in first; flights and overviews asked for during the change wait for its end; asked for the mode it's coming from, it turns round. `{ animate: false }` (and reduced motion) switches at once as above. |
+| ✅ `getScaleMode()` | The active mode (during a change, the one it's coming from). |
+| ✅ `isChangingScale()` | True from `scale-change` to `scale-mode`. `hurry()` brings a change in within 0.6 s. |
+| ✅ `scale-change` `{ from, to }` (event) | An animated change has been asked for (again if it turns round). |
+| ✅ `scale-progress` `{ progress }` (event) | Each frame of the change, 0 to 1. |
+| ✅ `scale-mode` `{ mode }` (event) | The scale mode changed (at the end of an animated change). |
 
 ## Input
 
@@ -118,6 +123,6 @@ Opt-in modules in `src/features/` that any app can use, built only on this API.
 |---|---|
 | ✅ Reticles (`src/features/reticles/`) | `setupReticles(engine, container)` adds the overlay to `container`. `updateReticles(dt, { hovered, groups, rightEdge })`, from the app's `onFrame` hook, marks `hovered` (an entry, with a name tab; it swipes out when that object is selected) and each entry in `groups` (a `Map` to `'hover'` or `'info'`), keeping labels left of `rightEdge`. |
 
-| ✅ Markers (`src/features/markers/`) | `setupMarkers(engine, container)` adds a canvas layer to `container`. `updateMarkers({ enabled, hovered, rightEdge })`, from the app's `onFrame` hook, draws a dot in its orbit colour and a name for each object drawn under 3 px across, hiding those behind something drawn, folding a dot into a more important one it sits on, and leaving off names that would overlap (`hovered`'s name always shows). `pickMarker(x, y, radius)` gives the name of the nearest dot within `radius` (12 px by default), or `null`. The showcase enables them in True scale only, picks a marker before the scene on a click, and points the cursor at one. |
+| ✅ Markers (`src/features/markers/`) | `setupMarkers(engine, container)` adds a canvas layer to `container`. `updateMarkers({ enabled, hovered, rightEdge })`, from the app's `onFrame` hook, draws a dot in its orbit colour and a name for each object drawn under 3 px across, hiding those behind something drawn (and, by `isHidden`, behind a body seen from near its surface), folding a dot into a more important one it sits on, and leaving off names that would overlap (`hovered`'s name always shows). `pickMarker(x, y, radius)` gives the name of the nearest dot within `radius` (12 px by default), or `null`. The showcase and the presentation show them in both scale modes; the showcase picks a marker before the scene on a click, and points the cursor at one. |
 
 The showcase's input choices (canvas clicks select, any grab or scroll calls `hurry`, Escape deselects, `steer` ends the tour) stay with it.

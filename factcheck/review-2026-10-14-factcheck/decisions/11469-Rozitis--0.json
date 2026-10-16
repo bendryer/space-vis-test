@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "\"named after Benjamin Rozitis, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "11469-Rozitis--0",
+  "kind": "claim",
+  "note": "He was at the OU from 2007 to 2023 or so (PhD and Post doc)",
+  "object": "11469 Rozitis",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Benjamin Rozitis, [TO ADD: OU connection]",
+      "to": "named after Benjamin Rozitis, a planetary scientist at the OU"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:14.903Z",
+  "verdict": "fix"
+}

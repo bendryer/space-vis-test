@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Group name \"Atmospheric Research and Space Exploration\"",
+  "field": "ou_involvement",
+  "id": "LightShip-1--1",
+  "kind": "claim",
+  "note": "",
+  "object": "LightShip-1",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T10:12:18.643Z",
+  "verdict": "unv"
+}

@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Could there be an entry on sample analysis? It isn’t a mission, but Simeon and Mahesh are keen to show the links between sample analysis, sample return and in situ analysis.",
+  "field": "sample analysis",
+  "id": "General-comments--5",
+  "kind": "claim",
+  "note": "There is some information on this e.g. change5 and changes from rider-stokes, we could do more to highlight space returned sample work which is a strength at the OU",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:50:27.981Z",
+  "verdict": "unv"
+}

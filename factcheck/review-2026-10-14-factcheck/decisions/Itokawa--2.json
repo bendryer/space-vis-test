@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Itokawa--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Itokawa",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We analysed particles of Itokawa returned by Hayabusa, carrying out the first Raman spectroscopy on the grains we were allocated. With a team led by Royal Holloway, University of London, we found water and organic matter of extraterrestrial origin in one of them."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:45:53.633Z",
+  "verdict": "sty"
+}

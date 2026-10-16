@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU academics are on the science and operations teams.",
+  "field": "ou_involvement",
+  "id": "MSL-Curiosity--0",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "members of the Mars Science Laboratory science team",
+      "to": "members of the Mars Science Laboratory science and operations teams"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:54:10.382Z",
+  "verdict": "fix"
+}

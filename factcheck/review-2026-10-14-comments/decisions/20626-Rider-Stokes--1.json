@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "20626-Rider-Stokes--1",
+  "kind": "claim",
+  "note": "",
+  "object": "20626 Rider-Stokes",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Ben Rider-Stokes, a post-doctoral researcher at the Open University. Its official naming citation reads: “Ben Gabriel Rider-Stokes (b. 1997) is an English post-doctoral researcher at The Open University specializing in understanding the timing of magmatic differentiation and volatile accretion of achondrites. He evaluates the spectral characteristics of meteorites in the ultraviolet, visible, and near-infrared to identify meteoritic analogs for asteroids.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:57:34.276Z",
+  "verdict": "fix"
+}

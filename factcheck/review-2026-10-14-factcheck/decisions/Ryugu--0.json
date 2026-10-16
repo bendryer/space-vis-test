@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Ryugu--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ryugu",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our oxygen isotope laboratory is one of the international groups analysing Ryugu samples returned by JAXA’s Hayabusa2 (see Hayabusa2)."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:20.399Z",
+  "verdict": "sty"
+}

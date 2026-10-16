@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Herschel--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Herschel",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our astronomers used data from SPIRE, the camera and spectrometer built for Herschel by an international consortium led by Cardiff University, to study distant galaxies at sub-millimetre wavelengths and trace the history of star formation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:09.701Z",
+  "verdict": "sty"
+}

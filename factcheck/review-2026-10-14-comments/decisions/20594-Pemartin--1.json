@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "20594-Pemartin--1",
+  "kind": "claim",
+  "note": "",
+  "object": "20594 Pemartin",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Pierre-Etienne Martin, now a Postdoctoral Research Associate at the Open University, for his earlier work. Its official naming citation reads: “Pierre-Etienne Martin (b. 1993) is a French planetary scientist at the University of Bern, investigating micron- to submicron-sized inclusions in Martian and carbonaceous meteorites. During his Ph.D., he studied refractory inclusions to assess aqueous alteration in CMs and joined the Hayabusa2 returned-samples analysis team.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:58:48.487Z",
+  "verdict": "fix"
+}

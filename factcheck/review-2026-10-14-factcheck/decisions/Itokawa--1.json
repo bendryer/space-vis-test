@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU researchers have been allocated Itokawa particles",
+  "field": "ou_involvement",
+  "id": "Itokawa--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Itokawa",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "OU researchers analysed particles of Itokawa returned by Hayabusa, carrying out the first Raman spectroscopy on the grains they were allocated. Working with a team led by Royal Holloway, University of London, they found water and organic matter of extraterrestrial origin in one of them."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:45:44.590Z",
+  "verdict": "fix"
+}

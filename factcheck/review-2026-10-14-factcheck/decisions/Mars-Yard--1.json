@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Mars-Yard--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Mars Yard",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Part of our teaching, the Mars Yard lets students drive robotic rovers across a simulated Martian landscape from their own homes, making space science hands-on for learners anywhere."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:23.725Z",
+  "verdict": "sty"
+}

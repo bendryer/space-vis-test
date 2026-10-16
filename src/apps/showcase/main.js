@@ -16,6 +16,7 @@ import { populateMenu } from './menu.js';
 import { setupDetails } from './details.js';
 import { setupCredits } from './credits.js';
 import { setupCinematicControls } from './cinematic.js';
+import { setupLaunch } from './launch.js';
 import { setupScaleSwitch } from './scale.js';
 
 trackInputType();
@@ -52,6 +53,7 @@ engine.on('built', ({ entries }) => {
     setupReticles(engine, document.getElementById('ui-layer'));
     populateMenu();
     setupCinematicControls();
+    setupLaunch();
     setupScaleSwitch();
     setupCredits(entries.find(item => item.type === 'credits'));
     showSolarSystem({ animate: false });
@@ -71,12 +73,12 @@ setupLayout();
 
 setupInput();
 
-// Showcase, each frame: the clock line (when the second changes), the markers (in True scale,
-// where most things are too small to see) and the reticles.
+// Showcase, each frame: the clock line (when the second changes), the markers (for whatever is
+// too small to see, in either scale mode) and the reticles.
 engine.onFrame(dt => {
     updateClock();
     const rightEdge = sceneRightEdge();
-    updateMarkers({ enabled: engine.getScaleMode() === 'true', hovered: hoveredMarker, rightEdge });
+    updateMarkers({ hovered: hoveredMarker, rightEdge });
     updateReticles(dt, { hovered: hoveredObj, groups: reticleGroups(), rightEdge });
 });
 

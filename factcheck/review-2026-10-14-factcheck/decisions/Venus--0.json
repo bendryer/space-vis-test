@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Venus--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Venus",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We’re helping to prepare ESA’s EnVision mission to Venus. With a £2.3 million ESA grant, our team leads the testing of the detectors in the VenSpec-U ultraviolet spectrometer, which will study the sulphur chemistry of Venus’s clouds, and we take part in the mission’s science preparations."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:31.470Z",
+  "verdict": "sty"
+}

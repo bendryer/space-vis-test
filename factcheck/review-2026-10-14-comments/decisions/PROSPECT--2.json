@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "The new text says IM-4 delivers PROSPECT in 2028; the app says 2027.",
+  "field": "launch_year",
+  "id": "PROSPECT--2",
+  "kind": "claim",
+  "note": "",
+  "object": "PROSPECT",
+  "suggestion": [
+    {
+      "f": "launch_year",
+      "from": "2027",
+      "to": "2028"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:13.537Z",
+  "verdict": "bad"
+}

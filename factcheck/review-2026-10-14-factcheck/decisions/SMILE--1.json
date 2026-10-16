@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "SMILE--1",
+  "kind": "claim",
+  "note": "",
+  "object": "SMILE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) developed and tested the twin CCD370 detectors (4,510 × 4,510 pixels, derived from the CCD270s developed for PLATO) at the heart of SMILE’s Soft X-ray Imager. We’re now part of the mission’s operations team, working with the imager’s team to get the most science from the detectors."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:28:59.948Z",
+  "verdict": "sty"
+}

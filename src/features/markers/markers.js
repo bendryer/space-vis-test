@@ -1,12 +1,13 @@
 // Markers: a dot and a name for each object drawn too small to see, so that in True scale
 // (SCALE-PLAN.md), where almost everything is under a pixel, the Solar System can still be read and
-// picked. A shared feature built on the engine's API: an app sets it up over its scene, updates it
-// from its onFrame hook, and asks it what's under a point (pickMarker).
+// picked; in Diagram mode, for the small bodies and craft seen from afar. A shared feature built on
+// the engine's API: an app sets it up over its scene, updates it from its onFrame hook, and asks it
+// what's under a point (pickMarker).
 //
 // Each dot takes its object's orbit colour (the Sun its own), so it matches its line. Names go on
-// in order of importance (the Sun, planets, moons and small bodies, then craft) and a name that would
-// overlap one already placed is left off; a dot on top of a more important one is folded into it
-// (the craft round Earth, seen from afar, are Earth's dot). A marker behind something that's drawn
+// in order of importance (priority, below) and a name that would overlap one already placed is
+// left off; a dot on top of a more important one is folded into it (the craft round Earth, seen
+// from afar, are Earth's dot). A marker behind something that's drawn
 // is hidden. Drawn on one 2D canvas: there can be a hundred of them.
 import './markers.css';
 
@@ -16,12 +17,23 @@ const MERGE_PX = 6;         // a dot this close to a more important one is folde
 const PICK_PX = 12;         // how near a pointer must be to a dot to pick it
 const LABEL_GAP = 6;        // from the dot's centre to its name
 const LABEL_PAD = 4;        // clear space kept round each name
-const PRIORITY = { star: 0, planet: 1, moon: 2, reference_point: 2, asteroid: 3, comet: 3, mission: 4 };
+// Which marker wins where two meet: the Sun, then planets, then moons, comets, mission asteroids
+// and L1/L2, then craft, then the honorary asteroids (named for OU researchers) last.
+const PRIORITY = { star: 0, planet: 1, moon: 2, comet: 2, asteroid: 2, reference_point: 2, mission: 3 };
+const HONORARY = 4;
+const priority = data => data.menu_holder === 'named' ? HONORARY : PRIORITY[data.type] ?? 5;
 const FONT = '500 11.5px Poppins, Arial, sans-serif';
-const INK = 'rgba(255, 255, 255, 0.78)';
-const INK_HOVER = '#FFFFFF';
-const HALO = 'rgba(6, 6, 69, 0.9)';
-const EDGE = '#060645';
+// The colours come from the page's OU tokens (base.css), read once when the layer is set up; these
+// stand in if a page doesn't define them.
+const colors = { ink: 'rgba(255, 255, 255, 0.78)', inkHover: '#fff', halo: 'rgba(6, 6, 69, 0.9)', edge: '#060645' };
+function readColors() {
+    const style = getComputedStyle(document.documentElement);
+    const token = (name, fallback) => style.getPropertyValue(name).trim() || fallback;
+    colors.ink = token('--text-muted', colors.ink);
+    colors.inkHover = token('--text', colors.inkHover);
+    colors.halo = token('--surface', colors.halo);
+    colors.edge = token('--ou-core', colors.edge);
+}
 
 let engine = null;
 let canvas = null;
@@ -37,10 +49,11 @@ export function setupMarkers(eng, container) {
     canvas.setAttribute('aria-hidden', 'true');
     container.appendChild(canvas);
     ctx = canvas.getContext('2d');
+    readColors();
 }
 
-// Each frame. `enabled`: whether to draw markers at all (the showcase shows them in True scale
-// only); `hovered`: the name under the pointer, whose label always shows; `rightEdge`: where the
+// Each frame. `enabled`: whether to draw markers at all (both apps show them in either scale
+// mode); `hovered`: the name under the pointer, whose label always shows; `rightEdge`: where the
 // scene ends on the right (a panel may cover the rest).
 export function updateMarkers({ enabled = true, hovered = null, rightEdge = window.innerWidth } = {}) {
     if (!canvas) return;
@@ -67,8 +80,9 @@ export function updateMarkers({ enabled = true, hovered = null, rightEdge = wind
     const occluders = all.filter(o => o.p.radius >= MARKER_PX && o.data.type !== 'reference_point');
     const candidates = all.filter(({ data, p }) => p.radius < MARKER_PX && data.name !== selected
         && p.x >= 0 && p.x <= rightEdge && p.y >= 0 && p.y <= h
-        && !occluders.some(b => b.p.distance < p.distance && Math.hypot(b.p.x - p.x, b.p.y - p.y) < b.p.radius));
-    candidates.sort((a, b) => (PRIORITY[a.data.type] ?? 5) - (PRIORITY[b.data.type] ?? 5) || a.p.distance - b.p.distance);
+        && !occluders.some(b => b.p.distance < p.distance && Math.hypot(b.p.x - p.x, b.p.y - p.y) < b.p.radius)
+        && !engine.isHidden(data.name));   // behind a body seen from near its surface, which has no disc
+    candidates.sort((a, b) => priority(a.data) - priority(b.data) || a.p.distance - b.p.distance);
 
     for (const { data, p } of candidates) {
         if (shown.some(s => Math.hypot(s.x - p.x, s.y - p.y) < MERGE_PX)) continue;
@@ -76,11 +90,11 @@ export function updateMarkers({ enabled = true, hovered = null, rightEdge = wind
     }
 
     ctx.lineWidth = 1;
-    ctx.strokeStyle = EDGE;
+    ctx.strokeStyle = colors.edge;
     for (const s of shown) {
         ctx.beginPath();
         ctx.arc(s.x, s.y, DOT_R, 0, Math.PI * 2);
-        ctx.fillStyle = s.color || INK;
+        ctx.fillStyle = s.color || colors.ink;
         ctx.fill();
         ctx.stroke();
     }
@@ -99,9 +113,9 @@ export function updateMarkers({ enabled = true, hovered = null, rightEdge = wind
         if (!isHovered && (box.right > rightEdge - 8 || placed.some(b => overlaps(box, b)))) continue;
         placed.push(box);
         ctx.lineWidth = 3;
-        ctx.strokeStyle = HALO;
+        ctx.strokeStyle = colors.halo;
         ctx.strokeText(s.name, left, s.y);
-        ctx.fillStyle = isHovered ? INK_HOVER : INK;
+        ctx.fillStyle = isHovered ? colors.inkHover : colors.ink;
         ctx.fillText(s.name, left, s.y);
     }
 }

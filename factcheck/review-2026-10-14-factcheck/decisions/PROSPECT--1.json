@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "PROSPECT--1",
+  "kind": "claim",
+  "note": "",
+  "object": "PROSPECT",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We lead the design and development of ProSPA, a miniature laboratory that will analyse samples on the Moon itself. It heats lunar soil just as meteorites and returned samples are analysed in laboratories on Earth, and its mass spectrometers identify, measure and isotopically characterise water ice and other volatiles."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:36:51.458Z",
+  "verdict": "sty"
+}

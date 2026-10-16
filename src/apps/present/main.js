@@ -47,9 +47,9 @@ let steps = [];
 let openingScale = 'diagram';
 let current = -1; // -1 is the opening view of the whole Solar System
 
-// In True scale, a dot and a name for everything too small to see.
+// A dot and a name for everything too small to see.
 setupMarkers(engine, document.body);
-engine.onFrame(() => updateMarkers({ enabled: engine.getScaleMode() === 'true' }));
+engine.onFrame(() => updateMarkers());
 
 // The scale at a step: its own, or the last one set before it.
 const SCALES = new Set(['diagram', 'true']);
@@ -73,9 +73,12 @@ Promise.all([presentation, new Promise(resolve => engine.on('ready', resolve))])
         console.warn(`Presentation step left out: no object called "${step.target}"`);
         return false;
     });
-    if (data.title) document.title = `${data.title} · OUniverse`;
+    if (data.title) {
+        document.title = `${data.title} · OUniverse`;
+        document.getElementById('present-heading').textContent = data.title;
+    }
     if (SCALES.has(data.scale)) openingScale = data.scale;
-    engine.setScaleMode(openingScale);
+    engine.setScaleMode(openingScale, { animate: false });
     ready = true;
     engine.setSceneVisible(true);
     loading.classList.add('is-leaving');

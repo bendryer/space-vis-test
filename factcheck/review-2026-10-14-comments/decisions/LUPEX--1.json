@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New general text from the sheet, with the length of the mission.",
+  "field": "description",
+  "id": "LUPEX--1",
+  "kind": "claim",
+  "note": "",
+  "object": "LUPEX",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "The Lunar Polar Exploration (LUPEX) mission is a joint JAXA-ISRO mission to investigate water and other resources in the Moon's south polar region. Currently targeted for launch no earlier than 2028, it will use a mobile rover to explore areas with differing illumination, temperature and geology, investigating the distribution, abundance and physical state of lunar water at several sites and at depths of up to about 1.5 metres. The rover is planned to operate for about 3.5 months after landing, and possibly for up to a year."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:40.118Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Perseverance--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Perseverance",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our researchers were on the NASA/ESA Mars Sample Return Campaign Science Group and worked on planetary protection, planning how best to bring Perseverance’s Jezero Crater samples to Earth and analyse them. We also use the rover’s images and remote sensing to study the minerals of the ancient river delta, including clays and carbonates formed by water, and share this research with our students."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:54.148Z",
+  "verdict": "sty"
+}

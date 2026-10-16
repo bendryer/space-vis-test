@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--DART",
+  "kind": "new-entry",
+  "note": "",
+  "object": "DART",
+  "suggestion": {
+    "description": "NASA's Double Asteroid Redirection Test (DART) was the first test of planetary defence by changing an asteroid's path. Launched in November 2021, it deliberately crashed into Dimorphos, the small moon of the asteroid Didymos, on 26 September 2022, shortening its orbit by about 32 minutes. ESA's Hera mission was sent to study the aftermath.",
+    "launch_year": "2021",
+    "menu_parent": "Didymos (beside Hera)",
+    "model": "none yet (generic placeholder)",
+    "orbit_type": "landed (on Dimorphos, at an illustrative impact site)",
+    "ou_involvement": "(none yet: ask Simon Green)",
+    "parent": "Dimorphos",
+    "status": "Complete",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:59:51.223Z",
+  "verdict": null
+}

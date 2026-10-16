@@ -2,7 +2,7 @@
 // cruise trajectories of missions in transit. Positions only; nothing here touches the scene.
 import * as THREE from 'three';
 import { celestialMap } from './state.js';
-import { AU_KM, SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, distances } from './units.js';
+import { AU_KM, DISTANCE_RULES, SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, distances, heightEnds } from './units.js';
 
 const J2000_DATE = new Date('2000-01-01T12:00:00Z');
 
@@ -50,10 +50,11 @@ export function prepareOrbit(orbit, parent) {
     orbit.frame = plane === 'ecliptic' ? null : planeFrame(plane);
 }
 
-// The distance scale round a body: its drawn size, and the knee for its kind.
+// The distance scale round a body: its drawn size (and its size in Diagram mode, which a change
+// of mode draws heights from: units.js), and the knee for its kind.
 function bodyScale(body) {
     return {
-        radius: body.radius, radiusKm: body.radius_km, unit: body.radius / body.radius_km,
+        radius: body.radius, radiusD: body.radius_diagram ?? body.radius, radiusKm: body.radius_km, unit: body.radius / body.radius_km,
         knee: body.knee ?? (SMALL_BODY_TYPES.has(body.type) ? SMALL_BODY_KNEE_KM : SATELLITE_KNEE_KM),
     };
 }
@@ -79,6 +80,24 @@ export function hillRadiusKm(body, sun) {
 // How far from a body's centre, in scene units, a point `rKm` km from it is drawn.
 export function distanceFromBody(body, rKm) { return satelliteDistance(rKm, bodyScale(body)); }
 
+// How far from its parent in reality (AU round the Sun, km round a body) a point of `orbit` drawn
+// `units` from it is, in the mode set (not while it changes). Null for an orbit in scene units.
+export function orbitRealDistance(orbit, units) {
+    if (orbit.a_au !== undefined) return sceneToAu(units);
+    if (orbit.a_km !== undefined && orbit.scale) return distances.fromBody(units, orbit.scale);
+    return null;
+}
+
+// What a change of mode draws a point of `orbit` that's `r` from its parent (AU round the Sun, km
+// round a body) between: its distance in Diagram mode and
+// in True scale, or round a body its height above the ground in each (`above`; the ground being
+// wherever the body's surface is drawn at the time). Null for an orbit given in scene units.
+export function orbitDistanceEnds(orbit, r) {
+    if (orbit.a_au !== undefined) return { above: false, ends: [DISTANCE_RULES.diagram.au(r), DISTANCE_RULES.true.au(r)] };
+    if (orbit.a_km !== undefined && orbit.scale) return { above: true, ends: heightEnds(r, orbit.scale) };
+    return null;
+}
+
 // An Earth-Sun Lagrange point ("lagrange": { "body", "point" }): L1 sunward of the body and L2
 // beyond it, on the line from the Sun, at the edge of the body's Hill sphere (hillRadiusKm). Gives
 // the drawn distance, negative for L1.
@@ -86,11 +105,12 @@ export function lagrangeOffset(body, sun, point) {
     return (point === 'L1' ? -1 : 1) * distanceFromBody(body, hillRadiusKm(body, sun));
 }
 
-// A halo orbit round an L-point ("lissajous"), in the point's own frame, which turns with the
+// An orbit round an L-point ("libration"), in the point's own frame, which turns with the
 // Sun-Earth line (render.js): x away from the Sun, y out of the ecliptic, z along it. scale.js sets
-// "amp", the drawn amplitudes, and "rate" from "period_days". The path is a halo's: round the
-// Sun-Earth line, leaning a little along it (a third of its width).
-export function lissajousOffset(orbit, days, out) {
+// "amp", the drawn amplitudes, and "rate" from "period_days". Every one is drawn as a halo orbit,
+// whatever its "kind": one closed loop round the Sun-Earth line, leaning a little along it (a third
+// of its width). A real Lissajous or quasi-halo orbit doesn't close, and wanders over the years.
+export function librationOffset(orbit, days, out) {
     const t = (orbit.M0 + orbit.rate * days) * (Math.PI / 180);
     return out.set(-orbit.amp.x * Math.cos(t), orbit.amp.y * Math.cos(t), orbit.amp.z * Math.sin(t));
 }
@@ -330,12 +350,23 @@ export function getTrajectoryPosition(obj, days, out) {
 // The point on the cruise (the line through its samples) on the day `days`, into `out`.
 export function cruiseAt(plan, days, out) {
     const S = plan.samples;
-    if (days <= S[0].days) return out.copy(S[0].pos);
+    if (days <= S[0].days) return remapCruise(out.copy(S[0].pos));
     // Samples are evenly spaced in time within each leg, so a binary search finds the pair.
     let lo = 0, hi = S.length - 1;
     while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (S[mid].days <= days) lo = mid; else hi = mid; }
     const a = S[lo], b = S[hi];
-    return out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1));
+    return remapCruise(out.copy(a.pos).lerp(b.pos, THREE.MathUtils.clamp((days - a.days) / ((b.days - a.days) || 1), 0, 1)));
+}
+
+// While the mode changes, a cruise keeps the plan it had (planning one takes too long to redo
+// every frame), and each point of it is moved out or in from the Sun to where its distance is
+// drawn now: `fromAu` turns a distance as planned back into AU.
+let cruiseFromAu = null;
+export function setCruiseRemap(fromAu) { cruiseFromAu = fromAu; }
+export function remapCruise(p) {
+    if (!cruiseFromAu) return p;
+    const r = p.length();
+    return r > 0 ? p.multiplyScalar(auToScene(cruiseFromAu(r)) / r) : p;
 }
 
 // The planet-level body an object belongs to: its own "system" if data.json gives one (the

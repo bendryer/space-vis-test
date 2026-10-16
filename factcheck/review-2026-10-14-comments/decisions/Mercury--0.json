@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "An OU scientist is the UK lead for BepiColombo’s MIXS X-ray spectrometer.",
+  "field": "ou_involvement",
+  "id": "Mercury--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Mercury",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "An OU scientist is the UK lead for BepiColombo's MIXS X-ray spectrometer, which will map the elements on Mercury's surface.",
+      "to": "OU scientists are Co-Investigators on BepiColombo's MIXS X-ray spectrometer, which will map the elements on Mercury's surface."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:19:17.949Z",
+  "verdict": "bad"
+}

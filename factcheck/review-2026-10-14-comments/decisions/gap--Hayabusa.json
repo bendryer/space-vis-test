@@ -1,0 +1,22 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--Hayabusa",
+  "kind": "new-entry",
+  "note": "",
+  "object": "Hayabusa",
+  "suggestion": {
+    "description": "Hayabusa was a JAXA mission that launched in 2003 and reached the near-Earth asteroid Itokawa in 2005. Despite many technical setbacks, it returned a capsule containing tiny grains of the asteroid to Earth in 2010: the first asteroid samples ever brought back.",
+    "launch_year": "2003",
+    "model": "none yet (generic placeholder)",
+    "orbit": "hovering beside Itokawa (as Hayabusa2 at Ryugu)",
+    "ou_involvement": "OU researchers study grains of Itokawa returned by Hayabusa (see Itokawa).",
+    "parent": "Itokawa",
+    "status": "Complete",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T20:00:07.119Z",
+  "verdict": null
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Huygens--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Huygens",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "One of our scientists, John Zarnecki, was Principal Investigator for the Surface Science Package (SSP), which made the first measurements on Titan’s surface: its density, temperature and physical state as Huygens landed. We have continued to lead analysis of this unique dataset to understand Titan’s surface and organic chemistry."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:37.599Z",
+  "verdict": "sty"
+}

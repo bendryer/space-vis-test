@@ -5,7 +5,7 @@
 // load and again on a change of mode: it gives every natural body its drawn "radius" (and a
 // modelled one its "model_scale"), every craft its "model_size", and readies every orbit.
 import { MISSION_MODEL_SIZE } from './config.js';
-import { SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, TRUE_KM_PER_UNIT, useDistances } from './units.js';
+import { SATELLITE_KNEE_KM, SMALL_BODY_KNEE_KM, TRUE_KM_PER_UNIT, useDistances, useMixedDistances } from './units.js';
 import { auToScene, distanceFromBody, hillRadiusKm, kneeFor, lagrangeOffset, prepareOrbit } from './orbits.js';
 
 export const SCALE_MODES = ['diagram', 'true'];
@@ -73,26 +73,42 @@ const SIZES = {
 // The drawn radius of a natural body with a real size, in scene units, in the active mode.
 export function drawnRadius(item) { return SIZES[scaleMode].bodyRadius(item); }
 
-export function applyScales(data, mode = scaleMode) {
+// Sizes part way from Diagram (y = 0) to True scale (y = 1), geometrically between the two.
+function mixedSizes(y) {
+    const between = (d, t) => d ** (1 - y) * t ** y;
+    return {
+        bodyRadius: item => between(SIZES.diagram.bodyRadius(item), SIZES.true.bodyRadius(item)),
+        craftSize: item => between(SIZES.diagram.craftSize(item), SIZES.true.craftSize(item)),
+        craftRadius: item => between(item.radius_diagram, SIZES.true.craftSize(item) / 2),
+    };
+}
+
+// Sets every size and orbit for `mode`. While the mode changes (scale-change.js), `mix` gives how
+// far each has gone from Diagram towards True scale: { orbit, size }, each 0 to 1. Everything is
+// then drawn as in True scale (relative to the camera, in slices), which holds both.
+export function applyScales(data, mode = scaleMode, mix = null) {
     scaleMode = mode;
-    view = VIEWS[mode];
-    useDistances(mode);
-    const sizes = SIZES[mode];
+    view = mix ? VIEWS.true : VIEWS[mode];
+    if (mix) useMixedDistances(mix.orbit);
+    else useDistances(mode);
+    const sizes = mix ? mixedSizes(mix.size) : SIZES[mode];
     const byName = new Map(data.map(item => [item.name, item]));
     data.forEach(item => {
         if (item.type === 'mission') {
             // A craft's "radius" (its size until its model loads) is data.json's in Diagram mode.
             item.radius_diagram ??= item.radius;
             item.model_size = sizes.craftSize(item);
-            item.radius = mode === 'diagram' ? item.radius_diagram : item.model_size / 2;
+            item.radius = mix ? sizes.craftRadius(item) : mode === 'diagram' ? item.radius_diagram : item.model_size / 2;
             return;
         }
         if (!NATURAL_TYPES.has(item.type) || item.radius_km === undefined) return;
+        item.radius_diagram = SIZES.diagram.bodyRadius(item);
         item.radius = sizes.bodyRadius(item);
         if (item.model) item.model_scale = 2 * item.radius;   // a model is scaled by its longest side
     });
-    if (mode === 'diagram') setKnees(data, byName);
-    else data.forEach(item => { delete item.knee; delete item.hill; });
+    // The knees are Diagram mode's; they stay set in True scale (which doesn't use them) for a
+    // change of mode to draw heights from.
+    if (mode === 'diagram' && !mix) setKnees(data, byName);
     data.forEach(item => {
         const parent = byName.get(item.parent);
         // Saturn's rings are given in km; drawn in its radii.
@@ -119,7 +135,7 @@ export function applyScales(data, mode = scaleMode) {
     });
     // Halo orbits round an L-point, once the points are placed.
     data.forEach(item => {
-        if (item.orbit_type === 'lissajous') prepareHalo(item.orbit, byName.get(item.parent), byName);
+        if (item.orbit_type === 'libration') prepareHalo(item.orbit, byName.get(item.parent), byName);
     });
 }
 

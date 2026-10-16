@@ -5,17 +5,17 @@
 :root{
   --bg:#f5f6fb; --surface:#ffffff; --fg:#10123a; --muted:#565a80; --line:#dfe1ef;
   --accent:#1c46c0; --accent-soft:#e7ecfb;
-  --ok:#11795a; --ok-bg:#e1f5ec; --fix:#8a5a00; --fix-bg:#fdf1d6; --bad:#b3261e; --bad-bg:#fbe3e1; --unv:#5a4fb0; --unv-bg:#ecebfa;
+  --ok:#11795a; --ok-bg:#e1f5ec; --fix:#8a5a00; --fix-bg:#fdf1d6; --bad:#b3261e; --bad-bg:#fbe3e1; --unv:#5a4fb0; --unv-bg:#ecebfa; --sty:#1f5f8b; --sty-bg:#e2eff8;
   --display:"Poppins",Arial,sans-serif; --body:"Poppins",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#05053e; --surface:#0d0e52; --fg:#eef0ff; --muted:#a9acd6; --line:#26286b;
   --accent:#66eefa; --accent-soft:#15176a;
-  --ok:#7dffd3; --ok-bg:#0f3a3a; --fix:#fff488; --fix-bg:#3a3620; --bad:#ffb4b4; --bad-bg:#46183a; --unv:#c9c7ff; --unv-bg:#24246e; color-scheme:dark}}
+  --ok:#7dffd3; --ok-bg:#0f3a3a; --fix:#fff488; --fix-bg:#3a3620; --bad:#ffb4b4; --bad-bg:#46183a; --unv:#c9c7ff; --unv-bg:#24246e; --sty:#9fd3ff; --sty-bg:#16324a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#05053e; --surface:#0d0e52; --fg:#eef0ff; --muted:#a9acd6; --line:#26286b;
   --accent:#66eefa; --accent-soft:#15176a;
-  --ok:#7dffd3; --ok-bg:#0f3a3a; --fix:#fff488; --fix-bg:#3a3620; --bad:#ffb4b4; --bad-bg:#46183a; --unv:#c9c7ff; --unv-bg:#24246e; color-scheme:dark}
+  --ok:#7dffd3; --ok-bg:#0f3a3a; --fix:#fff488; --fix-bg:#3a3620; --bad:#ffb4b4; --bad-bg:#46183a; --unv:#c9c7ff; --unv-bg:#24246e; --sty:#9fd3ff; --sty-bg:#16324a; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
 .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:32px 64px;display:flex;flex-direction:column;gap:28px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
@@ -34,7 +34,7 @@ header{display:flex;flex-direction:column;gap:10px}
 .tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .tile b{font-family:var(--mono);font-size:1.7rem;font-weight:500;font-variant-numeric:tabular-nums}
 .tile span{font-size:.85rem;color:var(--muted)}
-.tile.ok b{color:var(--ok)}.tile.fix b{color:var(--fix)}.tile.bad b{color:var(--bad)}.tile.unv b{color:var(--unv)}
+.tile.ok b{color:var(--ok)}.tile.fix b{color:var(--fix)}.tile.bad b{color:var(--bad)}.tile.unv b{color:var(--unv)}.tile.sty b{color:var(--sty)}
 .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .tools input{flex:1 1 240px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:inherit}
 .tools button{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:inherit;font-size:.85rem;cursor:pointer}
@@ -53,7 +53,7 @@ nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--
 .claim:first-child{border-top:0}
 @media (max-width:560px){.claim{grid-template-columns:minmax(0,1fr)}}
 .chip{align-self:start;justify-self:start;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;white-space:nowrap}
-.ok{--c:var(--ok);--cb:var(--ok-bg)}.fix{--c:var(--fix);--cb:var(--fix-bg)}.bad{--c:var(--bad);--cb:var(--bad-bg)}.unv{--c:var(--unv);--cb:var(--unv-bg)}
+.ok{--c:var(--ok);--cb:var(--ok-bg)}.fix{--c:var(--fix);--cb:var(--fix-bg)}.bad{--c:var(--bad);--cb:var(--bad-bg)}.unv{--c:var(--unv);--cb:var(--unv-bg)}.sty{--c:var(--sty);--cb:var(--sty-bg)}
 .chip,.dot{color:var(--c);background:var(--cb)}
 .body{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
@@ -104,8 +104,8 @@ ul.plain{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;
 <div class="wrap">
 <header>
   <div class="eyebrow" id="eyebrow"></div>
-  <h1>OUniverse fact check</h1>
-  <p class="lede">Every factual claim in <code>space-vis/public/data.json</code> checked against public sources: agency pages, OU pages, peer-reviewed papers and the JPL small-body database. The file itself was not changed. Each claim carries a verdict and the links used, so anything marked unverified can be followed up with the people involved.</p>
+  <h1 id="h1">OUniverse fact check</h1>
+  <p class="lede" id="lede">Every factual claim in <code>space-vis/public/data.json</code> checked against public sources: agency pages, OU pages, peer-reviewed papers and the JPL small-body database. The file itself was not changed. Each claim carries a verdict and the links used, so anything marked unverified can be followed up with the people involved.</p>
 </header>
 
 <div class="tally" id="tally"></div>
@@ -136,7 +136,7 @@ ul.plain{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;
 </section>
 
 <section id="p-unv" class="panel" hidden>
-  <p class="lede">Claims no public source could confirm. Most are OU-specific statements (teaching use, internal projects, who leads what) that likely come from inside knowledge. The note says what was searched and who could confirm it.</p>
+  <p class="lede" id="unvlede">Claims no public source could confirm. Most are OU-specific statements (teaching use, internal projects, who leads what) that likely come from inside knowledge. The note says what was searched and who could confirm it.</p>
   <div class="tablewrap"><table id="unvtable"><thead><tr><th>Object</th><th>Field</th><th>Claim</th><th>What was found / who to ask</th></tr></thead><tbody></tbody></table></div>
 </section>
 
@@ -147,14 +147,14 @@ ul.plain{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;
 </section>
 
 <section id="p-gaps" class="panel" hidden>
-  <p class="lede">Missions with documented OU involvement in science, instruments, testing or operations that have no entry in data.json. Each card gives the values data.json needs, with sources. The prose is a starting point for you to rewrite.</p>
+  <p class="lede" id="gapslede">Missions with documented OU involvement in science, instruments, testing or operations that have no entry in data.json. Each card gives the values data.json needs, with sources. The prose is a starting point for you to rewrite.</p>
   <div id="gaps" class="panel"></div>
 </section>
 
 <section id="p-method" class="panel" hidden>
   <div class="card">
     <h2>How this was checked</h2>
-    <ul class="plain">
+    <ul class="plain" id="methodlist">
       <li>Every <code>description</code> and <code>ou_involvement</code> paragraph was split into separate claims. The numeric fields checked were tilt, rot_period, e, i, launch_year, status, landed_coords and the JUICE waypoints.</li>
       <li><b>Confirmed</b>: a primary or authoritative source says the same thing. <b>Needs correction</b>: broadly right but imprecise, overstated or out of date. <b>Contradicted</b>: a source says otherwise. <b>Unverified</b>: no public source found either way.</li>
       <li>General science statements (for example "Venus rotates backwards") were checked against agency fact pages. Obvious textbook facts are grouped into one confirmed row per paragraph so the list stays usable.</li>
@@ -171,7 +171,15 @@ ul.plain{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;
 const REPORT=/*__REPORT_DATA__*/null;
 const {DATA,NUMS,GAPS}=REPORT;
 const SUG={};DATA.forEach(o=>o.c.forEach((x,i)=>{if(x.sug)SUG[o.n+"#"+i]=x.sug}));
-const V={ok:"Confirmed",fix:"Needs correction",bad:"Contradicted",unv:"Unverified"};
+const M=REPORT.meta||{};
+const V=Object.assign({ok:"Confirmed",fix:"Needs correction",bad:"Contradicted",unv:"Unverified",sty:"Style rewrite"},M.labels||{});
+/* Optional wording for reviews that aren't fact checks (e.g. colleagues' comments): meta.h1, lede, eyebrow, statusText,
+   unvLede, gapsLede, method (list of strings), tabLabels {claims,unv,nums,gaps,method}, hideTabs [..]. */
+(()=>{const set=(id,t)=>{const e=document.getElementById(id);if(e&&t!=null)e.textContent=t};
+ set("h1",M.h1);set("lede",M.lede);set("eyebrow",M.eyebrow);set("status",M.statusText);set("unvlede",M.unvLede);set("gapslede",M.gapsLede);
+ for(const [k,t] of Object.entries(M.tabLabels||{}))set("tab-"+k,t);
+ for(const k of M.hideTabs||[]){const b=document.getElementById("tab-"+k);if(b)b.hidden=true}
+ if(M.method){const ul=document.getElementById("methodlist");ul.innerHTML="";M.method.forEach(t=>{const li=document.createElement("li");li.textContent=t;ul.appendChild(li)})}})();
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const srcHtml=a=>a&&a.length?'<div class="src">'+a.map(x=>'<a href="'+esc(x.u)+'" target="_blank" rel="noopener">'+esc(x.t)+'</a>').join("")+'</div>':"";
@@ -227,8 +235,8 @@ function sugHtml(x){
 function claimHtml(x){return '<div class="claim"><span class="chip '+x.v+'">'+V[x.v]+'</span><div class="body"><span class="field">'+esc(x.f)+(x.flag?' · <span class="decided">'+esc(x.flag)+'</span>':'')+'</span><div class="q">'+esc(x.q)+'</div>'+(x.note?'<div class="note">'+esc(x.note)+'</div>':"")+srcHtml(x.s)+sugHtml(x)+'</div></div>'}
 
 let filter=null;
-function counts(){const c={ok:0,fix:0,bad:0,unv:0};DATA.forEach(o=>o.c.forEach(x=>c[x.v]++));return c}
-function renderTally(){const c=counts();$("#tally").innerHTML=["bad","fix","unv","ok"].map(k=>'<button type="button" class="tile '+k+'" data-v="'+k+'" aria-pressed="'+(filter===k)+'"><b>'+c[k]+'</b><span>'+V[k]+'</span></button>').join("");
+function counts(){const c={ok:0,fix:0,bad:0,unv:0,sty:0};DATA.forEach(o=>o.c.forEach(x=>c[x.v]++));return c}
+function renderTally(){const c=counts();$("#tally").innerHTML=["bad","fix","unv","sty","ok"].map(k=>'<button type="button" class="tile '+k+'" data-v="'+k+'" aria-pressed="'+(filter===k)+'"><b>'+c[k]+'</b><span>'+V[k]+'</span></button>').join("");
  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{filter=filter===b.dataset.v?null:b.dataset.v;renderTally();renderList()});}
 let shown=[];
 function renderList(){
@@ -240,7 +248,7 @@ function renderList(){
   const rows=o.c.filter(x=>(!filter||x.v===filter)&&(!q||(o.n+" "+x.q+" "+(x.note||"")+" "+(x.s||[]).map(s=>s.t).join(" ")).toLowerCase().includes(q)));
   if(!rows.length)return;shown.push(...rows);
   const tally={};o.c.forEach(x=>tally[x.v]=(tally[x.v]||0)+1);
-  const worst=["bad","fix","unv","ok"].filter(k=>tally[k]);
+  const worst=["bad","fix","unv","sty","ok"].filter(k=>tally[k]);
   const pending=o.c.filter(x=>x.v!=="ok"&&!dec[x.id]).length;
   const open=(first?(filter||q||tally.bad):(openNow.has(o.n)||filter||q))?" open":"";
   out.push('<details class="obj" data-o="'+esc(o.n)+'"'+open+'><summary><h3>'+esc(o.n)+'</h3><span class="meta">'+esc(o.m)+'</span><span class="dots">'+worst.map(k=>'<span class="dot '+k+'">'+tally[k]+' '+V[k].toLowerCase()+'</span>').join("")+'</span>'+(o.c.some(x=>x.v!=="ok")?'<span class="decided">'+(pending?pending+" to decide":"all decided ✓")+'</span>':'')+'</summary><div class="claims">'+rows.map(claimHtml).join("")+'</div></details>');
@@ -267,7 +275,7 @@ $("#acceptShown").onclick=()=>{let n=0;shown.forEach(x=>{if(x.sug&&x.sug.e&&!dec
  rerender();setStatus(n?"Accepted "+n+" suggested edits in the current view. Review or change any of them below.":"No undecided suggested edits in the current view.")};
 
 function exportObj(){const rows=Object.keys(dec).map(rowFor).filter(Boolean);
- return {source:"OUniverse fact check",file:"space-vis/public/data.json",exportedAt:new Date().toISOString(),count:rows.length,decisions:rows}}
+ return {source:M.title||"OUniverse fact check",file:"space-vis/public/data.json",exportedAt:new Date().toISOString(),count:rows.length,decisions:rows}}
 $("#dl").onclick=async()=>{
  if(!dl){setStatus("Downloads aren’t available in this view. Your decisions are still saved on the page.",true);return}
  try{await dl.save({filename:"ouniverse-factcheck-decisions.json",data:JSON.stringify(exportObj(),null,2)});setStatus("File saved.")}
@@ -289,7 +297,7 @@ $("#expand").onclick=()=>document.querySelectorAll(".obj").forEach(d=>d.open=tru
 $("#collapse").onclick=()=>document.querySelectorAll(".obj").forEach(d=>d.open=false);
 loadLocal();
 renderTally();renderList();renderUnv();renderNums();renderGaps();updateProgress();
-try{const t=localStorage.getItem("fc-tab");if(t){const b=document.querySelector('nav.tabs button[data-tab="'+t+'"]');if(b)b.click()}}catch(e){}
+try{const t=localStorage.getItem("fc-tab");if(t){const b=document.querySelector('nav.tabs button[data-tab="'+t+'"]');if(b&&!b.hidden)b.click()}}catch(e){}
 
 (async()=>{
  const c=window.claude;

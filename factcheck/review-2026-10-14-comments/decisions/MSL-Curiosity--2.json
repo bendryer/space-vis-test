@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "The commenter will say when Curiosity passes sol 5,111 and becomes the longest-serving rover on Mars, some time in spring 2027.",
+  "field": "description",
+  "id": "MSL-Curiosity--2",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:54:16.946Z",
+  "verdict": "ok"
+}

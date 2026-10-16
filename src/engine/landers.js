@@ -3,6 +3,8 @@
 import * as THREE from 'three';
 import { celestialMap } from './state.js';
 import { DEBUG_LANDING, getEffectiveModel } from './config.js';
+import { raycastSurface } from './raycast.js';
+import { vertexReader } from './vertices.js';
 
 const _UP = new THREE.Vector3(0, 1, 0);
 
@@ -11,22 +13,36 @@ export const pendingLanders = [];
 
 // --- LANDER LOGIC ---
 // Where a lander touches the ground, in its own frame: its lowest points (leg ends, wheels), the
-// one farthest out in each of six directions round it, in order. Cached per detail level and size
-// (a change of scale mode resizes it).
+// one farthest out in each of six directions round it, in order. Cached per detail level. A change
+// of scale mode resizes the model about its own axis: the supports then move in proportion (the
+// same vertices are lowest and farthest out), so they're scaled, not found again from every vertex.
 const SUPPORT_SECTORS = 6;
 function getLanderSupports(obj) {
     const level = obj && (obj.highLevel || obj.lowLevel);
     if (!level) return null;
     if (obj.supportsLevel === level && obj.supportsScale === obj.mesh.scale.x) return obj.supports;
+    const { position: at, quaternion: turn } = obj.mesh;
+    if (obj.supportsLevel === level && obj.supports && at.x === 0 && at.z === 0
+        && obj.supportsTurn?.equals(turn) && obj.supportsY === at.y) {
+        const k = obj.mesh.scale.x / obj.supportsScale;
+        const move = p => { p.x *= k; p.z *= k; p.y = at.y + (p.y - at.y) * k; };
+        obj.supports.points.forEach(move);
+        move(obj.supports.centre);
+        obj.supports.reach *= k;
+        obj.supportsScale = obj.mesh.scale.x;
+        return obj.supports;
+    }
     obj.supportsScale = obj.mesh.scale.x;
+    obj.supportsTurn = turn.clone();
+    obj.supportsY = at.y;
     obj.group.updateMatrixWorld(true);
     const toLander = new THREE.Matrix4().copy(obj.group.matrixWorld).invert();
     const m = new THREE.Matrix4(), v = new THREE.Vector3();
     const eachVertex = fn => level.traverse(c => {
         if (!c.isMesh || !c.geometry.attributes.position) return;
         m.multiplyMatrices(toLander, c.matrixWorld);
-        const pos = c.geometry.attributes.position;
-        for (let i = 0; i < pos.count; i++) fn(v.fromBufferAttribute(pos, i).applyMatrix4(m));
+        const pos = c.geometry.attributes.position, read = vertexReader(pos, m);
+        for (let i = 0; i < pos.count; i++) fn(read(v, i));
     });
     let bottom = Infinity, top = -Infinity;
     eachVertex(p => { bottom = Math.min(bottom, p.y); top = Math.max(top, p.y); });
@@ -60,7 +76,7 @@ function settleOnSupports(landerObj, frame, surface, point, normal) {
     const ground = [];
     for (const s of supports.points) {
         const above = s.clone().applyQuaternion(lean).add(point).addScaledVector(normal, supports.reach);
-        const h = new THREE.Raycaster(frame.localToWorld(above), down, 0, supports.reach * 3).intersectObject(surface, true)[0];
+        const h = raycastSurface(new THREE.Raycaster(frame.localToWorld(above), down, 0, supports.reach * 3), surface);
         if (!h) return null;
         ground.push(frame.worldToLocal(h.point.clone()));
     }
@@ -84,7 +100,8 @@ function settleOnSupports(landerObj, frame, surface, point, normal) {
 }
 
 // Lands again the landers on `obj` (and `obj` itself, if it's one) that are already down: called
-// when a detail level arrives, so they sit on the surface shown and on their own feet.
+// when a detail level arrives, so they sit on the surface shown and on their own feet. The one on
+// show lands now; the rest as the frame budget allows (attemptToLand, each frame).
 export function relandLanders(obj) {
     celestialMap.forEach(child => {
         const d = child.data;
@@ -94,6 +111,40 @@ export function relandLanders(obj) {
         if (!pendingLanders.some(r => r.data === d)) pendingLanders.push({ group: child.group, data: d });
     });
     attemptToLand();
+}
+
+// --- WHILE THE MODE CHANGES ---
+// Landing again takes several rays against the body's surface, too slow for every frame of an
+// animated change of mode. So at its start each lander is measured once: the point where it was
+// dropped onto the ground (dropOnto, as landing it again will drop it) and its offset from that
+// point, in its body's frame. Each frame the ground point then grows or shrinks with the body and
+// the offset with the lander (keepLandersDown), so it neither floats nor sinks as both change size,
+// and it ends where landing it again puts it. (Measured from the ground straight under it,
+// Perseverance ended up to 1.5 m to one side of that, and jumped there.)
+export function measureLanders() {
+    celestialMap.forEach(obj => {
+        obj.landedAt = null;
+        const parent = celestialMap.get(obj.data.parent);
+        if (obj.data.orbit_type !== 'landed' || !parent || obj.group.parent !== parent.meshGroup) return;
+        const at = obj.group.position.clone();
+        const hit = dropOnto(parent, obj.data)?.hit;
+        const ground = hit ? parent.meshGroup.worldToLocal(hit.point.clone()) : at.clone();
+        obj.landedAt = { ground, offset: at.sub(ground), bodyScale: parent.mesh.scale.x, ownScale: obj.mesh.scale.x };
+    });
+}
+
+export function keepLandersDown() {
+    celestialMap.forEach(obj => {
+        const at = obj.landedAt;
+        if (!at) return;
+        const parent = celestialMap.get(obj.data.parent);
+        obj.group.position.copy(at.ground).multiplyScalar(parent.mesh.scale.x / at.bodyScale)
+            .addScaledVector(at.offset, obj.mesh.scale.x / at.ownScale);
+    });
+}
+
+export function forgetLanderMeasures() {
+    celestialMap.forEach(obj => { obj.landedAt = null; });
 }
 
 // --- GROUND UP CLOSE (True scale) ---
@@ -108,49 +159,96 @@ export function relandLanders(obj) {
 // nearer, so the corners round the lander are near it too. The surface is the same, point for
 // point (a flat triangle split is still flat, and its colours and shading are spread across it
 // just as before); only where its numbers count from, and how many corners it has, change.
-const REFINE_SHARE = 0.5;     // near the site, no triangle longer than this share of its distance from it
+//
+// The triangles are split round every lander on the body, not just the one shown, and on a sphere
+// the new corners are lifted onto it. A flat triangle 330 km across leans up to several degrees
+// from level at its edges (the ground under Beagle 2 leaned 5.6°), so a lander set on it stood
+// askew to the planet's horizon, and the triangle's middle lies kilometres below the sphere. So
+// near the landers the ground is the planet's true round shape, and they stand level on it. The
+// landers are set down again on the new ground. Since every lander's surroundings are refined
+// alike, moving from one to another only changes where the numbers count from, not the shape.
+const REFINE_SHARE = 0.5;     // near a site, no triangle longer than this share of its distance from it
 const REFINE_FINEST = 1e-7;   // scene units (13 cm in True scale): no need to split smaller than this
 const _site = new THREE.Vector3();
 const _scale = new THREE.Vector3();
 export function centreSurfaceOn(landerObj) {
     const body = celestialMap.get(landerObj.data.parent);
-    if (!body || body.surfaceSite === landerObj) return;
+    if (!body) return;
+    const meshes = body.mesh.children.filter(m => m.isMesh && !m.rotation.x && !m.rotation.y && !m.rotation.z && m.scale.x === 1);
+    if (body.surfaceSite === landerObj && meshes.every(m => m.userData.refinedFor === landerObj)) return;
     if (landerObj.group.parent !== body.meshGroup) return;   // not down yet
     landerObj.group.getWorldPosition(_site);
     body.mesh.updateWorldMatrix(true, true);
-    body.mesh.children.forEach(m => {
-        if (!m.isMesh || m.rotation.x || m.rotation.y || m.rotation.z || m.scale.x !== 1) return;
+    // Every lander that's down on this body, by name: refining round them all keeps one shape.
+    const landed = [];
+    celestialMap.forEach(child => {
+        if (child.data.orbit_type === 'landed' && child.data.parent === body.data.name && child.group.parent === body.meshGroup) landed.push(child);
+    });
+    const sitesKey = landed.map(l => l.data.name).sort().join('|');
+    let rebuilt = false;
+    meshes.forEach(m => {
+        if (m.userData.refinedFor === landerObj && m.userData.refinedSites === sitesKey) return;
         m.userData.surfaceGeometry ??= m.geometry;
-        // The site in the original geometry's numbers: this mesh's own, plus where it's moved to.
-        const origin = m.worldToLocal(_site.clone()).add(m.position);
-        const geometry = refineAround(m.userData.surfaceGeometry, origin, REFINE_FINEST / m.getWorldScale(_scale).x);
+        // A point in the original geometry's numbers: this mesh's own, plus where it's moved to.
+        const toSource = p => m.worldToLocal(p.clone()).add(m.position);
+        const origin = toSource(_site);
+        const sites = landed.map(l => toSource(l.group.getWorldPosition(new THREE.Vector3())));
+        const geometry = refineAround(m.userData.surfaceGeometry, origin, REFINE_FINEST / m.getWorldScale(_scale).x, sites);
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();
         if (m.geometry !== m.userData.surfaceGeometry) m.geometry.dispose();
         m.geometry = geometry;
         m.position.copy(origin);
+        rebuilt = true;
+        m.userData.refinedFor = landerObj;
+        m.userData.refinedSites = sitesKey;
     });
     body.surfaceSite = landerObj;
+    // Set the landers down on the new ground. Only when the set of landers changed, it was
+    // thought, would its shape change; but ground refined at another size (at the start of a
+    // change of scale) had another shape, and Curiosity was left floating over the new one.
+    if (rebuilt) relandLanders(body);
 }
 
-// A copy of `source` with `origin` taken off every position, and the triangles near it (now at
-// 0, 0, 0) split in four, again and again, until each is no longer than REFINE_SHARE of its
-// distance from it (or `finest`). Each new corner is a blend of the corners it lies between, in
-// every attribute (position, normal, texture position). A triangle left whole beside a split one
-// has the split one's new corners along their shared edge: it's fanned from its middle to meet
-// them, so the surface has no cracks.
+// Forget how the ground under the landers was refined, so it's refined again (and they're set
+// down on it) the next time a lander is shown up close: at the end of a change of scale, when
+// it was refined for sizes part-way between the modes.
+export function forgetSurfaceRefinement() {
+    celestialMap.forEach(body => {
+        if (!body.surfaceSite) return;
+        body.surfaceSite = null;
+        body.mesh.children.forEach(m => { if (m.userData) m.userData.refinedFor = null; });
+    });
+}
+
+// A copy of `source` with `origin` taken off every position, and the triangles near any of
+// `sites` (in the source's numbers) split in four, again and again, until each is no longer than
+// REFINE_SHARE of its distance from the nearest (or `finest`). Each new corner is a blend of the
+// corners it lies between, in every attribute (position, normal, texture position); on a sphere
+// round the geometry's own centre it's then lifted onto the sphere, with its normal pointing
+// straight out. A triangle left whole beside a split one has the split one's new corners along
+// their shared edge: it's fanned from its middle to meet them, so the surface has no cracks.
 const _tri = new THREE.Triangle();
 const _nearest = new THREE.Vector3();
-const _ORIGIN = new THREE.Vector3();
-function refineAround(source, origin, finest) {
+const SPHERE_TOLERANCE = 1e-5; // corners all this close (relative) to one radius count as a sphere
+function refineAround(source, origin, finest, sites) {
     const names = Object.keys(source.attributes);
     const sizes = names.map(n => source.attributes[n].itemSize);
     const values = names.map(n => Array.from(source.attributes[n].array));
     const position = values[names.indexOf('position')];
     let count = source.attributes.position.count;
+    const sourceCount = count;
+    // Is it a sphere round its own centre? Then its radius.
+    let rMin = Infinity, rMax = 0;
+    for (let i = 0; i < count; i++) {
+        const r = Math.hypot(position[3 * i], position[3 * i + 1], position[3 * i + 2]);
+        rMin = Math.min(rMin, r); rMax = Math.max(rMax, r);
+    }
+    const sphereRadius = rMax - rMin <= SPHERE_TOLERANCE * rMax ? (rMin + rMax) / 2 : null;
     for (let i = 0; i < count; i++) {
         position[3 * i] -= origin.x; position[3 * i + 1] -= origin.y; position[3 * i + 2] -= origin.z;
     }
+    const near = sites.map(s => s.clone().sub(origin));
     const blend = (ids, weights) => {
         values.forEach((v, k) => {
             const size = sizes[k];
@@ -169,7 +267,8 @@ function refineAround(source, origin, finest) {
     const tooBig = (a, b, c) => {
         corner(a, _tri.a); corner(b, _tri.b); corner(c, _tri.c);
         const longest = Math.max(_tri.a.distanceTo(_tri.b), _tri.b.distanceTo(_tri.c), _tri.c.distanceTo(_tri.a));
-        return longest > finest && longest > REFINE_SHARE * _tri.closestPointToPoint(_ORIGIN, _nearest).length();
+        if (longest <= finest) return false;
+        return near.some(s => longest > REFINE_SHARE * _tri.closestPointToPoint(s, _nearest).distanceTo(s));
     };
     const leaves = [];
     const split = (a, b, c) => {
@@ -193,6 +292,18 @@ function refineAround(source, origin, finest) {
         const centre = blend([a, b, c], [1 / 3, 1 / 3, 1 / 3]);
         ring.forEach((v, j) => triangles.push(v, ring[(j + 1) % ring.length], centre));
     }
+    // Lift the new corners onto the sphere (the source's own already lie on it).
+    if (sphereRadius !== null) {
+        const normal = names.includes('normal') ? values[names.indexOf('normal')] : null;
+        for (let i = sourceCount; i < count; i++) {
+            const x = position[3 * i] + origin.x, y = position[3 * i + 1] + origin.y, z = position[3 * i + 2] + origin.z;
+            const r = Math.hypot(x, y, z);
+            if (!(r > 0)) continue;
+            const k = sphereRadius / r;
+            position[3 * i] = x * k - origin.x; position[3 * i + 1] = y * k - origin.y; position[3 * i + 2] = z * k - origin.z;
+            if (normal) { normal[3 * i] = x / r; normal[3 * i + 1] = y / r; normal[3 * i + 2] = z / r; }
+        }
+    }
     const geometry = new THREE.BufferGeometry();
     names.forEach((n, k) => geometry.setAttribute(n, new THREE.BufferAttribute(new Float32Array(values[k]), sizes[k], source.attributes[n].normalized)));
     geometry.setIndex(triangles);
@@ -205,9 +316,76 @@ export function onLanded(listener) {
     landedListeners.push(listener);
 }
 
+// Where a lander dropped onto its body meets the ground: the surface hit (or null), the surface
+// mesh, and the direction it came in from, in the mesh's frame. Null if there's no surface.
+function dropOnto(parent, data) {
+    // The surface to land on: the parent's full-detail model once it has one (that's what
+    // shows close up; its low-detail stand-in can be hundreds of triangles), else what it has.
+    // Its solid surface, not a see-through layer over it: Earth's night lights are a shell
+    // half a percent above the ground, which in True scale is 32 km up.
+    let targetMesh = null;
+    (parent.highLevel || parent.mesh).traverse((child) => {
+        if (child.isMesh && !targetMesh && !child.material.transparent) targetMesh = child;
+    });
+    if (!targetMesh || !targetMesh.geometry) return null;
+
+    parent.meshGroup.updateMatrixWorld(true);
+    targetMesh.updateMatrixWorld(true);
+
+    targetMesh.geometry.computeBoundingBox();
+    const geoBox = targetMesh.geometry.boundingBox;
+    const geoCenter = geoBox.getCenter(new THREE.Vector3());
+    const geoSize = geoBox.getSize(new THREE.Vector3());
+
+    // Drop in from above "landed_coords" (lat/lon on the parent; 45, 10 if not given).
+    const lat = data.landed_coords ? data.landed_coords.lat : 45;
+    const lon = data.landed_coords ? data.landed_coords.lon : 10;
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lon + 180) * (Math.PI / 180);
+    const dir = new THREE.Vector3(
+        -(Math.sin(phi) * Math.cos(theta)), Math.cos(phi), Math.sin(phi) * Math.sin(theta)
+    ).normalize();
+    const maxDim = Math.max(geoSize.x, geoSize.y, geoSize.z);
+
+    // A ray can slip through the seams where a mesh's triangles meet, which on a sphere
+    // crowd together at the poles (LUPEX, at -89°, landed 0.07 above the Moon). So a miss
+    // is retried with the ray nudged by a fraction of a degree, a few millimetres on screen.
+    const nudgeAxis = new THREE.Vector3().crossVectors(dir, Math.abs(dir.y) < 0.9 ? _UP : new THREE.Vector3(1, 0, 0)).normalize();
+    let hit = null;
+    for (let attempt = 0; attempt < 5 && !hit; attempt++) {
+        const aim = attempt === 0 ? dir : dir.clone().applyAxisAngle(
+            nudgeAxis.clone().applyAxisAngle(dir, attempt * Math.PI / 2), 0.002);
+        const startWorld = geoCenter.clone().addScaledVector(aim, maxDim * 2).applyMatrix4(targetMesh.matrixWorld);
+        const dirWorld = aim.clone().negate().transformDirection(targetMesh.matrixWorld).normalize();
+        hit = raycastSurface(new THREE.Raycaster(startWorld, dirWorld), targetMesh) || null;
+    }
+    return { targetMesh, dir, hit };
+}
+
+// Landing takes rays against the body's surface and the lander's feet: a few ms each on a slow
+// CPU, and the end of a change of scale mode lands every lander again at once (a freeze of up to
+// half a second). So each frame lands them until LAND_BUDGET_MS is spent (at least one), those
+// that matter now first: the one on show, then the rest on the body in view. One left for a later
+// frame stays where it is: still on the ground (during a change of mode it's held where landing it
+// puts it), or not yet shown.
+const LAND_BUDGET_MS = 4;
+let landingFirst = () => null;   // the name of what's on show: camera.js sets it (setLandingFirst)
+export function setLandingFirst(fn) { landingFirst = fn; }
+function landingOrder() {
+    const shown = celestialMap.get(landingFirst())?.data;
+    const body = shown?.orbit_type === 'landed' ? shown.parent : shown?.name;
+    const rank = r => (shown && r.data.name === shown.name ? 0 : body && r.data.parent === body ? 1 : 2);
+    return [...pendingLanders].sort((a, b) => rank(a) - rank(b));
+}
+
+// The budget is shared by every call in a frame (relandLanders calls it once for each body).
+let budgetStart = -Infinity, landed = 0;
+const FRAME_GAP_MS = 6;   // a call this long after the budget was spent belongs to a later frame
 export function attemptToLand() {
-    for (let i = pendingLanders.length - 1; i >= 0; i--) {
-        const request = pendingLanders[i];
+    const now = performance.now();
+    if (now - budgetStart > LAND_BUDGET_MS + FRAME_GAP_MS) { budgetStart = now; landed = 0; }
+    for (const request of landingOrder()) {
+        if (landed && performance.now() - budgetStart > LAND_BUDGET_MS) break;
         const parent = celestialMap.get(request.data.parent);
 
         // Land as soon as the parent's surface exists: straight away on a textured sphere, or once
@@ -216,47 +394,9 @@ export function attemptToLand() {
         const parentReady = parent && parent.mesh && parent.meshGroup
             && (!getEffectiveModel(parent.data) || parent.data.isModelLoaded);
         if (parentReady) {
-            // The surface to land on: the parent's full-detail model once it has one (that's what
-            // shows close up; its low-detail stand-in can be hundreds of triangles), else what it has.
-            // Its solid surface, not a see-through layer over it: Earth's night lights are a shell
-            // half a percent above the ground, which in True scale is 32 km up.
-            let targetMesh = null;
-            (parent.highLevel || parent.mesh).traverse((child) => {
-                if (child.isMesh && !targetMesh && !child.material.transparent) targetMesh = child;
-            });
-
-            if (!targetMesh || !targetMesh.geometry) continue;
-
-            parent.meshGroup.updateMatrixWorld(true);
-            targetMesh.updateMatrixWorld(true);
-
-            targetMesh.geometry.computeBoundingBox();
-            const geoBox = targetMesh.geometry.boundingBox;
-            const geoCenter = geoBox.getCenter(new THREE.Vector3());
-            const geoSize = geoBox.getSize(new THREE.Vector3());
-
-            // Drop in from above "landed_coords" (lat/lon on the parent; 45, 10 if not given).
-            const lat = request.data.landed_coords ? request.data.landed_coords.lat : 45;
-            const lon = request.data.landed_coords ? request.data.landed_coords.lon : 10;
-            const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lon + 180) * (Math.PI / 180);
-            const dir = new THREE.Vector3(
-                -(Math.sin(phi) * Math.cos(theta)), Math.cos(phi), Math.sin(phi) * Math.sin(theta)
-            ).normalize();
-            const maxDim = Math.max(geoSize.x, geoSize.y, geoSize.z);
-
-            // A ray can slip through the seams where a mesh's triangles meet, which on a sphere
-            // crowd together at the poles (LUPEX, at -89°, landed 0.07 above the Moon). So a miss
-            // is retried with the ray nudged by a fraction of a degree, a few millimetres on screen.
-            const nudgeAxis = new THREE.Vector3().crossVectors(dir, Math.abs(dir.y) < 0.9 ? _UP : new THREE.Vector3(1, 0, 0)).normalize();
-            let hit = null;
-            for (let attempt = 0; attempt < 5 && !hit; attempt++) {
-                const aim = attempt === 0 ? dir : dir.clone().applyAxisAngle(
-                    nudgeAxis.clone().applyAxisAngle(dir, attempt * Math.PI / 2), 0.002);
-                const startWorld = geoCenter.clone().addScaledVector(aim, maxDim * 2).applyMatrix4(targetMesh.matrixWorld);
-                const dirWorld = aim.clone().negate().transformDirection(targetMesh.matrixWorld).normalize();
-                hit = new THREE.Raycaster(startWorld, dirWorld).intersectObject(targetMesh, true)[0] || null;
-            }
+            const drop = dropOnto(parent, request.data);
+            if (!drop) continue;
+            const { targetMesh, dir, hit } = drop;
 
             let hitMeshGroupPoint, surfaceNormalLocal;
             const parentNormalMatrix = new THREE.Matrix3().getNormalMatrix(parent.meshGroup.matrixWorld);
@@ -300,7 +440,8 @@ export function attemptToLand() {
             parent.meshGroup.updateMatrixWorld(true);
 
             if (DEBUG_LANDING) console.log(`Landed ${request.data.name} on ${parent.data.name} at:`, hitMeshGroupPoint);
-            pendingLanders.splice(i, 1);
+            pendingLanders.splice(pendingLanders.indexOf(request), 1);
+            landed++;
             landedListeners.forEach(listener => listener(request.data));
         }
     }

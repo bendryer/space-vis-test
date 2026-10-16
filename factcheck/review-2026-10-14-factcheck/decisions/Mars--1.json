@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Mars--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Mars",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We have a long history of Mars research, from building lander instruments to analysing atmospheric data from orbit. Our researchers study the planet’s volatile cycles and whether its subsurface could be habitable, and help space agencies choose landing sites, as for the Rosalind Franklin rover at Oxia Planum."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:55.656Z",
+  "verdict": "sty"
+}

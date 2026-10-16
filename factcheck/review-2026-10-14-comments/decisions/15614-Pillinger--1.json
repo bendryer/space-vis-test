@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "15614-Pillinger--1",
+  "kind": "claim",
+  "note": "this suggestion is great but leader isn't the right word, maybe PI?",
+  "object": "15614 Pillinger",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Colin Pillinger (1943-2014), Professor at the Open University and leader of the Beagle 2 Mars lander. Its official naming citation reads: “Colin T. Pillinger (b. 1943), a planetary geochemist, made significant discoveries in the light-element geochemistry of meteorites, diamonds, lunar samples and terrestrial samples. He is the originator and principal investigator of the Beagle 2 Mars lander. The name was suggested by E. K. Gibson.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:58:45.213Z",
+  "verdict": "fix"
+}

@@ -5,8 +5,9 @@ import { celestialMap, objects } from './state.js';
 import { DEBUG_LANDING, engineOptions, MISSION_MODEL_SIZE, ORBIT_LINE_MAX_SAG, getEffectiveModel } from './config.js';
 import { createHologramMaterial, plannedMaterials, preloadQueue } from './models.js';
 import { createSun } from './sun.js';
-import { cruiseAt, getDaysSinceJ2000, getSystemRoot, getTrajectoryPlan, lissajousOffset, orbitFarthest, orbitPositionAt, poleDirection } from './orbits.js';
+import { cruiseAt, getDaysSinceJ2000, getSystemRoot, getTrajectoryPlan, librationOffset, orbitDistanceEnds, orbitFarthest, orbitPositionAt, orbitRealDistance, poleDirection, remapCruise } from './orbits.js';
 import { simulatedDate } from './time.js';
+import { distances } from './units.js';
 import { loadBodyTexture } from './assets.js';
 import { pendingLanders } from './landers.js';
 import { renderer, scene } from './scene.js';
@@ -98,7 +99,7 @@ function createOrbitLine(orbitData, color = '#888888', opacity = 0.4) {
 const ORBIT_LINE_REDRAW_DEG = 0.1;
 export function refreshOrbitLine(line, days) {
     const o = line?.userData.orbit;
-    if (!o || !(o.node_rate || o.peri_rate)) return;
+    if (!o || !(o.node_rate || o.peri_rate) || line.userData.morph) return;
     const turned = Math.abs(days - line.userData.days) * (Math.abs(o.node_rate || 0) + Math.abs(o.peri_rate || 0));
     if (turned < ORBIT_LINE_REDRAW_DEG) return;
     const loop = line.userData.loop ?? line.geometry;   // the whole loop, even while drawn up close
@@ -106,6 +107,7 @@ export function refreshOrbitLine(line, days) {
     loop.computeBoundingSphere();
     line.userData.days = days;
     if (line.userData.near) line.userData.near.cam = null;   // and redrawn up close next frame
+    line.userData.far = null;
 }
 
 // --- LINES UP CLOSE (True scale) ---
@@ -121,12 +123,17 @@ export function refreshOrbitLine(line, days) {
 // A line can be drawn up close if it knows its curve (userData.curve): `at(u, out, days)` puts
 // the point at parameter u, in the line's own frame, into `out`; u runs over `range()`, round and
 // round if `closed`; `turns` is how fast the curve itself turns (radians a day), if it does.
+// A line found too far off to draw up close isn't searched again until the camera could have come
+// within reach of it: the camera's distance from a curve changes by no more than the camera moves
+// (or the curve turns), so it's left until it has moved the gap between them (userData.far). The
+// planets' orbits, which the camera is always inside, were otherwise searched every frame.
 const NEAR_LINE_SHARE = 0.05;    // near: within this share of the line's size of it
 const NEAR_REDRAW_SHARE = 0.1;
 const NEAR_TURN_SHARE = 0.01;
 const NEAR_FIRST_STEP = 0.02;    // spacing at the nearest point, as a share of the camera's distance
 const NEAR_GROWTH = 1.08;        // each step this much longer than the one before
 const NEAR_SEARCH = 96;          // samples along the curve when finding its nearest point
+const NEAR_SETTLE = 2e-5;        // ...found to within this share of its distance from the camera
 const _camLocal = new THREE.Vector3();
 const _onLine = new THREE.Vector3();
 const _toLocal = new THREE.Matrix4();
@@ -159,6 +166,10 @@ function nearLine(line, cameraPos, days) {
     const whole = line.userData.loop ?? line.geometry;
     if (!whole.boundingSphere) whole.computeBoundingSphere();
     const bounds = whole.boundingSphere;
+    const far = line.userData.far;
+    if (far && far.distances === distances && far.whole === whole && far.radius === bounds.radius
+        && far.cam.distanceTo(_camLocal) + Math.abs(days - far.days) * curve.turns * bounds.radius < far.slack) return;
+    line.userData.far = null;
     if (near?.cam && near.cam.distanceTo(_camLocal) < NEAR_REDRAW_SHARE * near.distance
         && Math.abs(days - near.days) * curve.turns * bounds.radius < NEAR_TURN_SHARE * near.distance) return;
 
@@ -174,16 +185,26 @@ function nearLine(line, cameraPos, days) {
         const u = start + span * (i / NEAR_SEARCH), d = gap(u);
         if (d < best) { best = d; u0 = u; }
     }
+    // Each round keeps one of its two samples; it stops once the bracket is a hair of the distance
+    // long on the curve (NEAR_SETTLE of it: far finer than the first step out, NEAR_FIRST_STEP).
     const golden = (Math.sqrt(5) - 1) / 2;
     let lo = u0 - span / NEAR_SEARCH, hi = u0 + span / NEAR_SEARCH;
     if (!curve.closed) { lo = Math.max(lo, start); hi = Math.min(hi, end); }
-    for (let k = 0; k < 80; k++) {
-        const m1 = hi - golden * (hi - lo), m2 = lo + golden * (hi - lo);
-        if (gap(m1) < gap(m2)) hi = m2; else lo = m1;
+    const hiPoint = at(hi).clone();
+    const runs = at(lo).distanceTo(hiPoint) / (hi - lo) || 1;   // scene units per unit of u
+    let m1 = hi - golden * (hi - lo), m2 = lo + golden * (hi - lo), g1 = gap(m1), g2 = gap(m2);
+    for (let k = 0; k < 80 && (hi - lo) * runs > NEAR_SETTLE * Math.min(g1, g2); k++) {
+        if (g1 < g2) { hi = m2; m2 = m1; g2 = g1; m1 = hi - golden * (hi - lo); g1 = gap(m1); }
+        else { lo = m1; m1 = m2; g1 = g2; m2 = lo + golden * (hi - lo); g2 = gap(m2); }
     }
     u0 = (lo + hi) / 2;
     const distance = Math.max(gap(u0), margin * 1e-12);
-    if (distance > margin) { drawWholeLine(line); return; }
+    if (distance > margin) {
+        drawWholeLine(line);
+        // The search's nearest point is within a hair of the true one; half the gap is left as slack.
+        line.userData.far = { cam: _camLocal.clone(), days, slack: (distance - margin) / 2, distances, whole, radius: bounds.radius };
+        return;
+    }
 
     // Steps out from u0, first a small share of the distance (in u, by how fast the curve runs
     // there), each longer than the last: round to the back of a loop, or to each end of a path.
@@ -227,22 +248,25 @@ function drawWholeLine(line) {
     line.userData.loop = null;
 }
 
-function lissajousPoints(orbitData) {
-    const points = [];
-    // Same sag limit as createOrbitLine; the path's flattest bend has radius at most a^2 / b.
-    const { y, z } = orbitData.amp;
+// Same sag limit as createOrbitLine; the path's flattest bend has radius at most a^2 / b.
+function librationSegments({ y, z }) {
     const bend = Math.max(y, z) ** 2 / Math.max(Math.min(y, z), 1e-6);
-    const segments = THREE.MathUtils.clamp(Math.ceil(2 * Math.PI * Math.sqrt(bend / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
+    return THREE.MathUtils.clamp(Math.ceil(2 * Math.PI * Math.sqrt(bend / (8 * ORBIT_LINE_MAX_SAG))), 128, 4096);
+}
+
+function librationPoints(orbitData) {
+    const points = [];
+    const segments = librationSegments(orbitData.amp);
     const one = { ...orbitData, M0: 0 };
     for (let i = 0; i < segments; i++) {
-        points.push(lissajousOffset(one, (i / segments) * (360 / orbitData.rate), new THREE.Vector3()));
+        points.push(librationOffset(one, (i / segments) * (360 / orbitData.rate), new THREE.Vector3()));
     }
     return points;
 }
 
-function createLissajousLine(orbitData) {
+function createLibrationLine(orbitData) {
     if (!orbitData?.amp || !orbitData.rate) return null;
-    const geometry = new THREE.BufferGeometry().setFromPoints(lissajousPoints(orbitData));
+    const geometry = new THREE.BufferGeometry().setFromPoints(librationPoints(orbitData));
     const material = new THREE.LineBasicMaterial({
         color: new THREE.Color('#888888'),
         transparent: true,
@@ -251,7 +275,7 @@ function createLissajousLine(orbitData) {
     });
     const line = new THREE.LineLoop(geometry, material);
     line.userData = { baseColor: '#888888', baseOpacity: 0.18 };
-    // The same path as lissajousOffset, by its angle.
+    // The same path as librationOffset, by its angle.
     line.userData.curve = {
         closed: true, turns: 0, range: () => [0, 2 * Math.PI],
         at: (t, out) => out.set(-orbitData.amp.x * Math.cos(t), orbitData.amp.y * Math.cos(t), orbitData.amp.z * Math.sin(t)),
@@ -324,8 +348,11 @@ function createEarthNightLayer(radius, texturePath) {
         const geometry = new THREE.SphereGeometry(radius * 1.005, 64, 64);
         const nightTexture = loadBodyTexture(texturePath);
         nightTexture.colorSpace = THREE.SRGBColorSpace;
+        // The Sun is at the world origin, but True scale draws the scene shifted so the camera is
+        // there instead (draw.js): the Sun is wherever the scene's origin is drawn.
+        const sunPosition = new THREE.Vector3();
         const material = new THREE.ShaderMaterial({
-            uniforms: { tNight: { value: nightTexture } },
+            uniforms: { tNight: { value: nightTexture }, uSun: { value: sunPosition } },
             vertexShader: `
                 varying vec2 vUv; varying vec3 vNormal; varying vec3 vWorldPosition;
                 void main() { vUv = uv; vNormal = normalize(mat3(modelMatrix) * normal);
@@ -333,14 +360,16 @@ function createEarthNightLayer(radius, texturePath) {
                 gl_Position = projectionMatrix * viewMatrix * worldPos; }
             `,
             fragmentShader: `
-                uniform sampler2D tNight; varying vec2 vUv; varying vec3 vNormal; varying vec3 vWorldPosition;
-                void main() { vec3 sunDir = normalize(-vWorldPosition);
+                uniform sampler2D tNight; uniform vec3 uSun; varying vec2 vUv; varying vec3 vNormal; varying vec3 vWorldPosition;
+                void main() { vec3 sunDir = normalize(uSun - vWorldPosition);
                 float dotProd = dot(vNormal, sunDir); float alpha = 1.0 - smoothstep(-0.2, 0.2, dotProd);
                 vec4 color = texture2D(tNight, vUv); gl_FragColor = vec4(color.rgb, alpha * color.a); }
             `,
             transparent: true, blending: THREE.AdditiveBlending, side: THREE.FrontSide, depthWrite: false
         });
-        return new THREE.Mesh(geometry, material);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.onBeforeRender = (_renderer, scene) => sunPosition.copy(scene.position);
+        return mesh;
     } catch { return null; }
 }
 
@@ -510,8 +539,8 @@ export function buildSystem(data) {
             }
             else if (data.parent) {
                 let line = null;
-                if (data.orbit_type === 'lissajous') {
-                    line = createLissajousLine(data.orbit);
+                if (data.orbit_type === 'libration') {
+                    line = createLibrationLine(data.orbit);
                     const parent = celestialMap.get(data.parent);
                     if (parent && line) parent.mesh.add(line);
                 } else if (data.orbit_type === 'suborbital') {
@@ -568,6 +597,13 @@ export function updateTrajectoryLines(obj, arrived) {
 // (its sphere or model, night lights, the Sun's effect) is scaled from the size it was built at, a
 // planet's rings with it, and every line is redrawn. Landers are re-seated by the caller.
 export function rescaleSystem() {
+    settleLines(Infinity);
+    rescaleBodies();
+    redrawLines();
+}
+
+// Just the sizes: cheap enough for every frame of an animated change of mode.
+export function rescaleBodies() {
     celestialMap.forEach(obj => {
         const { data } = obj;
         const { built } = data;
@@ -581,7 +617,148 @@ export function rescaleSystem() {
             obj.ring.outerRadius = obj.ring.builtOuter * k;
         }
     });
-    redrawLines();
+}
+
+// --- LINES WHILE THE MODE CHANGES ---
+// Redrawing every line from its orbit takes 35 to 80 ms, too long for every frame. So when an
+// animated change of mode begins, each orbit line is sampled once (at most MORPH_SEGMENTS of its
+// points): each point's direction from its parent and the two distances the change draws it
+// between (orbitDistanceEnds), Diagram mode's and True scale's, the real distance being worked
+// back from where the line is drawn now. Each frame then only puts each point between the two (one
+// exponential a point). A cruise is moved point by point (remapCruise); the few halo orbits and
+// rocket arcs are simply redrawn. At the end each line is redrawn in full, a few each frame
+// (settleLines), the morphed one standing in until then: all at once took 45 to 50 ms.
+const MORPH_SEGMENTS = 720;
+const MORPH_STRIDE = 6;   // per point: direction (3), Diagram distance, True distance, log of their ratio
+const SETTLE_BUDGET_MS = 3;
+function eachLine(fn) {
+    celestialMap.forEach(obj => {
+        const lines = obj.trajectoryLines;
+        if (lines) [lines.cruise, lines.arrived].forEach(l => l && fn(l, obj));
+        else if (obj.orbitLine) fn(obj.orbitLine, obj);
+    });
+}
+
+const _morphFrom = new THREE.Vector3();
+export function beginLineMorph() {
+    settleLines(Infinity);   // anything left from a change just before
+    eachLine((line, obj) => {
+        drawWholeLine(line);
+        const o = line.userData.orbit;
+        const plan = obj.trajectoryLines?.cruise === line ? getTrajectoryPlan(obj) : null;
+        let real = null;
+        if (o && orbitDistanceEnds(o, 1)) {
+            const drawn = line.geometry.attributes.position;
+            const step = Math.ceil(drawn.count / MORPH_SEGMENTS), n = Math.ceil(drawn.count / step);
+            real = new Float64Array(n * MORPH_STRIDE);
+            for (let i = 0, k = 0; i < n; i++, k += MORPH_STRIDE) {
+                _morphFrom.fromBufferAttribute(drawn, i * step);
+                const units = _morphFrom.length() || 1;
+                const { above, ends: [d, t] } = orbitDistanceEnds(o, orbitRealDistance(o, units));
+                real[k] = _morphFrom.x / units; real[k + 1] = _morphFrom.y / units; real[k + 2] = _morphFrom.z / units;
+                real[k + 3] = d; real[k + 4] = t; real[k + 5] = d > 0 && t > 0 ? Math.log(t / d) : NaN;
+                real.above = above;
+            }
+        } else if (plan) {
+            real = plan.samples.map(s => s.pos);
+        } else if (!line.userData.curve || o) return;
+        line.userData.morph = { real, geometry: line.geometry };
+        if (real) {
+            const count = real instanceof Float64Array ? real.length / MORPH_STRIDE : real.length;
+            line.geometry = new THREE.BufferGeometry();
+            line.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+        }
+    });
+}
+
+// `x`: how far the orbits have gone from Diagram mode (0) to True scale (1).
+const _morphPoint = new THREE.Vector3();
+export function morphLines(x) {
+    eachLine((line, obj) => {
+        const morph = line.userData.morph;
+        if (!morph || morph.settling) return;
+        const { data } = obj;
+        if (!morph.real) {
+            if (data.orbit_type === 'libration') morphHalo(line, morph, data.orbit.amp);
+            else if (data.orbit_type === 'suborbital') {
+                setLinePoints(line, suborbitalPoints(data, celestialMap.get(data.parent)?.data.radius || 1));
+                line.computeLineDistances();
+            }
+            return;
+        }
+        if (line.userData.near) line.userData.near.cam = null;   // drawn up close afresh each frame
+        line.userData.far = null;
+        const whole = line.userData.loop ?? line.geometry;
+        const pos = whole.attributes.position;
+        if (morph.real instanceof Float64Array) {
+            const real = morph.real, ground = real.above ? line.userData.orbit.scale.radius : 0;
+            for (let i = 0, k = 0; i < pos.count; i++, k += MORPH_STRIDE) {
+                const d = real[k + 3], ratio = real[k + 5];
+                const r = ground + (ratio === ratio ? d * Math.exp(x * ratio) : d + (real[k + 4] - d) * x);
+                pos.setXYZ(i, real[k] * r, real[k + 1] * r, real[k + 2] * r);
+            }
+        } else {
+            morph.real.forEach((p, i) => { remapCruise(_morphPoint.copy(p)); pos.setXYZ(i, _morphPoint.x, _morphPoint.y, _morphPoint.z); });
+        }
+        pos.needsUpdate = true;
+        whole.computeBoundingSphere();
+    });
+}
+
+// A halo orbit keeps its shape as it grows or shrinks (its amplitudes change by one factor), so it's
+// written into one buffer each frame, the angles worked out once. It's drawn with at least as many
+// points as librationPoints would give it (the buffer is made again when a larger one needs more).
+function morphHalo(line, morph, amp) {
+    const need = librationSegments(amp);
+    let halo = morph.halo;
+    if (!halo || halo.segments < need) {
+        const cos = new Float64Array(need), sin = new Float64Array(need);
+        for (let i = 0; i < need; i++) { const t = (i / need) * 2 * Math.PI; cos[i] = Math.cos(t); sin[i] = Math.sin(t); }
+        drawWholeLine(line);
+        if (halo) line.geometry.dispose();
+        line.geometry = new THREE.BufferGeometry();
+        line.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(need * 3), 3));
+        halo = morph.halo = { segments: need, cos, sin };
+    }
+    if (line.userData.near) line.userData.near.cam = null;   // drawn up close afresh each frame
+    line.userData.far = null;
+    const whole = line.userData.loop ?? line.geometry;
+    const pos = whole.attributes.position, a = pos.array;
+    for (let i = 0, k = 0; i < halo.segments; i++, k += 3) {
+        a[k] = -amp.x * halo.cos[i]; a[k + 1] = amp.y * halo.cos[i]; a[k + 2] = amp.z * halo.sin[i];
+    }
+    pos.needsUpdate = true;
+    whole.computeBoundingSphere();
+}
+
+// The change is over (the new mode is set, and the lines morphed to it): redraw each line in full
+// over the next frames, cruises first, as their craft now follow plans made afresh.
+const settling = [];
+export function endLineMorph() {
+    celestialMap.forEach(obj => { if (obj.trajectoryLines) obj.trajectoryPlan = null; });
+    eachLine((line, obj) => {
+        const morph = line.userData.morph;
+        if (!morph) return;
+        morph.settling = true;
+        settling[obj.trajectoryLines?.cruise === line ? 'unshift' : 'push']({ line, obj });
+    });
+}
+
+// Each frame: redraw lines left morphed, for up to `budget` ms (at least one).
+export function settleLines(budget = SETTLE_BUDGET_MS) {
+    if (!settling.length) return;
+    const start = performance.now(), days = getDaysSinceJ2000(simulatedDate);
+    do {
+        const { line, obj } = settling.shift();
+        const morph = line.userData.morph;
+        drawWholeLine(line);
+        if (morph.real || morph.halo) {
+            line.geometry.dispose();
+            line.geometry = morph.geometry;
+        }
+        line.userData.morph = null;
+        redrawLine(line, obj, days);
+    } while (settling.length && performance.now() - start < budget);
 }
 
 function setLinePoints(line, points) {
@@ -592,23 +769,18 @@ function setLinePoints(line, points) {
 
 function redrawLines() {
     const days = getDaysSinceJ2000(simulatedDate);
-    celestialMap.forEach(obj => {
-        const { data } = obj;
-        if (obj.trajectoryLines) {
-            obj.trajectoryPlan = null;
-            const plan = getTrajectoryPlan(obj);
-            if (obj.trajectoryLines.cruise) setLinePoints(obj.trajectoryLines.cruise, plan.samples.map(s => s.pos));
-            if (obj.trajectoryLines.arrived) redrawOrbitLine(obj.trajectoryLines.arrived, days);
-            return;
-        }
-        const line = obj.orbitLine;
-        if (!line) return;
-        if (data.orbit_type === 'lissajous') setLinePoints(line, lissajousPoints(data.orbit));
-        else if (data.orbit_type === 'suborbital') {
-            setLinePoints(line, suborbitalPoints(data, celestialMap.get(data.parent)?.data.radius || 1));
-            line.computeLineDistances();
-        } else redrawOrbitLine(line, days);
-    });
+    celestialMap.forEach(obj => { if (obj.trajectoryLines) obj.trajectoryPlan = null; });
+    eachLine((line, obj) => redrawLine(line, obj, days));
+}
+
+function redrawLine(line, obj, days) {
+    const { data } = obj;
+    if (obj.trajectoryLines?.cruise === line) setLinePoints(line, getTrajectoryPlan(obj).samples.map(s => s.pos));
+    else if (data.orbit_type === 'libration') setLinePoints(line, librationPoints(data.orbit));
+    else if (data.orbit_type === 'suborbital') {
+        setLinePoints(line, suborbitalPoints(data, celestialMap.get(data.parent)?.data.radius || 1));
+        line.computeLineDistances();
+    } else redrawOrbitLine(line, days);
 }
 
 function redrawOrbitLine(line, days) {
@@ -619,4 +791,3 @@ function redrawOrbitLine(line, days) {
     line.userData.days = days;
     setLinePoints(line, orbitLinePoints(o, line.userData.segments, days));
 }
-

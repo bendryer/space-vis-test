@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Dave’s rewrite: M-CAM work is finished, so emphasise the orbital phase and the science instruments.",
+  "field": "ou_involvement",
+  "id": "BepiColombo--0",
+  "kind": "claim",
+  "note": "accept suggestion but remove the grant information.",
+  "object": "BepiColombo",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "OU academics were members of BepiColombo's M-CAM monitoring camera team, analysing images returned during the spacecraft's Mercury flybys, and have led ESA's Mercury Surface and Composition Working Group. The Open University was also a development partner, alongside instrument lead the University of Leicester, in building the Mercury Imaging X-ray Spectrometer (MIXS). OU scientists are now Co-Investigators on MIXS and on MERTIS (the Mercury Thermal Infrared Spectrometer), associates on SIMBIO-SYS (the orbiter's spectrometer and imaging system), and hold a share of a £3 million STFC 'Astronomy Large Award' to do science from Mercury orbit."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:51:08.788Z",
+  "verdict": "fix"
+}

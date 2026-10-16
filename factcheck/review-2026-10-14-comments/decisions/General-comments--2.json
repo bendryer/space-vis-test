@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "Simeon converted a few US spellings to UK in the sheet (applied object by object below). Others remain in data.json: specializes, characterize, utilized, analyzing, kilometers (Earth-Sun L2) and more.",
+  "field": "spelling",
+  "id": "General-comments--2",
+  "kind": "claim",
+  "note": "Do UK Spelling pass over everything.",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:56:47.671Z",
+  "verdict": "unv"
+}

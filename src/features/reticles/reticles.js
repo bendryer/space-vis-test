@@ -68,7 +68,7 @@ export function setupReticles(engine, container) {
     reticleLayer = svgEl('svg', { class: 'reticles', 'aria-hidden': 'true', focusable: 'false' });
     const defs = svgEl('defs', {});
     const grad = svgEl('linearGradient', { id: 'reticle-signal', x1: '0', y1: '1', x2: '1', y2: '0' });
-    grad.append(svgEl('stop', { offset: '0', 'stop-color': '#7DFFD3' }), svgEl('stop', { offset: '1', 'stop-color': '#66EEFA' }));
+    grad.append(svgEl('stop', { offset: '0', style: 'stop-color: var(--ou-green)' }), svgEl('stop', { offset: '1', style: 'stop-color: var(--ou-light)' }));
     defs.append(grad);
     reticleLayer.append(defs);
     uiLayer.appendChild(reticleLayer);

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Two placeholders (OU connection, citation)",
+  "field": "description",
+  "id": "3202-Graff--0",
+  "kind": "claim",
+  "note": "",
+  "object": "3202 Graff",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Gareth (Graff) Vaughan Williams, [TO ADD: OU connection]. [TO ADD: official naming citation; JPL's database has none, so the text below paraphrases the Minor Planet Center's.] Working",
+      "to": "named after Gareth (Graff) Vaughan Williams, who later did his PhD at the OU. It was named for his earlier work: working"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:40.975Z",
+  "verdict": "fix"
+}

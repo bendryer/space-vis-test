@@ -219,10 +219,10 @@ OU brand pairing 2: a Core blue ground, one light-blue accent, white type, and t
 **Character:** One geometric sans, the OU brand face, carries everything from the 92px splash title to the 11.5px status word. Hierarchy comes from weight (700 splash, 600 names and headings, 500 data, 400 reading) and from colour steps, not from a second family.
 
 ### Hierarchy
-- **Display splash** (700, fluid 40px to 92px, line-height 1, -0.025em): "Explore the OUniverse" on the splash only. The one large moment in the system.
+- **Display splash** (700, fluid 40px to 92px, line-height 1, -0.025em): "Explore the OUniverse" on the splash only. The one large moment in the system. On a phone on its side (under 500px tall) it steps down to 32px to 48px, so the copy still fits beside the drawing.
 - **Lede splash** (400, fluid 17px to 21px, 1.5): the splash's opening sentence.
 - **Body splash** (400, fluid 16px to 18px, 1.55): the splash's facts and thank-you line.
-- **Title panel** (600, 24px, 1.2, -0.01em): the object's name at the head of the details panel, and the credits dialog's title.
+- **Title panel** (600, 24px, 1.2, -0.01em): the object's name at the head of the details panel, and the credits dialog's title. On phones the details title is 22px, to fit a long name beside the close button.
 - **Lockup name** (600, 17px, 1.3, -0.01em): "Explore the OUniverse" in the header, top-left.
 - **Heading section** (600, 14px, 1.6): "Open University Involvement" in light blue, beside the portal-O mark.
 - **Heading menu** (600, 14px): the Explore menu title.

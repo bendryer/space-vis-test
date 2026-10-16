@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Earth-Sun-L2--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Earth-Sun L2",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We treat L2 as a natural laboratory for how deep space affects spacecraft components, following the performance of detectors we characterised for missions stationed there. What we learn improves the detectors we’re developing for future flagship missions."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:14:59.461Z",
+  "verdict": "sty"
+}

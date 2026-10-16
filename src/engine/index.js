@@ -1,7 +1,8 @@
 // The engine's entry point: createEngine builds it and returns its API (ENGINE.md). Also loading:
 // data.json, the warm-up, and the progress, built, ready and error events.
 import * as THREE from 'three';
-import { engineOptions } from './config.js';
+import { engineOptions, prefersReducedMotion } from './config.js';
+import { hurryScaleChange, isChangingScale, startScaleChange } from './scale-change.js';
 import { BASE_PIXEL_RATIO, animate, createGpuTimer, onFrame, resolution } from './render.js';
 import { PINNED_DATE, getDate, setDate, setTimeRate, simulatedDate } from './time.js';
 import { SKY_FACES, ktx2Loader, setSceneVisible, startSky } from './sky.js';
@@ -11,11 +12,11 @@ import { attemptToLand, relandLanders } from './landers.js';
 import { buildSystem, getStandardizedOrbitColor, rescaleSystem } from './bodies.js';
 import { camera, createRenderer, renderer, scene } from './scene.js';
 import { celestialMap } from './state.js';
-import { collectTextures } from './gpu.js';
+import { collectTextures, warmShadowDepth } from './gpu.js';
 import { deselect, flyTo, hurry, initControls, reframe, setFlightPace, setUserControl, setViewInsets, showOverview, selectedObject } from './camera.js';
 import { emitEngine, onEngine } from './events.js';
 import { loadingManager } from './assets.js';
-import { projectBody } from './projection.js';
+import { hidingSpheres, isHiddenBy, projectBody } from './projection.js';
 import { startPreloads } from './models.js';
 import { installDevHook } from './devhook.js';
 import { pick } from './picking.js';
@@ -30,6 +31,8 @@ loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
 // The background texture can finish before data.json has queued the planets,
 // so only treat the manager going idle as "ready" once the system is built.
 let systemReady = false;
+// The bodies that can hide an object from view (isHidden), measured once a frame.
+const hiding = { frame: -1, spheres: [] };
 loadingManager.onLoad = () => { if (systemReady) warmUpSceneThenReveal(); };
 
 // Planets are frustum-culled until they come into view, so without this their
@@ -46,7 +49,7 @@ function warmUpSceneThenReveal() {
     });
     const WARM_UP_TIMEOUT_MS = 5000;
     Promise.race([
-        renderer.compileAsync(scene, camera)
+        Promise.all([renderer.compileAsync(scene, camera), warmShadowDepth(scene)])
             .then(() => performance.mark('warmup-shaders-ready'))
             .catch(e => console.warn('Shader warm-up failed', e)),
         new Promise(resolve => setTimeout(resolve, WARM_UP_TIMEOUT_MS))
@@ -104,7 +107,10 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
             animate();
         },
         on: onEngine, onFrame,
-        flyTo, showOverview, deselect, hurry,
+        flyTo, showOverview, deselect,
+        // Brings in a flight, or a change of scale mode, in a moment.
+        hurry() { hurryScaleChange(); hurry(); },
+        isChangingScale,
         getDate, setDate, setTimeRate,
         getObject, listObjects,
         // An object's on-screen centre and radius in CSS pixels, or null when it's off-screen.
@@ -114,6 +120,13 @@ export function createEngine({ canvas, dataUrl = './data.json', options = {} } =
             camera.updateMatrixWorld();
             const p = projectBody(celestialMap.get(name));
             return p && { x: p.cx, y: p.cy, radius: p.bodyR, distance: p.distance };
+        },
+        // Whether a planet, moon, asteroid or comet stands between the camera and the object.
+        // The bodies are measured once a frame, however many objects are asked about.
+        isHidden(name) {
+            const frame = renderer.info.render.frame;
+            if (hiding.frame !== frame) { hiding.frame = frame; hiding.spheres = hidingSpheres(celestialMap.values()); }
+            return isHiddenBy(celestialMap.get(name), hiding.spheres);
         },
         // The selected object's data.json entry, or null.
         getSelection() {
@@ -159,12 +172,16 @@ async function loadSystem(dataUrl) {
     }
 }
 
-// Draws everything on another scale mode's rules (SCALE-PLAN.md): 'diagram' or 'true'. Sizes, orbits
-// and lines are redone, landers re-seated, and the view cuts to the selection as now drawn. Emits
-// "scale-mode". Only once the system is built.
-function setScaleMode(mode) {
+// Draws everything on another scale mode's rules (SCALE-PLAN.md): 'diagram' or 'true'. Animated
+// by default, over SCALE_CHANGE_SECONDS, with the camera held on what it shows (scale-change.js);
+// with `animate: false` (or under reduced motion) sizes, orbits and lines are redone at once,
+// landers re-seated, and the view cuts to the selection as now drawn. Emits "scale-mode" when the
+// new mode is in place. Only once the system is built.
+function setScaleMode(mode, { animate = true } = {}) {
     if (!SCALE_MODES.includes(mode)) throw new Error(`Unknown scale mode: ${mode}`);
-    if (mode === scaleMode || !systemReady) return;
+    if (!systemReady) return;
+    if (isChangingScale() || (animate && !prefersReducedMotion.matches)) { startScaleChange(mode); return; }
+    if (mode === scaleMode) return;
     const data = listObjects();
     applyScales(data, mode);
     rescaleSystem();

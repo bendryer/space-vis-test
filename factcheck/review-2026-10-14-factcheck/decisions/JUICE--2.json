@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "JUICE--2",
+  "kind": "claim",
+  "note": "get rid of \"detector maker\"",
+  "object": "JUICE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Working with detector maker Teledyne e2v, our Centre for Electronic Imaging (CEI) helped develop and characterise the CIS115 sensor at the heart of the JANUS camera, testing it against the radiation, vibration and temperature extremes of the journey to Jupiter. We are the UK National Lead for JANUS."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:29:53.997Z",
+  "verdict": "sty"
+}

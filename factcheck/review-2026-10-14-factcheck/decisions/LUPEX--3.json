@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Snappier text",
+  "field": "description",
+  "id": "LUPEX--3",
+  "kind": "claim",
+  "note": "",
+  "object": "LUPEX",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "LUPEX is a joint JAXA-ISRO mission to look for water and other resources at the Moon’s south pole. Due to launch no earlier than 2028, its rover will explore sites with different lighting, temperatures and geology, measuring how much water there is, where, and in what form, down to about 1.5 metres. It should work for about 3.5 months after landing, and possibly for up to a year."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:20.151Z",
+  "verdict": "sty"
+}

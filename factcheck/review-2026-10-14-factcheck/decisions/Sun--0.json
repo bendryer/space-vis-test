@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Sun--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Sun",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) developed and tested the X-ray camera detectors on SMILE, the ESA–CAS mission studying how the solar wind meets Earth’s magnetic field. How particles from the Sun damage detectors in space is one of the CEI’s core research areas, and we test detectors against space radiation for missions across the Solar System."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:28.066Z",
+  "verdict": "sty"
+}

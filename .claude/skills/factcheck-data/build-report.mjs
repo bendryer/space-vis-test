@@ -27,7 +27,7 @@ for (const o of report.DATA) {
     }
   });
 }
-const counts = { ok: 0, fix: 0, bad: 0, unv: 0 };
+const counts = { ok: 0, fix: 0, bad: 0, unv: 0, sty: 0 };
 report.DATA.forEach(o => o.c.forEach(x => counts[x.v]++));
 
 const tpl = fs.readFileSync(path.join(SKILL_DIR, 'template.html'), 'utf8');
@@ -36,7 +36,7 @@ const json = JSON.stringify(report).replace(/<\/(script)/gi, '<\\/$1');
 const html = tpl.replace('/*__REPORT_DATA__*/null', json).replace('__TITLE__', report.meta.title || 'OUniverse fact check');
 fs.writeFileSync(path.join(dir, 'report.html'), html);
 
-console.log(`claims: ${counts.ok} confirmed, ${counts.fix} needs correction, ${counts.bad} contradicted, ${counts.unv} unverified`);
+console.log(`claims: ${counts.ok} confirmed, ${counts.fix} needs correction, ${counts.bad} contradicted, ${counts.unv} unverified, ${counts.sty} style rewrites`);
 console.log(`suggested edits matched in data.json: ${checked}`);
 if (problems.length) { console.log(`PROBLEMS (${problems.length}):\n  ` + problems.join('\n  ')); process.exitCode = 2; }
 console.log('wrote ' + path.join(dir, 'report.html'));

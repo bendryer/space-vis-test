@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Hayabusa2--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Hayabusa2",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our oxygen isotope laboratory was invited to join \"Team Kochi\", one of three Japanese-led teams that made the first analyses of the Ryugu samples. We’re measuring oxygen isotopes in the grains, showing that Ryugu-like material may have delivered water to the early Earth."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:36:37.911Z",
+  "verdict": "sty"
+}

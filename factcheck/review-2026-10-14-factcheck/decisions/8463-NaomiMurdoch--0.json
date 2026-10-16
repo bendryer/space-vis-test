@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Naomi Murdoch, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "8463-NaomiMurdoch--0",
+  "kind": "claim",
+  "note": "",
+  "object": "8463 NaomiMurdoch",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Naomi Murdoch, [TO ADD: OU connection]",
+      "to": "named after Naomi Murdoch, who did her PhD at the OU"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:47:24.826Z",
+  "verdict": "fix"
+}

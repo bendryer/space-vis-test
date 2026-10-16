@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Stardust--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Stardust",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We were among the first in the world to analyse material from Stardust, using infrared, UV/visible and Raman spectroscopy to study the minerals in dust grains captured from Comet Wild 2 in aerogel. With studies of the samples’ organic content, this work made us a leading UK centre for comet sample science."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:19.009Z",
+  "verdict": "sty"
+}

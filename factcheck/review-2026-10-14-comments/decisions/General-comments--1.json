@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Things we are working on putting into space are fine to include too, and there are plenty already in the app.",
+  "field": "scope",
+  "id": "General-comments--1",
+  "kind": "claim",
+  "note": "",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:44:29.416Z",
+  "verdict": "ok"
+}

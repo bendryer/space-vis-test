@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Impact site lat -8.84, lon 264.3 (illustrative)",
+  "field": "landed_coords",
+  "id": "DART--1",
+  "kind": "claim",
+  "note": "",
+  "object": "DART",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:45:01.473Z",
+  "verdict": "unv"
+}

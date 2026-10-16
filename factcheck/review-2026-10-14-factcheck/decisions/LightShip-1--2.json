@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "LightShip-1--2",
+  "kind": "claim",
+  "note": "",
+  "object": "LightShip-1",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Atmospheric Research and Space Exploration group is leading the design phase of HiRIME, the High-Resolution Imager for Mars Exploration, which will take detailed images of the Martian surface for geology. The same group also leads the Dust Environment Spectral Imager, which will image the whole of Mars about every 10 minutes to watch its atmosphere and dust storms."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:27.285Z",
+  "verdict": "sty"
+}

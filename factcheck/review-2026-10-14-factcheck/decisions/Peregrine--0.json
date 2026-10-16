@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Peregrine--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Peregrine",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We proposed and developed the Exospheric Mass Spectrometer (EMS), Europe’s contribution to NASA’s PITMS instrument, with ESA funding and RAL Space, on a fast track to meet a tight budget and timescale. It was built to measure the Moon’s thin exosphere and how it changes over the lunar day and with the lander’s own effects. When Peregrine couldn’t land, we ran EMS in space to help diagnose the spacecraft, proving the technology ready to fly again on PROSPECT."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:11.043Z",
+  "verdict": "sty"
+}

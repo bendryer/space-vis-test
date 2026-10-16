@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "ExoMars-TGO--0",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars TGO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We designed and led the development of UVIS, the ultraviolet channel of TGO’s NOMAD spectrometer, and one of our planetary scientists is a Co-Principal Investigator for NOMAD. We also help operate the CaSSIS stereo camera. We use UVIS data to track ozone, water vapour and trace gases such as methane, to understand how Mars loses its water to space. Some measurements are timed with other spacecraft: TGO measures methane from orbit while Curiosity measures it on the ground."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:09.027Z",
+  "verdict": "sty"
+}

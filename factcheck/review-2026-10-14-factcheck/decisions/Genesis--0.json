@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Genesis--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Genesis",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our scientists were on the Genesis Science Team. We developed some of the collectors that captured the solar wind and new techniques to analyse the returned samples, and after the capsule’s crash landing we worked extensively to characterise and clean off the contamination. The contamination stopped us making meaningful measurements, but Genesis’s finding that the Sun is richer in oxygen-16 than the Earth, Moon, Mars and meteorites is a key reference point for our oxygen isotope research."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:21.739Z",
+  "verdict": "sty"
+}

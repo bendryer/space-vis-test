@@ -3,6 +3,7 @@ import { engine } from './engine.js';
 import { syncMenuCurrent } from './menu.js';
 import { announce } from './announce.js';
 import { stopCinematicMode } from './cinematic.js';
+import { groupViewInsets } from './layout.js';
 
 export let hoveredObj = null;
 let hoveredHolder = null; // a menu holder (asteroids, comets) whose row is hovered
@@ -42,10 +43,11 @@ export function setHoveredHolder(holder) {
     updateOrbitLineHighlights();
 }
 
-// A holder's row: the same overview as "Solar System", with its bodies' orbits kept lit and each
-// body labelled, until something else is chosen.
+// A holder's row: the overview framed on its bodies' orbits, kept lit as a choice is, until
+// something else is chosen.
 export function showHolder(holder) {
-    showSolarSystem();
+    const names = holderMembers(holder).map(data => data.name);
+    showSolarSystem({ frame: { names, insets: groupViewInsets() }, quiet: true });
     shownHolder = holder;
     updateOrbitLineHighlights();
     syncMenuCurrent(holder.name);
@@ -53,10 +55,10 @@ export function showHolder(holder) {
     announce(`Showing ${count} ${holder.spoken || holder.name.toLowerCase()} and their orbits`);
 }
 
-// The holders' bodies the reticles mark: the holder on show as information, a hovered one as hover.
+// The holders' bodies the reticles mark: a hovered holder's (the one on show is marked by its
+// orbits alone).
 export function reticleGroups() {
     const groups = new Map();
-    if (shownHolder) holderMembers(shownHolder).forEach(data => groups.set(data, 'info'));
     if (hoveredHolder && hoveredHolder !== shownHolder) holderMembers(hoveredHolder).forEach(data => groups.set(data, 'hover'));
     return groups;
 }
@@ -77,10 +79,11 @@ export function setupViews() {
 // Showcase: "Solar System" pinned atop the menu (and the view on load, with animate: false).
 // The details close before the tour stops: stopping it first on a phone would put focus in the
 // details just as they close.
-export function showSolarSystem({ animate = true } = {}) {
+// frame and quiet are showHolder's: the group to frame, and no announcement (it makes its own).
+export function showSolarSystem({ animate = true, frame = null, quiet = false } = {}) {
     engine.deselect();
     stopCinematicMode();
-    engine.showOverview({ animate });
+    engine.showOverview({ animate, frame });
     syncMenuCurrent('Solar System');
-    if (animate) announce('Showing the whole Solar System');
+    if (animate && !quiet) announce('Showing the whole Solar System');
 }

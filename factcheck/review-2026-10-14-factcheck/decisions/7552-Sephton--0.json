@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Mark Sephton, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "7552-Sephton--0",
+  "kind": "claim",
+  "note": "",
+  "object": "7552 Sephton",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Mark Sephton, [TO ADD: OU connection]",
+      "to": "named after Mark Sephton, who did his PhD at the OU and was a lecturer there from 2000 to 2005"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:33.174Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "Ian Franchi and Colin Pillinger were Genesis Science Team members (roughly Co-Is): they developed some of the solar-wind collectors, new analytical techniques for the returned samples, and led contamination characterisation and clean-up after the crash landing. Contamination meant they could not make meaningful measurements.",
+  "field": "ou_involvement",
+  "id": "Genesis--0",
+  "kind": "claim",
+  "note": "accept but get rid of the roughly -just keep science team",
+  "object": "Genesis",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "OU scientists were members of the Genesis Science Team, roughly equivalent to Co-Investigators. They developed some of the detectors used to collect the solar wind, developed new techniques for analysing the returned samples, and carried out extensive work to characterise and clean up surface contamination after the capsule's crash landing on Earth. The contamination meant the OU team could not make meaningful measurements, but the mission's finding that the Sun is richer in oxygen-16 than the Earth, Moon, Mars and meteorites remains a key reference point for OU research on oxygen isotopes."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:55:33.388Z",
+  "verdict": "bad"
+}

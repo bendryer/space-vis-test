@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Shortened Dimorphos’s orbit \"by about 32 minutes\"",
+  "field": "description",
+  "id": "DART--0",
+  "kind": "claim",
+  "note": "",
+  "object": "DART",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "by about 32 minutes",
+      "to": "by about 33 minutes"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:44:58.843Z",
+  "verdict": "fix"
+}

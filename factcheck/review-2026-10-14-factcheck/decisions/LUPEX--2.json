@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "LUPEX--2",
+  "kind": "claim",
+  "note": "",
+  "object": "LUPEX",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We’re developing EMS-L, the Exospheric Mass Spectrometer for LUPEX, an ESA instrument on the JAXA-ISRO rover. Building on our heritage in miniature ion-trap mass spectrometry, it will measure water and other volatiles in the thin lunar exosphere and those released as the rover drives and drills, to show how volatiles are spread and behave at the Moon’s south pole."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:17.819Z",
+  "verdict": "sty"
+}

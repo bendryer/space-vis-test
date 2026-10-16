@@ -1,0 +1,22 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--I-MIM",
+  "kind": "new-entry",
+  "note": "",
+  "object": "I-MIM",
+  "suggestion": {
+    "description": "The International Mars Ice Mapper (I-MIM) is a proposed orbiter, led by NASA with international partners, that would use radar to map water ice buried near the surface of Mars and help choose landing sites for future human missions.",
+    "launch_year": "TBC",
+    "model": "none yet (hologram placeholder)",
+    "orbit": "illustrative low Mars orbit (a_km 3,796, i 90)",
+    "ou_involvement": "The OU is leading the analysis of the CHROMA-D detector for imaging the surface of Mars on the I-MIM mission. OU researchers are characterising the detector's performance and its sensitivity to radiation, to assess how well it suits the mission.",
+    "parent": "Mars",
+    "status": "Planned",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:59:44.013Z",
+  "verdict": null
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Chang-e-5--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Chang'e-5",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "In April 2025 we became one of only seven institutions outside China chosen to borrow Chang’e-5 samples. In our laboratories we’re measuring the isotopes of carbon, nitrogen, oxygen and noble gases in the grains, to test the giant-impact theory of the Moon’s origin and trace the history of volatiles in the Earth-Moon system."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:42.527Z",
+  "verdict": "sty"
+}

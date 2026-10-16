@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Arrives at Didymos on 12 October 2026 (last waypoint)",
+  "field": "trajectory",
+  "id": "Hera--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Hera",
+  "suggestion": [
+    {
+      "f": "entry",
+      "from": "waypoint 2026-10-12 \"Rendezvous with Didymos\"",
+      "to": "waypoint date 2026-11-01 (ESA: \"November 2026\"; exact day not published)"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T06:58:09.901Z",
+  "verdict": "fix"
+}

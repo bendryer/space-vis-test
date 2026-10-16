@@ -6,10 +6,19 @@ import { menuSheetOpen } from './phone.js';
 import { engine } from './engine.js';
 
 // The details panel's left edge when it sits beside the scene, else the viewport's right edge.
+// Asked every frame (the markers and reticles keep left of it), so the panel's width is measured
+// when it changes size (a ResizeObserver), not read each frame, which made the browser lay the
+// page out again mid-frame whenever anything on it had changed.
+let sidebarWidth = null;
 export function sceneRightEdge() {
     const sb = document.getElementById('sidebar');
-    const open = sb && sb.classList.contains('active') && isSidebarBesideScene();
-    return open ? window.innerWidth - sb.offsetWidth : window.innerWidth;
+    if (!sb) return window.innerWidth;
+    if (sidebarWidth === null) {
+        sidebarWidth = sb.offsetWidth;
+        new ResizeObserver(() => { sidebarWidth = sb.offsetWidth; }).observe(sb);
+    }
+    const open = sb.classList.contains('active') && isSidebarBesideScene();
+    return open ? window.innerWidth - sidebarWidth : window.innerWidth;
 }
 
 // The menu is out of reach when the tour hides it, and when the sidebar has slid over it on a
@@ -47,10 +56,42 @@ export function syncViewInsets() {
     }
     engine.setViewInsets(insets);
 }
+// The part of the screen a group on show (a holder's orbits) is framed in, as insets from each
+// edge: between the Explore menu and the controls, under the header. On a phone, between the
+// header and the dock.
+export function groupViewInsets() {
+    const insets = { left: 0, right: 0, top: 0, bottom: 0 };
+    const header = document.getElementById('header');
+    const controls = document.getElementById('controls');
+    if (header) insets.top = header.getBoundingClientRect().bottom + 8;
+    if (isPhone()) {
+        if (controls) insets.bottom = window.innerHeight - controls.getBoundingClientRect().top;
+        return insets;
+    }
+    const menu = document.getElementById('mission-menu');
+    if (menu && !menu.classList.contains('ui-hidden')) insets.left = menu.offsetLeft + menu.offsetWidth;
+    if (controls) insets.right = window.innerWidth - controls.getBoundingClientRect().left;
+    return insets;
+}
+
+// The Explore plate sits under the header (showcase.css reads --menu-top), so when the header grows,
+// with text enlarged or a long clock line wrapping, the plate moves down rather than covering it.
+const MENU_GAP_PX = 21;   // header to plate: with the header at its usual height, the plate is 84px down
+function syncMenuTop() {
+    const header = document.getElementById('header');
+    if (!header) return;
+    document.documentElement.style.setProperty('--menu-top', `${Math.round(header.offsetTop + header.offsetHeight + MENU_GAP_PX)}px`);
+}
+
 export function setupLayout() {
     window.addEventListener('resize', syncMenuInert);
     window.addEventListener('resize', syncViewInsets);
-    // Panel sizes can change without a resize (the header's text wrapping once the font loads).
-    new ResizeObserver(syncViewInsets).observe(document.getElementById('header'));
+    // Panel sizes can change without a resize (the header's text wrapping once the font loads, or
+    // the visitor enlarging text).
+    new ResizeObserver(() => {
+        syncMenuTop();
+        syncViewInsets();
+    }).observe(document.getElementById('header'));
+    syncMenuTop();
     syncViewInsets();
 }

@@ -1,0 +1,23 @@
+{
+  "choice": "add",
+  "claim": null,
+  "field": null,
+  "id": "gap--AlSat-Nano",
+  "kind": "new-entry",
+  "note": "",
+  "object": "AlSat-Nano",
+  "suggestion": {
+    "description": "AlSat-Nano was a joint UK-Algerian mission to build and operate a 3U CubeSat, launched in 2016. The project was designed to train Algerian students, drawing on UK engineering experience.",
+    "launch_year": "2016",
+    "model": "/models/cubesat.glb (as UKube-1)",
+    "orbit": "illustrative Sun-synchronous orbit (a_km 7,058, i 98.2)",
+    "ou_involvement": "The OU provided the C3D2 camera payload, based on the C3D camera flown on UKube-1. It took pictures of the Earth's surface while advancing the technology readiness of commercial camera sensors, and also monitored the CubeSat's deployable AstroTube boom.",
+    "parent": "Earth",
+    "size_m": "0.34",
+    "status": "Complete",
+    "type": "mission"
+  },
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:59:48.237Z",
+  "verdict": null
+}

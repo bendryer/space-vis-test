@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "radius_km 0.2524",
+  "field": "radius_km",
+  "id": "Bennu--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Bennu",
+  "suggestion": [
+    {
+      "f": "radius_km",
+      "from": "0.2524",
+      "to": "0.282"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:12.616Z",
+  "verdict": "fix"
+}

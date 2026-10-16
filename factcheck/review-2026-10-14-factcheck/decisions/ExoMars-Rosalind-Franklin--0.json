@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"co-principal investigator for its PanCam camera system\"",
+  "field": "ou_involvement",
+  "id": "ExoMars-Rosalind-Franklin--0",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars Rosalind Franklin",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "serving as co-principal investigator for its PanCam camera system",
+      "to": "serving as deputy principal investigator for its PanCam camera system"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:48.983Z",
+  "verdict": "fix"
+}

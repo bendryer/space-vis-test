@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "UK spelling.",
+  "field": "description",
+  "id": "AKARI--0",
+  "kind": "claim",
+  "note": "",
+  "object": "AKARI",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "catalogs",
+      "to": "catalogues"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:23.704Z",
+  "verdict": "fix"
+}

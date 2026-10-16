@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "The text is a bit wordy and could be snappier without becoming chatty. \"OU\" is fine instead of \"the Open University\" each time. Could we write in the first person (\"We do abc. Our researchers discovered xyz\")?",
+  "field": "style",
+  "id": "General-comments--0",
+  "kind": "claim",
+  "note": "OU throughout, consider where things could be made snappier , Make suggestions for how the first person could be implemented, i like the idea.",
+  "object": "General comments",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:47:00.571Z",
+  "verdict": "unv"
+}

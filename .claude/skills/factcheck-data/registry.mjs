@@ -39,6 +39,8 @@ function record(dir) {
     const prev = reg.objects[name] || reg.objects[o.n] || { claims: [] };
     const entry = { renamedFrom: [...new Set([...(prev.renamedFrom || []), ...(name !== o.n ? [o.n] : [])])], lastChecked: date, hashes: {}, claims: [] };
     o.c.forEach((x, i) => {
+      // Style rewrites ("sty") aren't factual claims: the registry doesn't track them.
+      if (x.v === 'sty') return;
       const key = `${o.n}#${i}`;
       const d = decisions[`${slug(o.n)}--${i}`];
       let status;

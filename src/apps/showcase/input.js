@@ -64,8 +64,8 @@ export function setupInput() {
 
     window.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        // The credits dialog closes itself on Escape; leave the scene alone.
-        if (document.getElementById('credits-dialog').open) return;
+        // The credits and launch dialogs close themselves on Escape; leave the scene alone.
+        if (document.getElementById('credits-dialog').open || document.getElementById('launch-dialog')?.open) return;
         if (menuSheetOpen) { closeMenuSheet({ returnFocus: true }); return; }
         engine.hurry();
         if (cinematicActive) { stopCinematicMode(); return; }

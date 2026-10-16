@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"Led by NASA with international partners\"",
+  "field": "description",
+  "id": "I-MIM--0",
+  "kind": "claim",
+  "note": "",
+  "object": "I-MIM",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "is a proposed orbiter, led by NASA with international partners, that would use radar",
+      "to": "is a proposed orbiter, planned by the space agencies of Canada, the USA, Japan, Italy and the Netherlands, that would use radar"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:38:36.365Z",
+  "verdict": "bad"
+}

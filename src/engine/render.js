@@ -6,16 +6,17 @@ import { advanceMotion, clock, heldMotionTime, motionTime, simulatedDate, timeSc
 import { attemptToLand, centreSurfaceOn, pendingLanders } from './landers.js';
 import { camera, renderer } from './scene.js';
 import { celestialMap } from './state.js';
-import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition, lissajousOffset } from './orbits.js';
-import { getSuborbitalPosition, refreshOrbitLine, sunEffect, updateNearLines, updateTrajectoryLines } from './bodies.js';
+import { faceParent, getDaysSinceJ2000, getKeplerPosition, getTrajectoryPosition, librationOffset } from './orbits.js';
+import { getSuborbitalPosition, refreshOrbitLine, settleLines, sunEffect, updateNearLines, updateTrajectoryLines } from './bodies.js';
 import { view } from './scale.js';
 import { updateMissionAttitude } from './motion.js';
 import { plannedMaterials, revealNextModel, updateModelDetail } from './models.js';
-import { selectedObject, updateCamera, updateViewOffset } from './camera.js';
+import { getViewSubject, updateCamera, updateViewOffset } from './camera.js';
 import { updateSelectionSpot, updateSunShadow } from './lighting.js';
 import { updateVisibility } from './visibility.js';
 import { uploadNextTexture } from './gpu.js';
 import { drawScene } from './draw.js';
+import { isChangingScale, stepScaleChange } from './scale-change.js';
 
 let animFrameCounter = 0;
 
@@ -153,6 +154,8 @@ export function animate() {
     const days = getDaysSinceJ2000(simulatedDate);
 
     if (pendingLanders.length > 0) attemptToLand();
+    stepScaleChange(dt);   // sizes and orbits part way to another scale mode, before anything is placed
+    settleLines();         // after one, its lines redrawn in full a few at a time
 
     plannedMaterials.forEach(mat => { mat.uniforms.uTime.value = elapsedTime; });
 
@@ -181,10 +184,10 @@ export function animate() {
             _tempVec1.copy(body).normalize().multiplyScalar(data.lagrange.offset);
             group.position.copy(body).add(_tempVec1);
             obj.mesh.rotation.set(0, Math.atan2(-body.z, body.x), 0);
-        } else if (data.orbit_type === 'lissajous') {
+        } else if (data.orbit_type === 'libration') {
             const p = celestialMap.get(data.parent);
             if (p) {
-                lissajousOffset(data.orbit, days, _tempVec1).applyQuaternion(p.mesh.quaternion);
+                librationOffset(data.orbit, days, _tempVec1).applyQuaternion(p.mesh.quaternion);
                 group.position.copy(p.group.position).add(_tempVec1);
             }
         } else if (data.orbit_type === 'suborbital') {
@@ -257,10 +260,13 @@ export function animate() {
     updateSelectionSpot(dt);
     for (const hook of frameHooks) hook(dt);
     if (view.relative) {
-        // True scale: orbit lines, and the ground under a lander, held precise up close.
+        // True scale: orbit lines, and the ground under a lander, held precise up close. The ground
+        // under what the view is on: in a flight, the lander left until the camera is nearer the
+        // one it's going to.
         updateNearLines(camera.position, days);
-        const shown = selectedObject && celestialMap.get(selectedObject.userData.name);
-        if (shown?.data.orbit_type === 'landed') centreSurfaceOn(shown);
+        const subject = getViewSubject();
+        const shown = subject && celestialMap.get(subject.userData.name);
+        if (shown?.data.orbit_type === 'landed' && !isChangingScale()) centreSurfaceOn(shown);
     }
     // Loops and rays hold still under reduced motion; the surface keeps its slow churn.
     if (sunEffect) sunEffect.update(elapsedTime, camera, { strandsTime: prefersReducedMotion.matches ? 0 : elapsedTime });

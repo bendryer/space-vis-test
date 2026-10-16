@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "The 3D model is wrong: it looks more like two Athena spacecraft stuck end to end than the real design.",
+  "field": "model",
+  "id": "NewAthena--1",
+  "kind": "claim",
+  "note": "",
+  "object": "NewAthena",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:52:58.110Z",
+  "verdict": "unv"
+}

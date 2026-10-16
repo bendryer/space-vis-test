@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "UKube-1--0",
+  "kind": "claim",
+  "note": "",
+  "object": "UKube-1",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Compact CMOS Camera Demonstrator (C3D) won one of only three science payload slots on UKube-1, the UK Space Agency’s first CubeSat. Launched in July 2014, its three cameras made the first in-orbit demonstration of a European 0.18-micron CMOS imaging technology. Radiation testing showed the sensor degrading much like a CCD, along with effects unique to CMOS such as single-event upsets, and the data has since informed the design of more radiation-tolerant space CMOS sensors."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:50.891Z",
+  "verdict": "sty"
+}

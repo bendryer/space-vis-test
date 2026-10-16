@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Saturn--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Saturn",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We helped calibrate Cassini’s Cosmic Dust Analyser and studied the composition of dust around Saturn. One of our scientists, John Zarnecki, led the Surface Science Package on the Huygens probe, which landed on Titan, Saturn’s largest moon."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:16.889Z",
+  "verdict": "sty"
+}

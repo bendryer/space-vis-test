@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "MSL-Curiosity--0",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our academics are on Curiosity’s science and operations teams, focusing on noble gases and on how Martian rocks reacted with ancient water, which bears on whether Mars was habitable. Others combine the rover’s weather data with ExoMars Trace Gas Orbiter observations to model Mars’s dust and water cycles."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:11.995Z",
+  "verdict": "sty"
+}

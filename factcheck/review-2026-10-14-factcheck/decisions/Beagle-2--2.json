@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Beagle-2--2",
+  "kind": "claim",
+  "note": "",
+  "object": "Beagle 2",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Beagle 2 was conceived and led by our own Colin Pillinger, and we designed its Gas Analysis Package (GAP): a miniaturised mass spectrometer with twelve ovens, built to detect isotopic signs of past life in Martian soil. Fitting a laboratory-scale instrument into a probe the size of a dinner plate took major feats of miniaturisation. Our scientists also worked on its Environmental Sensor Suite, which was to measure the weather and look for dust devils. Contact was lost after the 2003 landing, but the lessons learned informed later landers, including ExoMars."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:49:10.728Z",
+  "verdict": "sty"
+}

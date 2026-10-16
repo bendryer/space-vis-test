@@ -22,8 +22,49 @@ const MAX_SLICES = 5;
 const _cameraPos = new THREE.Vector3();
 const _objPos = new THREE.Vector3();
 
+// --- WORLD MATRICES ---
+// three.js brings every object's world matrix up to date before it draws (scene.updateMatrixWorld),
+// hidden ones too: most of the 800 to 900 objects in the scene are the meshes inside models'
+// detail levels, and most of those are hidden (the level not shown, or a craft too small to draw).
+// So it's done here, as three.js does, except inside a detail level (models.js marks them) that is
+// hidden or under something hidden: that's marked to be worked out in full when it's next shown.
+// Everything else is kept up to date as before, shown or not, as the engine reads the matrices of
+// hidden objects (a modelled craft's own mesh is hidden while its model shows). Anything that wants
+// a hidden level's insides works them out itself (updateMatrixWorld(true), updateWorldMatrix).
+scene.matrixWorldAutoUpdate = false;
+const plainUpdate = THREE.Object3D.prototype.updateMatrixWorld;
+const shown = [];   // what was brought up to date this frame
+function updateShown(object, force, hidden) {
+    hidden = hidden || !object.visible;
+    if (hidden && object.userData.detailLevel) { object.matrixWorldNeedsUpdate = true; return; }
+    if (object.updateMatrixWorld !== plainUpdate) {   // its own rules (a camera): three.js's way, for all of it
+        object.updateMatrixWorld(force);
+        object.traverse(o => shown.push(o));
+        return;
+    }
+    shown.push(object);
+    if (object.matrixAutoUpdate) object.updateMatrix();
+    if (object.matrixWorldNeedsUpdate || force) {
+        // The scene's own flag is off only to keep three.js from doing all this again: its matrix
+        // (which carries True scale's shift to the camera) is always worked out.
+        if (object.matrixWorldAutoUpdate === true || object === scene) {
+            if (object.parent === null) object.matrixWorld.copy(object.matrix);
+            else object.matrixWorld.multiplyMatrices(object.parent.matrixWorld, object.matrix);
+        }
+        object.matrixWorldNeedsUpdate = false;
+        force = true;
+    }
+    const children = object.children;
+    for (let i = 0, l = children.length; i < l; i++) updateShown(children[i], force, hidden);
+}
+function updateSceneMatrices() {
+    shown.length = 0;
+    updateShown(scene, false, false);
+}
+
 export function drawScene() {
     if (!view.relative) {
+        updateSceneMatrices();
         renderer.render(scene, camera);
         return;
     }
@@ -38,6 +79,7 @@ export function drawScene() {
     const { autoClear } = renderer;
     const shadowsAuto = renderer.shadowMap.autoUpdate;
     const { background } = scene;   // a colour background clears on every render: first slice only
+    updateSceneMatrices();
     for (let i = slices - 1; i >= 0; i--) {
         camera.near = near * Math.pow(ratio, i);
         camera.far = i === slices - 1 ? far : near * Math.pow(ratio, i + 1);
@@ -47,7 +89,6 @@ export function drawScene() {
             renderer.clearDepth();
             renderer.shadowMap.autoUpdate = false;
             scene.background = null;
-            scene.matrixWorldAutoUpdate = false;   // the first slice brought them up to date
             drawSky(false);
         }
         renderer.render(scene, camera);
@@ -55,7 +96,6 @@ export function drawScene() {
     renderer.autoClear = autoClear;
     renderer.shadowMap.autoUpdate = shadowsAuto;
     scene.background = background;
-    scene.matrixWorldAutoUpdate = true;
     drawSky(true);
 
     camera.near = near;
@@ -65,17 +105,16 @@ export function drawScene() {
     camera.updateMatrixWorld();
     // Back where the rest of the engine (picking, projections) expects everything. The shift was a
     // translation of the scene alone, so it's added back to each world matrix directly: much
-    // cheaper than working them all out again.
+    // cheaper than working them all out again. Only those worked out this frame were shifted (a
+    // hidden level's insides weren't).
     scene.position.set(0, 0, 0);
     scene.updateMatrix();
-    scene.traverse(unshift);
-}
-
-function unshift(object) {
-    const e = object.matrixWorld.elements;
-    e[12] += _cameraPos.x;
-    e[13] += _cameraPos.y;
-    e[14] += _cameraPos.z;
+    for (let i = 0; i < shown.length; i++) {
+        const e = shown[i].matrixWorld.elements;
+        e[12] += _cameraPos.x;
+        e[13] += _cameraPos.y;
+        e[14] += _cameraPos.z;
+    }
 }
 
 // A share of the gap between the camera and the nearest surface or craft drawn. Positions come
@@ -85,6 +124,7 @@ function nearPlane() {
     let gap = Infinity;
     celestialMap.forEach(obj => {
         if (!obj.group.visible) return;
+        if (!obj.mesh.visible) obj.mesh.updateWorldMatrix(true, false);   // not kept up to date while hidden
         _objPos.setFromMatrixPosition(obj.mesh.matrixWorld);
         gap = Math.min(gap, camera.position.distanceTo(_objPos) - getVisualRadius(obj));
     });

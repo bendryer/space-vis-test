@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Ryugu was Hayabusa2’s target, so the OU information is the same as for that mission. Are separate entries needed?",
+  "field": "ou_involvement",
+  "id": "Ryugu--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ryugu",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The OU's oxygen isotope laboratory is one of the international groups analysing samples of Ryugu returned by JAXA's Hayabusa2 mission (see Hayabusa2)."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:02.651Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "The 3D model shows the moment the Mio orbiter is released; later the MOSIF sunshield is released and the MPO flies free. Reply on Teams: the model was likely based on an artist’s impression; fine for this purpose, but the caption could explain it.",
+  "field": "description",
+  "id": "BepiColombo--2",
+  "kind": "claim",
+  "note": "",
+  "object": "BepiColombo",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "magnetic field to date.",
+      "to": "magnetic field to date. The model shows the moment JAXA's Mio orbiter is released; after that, the MOSIF sunshield separates and ESA's Mercury Planetary Orbiter (MPO) flies free."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:51:45.428Z",
+  "verdict": "fix"
+}

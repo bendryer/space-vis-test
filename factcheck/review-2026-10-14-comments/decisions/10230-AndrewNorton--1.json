@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "10230-AndrewNorton--1",
+  "kind": "claim",
+  "note": "",
+  "object": "10230 AndrewNorton",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Andrew Norton, formerly a Professor at the Open University. Its official naming citation reads: “Andrew Norton (b. 1964) is an English astrophysicist at the Open University where he led major teaching and outreach initiatives, and carried out research into the time-domain astrophysics of compact binary stars. He led the SuperWASP Variable Stars citizen science project, supervised numerous Ph.D. students and won the RAS Higher Education Award.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:58:05.056Z",
+  "verdict": "fix"
+}

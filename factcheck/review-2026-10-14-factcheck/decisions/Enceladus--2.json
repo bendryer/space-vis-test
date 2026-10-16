@@ -1,0 +1,19 @@
+{
+  "choice": "custom",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Enceladus--2",
+  "kind": "claim",
+  "note": "remove name, just \"OU planetary scientists sat on\"",
+  "object": "Enceladus",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our planetary scientist Rachael Hamp sat on ESA’s Expert Committee that, in 2024, recommended Enceladus as the target of ESA’s next large mission: an orbiter and lander to search for signs of life, for launch in the early 2040s."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:46:34.797Z",
+  "verdict": "sty"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "keep",
+  "claim": "Heading \"Open University Involvement\" above the OU text",
+  "field": "details panel heading",
+  "id": "General--0",
+  "kind": "claim",
+  "note": "",
+  "object": "General",
+  "suggestion": [
+    {
+      "f": "entry",
+      "from": "Open University Involvement",
+      "to": "Our involvement"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T06:57:41.410Z",
+  "verdict": "sty"
+}

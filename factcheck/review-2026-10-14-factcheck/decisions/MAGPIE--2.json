@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Volatile Analyser in the \"Lunar Volatiles Science (LVS) payload\"",
+  "field": "ou_involvement",
+  "id": "MAGPIE--2",
+  "kind": "claim",
+  "note": "",
+  "object": "MAGPIE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "Lunar Volatiles Science (LVS) payload",
+      "to": "Lunar Volatiles Scout (LVS) drill"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:42.212Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "AstrobiologyOU has no active research on Ganymede, as the text suggests.",
+  "field": "ou_involvement",
+  "id": "Ganymede--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ganymede",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The Open University's Centre for Electronic Imaging developed and tested the image sensor in the JANUS camera on ESA's JUICE mission, which will study Ganymede from orbit."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:54:56.177Z",
+  "verdict": "bad"
+}

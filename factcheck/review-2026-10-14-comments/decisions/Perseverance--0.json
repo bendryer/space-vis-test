@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "More than one OU researcher was part of the group, and it did not advise on which samples were collected (that was always the Perseverance team’s job). It advised on what happened next.",
+  "field": "ou_involvement",
+  "id": "Perseverance--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Perseverance",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "An Open University researcher is part of the international NASA/ESA Mars Sample Return Campaign Science Group advising on which samples collected by Perseverance in Jezero Crater should be prioritised for return to Earth.",
+      "to": "Open University researchers were part of the NASA/ESA Mars Sample Return Campaign Science Group and the planetary protection efforts, planning how best to return the samples collected by Perseverance in Jezero Crater and analyse them once they are back on Earth."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:53:57.846Z",
+  "verdict": "bad"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Roman \"will provide\"…; status Launched",
+  "field": "description",
+  "id": "Roman--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Roman",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "The Nancy Grace Roman Space Telescope will provide",
+      "to": "The Nancy Grace Roman Space Telescope, launched on 30 August 2026, will provide"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T08:05:01.322Z",
+  "verdict": "fix"
+}

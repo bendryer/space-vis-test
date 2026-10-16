@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Spitzer--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Spitzer",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our scientists analyse Spitzer’s archived light curves to study the atmospheres and orbits of transiting exoplanets, and use the data to teach infrared astronomy and the search for habitable worlds. The work also helps choose targets for new missions such as Ariel."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:08.081Z",
+  "verdict": "sty"
+}

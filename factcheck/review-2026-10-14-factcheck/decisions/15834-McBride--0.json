@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Neil McBride, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "15834-McBride--0",
+  "kind": "claim",
+  "note": "",
+  "object": "15834 McBride",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Neil McBride, [TO ADD: OU connection]",
+      "to": "named after Neil McBride, formerly a lecturer at the OU and co-editor of its textbook An Introduction to the Solar System"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:47:19.340Z",
+  "verdict": "fix"
+}

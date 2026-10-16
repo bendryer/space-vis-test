@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Ask Mark Fox-Powell about science involvement in future icy-moon missions. Ben has asked Mark and Rachael.",
+  "field": "ou_involvement",
+  "id": "JUICE--0",
+  "kind": "claim",
+  "note": "",
+  "object": "JUICE",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:55:02.617Z",
+  "verdict": "ok"
+}

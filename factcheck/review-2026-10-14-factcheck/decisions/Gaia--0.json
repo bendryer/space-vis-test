@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Gaia--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Gaia",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Before launch, our Centre for Electronic Imaging (CEI) modelled how radiation damage would trap charge in Gaia’s CCDs, and we’ve since analysed its in-flight radiation data for the mission’s data processing. Gaia’s detectors turned out less damaged than ground tests predicted, a puzzle we’re still investigating to improve how future missions are tested. Our PhD students use Gaia’s catalogues to study star clusters and binary stars, our researchers use its alerts to find transient objects, and students on our S818 Space Science module follow up Gaia targets with our remote telescope in Tenerife."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:16:01.073Z",
+  "verdict": "sty"
+}

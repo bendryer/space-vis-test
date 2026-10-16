@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "UK spelling.",
+  "field": "description",
+  "id": "Earth-Sun-L1--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Earth-Sun L1",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "1.5 million kilometers",
+      "to": "1.5 million kilometres"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:56:32.829Z",
+  "verdict": "fix"
+}

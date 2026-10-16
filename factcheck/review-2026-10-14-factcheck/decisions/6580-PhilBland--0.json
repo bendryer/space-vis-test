@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Philip Bland, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "6580-PhilBland--0",
+  "kind": "claim",
+  "note": "",
+  "object": "6580 PhilBland",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Philip Bland, [TO ADD: OU connection]",
+      "to": "named after Philip Bland, who was the OU’s curator of meteorites and did his PhD there"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:29.138Z",
+  "verdict": "fix"
+}

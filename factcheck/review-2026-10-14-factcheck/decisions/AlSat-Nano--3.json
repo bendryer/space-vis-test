@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "AlSat-Nano--3",
+  "kind": "claim",
+  "note": "",
+  "object": "AlSat-Nano",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We provided AlSat-Nano’s C3D2 camera, a successor to the C3D camera on UKube-1. Its three cameras imaged the Earth, tested commercial camera sensors in space and watched the CubeSat’s AstroTube boom unfold, and it also served as a remote experiment for our students in the Open Science Laboratory."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:44:49.258Z",
+  "verdict": "sty"
+}

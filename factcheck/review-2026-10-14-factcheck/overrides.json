@@ -1,0 +1,9 @@
+{
+ "artifact": "https://claude.ai/artifact/P6qTwpCfQS6sBV6veJdUQ2",
+ "renames": {},
+ "candidates": {},
+ "claims": {
+  "11469 Rozitis#0": { "status": "user-supplied", "note": "PhD and postdoctoral research at the OU (about 2007 to 2023): reviewer's knowledge." },
+  "DART#2": { "status": "corrected", "note": "OU text written from Murphy et al. 2023 (PSJ, VLT/MUSE Dimorphos ejecta; Simon F. Green, OU, co-author). Simon may want to add his other DART/Hera work." }
+ }
+}

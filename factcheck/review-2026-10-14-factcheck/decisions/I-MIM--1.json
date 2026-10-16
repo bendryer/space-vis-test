@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU leads analysis of the \"CHROMA-D\" detector",
+  "field": "ou_involvement",
+  "id": "I-MIM--1",
+  "kind": "claim",
+  "note": "",
+  "object": "I-MIM",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "The OU is developing a combined visible-infrared imager, with a detector made by Teledyne e2v, for future Mars missions such as I-MIM and ESA’s LightShip-1. It can tell water ice from carbon dioxide ice on the surface. In December 2025 the UK Space Agency awarded the OU £1.2 million for the next phase."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:38:38.167Z",
+  "verdict": "bad"
+}

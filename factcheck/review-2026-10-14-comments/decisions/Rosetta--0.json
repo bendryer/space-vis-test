@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "After the sentence on the orbiter, add that a lander was deployed to study the surface in situ.",
+  "field": "description",
+  "id": "Rosetta--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Rosetta",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "as it travelled through the inner Solar System.",
+      "to": "as it travelled through the inner Solar System. It also deployed a lander, Philae, to study the surface in situ, providing ground truth for the orbiter's measurements."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:54:24.613Z",
+  "verdict": "fix"
+}

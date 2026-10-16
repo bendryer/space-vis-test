@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Bennu--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Bennu",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We helped choose where OSIRIS-REx sampled Bennu, and we’re analysing the material it brought back to Earth (see OSIRIS-REx)."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:24.387Z",
+  "verdict": "sty"
+}

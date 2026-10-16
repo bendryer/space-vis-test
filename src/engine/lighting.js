@@ -6,7 +6,7 @@ import { activeSystem } from './visibility.js';
 import { camera, scene } from './scene.js';
 import { celestialMap } from './state.js';
 import { view } from './scale.js';
-import { controls, getFocusPoint, getSystemRadius, getVisualRadius, isTracking, isTransitioning, selectedObject } from './camera.js';
+import { controls, getFocusPoint, getSystemRadius, getViewSubject, getVisualRadius, isTracking, isTransitioning, selectedObject } from './camera.js';
 
 const _sunPos = new THREE.Vector3(0, 0, 0);
 const _UP = new THREE.Vector3(0, 1, 0);
@@ -145,10 +145,12 @@ export function updateSelectionSpot(dt) {
     _spotToSun.subVectors(_sunPos, selectionSpot.target.position).normalize();
     if (spotSubject.userData.orbit_type === 'landed' && parent) {
         // A lander: from straight above, away from the body it sits on. Brightest at night,
-        // fading to a faint fill as its ground turns to face the Sun, and full strength again
-        // when another body (Earth in a lunar eclipse) shades it.
+        // fading to a faint fill through twilight, down by the time the Sun is up, and full
+        // strength again when another body (Earth in a lunar eclipse) shades it. Once the Sun
+        // was above the horizon it faded until 17° up, and in a low Sun outshone it on the
+        // ground (1.2 against 0.35 at 7°), washing out the lander's long shadow round its feet.
         _spotUp.subVectors(selectionSpot.target.position, _spotParent).normalize();
-        let daylight = THREE.MathUtils.smoothstep(_spotUp.dot(_spotToSun), -0.1, 0.3);
+        let daylight = THREE.MathUtils.smoothstep(_spotUp.dot(_spotToSun), -0.1, 0);
         daylight *= 1 - getSunOcclusion(selectionSpot.target.position, _spotToSun, parent);
         spotGoal = THREE.MathUtils.lerp(SPOT_INTENSITY_NIGHT, SPOT_INTENSITY_DAY, daylight);
     } else {
@@ -213,26 +215,49 @@ const _shadowX = new THREE.Vector3();
 const _shadowY = new THREE.Vector3();
 const _shadowZ = new THREE.Vector3();
 const _ORIGIN = new THREE.Vector3();
+const _shadowAnchor = new THREE.Vector3();
+const _shadowCentre = new THREE.Vector3();
 let shadowSystem = null;
 let shadowSystemReach = 0;
 const SHADOW_DEPTH_STEPS = 2 ** 24; // the shadow map's depth resolution, about (float32 fragment depth)
 
-// True scale: the body whose shadow can fall on what's shown (the selection itself if it's a
-// body, else the body it orbits or stands on), or the system's own body. Its centre and radius.
+// The body whose shadow can fall on what's shown: the selection itself if it's a body, else the
+// body it orbits or stands on (null if that isn't a solid body).
+function nearestSurfaceBody(shown) {
+    let body = shown;
+    if (body && body.data.type === 'mission') body = celestialMap.get(body.data.parent) ?? null;
+    return body && SURFACE_TYPES.has(body.data.type) ? body : null;
+}
+
+// True scale: that body, or the system's own. Its centre and radius.
 const _casterCentre = new THREE.Vector3();
 function shadowCaster(shown) {
-    let caster = shown;
-    if (caster && caster.data.type === 'mission') caster = celestialMap.get(caster.data.parent) ?? null;
-    if (!caster || !SURFACE_TYPES.has(caster.data.type)) caster = shadowSystem;
+    const caster = nearestSurfaceBody(shown) ?? shadowSystem;
     caster.group.getWorldPosition(_casterCentre);
     return { centre: _casterCentre, radius: getVisualRadius(caster) };
 }
 
+// True scale, over a lander: how far towards the Sun the map reaches, in map half-widths. Not
+// past the planet, as for an orbiter: that made the map ~7,000 km deep at Mars, its depth steps
+// 0.4 m and its bias 0.8 m, as big as Beagle 2, whose shadows vanished (Curiosity's flickered).
+// The planet still shadows a lander at night: it casts from its back faces, so the ground that
+// hides the Sun is the ground beside the lander, within a few lander heights of it unless the Sun
+// is right on the horizon.
+const LANDER_SHADOW_DEPTH = 1000;
+
 export function updateSunShadow(dt) {
     const systemObj = activeSystem !== 'Sun' ? celestialMap.get(activeSystem) : null;
     const baseRad = systemObj ? (systemObj.data.radius || 1) : 1;
+    // Near the system's body, or near the body the selection is or stands on or orbits: in True
+    // scale the Moon is beyond Earth's reach, and its landers would get no shadows.
+    // What the view is on: during a flight, whichever end the camera is nearer (getViewSubject).
+    const subject = getViewSubject();
+    const shown = subject && subject.userData ? celestialMap.get(subject.userData.name) : null;
+    const nearBody = nearestSurfaceBody(shown);
     const inReach = systemObj
-        && camera.position.distanceTo(systemObj.group.position) < Math.max(baseRad * SUN_SHADOW_REACH, view.shadowReachMin);
+        && (camera.position.distanceTo(systemObj.group.position) < Math.max(baseRad * SUN_SHADOW_REACH, view.shadowReachMin)
+            || (nearBody && camera.position.distanceTo(nearBody.group.getWorldPosition(_casterCentre))
+                < getVisualRadius(nearBody) * SUN_SHADOW_REACH));
     // A new system starts dark: the light is aimed at it, so it can't keep lighting the last one.
     if (systemObj !== shadowSystem) {
         sunShadowBlend = 0;
@@ -252,25 +277,34 @@ export function updateSunShadow(dt) {
     shadowLight.intensity = SUN_SHADOW_INTENSITY * blend;
     shadowLight.shadow.autoUpdate = true;
 
-    // Cover the view at the target's distance (the circle round the screen, as the map's square
-    // turns with the Sun's direction), never less than the object on show.
-    const viewDistance = camera.position.distanceTo(controls.target);
+    // Cover the view at the distance of what it's on (the circle round the screen, as the map's
+    // square turns with the Sun's direction), never less than the object on show. That's the point
+    // looked at, except in a flight: that point swings out towards the destination, and a map fitted
+    // to it grew 100,000-fold while the camera was still beside the lander it was leaving.
+    const centre = isTransitioning && subject ? getFocusPoint(subject, _shadowCentre) : controls.target;
+    const viewDistance = camera.position.distanceTo(centre);
     const halfHeight = viewDistance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
     let half = Math.hypot(halfHeight, halfHeight * camera.aspect) * 1.05;
-    const shown = selectedObject && selectedObject.userData ? celestialMap.get(selectedObject.userData.name) : null;
     if (shown) half = Math.max(half, getVisualRadius(shown) * 1.5);
     half = Math.max(view.shadowHalfMin, Math.min(half, shadowSystemReach * 1.2));
     half = SUN_SHADOW_SIZE_STEP ** Math.ceil(Math.log(half) / Math.log(SUN_SHADOW_SIZE_STEP));
     const texel = (2 * half) / SUN_SHADOW_MAP_SIZE;
 
     // Snap the centre to whole texels along the shadow camera's own axes (as it will be aimed:
-    // looking back along the Sun's direction, with world up as up).
-    _vecToSun.subVectors(_sunPos, controls.target).normalize();
+    // looking back along the Sun's direction, with world up as up), measured from a point that
+    // moves with what's on show (the selection, else the system's body). Snapped in world
+    // coordinates, the grid landed somewhere new on a lander every frame as its planet moved
+    // (Mars covers some 400 m a frame, a million texels at a lander's scale), and its shadows
+    // crawled over it.
+    _vecToSun.subVectors(_sunPos, centre).normalize();
     _shadowBasis.lookAt(_vecToSun, _ORIGIN, _UP).extractBasis(_shadowX, _shadowY, _shadowZ);
-    _viewCenter.copy(controls.target);
+    if (subject) getFocusPoint(subject, _shadowAnchor);
+    else systemObj.group.getWorldPosition(_shadowAnchor);
+    _viewCenter.subVectors(centre, _shadowAnchor);
     const sx = _viewCenter.dot(_shadowX), sy = _viewCenter.dot(_shadowY);
     _viewCenter.addScaledVector(_shadowX, Math.round(sx / texel) * texel - sx)
-        .addScaledVector(_shadowY, Math.round(sy / texel) * texel - sy);
+        .addScaledVector(_shadowY, Math.round(sy / texel) * texel - sy)
+        .add(_shadowAnchor);
 
     // Deep enough to take in anything in the system between the Sun and the view (a moon
     // eclipsing its planet) and no deeper, keeping depth precise enough for small craft. In True
@@ -278,8 +312,9 @@ export function updateSunShadow(dt) {
     // reaches back only past the body nearest the view (the planet a craft orbits or stands on),
     // whose shadow is the one that falls on it, and no further behind the view than it covers.
     const local = view.shadowLocal ? shadowCaster(shown) : null;
-    const toward = local
-        ? local.centre.distanceTo(_viewCenter) + local.radius + half
+    const landed = local && shown && shown.data.orbit_type === 'landed';
+    const toward = landed ? half * LANDER_SHADOW_DEPTH
+        : local ? local.centre.distanceTo(_viewCenter) + local.radius + half
         : shadowSystemReach + _viewCenter.distanceTo(systemObj.group.position) + half;
     shadowLight.position.copy(_viewCenter).addScaledVector(_vecToSun, toward);
     shadowLight.target.position.copy(_viewCenter);
@@ -287,7 +322,9 @@ export function updateSunShadow(dt) {
     shadowCamera.left = shadowCamera.bottom = -half;
     shadowCamera.right = shadowCamera.top = half;
     shadowCamera.near = half * 0.5;
-    shadowCamera.far = toward + (local ? half : Math.max(half, baseRad)) * 2;
+    // Over a lander as deep again beyond it: in a low Sun the ground the map covers runs far off
+    // behind it (cot(elevation) map widths), and its long shadow with it.
+    shadowCamera.far = landed ? toward * 2 : toward + (local ? half : Math.max(half, baseRad)) * 2;
     shadowCamera.updateProjectionMatrix();
     // Offsets that stop surfaces shadowing themselves, about a texel in size: enough to prevent
     // acne, small enough that a lander's shadow still meets its feet. In True scale at least a

@@ -15,6 +15,13 @@ export default defineConfig({
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         present: fileURLToPath(new URL('./present.html', import.meta.url)),
       },
+      // The code both pages share is mostly three.js and the engine: name its chunk for that, not
+      // for whichever shared module Rollup happens to meet first.
+      output: {
+        manualChunks(id) {
+          if (id.includes('/node_modules/three/') || id.includes('/src/engine/')) return 'engine';
+        },
+      },
     },
   },
   plugins: analyze ? [visualizer({ open: true, gzipSize: true })] : []

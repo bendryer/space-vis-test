@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Launch is targeted for no earlier than 2028; the app shows \"In Dev\".",
+  "field": "launch_year",
+  "id": "LUPEX--2",
+  "kind": "claim",
+  "note": "",
+  "object": "LUPEX",
+  "suggestion": [
+    {
+      "f": "launch_year",
+      "from": "In Dev",
+      "to": "2028"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:42.586Z",
+  "verdict": "fix"
+}

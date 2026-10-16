@@ -1,0 +1,13 @@
+{
+  "choice": "custom",
+  "claim": "The Europa text could include our ocean research, as we don’t only focus on the ice surfaces.",
+  "field": "ou_involvement",
+  "id": "Europa--0",
+  "kind": "claim",
+  "note": "Add a line",
+  "object": "Europa",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-14T19:54:47.971Z",
+  "verdict": "unv"
+}

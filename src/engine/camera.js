@@ -2,8 +2,8 @@
 // overview's slow turn, framing round the app's panels (view insets), and the visitor's steering.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, BODY_SELF_VIEW_FILL, BODY_VIEW_FILL, CAMERA_FLY_SPEED, CAMERA_ORBIT_SPEED, HURRY_FLIGHT_SECONDS, LANDER_VIEW_ANGLE, MIN_FLIGHT_DURATION, MISSION_MODEL_SIZE, MISSION_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, SOLAR_SYSTEM_VIEW_FILL, SUN_FRAME_RADII, USER_FLIGHT_SCALE, prefersReducedMotion } from './config.js';
-import { attemptToLand, onLanded } from './landers.js';
+import { AUTO_ORBIT_RESUME_MS, AUTO_ORBIT_SPEED, BODY_SELF_VIEW_FILL, BODY_VIEW_FILL, CAMERA_FLY_SPEED, CAMERA_ORBIT_SPEED, HURRY_FLIGHT_SECONDS, LANDER_VIEW_ANGLE, MIN_FLIGHT_DURATION, MISSION_MODEL_SIZE, GROUP_VIEW_FILL, MISSION_VIEW_FILL, SOLAR_SYSTEM_VIEW_ELEVATION, SOLAR_SYSTEM_VIEW_FILL, SUN_FRAME_RADII, USER_FLIGHT_SCALE, prefersReducedMotion } from './config.js';
+import { attemptToLand, onLanded, setLandingFirst } from './landers.js';
 import { camera, isInScene, renderer } from './scene.js';
 import { celestialMap } from './state.js';
 import { emitEngine } from './events.js';
@@ -25,6 +25,8 @@ let pendingLanderFocus = null;
 // orbit around a selected object. spin eases the turn in after the camera arrives.
 let solarSystemView = false;
 let solarSystemSpin = 0;
+// A group the overview is framed on instead (showOverview's `frame`): { names, insets }.
+let overviewFrame = null;
 const SOLAR_SYSTEM_SPIN_EASE_SECONDS = 2;
 
 // --- CAMERA CONTROL STATE ---
@@ -118,6 +120,11 @@ export function updateViewOffset(dt) {
         const vspan = getSelectionViewVSpan();
         goal = window.innerWidth / 2 - (span.left + span.right) / 2;
         goalY = window.innerHeight / 2 - (vspan.top + vspan.bottom) / 2;
+    } else if (solarSystemView && overviewFrame) {
+        // A framed group sits in the middle of the part of the screen it was given.
+        const { left, right, top, bottom } = overviewFrame.insets;
+        goal = (right - left) / 2;
+        goalY = (bottom - top) / 2;
     }
     const ease = 1 - Math.exp(-dt * 6);
     viewOffsetX += (goal - viewOffsetX) * ease;
@@ -210,6 +217,25 @@ function easeInOutCubic(x) {
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 }
 
+// Where the camera sits over a lander, from its focus point, at the motion clock's `time`: above
+// the ground, drifting slowly over it. It swings from side to side about the lander's vertical
+// (LANDER_SWING) while rising and falling between a steep and a low view (LANDER_TILT), at
+// periods that don't divide into each other, so the path over the lander keeps changing.
+const LANDER_SWING = 1.5;               // radians either way round
+const LANDER_SWING_RATE = 0.2;          // radians of phase per second
+const LANDER_TILT = 10 * Math.PI / 180; // above and below LANDER_VIEW_ANGLE from the vertical
+const LANDER_TILT_RATE = 0.13;
+function landerViewOffset(mesh, focus, dist, time) {
+    const parentObj = celestialMap.get(mesh.userData.parent);
+    _tempVec3.set(0, 1, 0);
+    if (parentObj) _tempVec3.subVectors(focus, parentObj.mesh.getWorldPosition(_parentPos)).normalize();
+    const theta = Math.sin(time * LANDER_SWING_RATE) * LANDER_SWING;
+    const tilt = LANDER_VIEW_ANGLE + Math.sin(time * LANDER_TILT_RATE) * LANDER_TILT;
+    _localOffset.setFromSphericalCoords(dist, tilt, theta);
+    _tempQuat.setFromUnitVectors(_UP, _tempVec3);
+    return _localOffset.applyQuaternion(_tempQuat);
+}
+
 function getIdealCameraPosition(targetMesh, time, outPos) {
     getFocusPoint(targetMesh, _targetWorldPos);
     if (isNaN(_targetWorldPos.x)) {
@@ -221,18 +247,7 @@ function getIdealCameraPosition(targetMesh, time, outPos) {
     const dist = systemDistance + breathe;
 
     if (targetMesh.userData.orbit_type === 'landed') {
-        const parentName = targetMesh.userData.parent;
-        const parentObj = celestialMap.get(parentName);
-        _tempVec3.set(0, 1, 0);
-        if (parentObj) {
-            parentObj.mesh.getWorldPosition(_parentPos);
-            _tempVec3.subVectors(_targetWorldPos, _parentPos).normalize();
-        }
-        const theta = Math.sin(time * 0.2) * 1.5;
-        _localOffset.setFromSphericalCoords(dist, LANDER_VIEW_ANGLE, theta);
-        _tempQuat.setFromUnitVectors(_UP, _tempVec3);
-        _localOffset.applyQuaternion(_tempQuat);
-        outPos.copy(_targetWorldPos).add(_localOffset);
+        outPos.copy(_targetWorldPos).add(landerViewOffset(targetMesh, _targetWorldPos, dist, time));
     } else {
         const angle = time * CAMERA_ORBIT_SPEED;
         const offsetX = Math.sin(angle) * dist;
@@ -366,7 +381,38 @@ function routeAround(points, obstacles, waypointRadii, fallbackAxis) {
     return points;
 }
 
-function planFlightPath(from, to) {
+// A lander's camera sits just above the ground, so a straight path to or from it cuts through its
+// body. Flights there go round the body, clear of it, to above the lander, then come down along
+// the line the camera looks along at the end (and leave the same way). These are the points on
+// that line, from `end` outward, spaced by a constant ratio (CLIMB_RATIO) so the slow last stretch
+// is drawn as finely as the rest, up to where it's FLIGHT_WAYPOINT_RADII of the body's radius
+// from its centre. Empty when `mesh` isn't a landed object, or `end` is already that high. True
+// scale only: in Diagram mode the camera stands well off a lander and the plain path stays clear.
+const CLIMB_RATIO = 4;
+function surfaceClimb(mesh, end) {
+    if (!view.logFlights || !mesh || mesh.userData.orbit_type !== 'landed' || !isInScene(mesh)) return [];
+    const body = celestialMap.get(mesh.userData.parent);
+    if (!body) return [];
+    const focus = getFocusPoint(mesh, new THREE.Vector3());
+    const fromCentre = focus.clone().sub(body.group.getWorldPosition(new THREE.Vector3()));
+    const dir = new THREE.Vector3().subVectors(end, focus);
+    const d0 = dir.length();
+    if (!(d0 > 0)) return [];
+    dir.divideScalar(d0);
+    // A camera the visitor has steered down to the horizon leaves straight up instead.
+    if (dir.dot(fromCentre) < 0.1 * fromCentre.length()) dir.copy(fromCentre).normalize();
+    const b = fromCentre.dot(dir);
+    const c = fromCentre.lengthSq() - ((body.data.radius || 1) * FLIGHT_WAYPOINT_RADII) ** 2;
+    const top = -b + Math.sqrt(Math.max(b * b - c, 0));
+    if (!(top > d0 * 1.5)) return [];
+    const steps = Math.ceil(Math.log(top / d0) / Math.log(CLIMB_RATIO));
+    const points = [];
+    for (let k = 1; k <= steps; k++) points.push(focus.clone().addScaledVector(dir, d0 * (top / d0) ** (k / steps)));
+    return points;
+}
+
+// climbFrom, climbTo: surfaceClimb's points out from each end (or empty).
+function planFlightPath(from, to, climbFrom = [], climbTo = []) {
     // An end can sit inside an obstacle's bounding sphere, e.g. the camera just above Philae is
     // inside irregular Comet 67P's. Rather than ignore that obstacle, shrink it to just inside
     // the nearer end, so the path still can't cut in towards the body.
@@ -375,18 +421,25 @@ function planFlightPath(from, to) {
         return nearestEnd > o.radius * FLIGHT_CLIP_RADII ? o : { center: o.center, radius: nearestEnd / (FLIGHT_CLIP_RADII * 1.02) };
     });
 
-    const travel = new THREE.Vector3().subVectors(to, from);
+    // The routed stretch runs between the tops of the climbs.
+    const a = climbFrom.at(-1) ?? from;
+    const b = climbTo.at(-1) ?? to;
+    const travel = new THREE.Vector3().subVectors(b, a);
     const dist = travel.length();
     const dir = travel.clone().normalize();
     const arch = new THREE.Vector3(0, 1, 0);
     if (Math.abs(dir.dot(_UP)) > 0.9) arch.set(0, 0, 1);
     else arch.crossVectors(dir, _UP).cross(dir).normalize();
-    const mid = from.clone().lerp(to, 0.5).addScaledVector(arch, Math.min(dist * 0.15, view.flightArchMax));
+    const mid = a.clone().lerp(b, 0.5).addScaledVector(arch, Math.min(dist * 0.15, view.flightArchMax));
 
     // If the smoothed curve still grazes a body between waypoints, widen the detours and retry.
     let curve;
     for (const radii of [FLIGHT_WAYPOINT_RADII, FLIGHT_WAYPOINT_RADII * 1.25, FLIGHT_WAYPOINT_RADII * 1.6]) {
-        const points = routeAround([from.clone(), mid.clone(), to.clone()], obstacles, radii, arch);
+        const points = [
+            ...(climbFrom.length ? [from, ...climbFrom.slice(0, -1)] : []),
+            ...routeAround([a.clone(), mid.clone(), b.clone()], obstacles, radii, arch),
+            ...(climbTo.length ? [...climbTo.slice(0, -1).reverse(), to] : []),
+        ].map(p => p.clone());
         curve = new THREE.CatmullRomCurve3(points, false, 'centripetal');
         if (!findFirstClip(curve, obstacles)) break;
     }
@@ -397,55 +450,192 @@ function planFlightPath(from, to) {
 let flightPace = USER_FLIGHT_SCALE;
 export function setFlightPace(scale = USER_FLIGHT_SCALE) { flightPace = scale; }
 
-// A flight's length: in Diagram mode from the distance travelled; in True scale from the powers of
-// ten crossed (logFlightPlan), where startView and endView are the camera's distance from what it
-// looks at, at each end.
-const LOG_FLIGHT_FULL = 20; // the effort (logFlightPlan) at which a True-scale flight takes its full length
-function estimateFlightDuration(travelDist, startView, endView) {
+// A flight's length: in Diagram mode from the distance travelled; in True scale from its effort
+// (measurePath's, or before the path is planned logFlightEffort's estimate), where startView and
+// endView are the camera's distance from what it looks at, at each end.
+const LOG_FLIGHT_SHORT = 10; // a True-scale flight's effort at which it takes its shortest time
+const LOG_FLIGHT_FULL = 60;  // and its longest
+function estimateFlightDuration(travelDist, startView, endView, effort = null) {
     const flightScale = prefersReducedMotion.matches ? 0 : flightPace;
     const reach = view.logFlights
-        ? logFlightPlan(travelDist, startView, endView).effort / LOG_FLIGHT_FULL
+        ? ((effort ?? logFlightEffort(travelDist, startView, endView)) - LOG_FLIGHT_SHORT) / (LOG_FLIGHT_FULL - LOG_FLIGHT_SHORT)
         : travelDist / view.flightReach;
-    return Math.max((1.5 + Math.min(reach, 1.0) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
+    return Math.max((1.5 + THREE.MathUtils.clamp(reach, 0, 1) * 2.0) * flightScale, MIN_FLIGHT_DURATION);
 }
 
 // In True scale a flight crosses powers of ten (from the ISS to Neptune is 3.5 million units, from
-// the ISS to Earth 5), so it's timed on the logarithm of distance: the camera leaves its start and
-// closes on its destination each at a pace in proportion to how far it is from them (climbing out,
-// travelling, coming down). `a` and `b` are the camera's distance from what it looks at, at the
-// start and at the end; `effort` is the flight's total, in natural-log steps.
-let logFlight = null;
-function logFlightPlan(length, a, b) {
+// the ISS to Earth 5), so the camera moves at a speed in proportion to its clearance: its distance
+// from the nearest thing, whether what it left (plus how far it was looking, a), where it's going
+// (plus b), or the surface of a star, planet or moon. It climbs out and comes down by powers of
+// ten, cruises fast through empty space and slows as it skims round a planet. (Paced only on the
+// distance from the two ends, a hop between two landers on Mars swept round the planet at
+// thousands of km/s.) A flight's effort is the sum of distance over clearance along it, in
+// natural-log steps; for a straight flight past nothing it is:
+function logFlightEffort(length, a, b) {
     a = Math.max(a, 1e-9);
     b = Math.max(b, 1e-9);
-    const e1 = Math.log((length / 2 + a) / a);
-    return { length, a, b, e1, effort: e1 + Math.log((length / 2 + b) / b) };
+    return Math.log((length / 2 + a) / a) + Math.log((length / 2 + b) / b);
 }
-// The share of the path's length covered at share f of the effort.
-function logFlightShare(plan, f) {
-    const e = f * plan.effort;
-    const x = e <= plan.e1 ? plan.a * Math.expm1(e) : plan.length - plan.b * Math.expm1(plan.effort - e);
-    return THREE.MathUtils.clamp(x / plan.length, 0, 1);
+
+// Measures a planned path for True-scale pacing: its clearance and effort at parameter values
+// packed geometrically towards each of its points as well as evenly between them, so it's as
+// exact a metre from a lander as across the Solar System. (three.js's own arc-length table, in
+// even steps, was out by large factors where a short stretch meets a long one, and the camera
+// stalled and then lurched there.) a, b: the camera's distance from what it looks at at each end;
+// fromFocus, toFocus: those points. Turning counts too: the effort includes LOG_TURN_EFFORT per
+// radian the direction to either end turns through, since passing sideways to them (round a
+// planet, from one lander to another) swings the view however slowly the camera goes.
+const PATH_FINE = 48;  // samples in from each end of a stretch, from 1e-12 of it to half
+const PATH_EVEN = 64;  // and evenly through it
+const LOG_TURN_EFFORT = 4;
+const _turnA = new THREE.Vector3();
+const _turnB = new THREE.Vector3();
+function turnBetween(p, q, focus) {
+    _turnA.subVectors(p, focus);
+    _turnB.subVectors(q, focus);
+    return Math.atan2(_turnA.clone().cross(_turnB).length(), _turnA.dot(_turnB));
+}
+function measurePath(curve, a, b, fromFocus, toFocus) {
+    const n = curve.points.length - 1;
+    const params = new Set([0, 1]);
+    for (let i = 0; i < n; i++) {
+        for (let k = 0; k <= PATH_FINE; k++) {
+            const u = 0.5 * 10 ** (-12 * (1 - k / PATH_FINE));
+            params.add((i + u) / n).add((i + 1 - u) / n);
+        }
+        for (let j = 1; j < PATH_EVEN; j++) params.add((i + j / PATH_EVEN) / n);
+    }
+    const t = [...params].sort((x, y) => x - y);
+    const points = t.map(v => curve.getPoint(v));
+    const start = points[0], end = points[points.length - 1];
+    // A body an end sits on (a lander's, or Earth's under the ISS) is left to that end's distance.
+    const bodies = [];
+    celestialMap.forEach(obj => {
+        if (!BODY_TYPES.includes(obj.data.type)) return;
+        const center = obj.group.getWorldPosition(new THREE.Vector3());
+        const radius = obj.data.radius || 1;
+        if (start.distanceTo(center) < radius * FLIGHT_CLIP_RADII || end.distanceTo(center) < radius * FLIGHT_CLIP_RADII) return;
+        bodies.push({ center, radius });
+    });
+    a = Math.max(a, 1e-9);
+    b = Math.max(b, 1e-9);
+    const clearance = new Float64Array(t.length), effort = new Float64Array(t.length), along = new Float64Array(t.length);
+    const travelShare = new Float64Array(t.length); // of each step's effort, the share from distance (the rest from turning)
+    points.forEach((p, i) => {
+        let h = Math.min(a + p.distanceTo(start), b + p.distanceTo(end));
+        for (const o of bodies) h = Math.min(h, p.distanceTo(o.center) - o.radius);
+        clearance[i] = Math.max(h, 1e-9);
+    });
+    // Between samples the clearance is taken to change evenly with distance, so the effort there
+    // is a logarithm and the camera's speed never jumps.
+    for (let i = 1; i < t.length; i++) {
+        const step = points[i].distanceTo(points[i - 1]);
+        const h0 = clearance[i - 1], h1 = clearance[i];
+        const travel = Math.abs(h1 - h0) > 1e-9 * h0 ? step * Math.log(h1 / h0) / (h1 - h0) : step / h0;
+        const turn = LOG_TURN_EFFORT * Math.max(turnBetween(points[i - 1], points[i], fromFocus), turnBetween(points[i - 1], points[i], toFocus));
+        along[i] = along[i - 1] + step;
+        effort[i] = effort[i - 1] + travel + turn;
+        travelShare[i] = travel > 0 ? travel / (travel + turn) : 1;
+    }
+    return { t, clearance, effort, along, travelShare, length: along[t.length - 1], total: effort[t.length - 1] };
+}
+let flightPath = null;
+const LOG_LOOK_TURN = 0.3; // share of a True-scale flight's time the view takes to turn to its destination
+
+// The point at `e` of the path's effort, into out; returns the share of the path's length there.
+function pathPointAt(path, e, out) {
+    const { effort } = path;
+    let lo = 0, hi = effort.length - 1;
+    while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (effort[mid] <= e) lo = mid; else hi = mid;
+    }
+    const step = path.along[hi] - path.along[lo];
+    const h0 = path.clearance[lo], slope = step > 0 ? (path.clearance[hi] - h0) / step : 0;
+    const de = Math.max(e - effort[lo], 0) * path.travelShare[hi];
+    const x = Math.abs(slope) > 1e-9 ? h0 * Math.expm1(de * slope) / slope : de * h0;
+    const f = step > 0 ? THREE.MathUtils.clamp(x / step, 0, 1) : 0;
+    flightCurve.getPoint(path.t[lo] + (path.t[hi] - path.t[lo]) * f, out);
+    return (path.along[lo] + step * f) / path.length;
+}
+
+// Turns the view from direction a to direction b (unit vectors) by share w, into out: azimuth and
+// elevation about the camera's up, each in proportion. A turn of near 180 degrees has no
+// shortest way round, and a rotation about a×b swung about as that axis wandered, so the
+// azimuth's turn is kept to whichever way it went last frame (lookTurnPrev).
+let lookTurnPrev = null;
+const _lookNorth = new THREE.Vector3();
+const _lookEast = new THREE.Vector3();
+function turnLook(a, b, w, out) {
+    const up = camera.up;
+    _lookNorth.set(1, 0, 0);
+    if (Math.abs(up.x) > 0.9) _lookNorth.set(0, 0, 1);
+    _lookNorth.addScaledVector(up, -_lookNorth.dot(up)).normalize();
+    _lookEast.crossVectors(up, _lookNorth);
+    const azimuth = v => Math.atan2(v.dot(_lookEast), v.dot(_lookNorth));
+    const elevation = v => Math.asin(THREE.MathUtils.clamp(v.dot(up), -1, 1));
+    const fromAz = azimuth(a);
+    let turn = THREE.MathUtils.euclideanModulo(azimuth(b) - fromAz + Math.PI, 2 * Math.PI) - Math.PI;
+    if (lookTurnPrev !== null) turn += 2 * Math.PI * Math.round((lookTurnPrev - turn) / (2 * Math.PI));
+    lookTurnPrev = turn;
+    const az = fromAz + turn * w;
+    const el = elevation(a) + (elevation(b) - elevation(a)) * w;
+    return out.copy(_lookNorth).multiplyScalar(Math.cos(az)).addScaledVector(_lookEast, Math.sin(az))
+        .multiplyScalar(Math.cos(el)).addScaledVector(up, Math.sin(el));
+}
+
+// In True scale the camera rides along with what it leaves (flightFrom: the object, and its focus
+// point at the start), handing over to what it flies to by the share of the path covered, so
+// neither slides away from it at the ends (the ISS moves 7.7 km/s; at Diagram scale the drift is
+// too small to matter and only the destination's is blended in).
+let flightFrom = null;
+const _fromDrift = new THREE.Vector3();
+const _lookFrom = new THREE.Vector3();
+const _lookTo = new THREE.Vector3();
+function getFromDrift() {
+    if (!flightFrom || !isInScene(flightFrom.mesh)) return _fromDrift.set(0, 0, 0);
+    return getFocusPoint(flightFrom.mesh, _fromDrift).sub(flightFrom.start);
+}
+
+// What the view is on: the selection, except during a flight from an object, when it's whichever
+// end the camera is nearer. Shadows and the ground under a lander are fitted to it (lighting.js,
+// landers.js). Fitted to the selection from the start of a flight, they were fitted to something
+// perhaps thousands of km away while the camera was still beside what it was leaving, and the
+// shadows there broke up as it left.
+const _subjectFrom = new THREE.Vector3();
+const _subjectTo = new THREE.Vector3();
+export function getViewSubject() {
+    if (!isTransitioning || !flightFrom || !isInScene(flightFrom.mesh) || flightFrom.mesh === selectedObject) return selectedObject;
+    if (!selectedObject) return flightFrom.mesh;
+    const fromGap = camera.position.distanceTo(getFocusPoint(flightFrom.mesh, _subjectFrom)) - getVisualRadius(celestialMap.get(flightFrom.mesh.userData.name));
+    const toGap = camera.position.distanceTo(getFocusPoint(selectedObject, _subjectTo)) - getVisualRadius(celestialMap.get(selectedObject.userData.name));
+    return fromGap < toGap ? flightFrom.mesh : selectedObject;
 }
 
 // arrivalTime: the motion-clock time destPos was computed for (the camera's slow orbit around
 // its target keeps moving, so flights aim for where it will be on arrival and hold that aim).
-// destView: the camera's distance from what it will look at on arrival.
-function initiateTransition(destPos, arrivalTime = null, destView = null) {
+// destView: the camera's distance from what it will look at on arrival. from, to: the objects
+// left and flown to, if any.
+function initiateTransition(destPos, { arrivalTime = null, destView = null, from = null, to = null } = {}) {
     transitionStartPos.copy(camera.position);
     transitionStartTarget.copy(controls.target);
+    flightFrom = from && isInScene(from) ? { mesh: from, start: getFocusPoint(from, new THREE.Vector3()) } : null;
 
-    flightCurve = planFlightPath(camera.position, destPos);
+    flightCurve = planFlightPath(camera.position, destPos, surfaceClimb(from, camera.position), surfaceClimb(to, destPos));
     _plannedDest.copy(destPos);
-    const length = flightCurve.getLength();
     const startView = camera.position.distanceTo(controls.target);
     const endView = destView ?? destPos.distanceTo(transitionEndTarget);
-    logFlight = view.logFlights ? logFlightPlan(length, startView, endView) : null;
+    const destFocus = to ? getFocusPoint(to, new THREE.Vector3()) : transitionEndTarget;
+    flightPath = view.logFlights ? measurePath(flightCurve, startView, endView, transitionStartTarget, destFocus) : null;
+    const length = flightPath ? flightPath.length : flightCurve.getLength();
+    lookTurnPrev = null;
 
     isTransitioning = true;
     transitionProgress = 0;
-    transitionDuration = estimateFlightDuration(length, startView, endView);
-    flightArrivalTime = arrivalTime ?? motionTime + transitionDuration;
+    transitionDuration = estimateFlightDuration(length, startView, endView, flightPath?.total);
+    // In True scale aim for the actual arrival time (the path can be much longer than the straight
+    // line the estimate used), so the camera's slow orbit carries on from there without a lurch.
+    flightArrivalTime = flightPath || arrivalTime === null ? motionTime + transitionDuration : arrivalTime;
 
     controls.enabled = false;
 }
@@ -487,7 +677,7 @@ export function flyTo(name) {
 
 function startFlight(mesh, data) {
     pendingLanderFocus = null;
-    if (reframePending) { afterReframe = () => startFlight(mesh, data); return; }
+    if (reframePending || scaleHold) { afterReframe = () => startFlight(mesh, data); return; }
 
     // A lander whose body hasn't loaded yet is parked off-scene (at the Sun's centre). Show its
     // details now, make sure its body loads, and fly there once it lands (see attemptToLand).
@@ -506,6 +696,8 @@ function startFlight(mesh, data) {
 
     releaseUserControl();
     solarSystemView = false;
+    overviewFrame = null;
+    const leaving = selectedObject;
     selectedObject = mesh;
     isTracking = false;
 
@@ -527,7 +719,7 @@ function startFlight(mesh, data) {
     const initTarget = new THREE.Vector3();
     getFocusPoint(mesh, initTarget);
 
-    initiateTransition(initIdealPos, arrivalTime, initIdealPos.distanceTo(initTarget));
+    initiateTransition(initIdealPos, { arrivalTime, destView: initIdealPos.distanceTo(initTarget), from: leaving, to: mesh });
     hasSelection = true;
     emitEngine('select', { data, waiting: false });
 }
@@ -556,7 +748,7 @@ export function deselect() {
     selectedObject = null;
     isTracking = false;
     isTransitioning = false;
-    controls.enabled = userControlEnabled;
+    controls.enabled = userControlEnabled && !scaleHold;
     hasSelection = false;
     settleArrival(false);
     emitEngine('deselect');
@@ -569,6 +761,9 @@ export function deselect() {
 // and no earlier.
 const UP_TURN_FAR = 12;  // no turn beyond this many focus distances from the lander
 const UP_TURN_NEAR = 3;  // fully turned inside this many
+// In True scale the approach crosses powers of ten at a steady pace, so the turn is spread over
+// the logarithm of the distance, from this many focus distances in (12 to 3 took half a second).
+const UP_TURN_FAR_LOG = 1000;
 const CAMERA_UP_EASE = 3; // per second: smooths a jump, e.g. going from one lander to another
 const _wantUp = new THREE.Vector3();
 const _upFocus = new THREE.Vector3();
@@ -581,7 +776,9 @@ function updateCameraUp(dt) {
         _wantUp.set(0, 1, 0).transformDirection(selectedObject.matrixWorld);
         getFocusPoint(selectedObject, _upFocus);
         const range = camera.position.distanceTo(_upFocus) / calculateFocusDistance(selectedObject);
-        let w = (UP_TURN_FAR - range) / (UP_TURN_FAR - UP_TURN_NEAR);
+        let w = view.logFlights
+            ? Math.log(UP_TURN_FAR_LOG / range) / Math.log(UP_TURN_FAR_LOG / UP_TURN_NEAR)
+            : (UP_TURN_FAR - range) / (UP_TURN_FAR - UP_TURN_NEAR);
         w = Math.min(Math.max(w, 0), 1);
         w = w * w * (3 - 2 * w);
         _upTurn.setFromUnitVectors(_UP, _wantUp);
@@ -606,8 +803,21 @@ function updateCameraUp(dt) {
 // slow turn. False when the selection's position isn't a number, and the frame is dropped.
 export function updateCamera(dt, elapsedTime) {
     if (reframePending) reframeNow();
+    if (!moveCamera(dt, elapsedTime)) return false;
+    // Which way is up is worked out once the camera has caught up with its subject. Before, in
+    // True scale, it was measured from where the camera was before following the lander's planet
+    // for the frame (Mars carries a lander some 330 m a frame), so the view never turned fully
+    // upright over a lander and rolled a little with every frame's length.
     updateCameraUp(dt);
+    camera.lookAt(controls.target);
+    return true;
+}
 
+function moveCamera(dt, elapsedTime) {
+    if (scaleHold) {
+        holdForScale(dt, elapsedTime);
+        return true;
+    }
     if (isTransitioning) {
         transitionProgress += dt / transitionDuration;
         if (transitionProgress >= 1.0) {
@@ -640,14 +850,38 @@ export function updateCamera(dt, elapsedTime) {
 
         // Follow the planned path; the destination keeps moving (the camera's slow orbit around
         // the target), so blend that drift in towards the end of the flight.
-        flightCurve.getPointAt(logFlight ? logFlightShare(logFlight, t) : t, camera.position);
-        const driftWeight = t * t * (3 - 2 * t);
-        camera.position.addScaledVector(_destDrift.subVectors(destPos, _plannedDest), driftWeight);
+        let share = t;
+        if (flightPath) share = pathPointAt(flightPath, t * flightPath.total, camera.position);
+        else flightCurve.getPointAt(t, camera.position);
+        _destDrift.subVectors(destPos, _plannedDest);
+        if (flightPath) {
+            // By the share of the path, not of the time: the camera closes on the destination
+            // by powers of ten, and a drift blended in by time would be left over at the end
+            // and swing the view in the last moments.
+            camera.position.addScaledVector(_destDrift, share);
+            camera.position.addScaledVector(getFromDrift(), 1 - share);
+        } else {
+            camera.position.addScaledVector(_destDrift, t * t * (3 - 2 * t));
+        }
 
-        let tLook = Math.min(transitionProgress / 0.2, 1.0);
+        // The view turns to face the destination early on, while the camera has hardly moved; in
+        // True scale over a longer share, as the camera hardly moves for longer.
+        let tLook = Math.min(transitionProgress / (flightPath ? LOG_LOOK_TURN : 0.2), 1.0);
         tLook = easeInOutCubic(tLook);
 
-        controls.target.lerpVectors(transitionStartTarget, destTarget, tLook);
+        // Turn the view from the start's direction to the destination's. Sliding the point looked
+        // at from one to the other whipped the view round in a frame or two when the start was
+        // much nearer than the destination (leaving a lander; in True scale, leaving anything).
+        _lookFrom.copy(transitionStartTarget).sub(camera.position);
+        if (flightPath) _lookFrom.add(_fromDrift);
+        _lookTo.subVectors(destTarget, camera.position);
+        const fromDist = _lookFrom.length(), toDist = _lookTo.length();
+        if (tLook < 1 && fromDist > 0 && toDist > 0) {
+            turnLook(_lookFrom.divideScalar(fromDist), _lookTo.divideScalar(toDist), tLook, _lookFrom);
+            controls.target.copy(camera.position).addScaledVector(_lookFrom, fromDist ** (1 - tLook) * toDist ** tLook);
+        } else {
+            controls.target.copy(destTarget);
+        }
         controls.update();
     }
     else if (selectedObject && isTracking) {
@@ -675,18 +909,7 @@ export function updateCamera(dt, elapsedTime) {
             const dist = systemDistance + breathe;
 
             if (selectedObject.userData.orbit_type === 'landed') {
-                const parentName = selectedObject.userData.parent;
-                const parentObj = celestialMap.get(parentName);
-                _tempVec3.set(0, 1, 0);
-                if (parentObj) {
-                    parentObj.mesh.getWorldPosition(_parentPos);
-                    _tempVec3.subVectors(_targetWorldPos, _parentPos).normalize();
-                }
-                const theta = Math.sin(elapsedTime * 0.2) * 1.5;
-                _localOffset.setFromSphericalCoords(dist, LANDER_VIEW_ANGLE, theta);
-                _tempQuat.setFromUnitVectors(_UP, _tempVec3);
-                _localOffset.applyQuaternion(_tempQuat);
-                _idealCamPos.copy(_targetWorldPos).add(_localOffset);
+                _idealCamPos.copy(_targetWorldPos).add(landerViewOffset(selectedObject, _targetWorldPos, dist, elapsedTime));
             } else {
                 const angle = elapsedTime * CAMERA_ORBIT_SPEED;
                 const offsetX = Math.sin(angle) * dist;
@@ -812,12 +1035,16 @@ export function updateCamera(dt, elapsedTime) {
 
 // Camera position, looking at the Sun, that fits every planet's whole orbit on screen, seen from
 // SOLAR_SYSTEM_VIEW_ELEVATION above the orbital plane. Found by sampling points around each
-// orbit and searching for the distance at which they all just fit.
+// orbit and searching for the distance at which they all just fit. With a group framed
+// (overviewFrame), its orbits instead fill GROUP_VIEW_FILL of the part of the screen it was given
+// (updateViewOffset centres the Sun in that part).
 function getSolarSystemView(outPos, outTarget) {
     const points = [];
+    const framed = overviewFrame ? new Set(overviewFrame.names) : null;
     celestialMap.forEach(obj => {
         const orbit = obj.data.orbit;
-        if (obj.data.type !== 'planet' || !orbit || !orbit.a || !orbit.rate) return;
+        const wanted = framed ? framed.has(obj.data.name) : obj.data.type === 'planet';
+        if (!wanted || !orbit || !orbit.a || !orbit.rate) return;
         for (let i = 0; i < 64; i++) {
             const p = getKeplerPosition(orbit, (360 / orbit.rate) * (i / 64));
             points.push(new THREE.Vector3(p.x, p.y, p.z));
@@ -833,6 +1060,12 @@ function getSolarSystemView(outPos, outTarget) {
     outTarget.set(0, 0, 0);
     if (!points.length) return outPos.copy(dir).multiplyScalar(1200);
 
+    let fillX = SOLAR_SYSTEM_VIEW_FILL, fillY = SOLAR_SYSTEM_VIEW_FILL;
+    if (overviewFrame) {
+        const { left, right, top, bottom } = overviewFrame.insets;
+        fillX = GROUP_VIEW_FILL * Math.max(0.1, 1 - (left + right) / window.innerWidth);
+        fillY = GROUP_VIEW_FILL * Math.max(0.1, 1 - (top + bottom) / window.innerHeight);
+    }
     const probe = new THREE.PerspectiveCamera(camera.fov, window.innerWidth / window.innerHeight, camera.near, camera.far);
     const v = new THREE.Vector3();
     const fits = distance => {
@@ -841,7 +1074,7 @@ function getSolarSystemView(outPos, outTarget) {
         probe.updateMatrixWorld();
         return points.every(p => {
             v.copy(p).project(probe);
-            return v.z < 1 && Math.abs(v.x) <= SOLAR_SYSTEM_VIEW_FILL && Math.abs(v.y) <= SOLAR_SYSTEM_VIEW_FILL;
+            return v.z < 1 && Math.abs(v.x) <= fillX && Math.abs(v.y) <= fillY;
         });
     };
     let near = 1, far = controls.maxDistance;
@@ -852,10 +1085,24 @@ function getSolarSystemView(outPos, outTarget) {
     return outPos.copy(dir).multiplyScalar(far);
 }
 
+// How far out the framed group's orbits are drawn now (the farthest aphelion, in scene units), or
+// null with no group framed. A change of scale mode holds the view on it.
+export function overviewFrameReach() {
+    if (!solarSystemView || !overviewFrame) return null;
+    let reach = 0;
+    overviewFrame.names.forEach(name => {
+        const orbit = celestialMap.get(name)?.data.orbit;
+        if (orbit) reach = Math.max(reach, orbitFarthest(orbit));
+    });
+    return reach || null;
+}
+
 // Let go of any selection and show the whole Solar System, every planet's orbit lit.
-// animate: false jumps straight there.
-export function showOverview({ animate = true } = {}) {
-    if (reframePending) { afterReframe = () => showOverview({ animate }); return; }
+// animate: false jumps straight there. frame: { names, insets } frames those objects' orbits
+// instead, in the screen less the insets (CSS pixels from each edge).
+export function showOverview({ animate = true, frame = null } = {}) {
+    if (reframePending || scaleHold) { afterReframe = () => showOverview({ animate, frame }); return; }
+    const leaving = selectedObject;
     deselect();
     releaseUserControl();
 
@@ -863,11 +1110,14 @@ export function showOverview({ animate = true } = {}) {
     isTracking = false;
     solarSystemView = true;
     solarSystemSpin = 0;
+    overviewFrame = frame && frame.names?.length
+        ? { names: [...frame.names], insets: { left: 0, right: 0, top: 0, bottom: 0, ...frame.insets } }
+        : null;
 
     getSolarSystemView(transitionEndPos, transitionEndTarget);
 
     if (animate) {
-        initiateTransition(transitionEndPos);
+        initiateTransition(transitionEndPos, { from: leaving });
     } else {
         camera.position.copy(transitionEndPos);
         controls.target.copy(transitionEndTarget);
@@ -899,6 +1149,95 @@ function reframeNow() {
     next?.();
 }
 
+// --- WHILE THE MODE CHANGES ---
+// An animated change of mode (scale-change.js) moves and resizes everything round the camera.
+// The camera holds on its subject: it rides with it, at a distance in proportion to the subject's
+// drawn size, so the subject keeps its size and place on screen while the Solar System changes
+// round it. Over the change the view eases from where it was to the subject's usual view in the
+// new mode (straight away if the camera was already there, more slowly if the visitor had steered
+// it). With nothing selected the view is scaled about the Sun by how far the outer planets are
+// drawn, so the whole system stays framed, and keeps turning. Flights asked for meanwhile wait.
+const SCALE_HOLD_EASE = 0.15;          // share of the change the view takes to settle, as it was
+const SCALE_HOLD_EASE_STEERED = 0.5;   // ...or after the visitor had steered it
+let scaleHold = null;
+export function beginScaleHold(reach) {
+    const subject = isTracking && selectedObject && !isTransitioning ? selectedObject : null;
+    const hold = { subject, p: 0, ease: userHasControl ? SCALE_HOLD_EASE_STEERED : SCALE_HOLD_EASE, reach, reach0: reach(),
+        offset: new THREE.Vector3(), cam: camera.position.clone(), target: controls.target.clone() };
+    if (subject) {
+        getFocusPoint(subject, _targetWorldPos);
+        hold.offset.subVectors(camera.position, _targetWorldPos).divideScalar(calculateFocusDistance(subject));
+        // A lander's view turns with its body, as when riding along with it.
+        if (subject.userData.orbit_type === 'landed') hold.offset.applyQuaternion(subject.getWorldQuaternion(_trackQuat).invert());
+    }
+    releaseUserControl();
+    controls.enabled = false;
+    camera.far = view.cameraFar;
+    camera.updateProjectionMatrix();
+    controls.maxDistance = view.maxDistance;
+    scaleHold = hold;
+}
+
+export function setScaleHoldProgress(p) {
+    if (scaleHold) scaleHold.p = p;
+}
+
+const _holdIdeal = new THREE.Vector3();
+function holdForScale(dt, elapsedTime) {
+    const hold = scaleHold;
+    if (!hold.subject) {
+        if (solarSystemView && heldMotionTime === null) {
+            hold.cam.applyAxisAngle(_UP, CAMERA_ORBIT_SPEED * dt);
+            hold.target.applyAxisAngle(_UP, CAMERA_ORBIT_SPEED * dt);
+        }
+        const k = hold.reach() / hold.reach0;
+        camera.position.copy(hold.cam).multiplyScalar(k);
+        controls.target.copy(hold.target).multiplyScalar(k);
+        controls.update();
+        return;
+    }
+    const subject = hold.subject;
+    getFocusPoint(subject, _targetWorldPos);
+    if (isNaN(_targetWorldPos.x)) return;
+    _tempVec1.copy(hold.offset).multiplyScalar(calculateFocusDistance(subject));
+    if (subject.userData.orbit_type === 'landed') _tempVec1.applyQuaternion(subject.getWorldQuaternion(_trackQuat));
+    getIdealCameraPosition(subject, elapsedTime, _holdIdeal);
+    _tempVec2.subVectors(_holdIdeal, _targetWorldPos);
+    // From the held view to the usual one: direction turned, distance by ratio.
+    let w = Math.min(hold.p / hold.ease, 1);
+    w = w * w * (3 - 2 * w);
+    const from = _tempVec1.length(), to = _tempVec2.length();
+    if (from > 0 && to > 0) {
+        _tempVec1.divideScalar(from).lerp(_tempVec2.divideScalar(to), w);
+        if (_tempVec1.lengthSq() < 1e-12) _tempVec1.copy(_tempVec2);
+        _tempVec1.setLength(from ** (1 - w) * to ** w);
+    }
+    camera.position.copy(_targetWorldPos).add(_tempVec1);
+    keepOutsideBodies(camera.position, subject);
+    controls.target.copy(_targetWorldPos);
+    controls.update();
+}
+
+// The change is over: ride along with the subject as usual from here, and fly anywhere asked for.
+export function endScaleHold() {
+    const hold = scaleHold;
+    if (!hold) return;
+    scaleHold = null;
+    camera.near = view.cameraNear ?? camera.near;
+    camera.far = view.cameraFar;
+    camera.updateProjectionMatrix();
+    controls.maxDistance = view.maxDistance;
+    controls.enabled = userControlEnabled;
+    if (hold.subject && hold.subject === selectedObject) {
+        isTracking = true;
+        getFocusPoint(selectedObject, _lastTrackedPos);
+        selectedObject.getWorldQuaternion(_lastTrackedQuat);
+    }
+    const next = afterReframe;
+    afterReframe = null;
+    next?.();
+}
+
 // Put the camera straight where the motion clock at `time` says, so it has nothing left to ease
 // (holdMotion, and a change of scale mode). Not during a flight, or while the visitor steers.
 export function placeCameraAt(time) {
@@ -926,6 +1265,7 @@ const _keyRight = new THREE.Vector3();
 
 // The camera's controls, once the renderer exists: drag, scroll and the keyboard steer.
 export function initControls() {
+    setLandingFirst(() => pendingLanderFocus?.data.name ?? selectedObject?.userData.name ?? null);
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.maxDistance = view.maxDistance;
@@ -948,7 +1288,7 @@ export function initControls() {
         }, AUTO_ORBIT_RESUME_MS);
     });
     renderer.domElement.addEventListener('keydown', (e) => {
-        if (!userControlEnabled || e.altKey || e.ctrlKey || e.metaKey) return;
+        if (!userControlEnabled || scaleHold || e.altKey || e.ctrlKey || e.metaKey) return;
         const turn = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
         const zoom = { '+': 1 / KEY_ZOOM_STEP, '=': 1 / KEY_ZOOM_STEP, '-': KEY_ZOOM_STEP, '_': KEY_ZOOM_STEP }[e.key];
         if (!turn && !zoom) return;

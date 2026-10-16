@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "\"named after Colin Snodgrass, [TO ADD: OU connection]\"",
+  "field": "description",
+  "id": "158589-Snodgrass--0",
+  "kind": "claim",
+  "note": "",
+  "object": "158589 Snodgrass",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named after Colin Snodgrass, [TO ADD: OU connection]",
+      "to": "named after Colin Snodgrass, a research fellow at the OU from 2014 to 2018"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:47:17.112Z",
+  "verdict": "fix"
+}

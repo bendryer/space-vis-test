@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "PLATO--1",
+  "kind": "claim",
+  "note": "",
+  "object": "PLATO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We lead population studies, funded by the UK Space Agency, to weed out false positives such as blended eclipsing binaries that could be mistaken for planets in PLATO’s fields. Our Centre for Electronic Imaging (CEI) also works on the detectors’ performance, calibration and radiation tolerance, and our robotic telescopes could follow up candidate stars once PLATO is flying."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:30:06.090Z",
+  "verdict": "sty"
+}

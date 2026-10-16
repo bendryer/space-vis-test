@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "[TO ADD: a sentence on the OU’s mission…]",
+  "field": "description",
+  "id": "OU-Campus--1",
+  "kind": "claim",
+  "note": "",
+  "object": "OU Campus",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "[TO ADD: a sentence on the OU's mission, open to people, places, methods and ideas.]",
+      "to": "The OU’s mission is to be open to people, places, methods and ideas."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:46:44.668Z",
+  "verdict": "fix"
+}

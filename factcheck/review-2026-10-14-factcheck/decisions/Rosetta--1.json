@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Snappier text",
+  "field": "description",
+  "id": "Rosetta--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Rosetta",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "ESA’s Rosetta made the first long-term study of a comet’s nucleus, orbiting Comet 67P for over two years as it travelled through the inner Solar System. Its lander, Philae, studied the surface directly, giving ground truth for the orbiter’s measurements. Together they revealed the physical and chemical make-up of comets and their possible part in the origin of life."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:22.897Z",
+  "verdict": "sty"
+}

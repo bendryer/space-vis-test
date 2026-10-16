@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "EnVision--0",
+  "kind": "claim",
+  "note": "",
+  "object": "EnVision",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Atmospheric Research and Space Exploration group leads the testing of the UV detectors for VenSpec-U, part of EnVision’s VenSpec suite, with a £2.3 million ESA grant. We also take part in the mission’s science preparations ahead of its launch in the early 2030s."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:14.207Z",
+  "verdict": "sty"
+}

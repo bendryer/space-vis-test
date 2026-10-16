@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "Launch 2031",
+  "field": "launch_year",
+  "id": "Ariel--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Ariel",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:37:05.901Z",
+  "verdict": "unv"
+}

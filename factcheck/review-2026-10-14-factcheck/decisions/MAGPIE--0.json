@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Launches \"with Intuitive Machines in 2029\"",
+  "field": "description",
+  "id": "MAGPIE--0",
+  "kind": "claim",
+  "note": "",
+  "object": "MAGPIE",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "The rover is being built by ispace Europe and is scheduled to launch with Intuitive Machines in 2029.",
+      "to": "The rover is being built by ispace Europe and is due to fly on ispace’s Mission 4 lander in 2029."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:21.798Z",
+  "verdict": "bad"
+}

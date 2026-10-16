@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "New general text from the sheet.",
+  "field": "description",
+  "id": "PROSPECT--1",
+  "kind": "claim",
+  "note": "",
+  "object": "PROSPECT",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "PROSPECT is the European Space Agency's exploration science payload for finding and analysing water ice and other materials on the Moon. An Italian drill collects samples from up to a metre below the surface, for analysis in the OU-provided ProSPA instrument. The package will be delivered to a south polar region of the Moon by the Intuitive Machines IM-4 lander in 2028."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:06.936Z",
+  "verdict": "fix"
+}

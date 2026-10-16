@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Philae--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Philae",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "With RAL Space, we designed and built the Ptolemy gas analyser, which with the COSAC instrument made the first analysis of organic matter on a comet’s surface. Our academics lead the interpretation of its data in the search for life’s chemical building blocks, work that has made our name in miniature planetary laboratories and comet science."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:41:25.102Z",
+  "verdict": "sty"
+}

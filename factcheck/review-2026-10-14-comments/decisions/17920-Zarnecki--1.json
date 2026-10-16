@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "17920-Zarnecki--1",
+  "kind": "claim",
+  "note": "",
+  "object": "17920 Zarnecki",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after space scientist John Zarnecki, formerly of the Open University. Its official naming citation reads: “John C. Zarnecki (b. 1949), of the Open University, Milton Keynes, has developed spacecraft instrumentation to study the surfaces and atmospheres of planets, satellites and small bodies. He is a PI for the Huygens probe/lander on the Cassini mission to Saturn and Saturn VI (Titan).” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:58:59.953Z",
+  "verdict": "fix"
+}

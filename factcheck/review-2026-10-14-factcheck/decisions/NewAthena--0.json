@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Due for launch in 2038",
+  "field": "description",
+  "id": "NewAthena--0",
+  "kind": "claim",
+  "note": "",
+  "object": "NewAthena",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "due for launch in 2038",
+      "to": "due for launch in 2037"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:36:53.669Z",
+  "verdict": "bad"
+}

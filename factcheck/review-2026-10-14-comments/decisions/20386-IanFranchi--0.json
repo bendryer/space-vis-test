@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "UK spelling: \"named in honour of\".",
+  "field": "description",
+  "id": "20386-IanFranchi--0",
+  "kind": "claim",
+  "note": "",
+  "object": "20386 IanFranchi",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "named in honor of",
+      "to": "named in honour of"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:57:10.947Z",
+  "verdict": "fix"
+}

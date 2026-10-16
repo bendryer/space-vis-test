@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "9831-SimonGreen--1",
+  "kind": "claim",
+  "note": "",
+  "object": "9831 SimonGreen",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Simon Green, Emeritus Professor at the Open University. Its official naming citation reads: “Simon F. Green (b. 1959) has carried out observations of minor planets and transneptunian objects for over 20 years, starting with the use of the IRAS satellite to detect fast-moving objects.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:58:08.284Z",
+  "verdict": "fix"
+}

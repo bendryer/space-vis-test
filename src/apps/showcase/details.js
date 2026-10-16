@@ -7,6 +7,7 @@ import { setDetailsExpanded } from './phone.js';
 import { syncMenuInert } from './layout.js';
 import { syncMenuCurrent } from './menu.js';
 import { isPhone, fixPath } from './config.js';
+import IMAGE_SIZES from './image-sizes.json';
 
 let sidebarReturnFocus = null;
 
@@ -65,9 +66,19 @@ function getWebImagePath(url) {
     return url.replace(/^(\/?images\/)([^/]+)\.[^./]+$/, '$1web/$2.webp');
 }
 
+// The web copy's width and height (tools/image-sizes.mjs), so the panel keeps room for the image
+// while it loads and the description under it doesn't jump.
+function imageSizeAttrs(url) {
+    const size = IMAGE_SIZES[url.replace(/^.*\//, '').replace(/\.[^.]+$/, '')];
+    return size ? ` width="${size[0]}" height="${size[1]}"` : '';
+}
+
+// Quote marks in data text, made safe inside an attribute.
+const attr = text => String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
 // The portal O from the OU brand forms (a square with a tilted-ellipse cut-out), in the OU
 // green to light-blue gradient: marks the OU's own content.
-const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><defs><linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DFFD3"/><stop offset="1" stop-color="#66EEFA"/></linearGradient><mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask></defs><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></svg>`;
+const OU_MARK = `<svg class="ou-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><defs><linearGradient id="ou-mark-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color: var(--ou-green)"/><stop offset="1" style="stop-color: var(--ou-light)"/></linearGradient><mask id="ou-mark-cut"><rect width="16" height="16" fill="#fff"/><ellipse cx="8" cy="8" rx="3.4" ry="5.2" transform="rotate(22 8 8)" fill="#000"/></mask></defs><rect width="16" height="16" fill="url(#ou-mark-grad)" mask="url(#ou-mark-cut)"/></svg>`;
 
 // One status vocabulary for the menu and the sidebar.
 function statusTone(status) {
@@ -96,9 +107,11 @@ function updateUI(data) {
             <h3 id="ou-title">${OU_MARK}Open University Involvement</h3>
             <div>${data.ou_involvement}</div>
         </section>` : '';
+    // The image's alt text comes from the data (image_alt); without it the image is left
+    // unannounced rather than named with words that say nothing about it.
     const imageHtml = data.image_url ? `
         <figure class="info-image">
-            <img src="${fixPath(getWebImagePath(data.image_url))}" data-original="${fixPath(data.image_url)}" alt="${data.name} Science Image" decoding="async"
+            <img src="${fixPath(getWebImagePath(data.image_url))}" data-original="${fixPath(data.image_url)}" alt="${attr(data.image_alt || '')}"${imageSizeAttrs(data.image_url)} decoding="async"
                 onerror="if (this.dataset.original && this.getAttribute('src') !== this.dataset.original) { this.src = this.dataset.original; } else { this.parentElement.remove(); }"/>
         </figure>` : '';
 

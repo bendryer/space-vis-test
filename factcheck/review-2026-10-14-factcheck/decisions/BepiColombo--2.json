@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Snappier text",
+  "field": "description",
+  "id": "BepiColombo--2",
+  "kind": "claim",
+  "note": "",
+  "object": "BepiColombo",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "BepiColombo, a joint ESA-JAXA mission, is due to enter orbit around Mercury on 21 November 2026 and to be fully commissioned by April 2027. Its two orbiters will make the most complete study yet of Mercury’s surface, composition and magnetic field, mapping it at many wavelengths to explain the planet’s oversized core and its richness in volatile materials. The model shows the moment JAXA’s Mio orbiter is released; after that, the MOSIF sunshield separates and ESA’s Mercury Planetary Orbiter (MPO) flies free."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:29:15.175Z",
+  "verdict": "sty"
+}

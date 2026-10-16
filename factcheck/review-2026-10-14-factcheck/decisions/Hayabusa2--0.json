@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Hayabusa2 \"was\" a mission; status En Route",
+  "field": "description",
+  "id": "Hayabusa2--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Hayabusa2",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "The mission provided invaluable insights into the composition of carbon-rich asteroids and the history of the early Solar System.",
+      "to": "The mission provided invaluable insights into the composition of carbon-rich asteroids and the history of the early Solar System. The spacecraft is now on an extended mission: it flew past asteroid Torifune on 5 July 2026 and is due to reach the tiny asteroid 1998 KY26 in 2031."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:36:33.573Z",
+  "verdict": "fix"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Earth--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Earth",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We use Earth observation data to monitor environmental change, developing machine learning to track deforestation, urban growth and glacial retreat in satellite images. The work also feeds our teaching on technology and environmental sustainability."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:13:31.423Z",
+  "verdict": "sty"
+}

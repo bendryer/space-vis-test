@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "OGRE--0",
+  "kind": "claim",
+  "note": "",
+  "object": "OGRE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) characterises and optimises the four EM-CCD sensors in OGRE’s X-ray camera, built by the UK company XCAM to survive the violent vibrations of launch. We research radiation damage, charge transfer and photon counting with these fast detectors for soft X-ray astronomy."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:15.626Z",
+  "verdict": "sty"
+}

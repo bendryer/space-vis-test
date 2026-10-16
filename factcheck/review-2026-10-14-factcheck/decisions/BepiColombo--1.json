@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "BepiColombo--1",
+  "kind": "claim",
+  "note": "",
+  "object": "BepiColombo",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We were on BepiColombo’s M-CAM monitoring camera team, analysing images from its Mercury flybys, and have led ESA’s Mercury Surface and Composition Working Group. With instrument lead the University of Leicester, we helped build the Mercury Imaging X-ray Spectrometer (MIXS). Our scientists are now Co-Investigators on MIXS and on MERTIS, the Mercury Thermal Infrared Spectrometer, and associates on SIMBIO-SYS, the orbiter’s imaging and spectrometer system."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:29:11.470Z",
+  "verdict": "sty"
+}

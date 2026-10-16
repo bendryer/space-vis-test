@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Crash site -2.052, -6.208",
+  "field": "landed_coords",
+  "id": "Schiaparelli--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Schiaparelli",
+  "suggestion": [
+    {
+      "f": "landed_coords",
+      "from": "{\"lat\":-2.052,\"lon\":-6.208}",
+      "to": "{\"lat\":-2.07,\"lon\":-6.21}"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:38:02.188Z",
+  "verdict": "fix"
+}

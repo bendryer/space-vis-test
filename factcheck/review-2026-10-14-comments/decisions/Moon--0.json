@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simeon’s new general text for the Moon.",
+  "field": "description",
+  "id": "Moon--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Moon",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "Since its formation 4.5 billion years ago, the Moon has been our nearest neighbour in space. Its cratered surface preserves a historical record of the near-Earth environment long since lost on our home planet. The Moon influences our planet's tides and rotational stability, our culture and our scientific understanding of our place in the Universe. It is the only celestial body that humans have visited, and is widely regarded as a potential stepping stone into deep space."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:51:50.619Z",
+  "verdict": "fix"
+}

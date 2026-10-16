@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Schiaparelli--3",
+  "kind": "claim",
+  "note": "",
+  "object": "Schiaparelli",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We co-led AMELIA, the team that used Schiaparelli’s entry and descent data to reconstruct the Martian atmosphere it flew through, measuring its density, pressure and temperature from higher up than ever before."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:38:13.241Z",
+  "verdict": "sty"
+}

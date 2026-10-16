@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Simon Green: OU connection first, then the official citation, which stays as written.",
+  "field": "description",
+  "id": "4731-MonicaGrady--0",
+  "kind": "claim",
+  "note": "",
+  "object": "4731 MonicaGrady",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "*",
+      "to": "A main-belt asteroid named after Monica Grady, Emeritus Professor at the Open University. Its official citation, written while she was curator of the meteorite collection at the Natural History Museum in London, reads: “Monica Grady (b. 1958), curator of the meteorite collection at the Natural History Museum in London, studies carbon isotopes in a wide range of meteorites with a focus on understanding the geologic processes leading to their formation. She is also actively involved in meteorite recovery efforts around the world.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:57:06.300Z",
+  "verdict": "fix"
+}

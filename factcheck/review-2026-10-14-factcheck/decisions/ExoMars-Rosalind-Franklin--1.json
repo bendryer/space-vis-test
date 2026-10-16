@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "ExoMars-Rosalind-Franklin--1",
+  "kind": "claim",
+  "note": "",
+  "object": "ExoMars Rosalind Franklin",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We’re on the Rosalind Franklin rover’s science team: as deputy principal investigator for its PanCam camera system, as one of the UK’s Interdisciplinary Scientists, and in support of PanCam and the Enfys spectrometer. We’re also leading and contributing to preparations through operations simulations and field trials."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:48:51.169Z",
+  "verdict": "sty"
+}

@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "It has recently passed 5,000 sols on Mars.",
+  "field": "description",
+  "id": "MSL-Curiosity--1",
+  "kind": "claim",
+  "note": "",
+  "object": "MSL Curiosity",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "that has been exploring Gale Crater since 2012.",
+      "to": "that has been exploring Gale Crater since 2012, recently passing 5,000 sols (Martian days) on the surface."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:54:13.068Z",
+  "verdict": "fix"
+}

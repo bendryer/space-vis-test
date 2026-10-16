@@ -1,0 +1,13 @@
+{
+  "choice": "keep",
+  "claim": "\"The OU is the UK National Lead for the JANUS instrument\"",
+  "field": "ou_involvement",
+  "id": "JUICE--1",
+  "kind": "claim",
+  "note": "",
+  "object": "JUICE",
+  "suggestion": null,
+  "suggestionIsKeep": true,
+  "updatedAt": "2026-10-15T09:29:30.368Z",
+  "verdict": "unv"
+}

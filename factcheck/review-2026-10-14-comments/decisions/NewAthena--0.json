@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "Launch is planned for 2038 (the app says around 2037). The comment also says it is at Earth-Sun L1, not L2: the app already has it at L1.",
+  "field": "description",
+  "id": "NewAthena--0",
+  "kind": "claim",
+  "note": "",
+  "object": "NewAthena",
+  "suggestion": [
+    {
+      "f": "description",
+      "from": "due for launch around 2037",
+      "to": "due for launch in 2038"
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-14T19:52:53.457Z",
+  "verdict": "bad"
+}

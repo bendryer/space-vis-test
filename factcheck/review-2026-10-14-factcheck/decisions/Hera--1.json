@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Hera--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Hera",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our researchers were on the Hera Science Team’s management board."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T06:58:12.551Z",
+  "verdict": "sty"
+}

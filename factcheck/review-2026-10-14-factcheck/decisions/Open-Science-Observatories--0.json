@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Open-Science-Observatories--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Open Science Observatories",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We own and run these telescopes, a cornerstone of our distance-learning astronomy teaching. Our academics use them to monitor variable stars and to support space missions such as Ariel from the ground, and students use them to gain real experience of collecting and analysing astronomical data."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:42:23.838Z",
+  "verdict": "sty"
+}

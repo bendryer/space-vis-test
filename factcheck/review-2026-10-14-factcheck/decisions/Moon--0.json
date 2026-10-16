@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Moon--0",
+  "kind": "claim",
+  "note": "",
+  "object": "Moon",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our analysis of Apollo samples helped show that the Moon is not as dry as once thought: water is locked inside lunar minerals. Drawing on instruments we built for Beagle 2 and Rosetta, we now develop miniature laboratories to measure what the Moon is made of. We also study how lunar soil could supply water, oxygen and fuel, and be used to build on the Moon, to support sustainable exploration."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:15:54.356Z",
+  "verdict": "sty"
+}

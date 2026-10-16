@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Euclid--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Euclid",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) played a lead role in characterising the CCD273 detectors in Euclid’s VIS instrument, and developed ‘trap pumping’, now used in orbit. It pinpoints individual radiation-damage defects in the detectors to within a fraction of a pixel, so images can be corrected and kept precise enough to trace dark matter through gravitational lensing. Our astronomers also lead searches of Euclid’s surveys for rare gravitational lenses."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:12:52.264Z",
+  "verdict": "sty"
+}

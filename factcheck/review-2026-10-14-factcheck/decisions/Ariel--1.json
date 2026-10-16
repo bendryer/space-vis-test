@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "Ariel--1",
+  "kind": "claim",
+  "note": "",
+  "object": "Ariel",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our astronomers have served on Ariel’s science advisory team and led its working groups. Ariel will study the atmospheres of about 1,000 exoplanets, the first large survey of its kind, to show how planets form and evolve."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:07.090Z",
+  "verdict": "sty"
+}

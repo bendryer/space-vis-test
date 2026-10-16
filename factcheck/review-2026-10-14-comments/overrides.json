@@ -1,0 +1,17 @@
+{
+ "artifact": "https://claude.ai/artifact/Ab2uAFQtg51VyzxiwreWNV",
+ "renames": {},
+ "candidates": { "Schiaparelli": "added", "I-MIM": "added", "AlSat-Nano": "added", "DART": "added", "MAGPIE": "added", "Shackleton Rover": "added", "Itokawa": "added", "Hayabusa": "added", "Enceladus": "added" },
+ "claims": {
+  "15614 Pillinger#1": { "status": "corrected", "note": "Simon Green's layout with the SBDB naming citation; 'leader' changed to 'principal investigator (PI)' at the reviewer's request." },
+  "BepiColombo#0": { "status": "user-supplied", "note": "Dave Rothery's rewrite (M-CAM, Mercury Surface and Composition Working Group, MIXS, MERTIS, SIMBIO-SYS); the STFC grant removed at the reviewer's request." },
+  "Europa#0": { "status": "user-supplied", "note": "Line added on modelling Europa's ocean chemistry and habitability over time, from VP's request; source: OU conference abstracts (Sym, Ramkissoon, Fox-Powell, Pearson, Melwani Daswani; ORO 95401, 95399). Not a peer-reviewed paper." },
+  "ExoMars TGO#0": { "status": "user-supplied", "note": "Coordinated methane measurements with Curiosity, from a colleague's comment, shortened at the reviewer's request." },
+  "Genesis#0": { "status": "user-supplied", "note": "Ian Franchi's account of the OU's Genesis Science Team role; 'roughly equivalent to Co-Investigators' removed at the reviewer's request." },
+  "General comments#0": { "status": "user-supplied", "note": "'OU' used throughout the text (outside quoted naming citations). A snappier pass and first-person wording proposed for the fact check, not applied." },
+  "General comments#2": { "status": "corrected", "note": "UK spelling pass over every description and OU text, outside quoted naming citations." },
+  "General comments#3": { "status": "unverified", "note": "The 12 other honorary asteroids now quote their SBDB naming citations, with a visible '[TO ADD: OU connection]' placeholder for the reviewer to fill (3202 Graff has no SBDB citation)." },
+  "General comments#4": { "status": "user-supplied", "note": "OU Campus added as a 'mission' at Walton Hall, with placeholder text; a 'Launch your next mission' button and dialog added to the controls, with placeholder text in index.html." },
+  "General comments#5": { "status": "unverified", "note": "Sample analysis: to research in the fact check (Chang'e-5, Rider-Stokes and other returned-sample work)." }
+ }
+}

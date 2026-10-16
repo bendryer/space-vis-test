@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "HWO--0",
+  "kind": "claim",
+  "note": "",
+  "object": "HWO",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "Our Centre for Electronic Imaging (CEI) is developing low-noise UV and photon-counting detectors for HWO’s faint imaging, building on our CASTOR work. We’re also part of the UK consortium awarded £3 million in 2026 to develop one of the telescope’s core instruments."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T10:16:03.083Z",
+  "verdict": "sty"
+}

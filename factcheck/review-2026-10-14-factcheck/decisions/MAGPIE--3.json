@@ -1,0 +1,19 @@
+{
+  "choice": "accept",
+  "claim": "OU text in the first person, snappier",
+  "field": "ou_involvement",
+  "id": "MAGPIE--3",
+  "kind": "claim",
+  "note": "",
+  "object": "MAGPIE",
+  "suggestion": [
+    {
+      "f": "ou_involvement",
+      "from": "*",
+      "to": "We’re developing the Volatile Analyser, the ion-trap mass spectrometer in the Lunar Volatiles Scout drill on ESA’s MAGPIE rover. Building on our heritage in ion-trap mass spectrometry, it will identify and measure water and other volatiles in lunar soil, and how they vary with depth at the Moon’s south pole."
+    }
+  ],
+  "suggestionIsKeep": false,
+  "updatedAt": "2026-10-15T09:37:54.817Z",
+  "verdict": "sty"
+}
