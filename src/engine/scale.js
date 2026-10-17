@@ -37,6 +37,9 @@ const STAR_UNITS_PER_KM = 25 / 695700;
 const BODY_RADIUS_UNITS = 5, BODY_RADIUS_KM = 6371, BODY_RADIUS_POWER = 0.62;
 // Bodies drawn from a model (asteroids, comets, Dimorphos): "radius_km" is half the longest side,
 // and the longest side is drawn 1.49 * (km) ^ 0.7, so Bennu is about 1 unit long and Comet 67P 4.
+// A modelled moon of a planet (Phobos, Deimos) is drawn as the planets' moons are, by the power
+// law, its "radius_km" (half its longest side) as a sphere's: on this rule Phobos would be drawn
+// larger than Mars.
 const SMALL_BODY_UNITS = 1.49, SMALL_BODY_POWER = 0.7;
 
 const NATURAL_TYPES = new Set(['star', 'planet', 'moon', 'asteroid', 'comet']);
@@ -58,7 +61,7 @@ const SIZES = {
         bodyRadius(item) {
             const r = item.radius_km;
             if (item.type === 'star') return r * STAR_UNITS_PER_KM;
-            if (item.model) return SMALL_BODY_UNITS * Math.pow(2 * r, SMALL_BODY_POWER) / 2;
+            if (item.model && !item.planetMoon) return SMALL_BODY_UNITS * Math.pow(2 * r, SMALL_BODY_POWER) / 2;
             return BODY_RADIUS_UNITS * Math.pow(r / BODY_RADIUS_KM, BODY_RADIUS_POWER);
         },
         // Every craft the same size, far larger than true, so all can be seen.
@@ -94,6 +97,7 @@ export function applyScales(data, mode = scaleMode, mix = null) {
     const sizes = mix ? mixedSizes(mix.size) : SIZES[mode];
     const byName = new Map(data.map(item => [item.name, item]));
     data.forEach(item => {
+        if (item.type === 'moon') item.planetMoon = byName.get(item.parent)?.type === 'planet';
         if (item.type === 'mission') {
             // A craft's "radius" (its size until its model loads) is data.json's in Diagram mode.
             item.radius_diagram ??= item.radius;

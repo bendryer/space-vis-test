@@ -308,9 +308,9 @@ function getHash(str) {
 }
 
 // Mirrors getEffectiveModel in src/engine/config.js: a named asteroid's private model (`model_named`) is used
-// only when the toggle is on; otherwise its public generic `model`. Never load model_named otherwise.
+// only when the toggle is on or the object has `model_named_shown`; otherwise its public generic `model`.
 function getEffectiveModelPath(item) {
-  if (USE_NAMED_ASTEROID_MODELS && item.model_named) return item.model_named;
+  if ((USE_NAMED_ASTEROID_MODELS || item.model_named_shown) && item.model_named) return item.model_named;
   if (item.model) return item.model;
   if (item.type === 'asteroid') return GENERIC_ASTEROID_MODELS[getHash(item.name) % GENERIC_ASTEROID_MODELS.length];
   return null;
@@ -682,7 +682,7 @@ function factsFor(item) {
   const add = (label, value) => { if (value !== undefined && value !== null && value !== '' && value !== false) rows.push([label, value]); };
   const model = getEffectiveModelPath(item);
   add('Model', model && `${model}${item.model_scale ? ` (scale ${item.model_scale})` : ''}`);
-  if (item.model_named) add('Named model', `${item.model_named} (private: not shown)`);
+  if (item.model_named) add('Named model', `${item.model_named} (${item.model_named_shown ? 'shown' : 'private: not shown'})`);
   add('Texture', item.texture);
   add('Radius', item.radius_km !== undefined
     ? `${item.radius_km} km${item.model ? ' (half its longest side)' : ''}${item.radius_estimated ? ', estimated from its brightness' : ''}`

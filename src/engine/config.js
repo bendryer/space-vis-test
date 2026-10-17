@@ -57,14 +57,15 @@ export const HIGH_DETAIL_HIDE_PX = 120;
 export const engineOptions = {
     nightLights: true, // city lights on Earth's night side
     // Privacy switch: an object's "model_named" (a named asteroid's model, which shows a
-    // researcher's name) is used in place of its "model" only when this is on. Off unless an app
-    // turns it on; don't turn it on without confirming it's intended.
+    // researcher's name) is used in place of its "model" only when this is on, or the object has
+    // "model_named_shown" (its likeness is cleared for show). Off unless an app turns it on; don't
+    // turn it on without confirming it's intended.
     namedAsteroidModels: false,
 };
 
 // The model data.json gives the object, or null for none.
 export function getEffectiveModel(item) {
-    if (engineOptions.namedAsteroidModels && item.model_named) return item.model_named;
+    if ((engineOptions.namedAsteroidModels || item.model_named_shown) && item.model_named) return item.model_named;
     return item.model || null;
 }
 

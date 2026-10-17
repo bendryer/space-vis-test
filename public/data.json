@@ -175,6 +175,7 @@
     "name": "Sentinel-4",
     "parent": "Earth",
     "type": "mission",
+    "model": "/models/sentinel4.glb",
     "status": "Launched",
     "launch_year": "2025",
     "description": "Sentinel-4 is a Copernicus mission to monitor air quality over Europe from geostationary orbit, 36,000 km above the equator. Its ultraviolet, visible and near-infrared spectrometer flies on EUMETSAT’s Meteosat Third Generation Sounder satellite (MTG-S1), launched on 1 July 2025, and measures ozone, nitrogen dioxide, sulphur dioxide, formaldehyde and aerosols every hour.",
@@ -223,6 +224,7 @@
     "name": "Spektr-UV",
     "parent": "Earth",
     "type": "mission",
+    "model": "/models/spektr_uv.glb",
     "status": "Planned",
     "launch_year": "2031",
     "description": "Spektr-UV, also known as the World Space Observatory–Ultraviolet (WSO-UV), is a planned Russian-led space telescope with a 1.7-metre mirror. It will observe at ultraviolet wavelengths, between 115 and 310 nanometres, that are blocked by our atmosphere, taking spectra and images of stars, galaxies and planets. After many delays, it is now expected to launch no earlier than 2031.",
@@ -417,6 +419,7 @@
     "name": "Chandrayaan-2",
     "parent": "Moon",
     "type": "mission",
+    "model": "/models/chandrayaan2.glb",
     "status": "Operational",
     "launch_year": "2019",
     "description": "Chandrayaan-2 is India’s second mission to the Moon, launched in July 2019. Its lander, Vikram, crashed during its descent that September, but the orbiter has been mapping the Moon ever since from a polar orbit about 100 km up, studying its surface, its minerals and the elements it is made of.",
@@ -500,6 +503,7 @@
     "name": "MAGPIE",
     "parent": "Moon",
     "type": "mission",
+    "model": "/models/magpie.glb",
     "icon": "rover",
     "status": "Planned",
     "launch_year": "2029",
@@ -520,6 +524,7 @@
     "name": "Shackleton Rover",
     "parent": "Moon",
     "type": "mission",
+    "model": "/models/shackleton.glb",
     "icon": "rover",
     "status": "Planned",
     "launch_year": "2030",
@@ -766,6 +771,7 @@
     "name": "Schiaparelli",
     "parent": "Mars",
     "type": "mission",
+    "model": "/models/schiaparelli.glb",
     "icon": "lander",
     "status": "Crashed",
     "launch_year": "2016",
@@ -784,6 +790,7 @@
     "name": "I-MIM",
     "parent": "Mars",
     "type": "mission",
+    "model": "/models/imim.glb",
     "status": "Planned",
     "launch_year": "TBC",
     "description": "The International Mars Ice Mapper (I-MIM) is a proposed orbiter, planned by the space agencies of Canada, the USA, Japan, Italy and the Netherlands, that would use radar to map water ice buried near the surface of Mars and help choose landing sites for future human missions.",
@@ -884,6 +891,58 @@
     "radius": 0.2,
     "size_m": 3.0,
     "color": "#dd8822"
+  },
+  {
+    "name": "Phobos",
+    "parent": "Mars",
+    "type": "moon",
+    "status": "Natural",
+    "model": "/models/phobos.glb",
+    "radius_km": 13.08,
+    "gm": 0.0007087,
+    "color": "#6e655c",
+    "rotation_mode": "locked",
+    "orbit": {
+      "a_km": 9375,
+      "e": 0.0151,
+      "i": 1.1,
+      "M0": 189.7,
+      "rate": 1128.8448,
+      "node": 169.2,
+      "peri": 216.3,
+      "node_rate": -0.42853,
+      "peri_rate": 0.89606,
+      "plane": {
+        "ra": 317.7,
+        "dec": 52.9
+      }
+    },
+    "description": "Phobos is the larger and inner of Mars’s two small moons, an irregular lump about 26 by 23 by 18 kilometres. It circles Mars only about 6,000 kilometres above the surface, closer to its planet than any other known moon, three times a day: faster than Mars turns, so from the ground it rises in the west. Tides are slowly drawing it in, and in some tens of millions of years it will break apart or crash into Mars. Its dark surface is scarred by Stickney, a crater 9 kilometres wide, and by long parallel grooves. Whether Phobos and Deimos are captured asteroids or formed from debris thrown off Mars by a giant impact is still debated, and JAXA’s MMX mission is to bring a sample of Phobos back to Earth to help settle it. The model shown is NASA’s."
+  },
+  {
+    "name": "Deimos",
+    "parent": "Mars",
+    "type": "moon",
+    "status": "Natural",
+    "model": "/models/deimos.glb",
+    "radius_km": 8.01,
+    "gm": 0.0000962,
+    "color": "#8a8075",
+    "rotation_mode": "locked",
+    "orbit": {
+      "a_km": 23457,
+      "e": 0,
+      "i": 1.8,
+      "M0": 205,
+      "rate": 285.1619,
+      "node": 54.3,
+      "node_rate": -0.017538,
+      "plane": {
+        "ra": 316.6,
+        "dec": 53.5
+      }
+    },
+    "description": "Deimos is the smaller and outer of Mars’s two moons, about 16 by 12 by 10 kilometres. It orbits about 23,500 kilometres from the centre of Mars every 30 hours, only a little slower than Mars turns, so from the surface it creeps across the sky and stays up for more than two days at a time. Its surface is smoother than Phobos’s, its craters softened by a thick layer of fine dust. JAXA’s MMX mission is to study it during flybys. The model shown is NASA’s."
   },
   {
     "name": "Jupiter",
@@ -1084,6 +1143,8 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 252.1,
+    "texture": "/textures/enceladus.webp",
+    "rotation_mode": "locked",
     "gm": 7.211,
     "color": "#f4f6fa",
     "orbit": {
@@ -1260,6 +1321,7 @@
     "parent": "Dimorphos",
     "menu_parent": "Didymos",
     "type": "mission",
+    "model": "/models/dart.glb",
     "status": "Complete",
     "launch_year": "2021",
     "orbit_type": "landed",
@@ -1465,8 +1527,9 @@
   },
   {
     "name": "MMX",
-    "parent": "Mars",
+    "parent": "Phobos",
     "type": "mission",
+    "model": "/models/mmx.glb",
     "status": "Planned",
     "launch_year": "2026",
     "description": "Martian Moons eXploration (MMX) is a JAXA mission to Mars’s two moons, Phobos and Deimos, due to launch in October 2026 and reach Mars about a year later. It will study both moons from close by, land on Phobos to collect at least 10 grams of its surface and bring the sample back to Earth in 2031, to help settle whether the moons are captured asteroids or debris from a giant impact on Mars. It also carries IDEFIX, a small French-German rover that will drive on Phobos.",
@@ -1476,11 +1539,15 @@
     "size_estimated": true,
     "color": "#ff9966",
     "orbit": {
-      "a_km": 9376,
-      "e": 0.0151,
-      "i": 1.08,
+      "a_km": 50,
+      "e": 0,
+      "i": 180,
       "M0": 60,
-      "rate": 1128.8445,
+      "rate": 1128.8448,
+      "plane": {
+        "ra": 317.7,
+        "dec": 52.9
+      },
       "illustrative": true
     },
     "status_timeline": [
@@ -1633,8 +1700,8 @@
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
-    "model": "/models/Asteroid2.glb",
-    "radius_km": 0.2675,
+    "model": "/models/itokawa.glb",
+    "radius_km": 0.2808,
     "color": "#8a7f70",
     "rot_period": 0.50552,
     "orbit": {
@@ -1646,13 +1713,14 @@
       "node": 69.0745,
       "peri": 162.8409
     },
-    "description": "Itokawa is a small, peanut-shaped near-Earth asteroid about 535 metres long, named after Hideo Itokawa, the father of Japanese rocketry. In 2005 it was visited by JAXA's Hayabusa spacecraft, which in 2010 brought back the first samples ever collected from an asteroid. Its surface of boulders and gravel suggests it is a rubble pile, reassembled from the fragments of an earlier collision.",
+    "description": "Itokawa is a small, peanut-shaped near-Earth asteroid about 535 metres long, named after Hideo Itokawa, the father of Japanese rocketry. In 2005 it was visited by JAXA's Hayabusa spacecraft, which in 2010 brought back the first samples ever collected from an asteroid. Its surface of boulders and gravel suggests it is a rubble pile, reassembled from the fragments of an earlier collision. The shape shown is Robert Gaskell’s model from Hayabusa’s images.",
     "ou_involvement": "We analysed particles of Itokawa returned by Hayabusa, carrying out the first Raman spectroscopy on the grains we were allocated. With a team led by Royal Holloway, University of London, we found water and organic matter of extraterrestrial origin in one of them."
   },
   {
     "name": "Hayabusa",
     "parent": "Itokawa",
     "type": "mission",
+    "model": "/models/hayabusa.glb",
     "status": "Complete",
     "launch_year": "2003",
     "description": "Hayabusa was a JAXA mission that launched in 2003 and reached the near-Earth asteroid Itokawa in 2005. Despite many technical setbacks, it returned a capsule containing tiny grains of the asteroid to Earth in 2010: the first asteroid samples ever brought back.",
@@ -1778,6 +1846,7 @@
     },
     "description": "A main-belt asteroid named after Monica Grady, Emeritus Professor at the OU. Its official citation, written while she was curator of the meteorite collection at the Natural History Museum in London, reads: “Monica Grady (b. 1958), curator of the meteorite collection at the Natural History Museum in London, studies carbon isotopes in a wide range of meteorites with a focus on understanding the geologic processes leading to their formation. She is also actively involved in meteorite recovery efforts around the world.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
+    "model_named_shown": true,
     "model_named": "/models/Grady.glb"
   },
   {
@@ -1801,6 +1870,7 @@
     },
     "description": "A main-belt asteroid named after Ian Franchi, Emeritus Professor at the OU. Its official naming citation reads: “Ian Alan Franchi (b. 1961) is a British cosmochemist and emeritus professor at The Open University. He has forty years experience studying the origin and evolution of the early Solar System using advanced analytical techniques, and in particular, high-precision oxygen isotope measurements, on extraterrestrial materials.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
+    "model_named_shown": true,
     "model_named": "/models/Franchi.glb"
   },
   {
@@ -1867,6 +1937,7 @@
     },
     "description": "A main-belt asteroid named after astrophysicist Jocelyn Bell Burnell, Head of Physics at the OU from 1991 to 2001. Its official naming citation reads: “British astrophysicist Susan Jocelyn Bell Burnell (b. 1943) discovered the first radio pulsar in 1967 in collaboration with her thesis advisor, Anthony Hewish. In Aug. 2006 she presided over the IAU's adoption of resolutions defining the terms “planet” and “dwarf planet”.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
+    "model_named_shown": true,
     "model_named": "/models/Bell.glb"
   },
   {
@@ -1889,6 +1960,7 @@
     },
     "description": "A main-belt asteroid named after the OU itself. Its official naming citation reads: “The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
+    "model_named_shown": true,
     "model_named": "/models/OU.glb"
   },
   {
@@ -1912,6 +1984,7 @@
     },
     "description": "A main-belt asteroid named after Andrew Norton, formerly a Professor at the OU. Its official naming citation reads: “Andrew Norton (b. 1964) is an English astrophysicist at the Open University where he led major teaching and outreach initiatives, and carried out research into the time-domain astrophysics of compact binary stars. He led the SuperWASP Variable Stars citizen science project, supervised numerous Ph.D. students and won the RAS Higher Education Award.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid5.glb",
+    "model_named_shown": true,
     "model_named": "/models/Norton.glb"
   },
   {
@@ -1935,6 +2008,7 @@
     },
     "description": "A main-belt asteroid named after Simon Green, Emeritus Professor at the OU. Its official naming citation reads: “Simon F. Green (b. 1959) has carried out observations of minor planets and transneptunian objects for over 20 years, starting with the use of the IRAS satellite to detect fast-moving objects.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid2.glb",
+    "model_named_shown": true,
     "model_named": "/models/Green.glb"
   },
   {
@@ -1957,6 +2031,7 @@
     },
     "description": "A main-belt asteroid named after Colin Pillinger (1943-2014), Professor at the OU and principal investigator (PI) of the Beagle 2 Mars lander. Its official naming citation reads: “Colin T. Pillinger (b. 1943), a planetary geochemist, made significant discoveries in the light-element geochemistry of meteorites, diamonds, lunar samples and terrestrial samples. He is the originator and principal investigator of the Beagle 2 Mars lander. The name was suggested by E. K. Gibson.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
+    "model_named_shown": true,
     "model_named": "/models/Pillinger.glb"
   },
   {
@@ -2000,6 +2075,7 @@
     },
     "description": "A main-belt asteroid named after space scientist John Zarnecki, formerly of the OU. Its official naming citation reads: “John C. Zarnecki (b. 1949), of the Open University, Milton Keynes, has developed spacecraft instrumentation to study the surfaces and atmospheres of planets, satellites and small bodies. He is a PI for the Huygens probe/lander on the Cassini mission to Saturn and Saturn VI (Titan).” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid4.glb",
+    "model_named_shown": true,
     "model_named": "/models/Zarnecki.glb"
   },
   {
@@ -2381,6 +2457,7 @@
     "name": "OU Campus",
     "parent": "Earth",
     "type": "mission",
+    "model": "/models/ou_campus.glb",
     "status": "Operational",
     "launch_year": "1969",
     "orbit_type": "landed",
@@ -2784,6 +2861,13 @@
             "licence": "",
             "url": "",
             "confirmed": true
+          },
+          {
+            "subject": "Didymos",
+            "credit": "NASA/Johns Hopkins APL",
+            "licence": "CC BY-NC-SA",
+            "url": "",
+            "confirmed": false
           }
         ]
       },

@@ -111,7 +111,7 @@ Passed as `createEngine({ options })`, and kept in `engineOptions` in `src/engin
 | | |
 |---|---|
 | ✅ `nightLights` (default `true`) | City lights on Earth's night side. |
-| ✅ `namedAsteroidModels` (default **`false`**) | Asteroids use their `model_named`: models named after OU researchers. A privacy setting: don't turn it on without confirming. The showcase doesn't pass it. |
+| ✅ `namedAsteroidModels` (default **`false`**) | Asteroids use their `model_named`: models named after OU researchers (one with `model_named_shown` uses it anyway). A privacy setting: don't turn it on without confirming. The showcase doesn't pass it. |
 
 The debug flags (`DEBUG_SHADOWS`, `DEBUG_LANDING`) stay constants in `config.js`: they're for developers, not apps. In dev builds `createEngine` also installs the dev hook (`window.__ouniverse`, `src/engine/devhook.js`).
 
