@@ -2276,6 +2276,7 @@
     },
     "description": "A main-belt asteroid named after Benjamin Rozitis, who did his PhD and postdoctoral research at the OU. Its official naming citation reads: “Benjamin Rozitis (b. 1984) is a research fellow at the Open University (UK) studying the physical and dynamical characterization of asteroid surfaces through spacecraft data, modeling, and microgravity experiments.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid1.glb",
+    "model_named_shown": true,
     "model_named": "/models/Rozitis.glb"
   },
   {
@@ -3013,6 +3014,18 @@
             "licence": "",
             "url": "",
             "confirmed": true
+          }
+        ]
+      },
+      {
+        "heading": "Music",
+        "items": [
+          {
+            "subject": "Life On Mars",
+            "credit": "Dan Skinner and Adam Skinner, Audio Network (ANW3153)",
+            "licence": "",
+            "url": "https://www.audionetwork.com/",
+            "confirmed": false
           }
         ]
       },
