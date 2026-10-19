@@ -1362,6 +1362,28 @@
     }
   },
   {
+    "name": "Hitomi",
+    "parent": "Earth",
+    "type": "mission",
+    "status": "Lost",
+    "launch_year": "2016",
+    "description": "Hitomi (ASTRO-H) was JAXA’s X-ray observatory, built with NASA and international partners to study the hottest, most energetic places in the universe: galaxy clusters, black holes and the remains of exploded stars. It launched on 17 February 2016 into an orbit about 575 km up, but on 26 March a fault in its attitude control set it spinning and its solar arrays broke away. In its one month of observations it measured the motion of the hot gas in the Perseus galaxy cluster more precisely than ever before. Its successor, XRISM, launched in 2023.",
+    "ou_involvement": "Researchers at our Centre for Electronic Imaging characterised the p-channel CCDs used in Hitomi’s Soft X-ray Imager, a camera of four CCDs that imaged X-rays from 0.4 to 12 keV across a patch of sky wider than the full Moon.",
+    "model": "/models/hitomi.glb",
+    "motion": {"mode": "spin", "axis": "+z", "tilt": 45},
+    "model_scale": 1.2,
+    "radius": 0.5,
+    "size_m": 14,
+    "color": "#33ccbb",
+    "orbit": {
+      "a_km": 6948.6,
+      "e": 0.00153,
+      "i": 31.01,
+      "M0": 120,
+      "rate": 5395.828898
+    }
+  },
+  {
     "name": "Spitzer",
     "parent": "Sun",
     "menu_parent": "Earth",
@@ -1715,6 +1737,49 @@
     },
     "description": "Itokawa is a small, peanut-shaped near-Earth asteroid about 535 metres long, named after Hideo Itokawa, the father of Japanese rocketry. In 2005 it was visited by JAXA's Hayabusa spacecraft, which in 2010 brought back the first samples ever collected from an asteroid. Its surface of boulders and gravel suggests it is a rubble pile, reassembled from the fragments of an earlier collision. The shape shown is Robert Gaskell’s model from Hayabusa’s images.",
     "ou_involvement": "We analysed particles of Itokawa returned by Hayabusa, carrying out the first Raman spectroscopy on the grains we were allocated. With a team led by Royal Holloway, University of London, we found water and organic matter of extraterrestrial origin in one of them."
+  },
+  {
+    "name": "Phaethon",
+    "parent": "Sun",
+    "type": "asteroid",
+    "status": "Natural",
+    "model": "/models/phaethon.glb",
+    "radius_km": 3.125,
+    "color": "#7d746a",
+    "rot_period": 0.150167,
+    "orbit": {
+      "a_au": 1.271465,
+      "e": 0.889672,
+      "i": 22.3105,
+      "M0": 143.7124,
+      "rate": 0.687460,
+      "node": 265.0988,
+      "peri": 322.3002
+    },
+    "description": "(3200) Phaethon is an unusual asteroid about 6 km across: it approaches the Sun more closely than any other named asteroid, to 0.14 AU (21 million km), well inside Mercury’s orbit. During these passages it behaves like a comet, brightening and developing a dust tail. It is also the parent body of the Geminid meteor shower. Phaethon has occupied this near-Sun orbit for more than 20,000 years and continues to emit gas but little dust, which is puzzling because its surface should long since have been dehydrated and rendered inactive. JAXA’s DESTINY⁺ mission is due to fly past it in 2030.",
+    "ou_involvement": "Phaethon was discovered by Simon Green, now Emeritus Professor at the OU, and John K. Davies, both then at the University of Leicester. They found it on 11 October 1983 in images from the IRAS infrared satellite: the first asteroid ever discovered in images taken from a spacecraft. Asteroid 9831 SimonGreen is named after him. Today OU researchers are on the DESTINY⁺ team, preparing to interpret the dust it will collect as it flies past Phaethon."
+  },
+  {
+    "name": "DESTINY+",
+    "parent": "Phaethon",
+    "type": "mission",
+    "model": "/models/destinyplus.glb",
+    "status": "Planned",
+    "launch_year": "2028",
+    "description": "DESTINY⁺ (Demonstration and Experiment of Space Technology for INterplanetary voYage, Phaethon fLyby and dUst Science) is a JAXA mission due to launch in 2028 and perform a close flyby of asteroid Phaethon in November 2030. Phaethon still emits gas, and there is no clear evidence of significant surface renewal through ongoing major dust release, making its continued activity an outstanding mystery. The spacecraft will fly past Phaethon at high speed, imaging the body with two cameras and analysing dust released from its surface using impact ionisation mass spectrometry. The mission will also observe several other asteroids, one before and several after its encounter with Phaethon.",
+    "ou_involvement": "Some OU researchers are members of the DESTINY⁺ Dust Analyzer Instrument Team and part of the DESTINY⁺ Science Working Team. Our work centres on the mission’s core scientific challenge of interpreting the flyby impact ionisation mass spectrometry data that the DDA will return. To build the reference datasets needed for that interpretation, we are carrying out experimental cyclic heating of meteorites considered the best-match to Phaethon, subjecting them to thermal regimes that mimic the extreme heating conditions the asteroid experiences during its perihelion approach. The resulting data allow us to characterise what materials we expect Phaethon to be shedding and to test that expectation directly against the flyby measurements.",
+    "radius": 0.3,
+    "size_m": 6,
+    "size_estimated": true,
+    "color": "#ff7744",
+    "orbit": {
+      "a_km": 15,
+      "e": 0,
+      "i": 0,
+      "M0": 60,
+      "rate": 0,
+      "illustrative": true
+    }
   },
   {
     "name": "Hayabusa",
@@ -2408,6 +2473,7 @@
   },
   {
     "name": "Open Science Observatories",
+    "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",
     "status": "Operational",
@@ -2429,6 +2495,7 @@
   },
   {
     "name": "Mars Yard",
+    "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",
     "status": "Operational",
@@ -2436,6 +2503,10 @@
     "landed_coords": {
       "lat": 52.04,
       "lon": -0.76
+    },
+    "diagram_coords": {
+      "lat": 55.0,
+      "lon": -2.2
     },
     "launch_year": "2017",
     "image_url": "/images/marsyard_science.jpeg",
@@ -2454,7 +2525,8 @@
     "color": "#dd4422"
   },
   {
-    "name": "OU Campus",
+    "name": "Robert Hooke Building",
+    "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",
     "model": "/models/ou_campus.glb",
@@ -2465,6 +2537,11 @@
       "lat": 52.0247,
       "lon": -0.7105
     },
+    "diagram_coords": {
+      "lat": 50.8,
+      "lon": -1.0
+    },
+    "land_lift": 0.01,
     "description": "The OU's campus at Walton Hall, Milton Keynes, is home to its planetary and space science laboratories and to the teams who write its distance-learning courses. The OU’s mission is to be open to people, places, methods and ideas.",
     "ou_involvement": "Research in this visualisation feeds into our teaching. On our BSc Natural Sciences (Astronomy and Planetary Science), students take modules such as Astronomy (S284) and Planetary science and the search for life (S283, becoming Planetary science, S287, from October 2027), and on Remote experiments in physics and space (SXPS288) they run their own projects with our radio telescope in Milton Keynes or our PIRATE telescope in Tenerife. Postgraduates on our S818 Space Science module work with real mission data, such as Gaia’s.",
     "radius": 0.2,
