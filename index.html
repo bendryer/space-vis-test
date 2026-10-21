@@ -8,11 +8,11 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CclipPath id='f'%3E%3Crect x='0' y='16' width='32' height='16'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23060645'/%3E%3Cg transform='rotate(-18 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='5' fill='none' stroke='%2366EEFA' stroke-width='1.6'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='8' fill='%231C46C0'/%3E%3Cg transform='rotate(-18 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='5' fill='none' stroke='%2366EEFA' stroke-width='1.6' clip-path='url(%23f)'/%3E%3C/g%3E%3C/svg%3E" />
     <!-- Start this in parallel with the JS bundle instead of after it runs -->
     <link rel="preload" href="./data.json" as="fetch" crossorigin="anonymous" />
-    <script type="module" crossorigin src="/space-vis-test/assets/main-wZFE9QFN.js"></script>
-    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/markers-BowwjjVZ.js">
-    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/engine-CpBj_QOj.js">
+    <script type="module" crossorigin src="/space-vis-test/assets/main-CGcLOMTb.js"></script>
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/markers-DmYw0Cnz.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/engine-DFE8TEBn.js">
     <link rel="stylesheet" crossorigin href="/space-vis-test/assets/markers-D1gUowSH.css">
-    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/main-CYkQ8wZ2.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/main-BMmH_DLw.css">
   </head>
   <body>
     <div id="app"></div>
@@ -77,11 +77,12 @@
       <img class="splash-logo" src="/space-vis-test/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192">
     </section>
 
-    <div id="ui-layer" class="is-waiting" inert>
-      <div id="header">
+    <!-- The app's landmarks: the page's main content, its header, the Explore nav, the controls. -->
+    <main id="ui-layer" class="is-waiting" inert>
+      <header id="header">
         <h1>Explore the OUniverse</h1>
         <p id="clock-line"><span class="clock-label">Simulated time</span> · <span id="clock">…</span></p>
-      </div>
+      </header>
 
       <!-- Phones: dims the scene behind the Explore sheet; a tap on it closes the sheet. -->
       <div id="sheet-scrim" class="sheet-scrim" aria-hidden="true"></div>
@@ -148,10 +149,10 @@
         </ul>
       </section>
 
-      <div id="controls"></div>
+      <section id="controls" aria-label="Controls"></section>
 
       <img id="app-logo" src="/space-vis-test/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192">
-    </div>
+    </main>
 
     <aside id="sidebar" aria-labelledby="info-title" inert>
         <!-- Phones: the details are a sheet; its grip shows more or less of it (tap or drag). -->
@@ -174,7 +175,7 @@
         <div id="credits-content"></div>
     </dialog>
 
-    <!-- "Launch your next mission" (launch.js). Placeholder words: to be written. -->
+    <!-- "Launch your next mission" (launch.js): studying with the OU, and free learning on OpenLearn. -->
     <dialog id="launch-dialog" aria-labelledby="launch-title">
         <button id="launch-close" type="button" aria-label="Close">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
@@ -182,18 +183,26 @@
           </svg>
         </button>
         <h2 id="launch-title">Launch your next mission</h2>
-        <div class="launch-content">
-          <p class="launch-lede">[Placeholder: a line inviting the visitor to study space science with the OU.]</p>
+        <div class="launch-content" tabindex="-1" autofocus>
+          <p class="launch-lede">The research you’ve been exploring is taught by the people who do it, and you can study it with us from wherever you are.</p>
           <h3>Study with us</h3>
-          <p>[Placeholder: the courses and qualifications informed by the research in this visualisation.]</p>
-          <h3>How OU teaching works</h3>
-          <p>[Placeholder: distance learning, remote telescopes and the Mars Yard, open entry.]</p>
-          <h3>Find out more</h3>
-          <p>[Placeholder: where to go next, such as the OU's courses pages or OpenLearn.]</p>
+          <p>Our <a href="https://www.open.ac.uk/courses/science/degrees/bsc-natural-sciences-astronomy-planetary-science-q64-ast" target="_blank" rel="noopener noreferrer">BSc (Honours) Natural Sciences (Astronomy and Planetary Science)<span class="visually-hidden"> (opens in new tab)</span></a> is built on this research, with modules including <a href="https://www.open.ac.uk/courses/modules/s284" target="_blank" rel="noopener noreferrer">Astronomy (S284)<span class="visually-hidden"> (opens in new tab)</span></a> and <a href="https://www.open.ac.uk/courses/modules/s283" target="_blank" rel="noopener noreferrer">Planetary science and the search for life (S283)<span class="visually-hidden"> (opens in new tab)</span></a>, which becomes Planetary science (S287) from October 2027. At postgraduate level, <a href="https://www.open.ac.uk/postgraduate/modules/s818" target="_blank" rel="noopener noreferrer">Space science (S818)<span class="visually-hidden"> (opens in new tab)</span></a> puts real data from missions such as Apollo, Rosetta, Curiosity and Gaia in your hands.</p>
+          <h3>Learning by doing, from home</h3>
+          <p>You study part-time, around work and life, and most of our undergraduate study needs no previous qualifications. On <a href="https://www.open.ac.uk/courses/modules/sxps288" target="_blank" rel="noopener noreferrer">Remote experiments in physics and space (SXPS288)<span class="visually-hidden"> (opens in new tab)</span></a> you control real equipment over the internet, from our PIRATE telescope in Tenerife to spectrometers in Milton Keynes, using technology OU researchers flew on ESA’s Rosetta mission. Students on our <a href="https://university.open.ac.uk/science/physical-science/study-us/undergraduate-space-pathways-bsc-mphys" target="_blank" rel="noopener noreferrer">MPhys Astrophysics with Space Science pathway<span class="visually-hidden"> (opens in new tab)</span></a> and <a href="https://www.open.ac.uk/postgraduate/qualifications/f77/" target="_blank" rel="noopener noreferrer">MSc Space Science and Technology<span class="visually-hidden"> (opens in new tab)</span></a> go one step further, driving a robotic rover across our Mars Yard from their own homes.</p>
+          <h3>Space for everyone</h3>
+          <p>Space doesn’t belong to science alone. It has inspired art, music, stories and ideas for as long as people have looked up, and that curiosity runs right across the OU, from the arts and humanities to technology, business and the social sciences. Whatever you study with us, there’s room to reach for the stars.</p>
+          <h3>Start exploring for free</h3>
+          <p>Try something new on <a href="https://www.open.edu/openlearn/" target="_blank" rel="noopener noreferrer">OpenLearn<span class="visually-hidden"> (opens in new tab)</span></a>, the OU’s free learning site:</p>
+          <ul class="launch-list">
+            <li>Hear what the Moon sounds like in <a href="https://www.open.edu/openlearn/science-maths-technology/astronomy/what-does-moon-music-sound" target="_blank" rel="noopener noreferrer"><em>Earth’s Reflection</em><span class="visually-hidden"> (opens in new tab)</span></a>, a piece by jazz trumpeter Yazz Ahmed created with OU planetary scientist Professor Mahesh Anand</li>
+            <li>Discover why ancient Egyptians prized <a href="https://www.open.edu/openlearn/science-maths-technology/science/geology/iron-the-sky-meteors-meteorites-and-ancient-culture" target="_blank" rel="noopener noreferrer">iron from the sky<span class="visually-hidden"> (opens in new tab)</span></a></li>
+            <li>Pitch satellite against satellite in <a href="https://www.open.edu/openlearn/moontrumps" target="_blank" rel="noopener noreferrer">Moon Trumps<span class="visually-hidden"> (opens in new tab)</span></a></li>
+            <li>Find out what Apollo taught us in <a href="https://www.open.edu/openlearn/science-maths-technology/astronomy/the-moon-and-beyond" target="_blank" rel="noopener noreferrer">To the Moon and beyond<span class="visually-hidden"> (opens in new tab)</span></a></li>
+          </ul>
         </div>
     </dialog>
 
     <div id="announcer" class="visually-hidden" aria-live="polite"></div>
-
+
   </body>
 </html>

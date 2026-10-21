@@ -2413,6 +2413,28 @@
     "model_named": "/models/Kokotanekova.glb"
   },
   {
+    "name": "117595 Jemmadavidson",
+    "parent": "Sun",
+    "menu_order": 117595,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 1.62,
+    "radius_estimated": true,
+    "color": "#7a7672",
+    "orbit": {
+      "a_au": 3.151596,
+      "e": 0.2165,
+      "i": 16.21,
+      "M0": 157.064,
+      "rate": 0.17616,
+      "node": 336.52,
+      "peri": 34.82
+    },
+    "description": "A main-belt asteroid named after Jemma Davidson, who did her PhD at the OU on presolar grains in primitive meteorites (2009). Since November 2024 she has been NASA’s Astromaterials Curator, heading the curation of all of NASA’s extraterrestrial samples at the Johnson Space Center. Its official naming citation reads: “Jemma Davidson (b. 1984) is a cosmochemist and meteoriticist specializing in the study of presolar grains and pristine chondrites to determine how minor bodies formed and evolved in the early Solar System. She was previously a Science Team collaborator and webmaster for the OSIRIS-REx Asteroid Sample Return Mission.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid5.glb"
+  },
+  {
     "name": "Earth-Sun L1",
     "parent": "Sun",
     "menu_top_level": true,
