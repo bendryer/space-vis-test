@@ -2435,6 +2435,134 @@
     "model": "/models/Asteroid5.glb"
   },
   {
+    "name": "97578 JessicaBarnes",
+    "parent": "Sun",
+    "menu_order": 97578,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 2.451,
+    "radius_estimated": true,
+    "color": "#787570",
+    "orbit": {
+      "a_au": 3.122317,
+      "e": 0.0504,
+      "i": 20.13,
+      "M0": 286.913,
+      "rate": 0.178644,
+      "node": 143,
+      "peri": 53.38
+    },
+    "description": "A main-belt asteroid named after Jessica Barnes, who did her PhD at the OU and the Natural History Museum on water in the Moon (2015), measuring water and its hydrogen isotopes in apatite in Apollo samples and lunar meteorites, and stayed on at the OU as a postdoctoral researcher. Its official naming citation reads: “Jessica Barnes (b. 1988) is a British cosmochemist at the LPL researching the origin and evolution of volatiles in the solar system. She is a member of the OSIRIS-REx sample analysis team and studies lunar basalts through the Apollo Next-Generation Sample Analysis program. Jessica is a recipient of the Meteoritical Society’s Nier Prize.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid5.glb"
+  },
+  {
+    "name": "7993 JohnBridges",
+    "parent": "Sun",
+    "menu_order": 7993,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 4.231,
+    "color": "#8a8a86",
+    "orbit": {
+      "a_au": 2.925747,
+      "e": 0.1333,
+      "i": 2.59,
+      "M0": 178.477,
+      "rate": 0.196947,
+      "node": 42.53,
+      "peri": 328.05
+    },
+    "description": "A main-belt asteroid named after John Bridges, who did his PhD at the OU (1988–1992) and later returned as a researcher on Beagle 2 and planetary science (2003–2007) and as an OU Associate Lecturer (2005–2011). Its official naming citation reads: “John Bridges (b. 1966), based at the University of Leicester, is an expert on the mineralogy and petrology of martian meteorites, chondritic meteorites and cometary material returned by the Stardust mission. He has been a participating scientist in Mars Science Laboratory rover mission.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid1.glb"
+  },
+  {
+    "name": "14796 EmmaBullock",
+    "parent": "Sun",
+    "menu_order": 14796,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 6.537,
+    "color": "#5a5856",
+    "orbit": {
+      "a_au": 3.174412,
+      "e": 0.1286,
+      "i": 8.18,
+      "M0": 353.375,
+      "rate": 0.174265,
+      "node": 81.64,
+      "peri": 335.98
+    },
+    "description": "A main-belt asteroid named after Emma Bullock, who did her PhD at the OU on the mineralogy and mineral chemistry of primitive carbonaceous chondrites (2005). Its official naming citation reads: “Emma Bullock (b. 1980) is a British planetary scientist at Carnegie Science in Washington, DC. In addition to her work on understanding the origin of chondritic meteorites, she is an expert in microbeam analytical techniques and manages the electron microprobe lab at the Earth and Planets Laboratory.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid3.glb"
+  },
+  {
+    "name": "31551 AshleyKing",
+    "parent": "Sun",
+    "menu_order": 31551,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 1.597,
+    "radius_estimated": true,
+    "color": "#7a7672",
+    "orbit": {
+      "a_au": 2.310599,
+      "e": 0.1471,
+      "i": 8.03,
+      "M0": 84.846,
+      "rate": 0.280619,
+      "node": 3.92,
+      "peri": 162.26
+    },
+    "description": "A main-belt asteroid named after Ashley King, who joined the OU as a lecturer in planetary science in October 2019. He studies water-rich asteroids through meteorites and the samples returned by Hayabusa2 and OSIRIS-REx. Its official naming citation reads: “Ashley King (b. 1985) is a British research scientist at the Natural History Museum, London. He specializes in understanding the origin of our Solar System and others by studying physical and chemical properties of extraterrestrial materials collected on Earth and returned through space missions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid5.glb"
+  },
+  {
+    "name": "32520 JontiHorner",
+    "parent": "Sun",
+    "menu_order": 32520,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 1.994,
+    "color": "#a09e9a",
+    "orbit": {
+      "a_au": 2.763971,
+      "e": 0.1576,
+      "i": 9.47,
+      "M0": 180.329,
+      "rate": 0.214488,
+      "node": 146.51,
+      "peri": 269.84
+    },
+    "description": "A main-belt asteroid named after Jonti Horner, who worked at the OU, where with Barrie Jones he tested the idea that Jupiter shields Earth from impacts: their simulations, run on the OU’s computer cluster, found that it does not do so as simply as had long been thought. Its official naming citation reads: “Jonti Horner (b. 1978) is a British-Australian astronomer at the University of Southern Queensland. He has worked on the origin and evolution of the Centaurs and Jupiter’s role on impacts on Earth. Recently, he has looked at how the knowledge of our own Solar System informs studies of exoplanetary systems.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid1.glb"
+  },
+  {
+    "name": "30288 ConelAlexander",
+    "parent": "Sun",
+    "menu_order": 30288,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 3.286,
+    "color": "#585654",
+    "orbit": {
+      "a_au": 2.794709,
+      "e": 0.0572,
+      "i": 5.04,
+      "M0": 241.485,
+      "rate": 0.21096,
+      "node": 139.08,
+      "peri": 173.62
+    },
+    "description": "A main-belt asteroid named after Conel Alexander, who after his PhD (1987) joined Colin Pillinger’s group at the OU. There he learned stable isotope mass spectrometry and showed that presolar grains and isotopically anomalous organic matter are found in ordinary chondrites, not just in carbonaceous meteorites. Its official naming citation reads: “Conel Michael O’Donel Alexander (b. 1960) is a British research scientist at the Carnegie Institution for Science where he is a leader in the study of organic matter in asteroids, comets, meteorites and circumstellar grains.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid3.glb"
+  },
+  {
     "name": "Earth-Sun L1",
     "parent": "Sun",
     "menu_top_level": true,
