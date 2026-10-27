@@ -1,0 +1,144 @@
+{
+  "title": "Light through the atmosphere (demo)",
+  "markers": false,
+  "steps": [
+    {
+      "target": "Earth",
+      "title": "Earth’s atmosphere",
+      "view": {
+        "lat": 25,
+        "lon": -20,
+        "radii": 2.8,
+        "shift": [
+          -0.18,
+          -0.25
+        ]
+      },
+      "builds": [
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Its layers, heights × 10",
+          "atmosphere": {
+            "light": false,
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Gamma rays stop high up",
+          "atmosphere": {
+            "light": [
+              "gamma"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "So do X-rays",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Extreme ultraviolet, highest of all",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray",
+              "euv"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Ultraviolet: the ozone layer",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray",
+              "euv",
+              "uv"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Visible light reaches the ground",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray",
+              "euv",
+              "uv",
+              "visible"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Far infrared: water vapour and CO₂",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray",
+              "euv",
+              "uv",
+              "visible",
+              "infrared"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        },
+        {
+          "id": "air",
+          "persist": true,
+          "title": "Radio reaches the ground",
+          "atmosphere": {
+            "light": [
+              "gamma",
+              "xray",
+              "euv",
+              "uv",
+              "visible",
+              "infrared",
+              "radio"
+            ],
+            "angle": 42,
+            "span": 44,
+            "exaggerate": 10
+          }
+        }
+      ]
+    }
+  ]
+}

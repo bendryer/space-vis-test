@@ -1,0 +1,62 @@
+{
+  "title": "Spacecraft: payload and systems (demo)",
+  "markers": false,
+  "steps": [
+    {
+      "target": "JWST",
+      "title": "The James Webb Space Telescope",
+      "builds": [
+        {
+          "title": "Payload: the telescope",
+          "callout": {
+            "at": {
+              "part": [
+                0.111,
+                0.364,
+                0.077
+              ]
+            },
+            "image": "/images/jwst_science.jpeg",
+            "caption": "The primary mirror: 18 gold-coated beryllium segments, 6.5 m across.",
+            "credit": "Placeholder caption"
+          }
+        },
+        {
+          "callout": {
+            "at": {
+              "part": [
+                -0.026,
+                0.299,
+                0.744
+              ]
+            },
+            "image": "/presentations/capabilities/jwst-secondary.jpg",
+            "caption": "The secondary mirror reflects the light back down to the instruments.",
+            "credit": "Placeholder"
+          }
+        },
+        {
+          "hide": [
+            "callout-0-0",
+            "callout-0-1"
+          ],
+          "title": "Systems: thermal control"
+        },
+        {
+          "callout": {
+            "at": {
+              "part": [
+                -0.27,
+                -0.033,
+                0.345
+              ]
+            },
+            "image": "/presentations/capabilities/jwst-sunshield.jpg",
+            "caption": "The sunshield keeps the telescope below 50 K, cold enough to see in the infrared.",
+            "credit": "Placeholder"
+          }
+        }
+      ]
+    }
+  ]
+}

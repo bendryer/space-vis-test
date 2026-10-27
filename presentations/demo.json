@@ -1,8 +1,25 @@
 {
   "title": "OUniverse demo",
+  "cover": {
+    "title": "An introduction to Space Science",
+    "subtitle": "S818 Space Science",
+    "presenter": "Dr. Ben Dryer",
+    "lines": [
+      "School of Physical Sciences"
+    ]
+  },
   "steps": [
-    { "target": "Earth", "title": "Earth" },
-    { "target": "Perseverance", "title": "Perseverance on Mars" },
-    { "target": "Philae", "title": "Philae on Comet 67P" }
+    {
+      "target": "Earth",
+      "title": "Earth"
+    },
+    {
+      "target": "Perseverance",
+      "title": "Perseverance on Mars"
+    },
+    {
+      "target": "Philae",
+      "title": "Philae on Comet 67P"
+    }
   ]
 }

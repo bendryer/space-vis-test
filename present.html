@@ -6,16 +6,41 @@
     <title>OUniverse presentation</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CclipPath id='f'%3E%3Crect x='0' y='16' width='32' height='16'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%23060645'/%3E%3Cg transform='rotate(-18 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='5' fill='none' stroke='%2366EEFA' stroke-width='1.6'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='8' fill='%231C46C0'/%3E%3Cg transform='rotate(-18 16 16)'%3E%3Cellipse cx='16' cy='16' rx='13' ry='5' fill='none' stroke='%2366EEFA' stroke-width='1.6' clip-path='url(%23f)'/%3E%3C/g%3E%3C/svg%3E" />
     <link rel="preload" href="./data.json" as="fetch" crossorigin="anonymous" />
-    <script type="module" crossorigin src="/space-vis-test/assets/present-D1jRvxuY.js"></script>
-    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/markers-ZuHKEQrA.js">
-    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/engine-DFE8TEBn.js">
+    <script type="module" crossorigin src="/space-vis-test/assets/present-CigIbDKN.js"></script>
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/markers-BQacoqak.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/engine-CZbfG9v-.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/edition-DwFRIfon.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/callouts-BVM8fRX4.js">
     <link rel="stylesheet" crossorigin href="/space-vis-test/assets/markers-DPKYwzur.css">
-    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/present-JwsBWS8a.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/callouts-D2s6EQcn.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/present-BbHmQUUN.css">
   </head>
   <body>
-    <!-- Covers the scene while it loads, and fades once the scene and the steps are ready. -->
-    <section id="present-loading" class="present-loading">
-      <p id="present-loading-text" role="status">Loading the Solar System…</p>
+    <!-- The title page, as the OU slide template's: the title on the left, a window top right and
+         the OU shapes below it. The window is a hole in the page, and the scene shows through it,
+         held still; the first click (or Next) zooms through it into the presentation. -->
+    <section id="present-cover" class="present-cover">
+      <div class="cover-window" aria-hidden="true"></div>
+      <p id="present-loading-text" class="cover-status" role="status">Loading the Solar System…</p>
+      <div class="cover-text">
+        <h2 id="cover-title" class="cover-title"></h2>
+        <p id="cover-subtitle" class="cover-subtitle"></p>
+        <div id="cover-lines" class="cover-lines"></div>
+        <p id="cover-hint" class="cover-hint" hidden>Click, or press <kbd>→</kbd>, to begin</p>
+      </div>
+      <svg class="cover-shapes" viewBox="0 0 960 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="cover-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#1EF6C4" />
+            <stop offset="1" stop-color="#06A6FF" />
+          </linearGradient>
+        </defs>
+        <rect width="960" height="480" fill="url(#cover-gradient)" />
+        <circle cx="240" cy="240" r="240" class="cover-navy" />
+        <path d="M480 0 A240 240 0 0 0 720 240 A240 240 0 0 0 480 480 Z" class="cover-navy" />
+        <path d="M720 0 A240 240 0 0 0 960 240 A240 240 0 0 0 720 480 Z" class="cover-navy" />
+      </svg>
+      <div class="cover-logo brand-lockup"><img class="brand-logo" src="/space-vis-test/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--space" src="/space-vis-test/images/brand/ou-space-logo-white.png" alt="OU Space" width="464" height="200"></div>
     </section>
 
     <!-- For screen readers: what this is (the presentation's own title once it loads), and where it is. -->
@@ -29,15 +54,36 @@
       <button id="present-prev" type="button" aria-label="Previous step">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6l6 6"/></svg>
       </button>
-      <p class="present-where"><span id="present-title"></span> <span id="present-count" class="present-count"></span></p>
+      <p class="present-where"><span id="present-title"></span> <span id="present-count" class="present-count"></span><span id="present-builds" class="present-builds" aria-hidden="true" hidden></span></p>
       <button id="present-next" type="button" aria-label="Next step">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6l-6 6"/></svg>
       </button>
     </nav>
 
-    <div id="present-logo" class="present-logo brand-lockup"><img class="brand-logo" src="/space-vis-test/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--space" src="/space-vis-test/images/brand/ou-space-logo-white.png" alt="OU Space" width="464" height="200"></div>
+    <!-- The solar cycle's year, and a chart with a cursor at that year (a sun_cycle build). -->
+    <aside id="present-cycle" class="present-cycle" aria-hidden="true" hidden>
+      <p id="present-cycle-year" class="present-cycle-year"></p>
+      <figure id="present-cycle-chart" class="present-cycle-chart" hidden>
+        <div class="present-cycle-plot"><img alt=""><span id="present-cycle-cursor" class="present-cycle-cursor"></span></div>
+        <figcaption></figcaption>
+      </figure>
+    </aside>
+
+    <!-- The slide's words: a step's heading and its points, one a build (as a slide's bullets). -->
+    <aside id="present-card" class="present-card" hidden>
+      <h2 id="present-card-heading" class="present-card-heading"></h2>
+      <ul id="present-card-points" class="present-card-points"></ul>
+    </aside>
+
+    <!-- The simulated date, while a step sets the clock. -->
+    <aside id="present-clock" class="present-clock" aria-hidden="true" hidden>
+      <p id="present-clock-date" class="present-clock-date"></p>
+      <p id="present-clock-rate" class="present-clock-rate"></p>
+    </aside>
+
+    <div id="present-logo" class="present-logo brand-lockup" hidden><img class="brand-logo" src="/space-vis-test/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--space" src="/space-vis-test/images/brand/ou-space-logo-white.png" alt="OU Space" width="464" height="200"></div>
 
     <div id="present-announcer" class="visually-hidden" aria-live="polite"></div>
-
+
   </body>
 </html>

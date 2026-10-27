@@ -1,0 +1,78 @@
+{
+  "title": "Space telescopes (demo)",
+  "markers": false,
+  "steps": [
+    {
+      "target": "Hubble",
+      "title": "The Hubble Space Telescope",
+      "builds": [
+        {
+          "id": "hubble-points",
+          "persist": true,
+          "title": "Pointing at V838 Monocerotis",
+          "pointing": {
+            "ra": 106.02,
+            "dec": -3.85,
+            "image": "/images/hubble_science.jpg",
+            "size_deg": 14
+          }
+        }
+      ],
+      "date": "2026-11-02T20:56:00Z"
+    },
+    {
+      "target": "Hubble",
+      "title": "What it sees: a light echo, 20,000 light years away",
+      "view": {
+        "ra": 106.02,
+        "dec": -3.85
+      }
+    },
+    {
+      "target": "JWST",
+      "title": "The James Webb Space Telescope",
+      "builds": [
+        {
+          "id": "jwst-points",
+          "persist": true,
+          "title": "Pointing at the Carina Nebula",
+          "pointing": {
+            "ra": 159.34,
+            "dec": -58.62,
+            "image": "/images/jwst_science.jpeg",
+            "size_deg": 18,
+            "colour": "#FFF488"
+          }
+        }
+      ],
+      "hide": [
+        "hubble-points"
+      ]
+    },
+    {
+      "target": "JWST",
+      "title": "What it sees: the Cosmic Cliffs, in the infrared",
+      "view": {
+        "ra": 159.34,
+        "dec": -58.62
+      }
+    },
+    {
+      "target": "Gaia",
+      "title": "Gaia: surveying the whole sky",
+      "builds": [
+        {
+          "id": "survey",
+          "title": "How the Milky Way’s stars move (Gaia)",
+          "sky": {
+            "image": "/presentations/capabilities/gaia-sky.webp",
+            "opacity": 0.55
+          }
+        }
+      ],
+      "hide": [
+        "jwst-points"
+      ]
+    }
+  ]
+}

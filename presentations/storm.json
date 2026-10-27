@@ -1,0 +1,55 @@
+{
+  "title": "Space weather: the Halloween storms (demo)",
+  "date": "2003-10-28T09:00:00Z",
+  "markers": false,
+  "steps": [
+    {
+      "target": "Earth",
+      "title": "Earth’s magnetosphere",
+      "time_rate": 0,
+      "view": { "radii": 24, "elevation": 30 },
+      "builds": [
+        {
+          "id": "magnetosphere", "persist": true,
+          "title": "Earth’s magnetic field",
+          "magnetosphere": { "boundary": false, "belts": false, "aurora": false, "wind": false }
+        },
+        {
+          "id": "magnetosphere", "persist": true,
+          "title": "The solar wind, held off by the field",
+          "magnetosphere": { "belts": false, "aurora": false }
+        },
+        {
+          "id": "magnetosphere", "persist": true,
+          "title": "The radiation belts and the aurora",
+          "magnetosphere": {}
+        }
+      ]
+    },
+    {
+      "target": "Sun",
+      "title": "28 October 2003: an X17 flare",
+      "view": { "radii": 70, "elevation": 70 },
+      "builds": [
+        {
+          "id": "cme", "persist": true,
+          "title": "A coronal mass ejection heads for Earth",
+          "cme": { "launch": "2003-10-28T11:10:00Z", "speed_km_s": 2100, "width_deg": 80, "toward": "Earth" }
+        },
+        { "title": "An hour a second", "time": { "rate": 3600 } }
+      ]
+    },
+    {
+      "target": "Earth",
+      "title": "About 19 hours later, it reaches Earth",
+      "time_rate": 1800,
+      "view": { "radii": 24, "elevation": 30 }
+    },
+    {
+      "target": "Earth",
+      "title": "The aurora, spread far south",
+      "time_rate": 600,
+      "view": { "lat": 62, "lon": -95, "radii": 2.6 }
+    }
+  ]
+}

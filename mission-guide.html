@@ -683,6 +683,7 @@ function factsFor(item) {
   const model = getEffectiveModelPath(item);
   add('Model', model && `${model}${item.model_scale ? ` (scale ${item.model_scale})` : ''}`);
   if (item.model_named) add('Named model', `${item.model_named} (${item.model_named_shown ? 'shown' : 'private: not shown'})`);
+  add('Editions', item.editions?.length ? item.editions.join(', ') : 'none: not shown in any edition');
   add('Texture', item.texture);
   add('Radius', item.radius_km !== undefined
     ? `${item.radius_km} km${item.model ? ' (half its longest side)' : ''}${item.radius_estimated ? ', estimated from its brightness' : ''}`

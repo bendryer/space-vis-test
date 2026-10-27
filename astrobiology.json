@@ -1,0 +1,352 @@
+{
+  "title": "Life beyond Earth",
+  "blurb": [
+    "Are we alone in the Universe? On Earth, life turns up wherever there is liquid water: in boiling springs, deep under the ice, and in rock kilometres underground.",
+    "Beyond Earth, oceans lie hidden beneath the ice of Jupiter’s and Saturn’s moons, and high in the clouds of Venus the temperature and pressure are much like Earth’s surface.",
+    "Our AstrobiologyOU researchers study where life could survive beyond Earth, and how we would recognise it. Explore four places in the Solar System where it might be found."
+  ],
+  "layout": {
+    "date": "2026-11-01T13:44:00Z",
+    "place": {
+      "Venus": {
+        "from": "Earth",
+        "angle": 170
+      }
+    }
+  },
+  "stories": [
+    {
+      "id": "venus",
+      "title": "Life in the clouds of Venus",
+      "splat": "teal",
+      "colour": "#51B9BD",
+      "system": "Venus",
+      "target": "Venus",
+      "clear_of": "Venus",
+      "view": {
+        "look": {
+          "sun": 68,
+          "elevation": 12,
+          "radii": 3.4
+        }
+      },
+      "intro": "Venus’s surface is hot enough to melt lead, but about 50 km up, in its clouds, the temperature and pressure are much like Earth’s surface. Could microbes live in the cloud droplets? Three missions are planned to find out more.",
+      "callouts": [
+        {
+          "at": "Venus",
+          "title": "Venus",
+          "caption": "Its clouds are droplets of sulfuric acid, but 50 km up they’re as warm as a spring day. In 2020 astronomers reported phosphine there, a gas life makes on Earth; later studies dispute it.",
+          "image": "/images/astrobiology/venus/venus.webp",
+          "credit": "Mariner 10: NASA/JPL-Caltech",
+          "alt": "Venus",
+          "side": "right"
+        },
+        {
+          "at": "EnVision",
+          "title": "EnVision (ESA)",
+          "caption": "Will map Venus’s surface and trace the sulfur gases in its air, showing how active its volcanoes are and what became of the water it may once have had.",
+          "image": "/images/astrobiology/venus/envision.webp",
+          "credit": "ESA, CC BY-SA 3.0 IGO",
+          "alt": "EnVision (ESA)",
+          "side": "left"
+        },
+        {
+          "at": "VERITAS",
+          "title": "VERITAS (NASA)",
+          "caption": "Will map the surface with radar and infrared, looking for active volcanoes and for rocks that would show whether Venus once had oceans.",
+          "image": "/images/astrobiology/venus/veritas.webp",
+          "credit": "NASA/JPL-Caltech",
+          "alt": "VERITAS (NASA)",
+          "side": "left"
+        },
+        {
+          "at": "DAVINCI",
+          "title": "DAVINCI (NASA)",
+          "caption": "Will drop a probe through the clouds, tasting the gases all the way to the ground, to find out whether Venus was ever habitable.",
+          "image": "/images/astrobiology/venus/davinci.webp",
+          "credit": "NASA/GSFC",
+          "alt": "DAVINCI (NASA)",
+          "side": "right"
+        }
+      ]
+    },
+    {
+      "id": "earth",
+      "title": "Life in extreme environments",
+      "splat": "green",
+      "colour": "#6AA62F",
+      "system": "Earth",
+      "target": "Earth",
+      "intro": "Extremophiles are living things that thrive where we couldn’t: in boiling springs, acid lakes, Antarctic ice and rock deep underground. Some can even survive in space, which tells us where else life might cope.",
+      "callouts": [
+        {
+          "at": {
+            "lat": 51.39,
+            "lon": 30.1
+          },
+          "title": "Chernobyl, Ukraine",
+          "image": "/images/astrobiology/earth/chernobyl.webp",
+          "caption": "Dark fungi grow on the walls of the wrecked reactor, under radiation that would kill us. Some even seem to grow towards it.",
+          "credit": "Photo: Cls14, CC BY-SA 4.0",
+          "side": "left",
+          "alt": "Chernobyl, Ukraine"
+        },
+        {
+          "at": {
+            "lat": -77.5,
+            "lon": 106.0
+          },
+          "title": "Lake Vostok, Antarctica",
+          "image": "/images/astrobiology/earth/vostok.webp",
+          "caption": "A lake the size of Lake Ontario, sealed under almost 4 km of ice: a model for the buried oceans of icy moons.",
+          "credit": "Illustration: Nicolle Rager-Fuller, NSF",
+          "side": "right",
+          "alt": "Lake Vostok, Antarctica"
+        },
+        {
+          "at": {
+            "lat": -25.32,
+            "lon": 70.04
+          },
+          "title": "Kairei vents, Indian Ocean",
+          "image": "/images/astrobiology/earth/black-smoker.webp",
+          "caption": "Vents 2.4 km down gush water at over 300 °C. A microbe from here grew at 122 °C, the record for life.",
+          "credit": "A black smoker in the Atlantic. Photo: P. Rona, NOAA",
+          "side": "right",
+          "alt": "Kairei vents, Indian Ocean"
+        },
+        {
+          "at": "ISS",
+          "title": "International Space Station",
+          "image": "/images/web/ISS_science.webp",
+          "caption": "In the BIOMEX experiment, bacteria, algae, lichens and fungi spent 18 months outside the station. Many survived, a clue to whether life could travel between planets.",
+          "side": "left",
+          "width": 220,
+          "alt": "International Space Station"
+        }
+      ],
+      "clear_of": "Earth",
+      "view": {
+        "look": {
+          "lat": -16,
+          "lon": 44,
+          "radii": 3.2
+        }
+      }
+    },
+    {
+      "id": "jupiter",
+      "title": "Life in subsurface oceans",
+      "splat": "magenta",
+      "colour": "#CD33A9",
+      "system": "Jupiter",
+      "target": "Jupiter",
+      "clear_of": "Jupiter",
+      "view": {
+        "look": {
+          "sun": 55,
+          "elevation": 14,
+          "radii": 8
+        },
+        "shift": [
+          0,
+          0.12
+        ]
+      },
+      "intro": "Jupiter’s tides squeeze and heat its large moons. Beneath the ice of Europa, Ganymede and perhaps Callisto lie oceans of liquid water, and two spacecraft are on their way to explore them.",
+      "callouts": [
+        {
+          "at": "JUICE",
+          "title": "JUICE (ESA)",
+          "caption": "Arrives in 2031 to explore Ganymede, Europa and Callisto, measuring their ice and oceans to see whether they could support life.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/juice.webp",
+          "credit": "ESA/ATG Medialab, CC BY-SA 3.0 IGO",
+          "alt": "JUICE (ESA)",
+          "body": ""
+        },
+        {
+          "at": "Europa Clipper",
+          "title": "Europa Clipper (NASA)",
+          "caption": "Arrives in 2030 and will fly past Europa about 50 times, measuring its ice shell and ocean and sampling the dust above it.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/clipper.webp",
+          "credit": "NASA/JPL-Caltech",
+          "alt": "Europa Clipper (NASA)",
+          "body": ""
+        },
+        {
+          "at": "Europa",
+          "title": "Europa",
+          "caption": "Under its ice lies a salty ocean with twice the water of Earth’s, on a rocky seafloor that could feed it the chemicals life needs.",
+          "side": "left",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/europa.webp",
+          "credit": "Galileo: NASA/JPL-Caltech/SETI Institute",
+          "alt": "Europa"
+        },
+        {
+          "at": "Callisto",
+          "title": "Callisto",
+          "caption": "Its battered surface has hardly changed in four billion years, but its magnetic signature hints at an ocean deep below.",
+          "side": "left",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/callisto.webp",
+          "credit": "Galileo: NASA/JPL",
+          "alt": "Callisto"
+        },
+        {
+          "at": "Io",
+          "title": "Io",
+          "caption": "The most volcanic world known. The same tides from Jupiter that melt Io’s rock help keep its neighbours’ oceans liquid.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/io.webp",
+          "credit": "Galileo: NASA/JPL/University of Arizona",
+          "alt": "Io"
+        },
+        {
+          "at": "Ganymede",
+          "title": "Ganymede",
+          "caption": "The largest moon in the Solar System, with an ocean sandwiched between layers of ice, betrayed by its glowing aurorae.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/jupiter/ganymede.webp",
+          "credit": "Juno: NASA/JPL-Caltech/SwRI/MSSS, Kevin M. Gill",
+          "alt": "Ganymede"
+        }
+      ]
+    },
+    {
+      "id": "enceladus",
+      "title": "Life in the plumes of Enceladus",
+      "splat": "purple",
+      "colour": "#9B4FC4",
+      "system": "Saturn",
+      "target": "Saturn",
+      "clear_of": "Saturn",
+      "view": {
+        "look": {
+          "sun": -50,
+          "elevation": 18,
+          "radii": 4.5
+        }
+      },
+      "intro": "Jets of water vapour and ice burst from cracks near Enceladus’s south pole, fed by an ocean beneath the ice. Flying through them, Cassini tasted that ocean.",
+      "callouts": [
+        {
+          "at": "Enceladus",
+          "title": "Enceladus",
+          "caption": "Its jets carry salt, organic molecules and hydrogen from an ocean under the ice. On Earth, microbes at seafloor vents live on hydrogen like that.",
+          "side": "right",
+          "width": 240,
+          "image": "/images/astrobiology/saturn/enceladus.webp",
+          "credit": "Cassini: NASA/JPL/SSI",
+          "alt": "Enceladus"
+        },
+        {
+          "at": "Saturn",
+          "title": "Saturn",
+          "caption": "Enceladus orbits inside Saturn’s faint E ring, which is made of ice grains from its jets.",
+          "side": "left",
+          "width": 240,
+          "image": "/images/astrobiology/saturn/saturn.webp",
+          "credit": "Cassini: NASA/JPL/SSI",
+          "alt": "Saturn"
+        },
+        {
+          "at": "Cassini",
+          "title": "Cassini (NASA, ESA, ASI)",
+          "caption": "Flew through the jets of Enceladus before ending its mission in 2017, and found the ocean’s salt, organics and hydrogen in the spray.",
+          "side": "left",
+          "width": 240,
+          "image": "/images/astrobiology/saturn/cassini.webp",
+          "credit": "NASA/JPL",
+          "alt": "Cassini (NASA, ESA, ASI)",
+          "body": ""
+        }
+      ]
+    },
+    {
+      "id": "l2",
+      "title": "Life around other suns",
+      "splat": "wordmark",
+      "colour": "#FFFFFF",
+      "system": "Earth-Sun L2",
+      "where": "Earth–Sun L2, beyond Earth",
+      "target": "Earth-Sun L2",
+      "clear_of": "Earth",
+      "intro": "Are we alone? From L2, 1.5 million km beyond Earth, telescopes are finding planets round other stars and reading the gases in their air, looking for signs of life.",
+      "callouts": [
+        {
+          "at": "JWST",
+          "title": "JWST (NASA, ESA, CSA)",
+          "caption": "Reads the starlight that filters through the air of planets round other stars. Its first detailed look, at the giant planet WASP-39b, found carbon dioxide.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/l2/jwst.webp",
+          "credit": "NASA, ESA, CSA, STScI, CC BY 2.0",
+          "alt": "JWST (NASA, ESA, CSA)"
+        },
+        {
+          "at": "PLATO",
+          "title": "PLATO (ESA)",
+          "caption": "Will watch hundreds of thousands of stars for the tiny dip in light as a planet crosses, hunting Earth-sized worlds where water could be liquid.",
+          "side": "left",
+          "width": 230,
+          "image": "/images/astrobiology/l2/plato.webp",
+          "credit": "ESA, CC BY-SA 3.0 IGO",
+          "alt": "PLATO (ESA)"
+        },
+        {
+          "at": "Ariel",
+          "title": "Ariel (ESA)",
+          "caption": "Will survey the atmospheres of about 1,000 planets round other stars, to learn what they’re made of and how they formed.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/l2/ariel.webp",
+          "credit": "ESA, CC BY-SA 3.0 IGO",
+          "alt": "Ariel (ESA)"
+        },
+        {
+          "at": "Roman",
+          "title": "Roman (NASA)",
+          "caption": "Will find thousands of planets as their gravity bends the light of stars behind them, and test a coronagraph that blocks a star’s glare to see planets beside it.",
+          "side": "right",
+          "width": 230,
+          "image": "/images/astrobiology/l2/roman.webp",
+          "credit": "NASA",
+          "alt": "Roman (NASA)"
+        },
+        {
+          "at": "HWO",
+          "title": "Habitable Worlds Observatory (NASA)",
+          "caption": "Planned to photograph Earth-like planets round Sun-like stars and look in their air for oxygen, methane and water: possible signs of life.",
+          "side": "left",
+          "width": 230,
+          "image": "/images/astrobiology/l2/hwo.webp",
+          "credit": "NASA/GSFC Scientific Visualization Studio",
+          "alt": "Habitable Worlds Observatory (NASA)"
+        }
+      ],
+      "view": {
+        "look": {
+          "sun": 35,
+          "elevation": 15,
+          "radii": 26
+        },
+        "shift": [
+          -0.06,
+          0
+        ]
+      },
+      "icon": {
+        "splat": "teal",
+        "turn": 150,
+        "white": true
+      }
+    }
+  ]
+}

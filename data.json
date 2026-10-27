@@ -1,6 +1,7 @@
 [
   {
     "name": "Sun",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "type": "star",
     "status": "Natural",
     "radius_km": 695700,
@@ -21,6 +22,7 @@
   },
   {
     "name": "Mercury",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -45,6 +47,7 @@
   },
   {
     "name": "BepiColombo",
+    "editions": ["ou", "schools"],
     "parent": "Mercury",
     "type": "mission",
     "status": "En Route",
@@ -74,6 +77,7 @@
   },
   {
     "name": "Venus",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -98,6 +102,7 @@
   },
   {
     "name": "Earth",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -105,6 +110,7 @@
     "radius_km": 6371.0,
     "gm": 398600.4355,
     "texture": "/textures/earth.webp",
+    "texture_detail": "/textures/earth_8k.webp",
     "night_texture": "/textures/earth_night.webp",
     "roughness_map": "/textures/earth.webp",
     "segments": 48,
@@ -113,6 +119,24 @@
     "pole": {"ra": 0.0, "dec": 90.0},
     "rot_period": 0.997,
     "rotation_mode": "utc",
+    "magnetosphere": {"pole": {"lat": 80.8, "lon": -72.6}, "standoff_re": 10, "belts": [[1.2, 2.5], [3, 6]], "aurora_lat": 67},
+    "atmosphere": {
+      "layers": [
+        {"name": "Troposphere", "top_km": 12},
+        {"name": "Stratosphere", "top_km": 50},
+        {"name": "Mesosphere", "top_km": 85},
+        {"name": "Thermosphere", "top_km": 600}
+      ],
+      "absorption": [
+        {"band": "gamma", "label": "Gamma rays", "stops_km": 30},
+        {"band": "xray", "label": "X-rays", "stops_km": 70},
+        {"band": "euv", "label": "Extreme ultraviolet", "stops_km": 140},
+        {"band": "uv", "label": "Ultraviolet", "stops_km": 45},
+        {"band": "visible", "label": "Visible light", "stops_km": 0},
+        {"band": "infrared", "label": "Far infrared", "stops_km": 35},
+        {"band": "radio", "label": "Radio", "stops_km": 0}
+      ]
+    },
     "orbit": {
       "a_au": 1.00000261,
       "e": 0.01671,
@@ -127,6 +151,8 @@
   },
   {
     "name": "ISS",
+    "in_edition": { "astrobiology": { "diagram_scale": 4, "orbit": { "a_km": 7100, "e": 0, "i": 51.64, "node": 78, "M0": 179.674, "rate": 0 } } },
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Operational",
@@ -150,6 +176,7 @@
   },
   {
     "name": "Hubble",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Operational",
@@ -173,6 +200,7 @@
   },
   {
     "name": "Sentinel-4",
+    "editions": ["ou", "schools"],
     "parent": "Earth",
     "type": "mission",
     "model": "/models/sentinel4.glb",
@@ -195,6 +223,7 @@
   },
   {
     "name": "CASTOR",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Planned",
@@ -222,6 +251,7 @@
   },
   {
     "name": "Spektr-UV",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "model": "/models/spektr_uv.glb",
@@ -244,6 +274,7 @@
   },
   {
     "name": "TRUTHS",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Planned",
@@ -268,6 +299,7 @@
   },
   {
     "name": "SMILE",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Launched",
@@ -291,6 +323,7 @@
   },
   {
     "name": "Swift",
+    "editions": ["ou", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Operational",
@@ -319,6 +352,7 @@
   },
   {
     "name": "UKube-1",
+    "editions": ["ou", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Complete",
@@ -342,6 +376,7 @@
   },
   {
     "name": "AlSat-Nano",
+    "editions": ["ou", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Complete",
@@ -364,6 +399,7 @@
   },
   {
     "name": "Moon",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Earth",
     "menu_top_level": true,
     "type": "moon",
@@ -393,6 +429,7 @@
   },
   {
     "name": "Chandrayaan-1",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Moon",
     "type": "mission",
     "status": "Complete",
@@ -417,6 +454,7 @@
   },
   {
     "name": "Chandrayaan-2",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Moon",
     "type": "mission",
     "model": "/models/chandrayaan2.glb",
@@ -439,6 +477,7 @@
   },
   {
     "name": "Chang'e-5",
+    "editions": ["ou", "schools"],
     "parent": "Moon",
     "type": "mission",
     "status": "Complete",
@@ -460,6 +499,7 @@
   },
   {
     "name": "PROSPECT",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Moon",
     "type": "mission",
     "status": "Planned",
@@ -480,6 +520,7 @@
   },
   {
     "name": "LUPEX",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Moon",
     "type": "mission",
     "icon": "rover",
@@ -501,6 +542,7 @@
   },
   {
     "name": "MAGPIE",
+    "editions": ["ou", "schools"],
     "parent": "Moon",
     "type": "mission",
     "model": "/models/magpie.glb",
@@ -522,6 +564,7 @@
   },
   {
     "name": "Shackleton Rover",
+    "editions": ["ou", "schools"],
     "parent": "Moon",
     "type": "mission",
     "model": "/models/shackleton.glb",
@@ -543,6 +586,7 @@
   },
   {
     "name": "Earth-Sun L2",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "menu_top_level": true,
     "type": "reference_point",
@@ -556,6 +600,8 @@
   },
   {
     "name": "JWST",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 12, "orbit": { "M0": 90, "amplitude_km": { "y": 420000, "z": 420000 } } } },
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Operational",
@@ -579,6 +625,7 @@
   },
   {
     "name": "Gaia",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Decommissioned",
@@ -602,6 +649,7 @@
   },
   {
     "name": "Euclid",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Operational",
@@ -626,6 +674,7 @@
   },
   {
     "name": "NewAthena",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth-Sun L1",
     "type": "mission",
     "status": "Planned",
@@ -651,6 +700,8 @@
   },
   {
     "name": "HWO",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 10, "orbit": { "M0": 18, "amplitude_km": { "y": 420000, "z": 420000 } } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Planned",
@@ -675,6 +726,8 @@
   },
   {
     "name": "PLATO",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 12, "orbit": { "M0": 162, "amplitude_km": { "y": 420000, "z": 420000 } } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Planned",
@@ -698,6 +751,8 @@
   },
   {
     "name": "Roman",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 12, "orbit": { "M0": 306, "amplitude_km": { "y": 420000, "z": 420000 } } } },
+    "editions": ["ou", "cei", "schools", "astrobiology"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Launched",
@@ -722,6 +777,7 @@
   },
   {
     "name": "Mars",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -746,6 +802,7 @@
   },
   {
     "name": "ExoMars TGO",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "status": "Operational",
@@ -769,6 +826,7 @@
   },
   {
     "name": "Schiaparelli",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "model": "/models/schiaparelli.glb",
@@ -788,6 +846,7 @@
   },
   {
     "name": "I-MIM",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "model": "/models/imim.glb",
@@ -810,6 +869,7 @@
   },
   {
     "name": "Beagle 2",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "status": "Lost",
@@ -830,6 +890,7 @@
   },
   {
     "name": "Perseverance",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "icon": "rover",
@@ -851,6 +912,7 @@
   },
   {
     "name": "ExoMars Rosalind Franklin",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "icon": "rover",
@@ -873,6 +935,7 @@
   },
   {
     "name": "MSL Curiosity",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "mission",
     "icon": "rover",
@@ -894,6 +957,7 @@
   },
   {
     "name": "Phobos",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "moon",
     "status": "Natural",
@@ -921,6 +985,7 @@
   },
   {
     "name": "Deimos",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Mars",
     "type": "moon",
     "status": "Natural",
@@ -946,6 +1011,7 @@
   },
   {
     "name": "Jupiter",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -969,6 +1035,8 @@
   },
   {
     "name": "Io",
+    "in_edition": { "astrobiology": { "diagram_scale": 2.5, "orbit": { "M0": 291, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
@@ -991,6 +1059,8 @@
   },
   {
     "name": "Europa",
+    "in_edition": { "astrobiology": { "diagram_scale": 2.5, "orbit": { "M0": 0, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
@@ -1015,6 +1085,8 @@
   },
   {
     "name": "Ganymede",
+    "in_edition": { "astrobiology": { "diagram_scale": 2.5, "orbit": { "M0": 45, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
@@ -1039,6 +1111,8 @@
   },
   {
     "name": "Callisto",
+    "in_edition": { "astrobiology": { "diagram_scale": 2.5, "orbit": { "M0": 345, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Jupiter",
     "type": "moon",
     "status": "Natural",
@@ -1062,6 +1136,8 @@
   },
   {
     "name": "JUICE",
+    "in_edition": { "astrobiology": { "parent": "Jupiter", "orbit_type": null, "trajectory": null, "show_orbit": false, "diagram_scale": 30, "orbit": { "a_km": 3500000, "e": 0, "i": 100, "node": 177, "peri": 0, "M0": 162, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "orbit_type": "trajectory",
     "trajectory": {
@@ -1083,7 +1159,67 @@
     "color": "#00AAFF"
   },
   {
+    "name": "Europa Clipper",
+    "in_edition": { "astrobiology": { "parent": "Jupiter", "orbit_type": null, "trajectory": null, "show_orbit": false, "diagram_scale": 30, "orbit": { "a_km": 2500000, "e": 0, "i": 100, "node": 192, "peri": 0, "M0": 162, "rate": 0 } } },
+    "editions": [
+      "astrobiology"
+    ],
+    "parent": "Sun",
+    "orbit_type": "trajectory",
+    "trajectory": {
+      "waypoints": [
+        {
+          "date": "2024-10-14",
+          "at": "Earth",
+          "label": "Launch"
+        },
+        {
+          "date": "2025-03-01",
+          "revs": 0,
+          "at": "Mars",
+          "label": "Mars flyby"
+        },
+        {
+          "date": "2026-12-03",
+          "revs": 1,
+          "at": "Earth",
+          "label": "Earth flyby",
+          "extreme": 2
+        },
+        {
+          "date": "2030-04-11",
+          "revs": 0,
+          "at": "Jupiter",
+          "label": "Jupiter arrival"
+        }
+      ],
+      "arrival_orbit": {
+        "a_km": 1700000,
+        "e": 0.6,
+        "i": 3,
+        "M0": 220,
+        "rate": 25.137855,
+        "illustrative": true
+      }
+    },
+    "menu_parent": "Jupiter",
+    "type": "mission",
+    "status": "En Route",
+    "launch_year": "2024",
+    "description": "Europa Clipper is NASA's largest planetary spacecraft, launched in October 2024 and due at Jupiter in April 2030. From a looping orbit round Jupiter it will fly past Europa about 50 times, measuring its ice shell and the ocean beneath it, to find out whether this moon could support life.",
+    "model": "/models/europa_clipper.glb",
+    "motion": {
+      "mode": "sun",
+      "axis": "+y"
+    },
+    "model_scale": 2.5,
+    "radius": 1.5,
+    "size_m": 30.5,
+    "color": "#66ddcc"
+  },
+  {
     "name": "Saturn",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -1115,6 +1251,7 @@
   },
   {
     "name": "Titan",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Saturn",
     "type": "moon",
     "status": "Natural",
@@ -1139,6 +1276,8 @@
   },
   {
     "name": "Enceladus",
+    "in_edition": { "astrobiology": { "diagram_scale": 2.5, "orbit": { "i": 9, "node": 280, "M0": 294.643, "rate": 0 } } },
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Saturn",
     "type": "moon",
     "status": "Natural",
@@ -1163,6 +1302,8 @@
   },
   {
     "name": "Cassini",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 22, "orbit": { "a_km": 400000, "e": 0, "i": 60, "node": 231, "peri": 0, "M0": 144, "rate": 0 } } },
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Saturn",
     "type": "mission",
     "status": "Decommissioned",
@@ -1186,6 +1327,7 @@
   },
   {
     "name": "Huygens",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Titan",
     "type": "mission",
     "status": "Landed",
@@ -1206,6 +1348,7 @@
   },
   {
     "name": "Uranus",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -1229,6 +1372,7 @@
   },
   {
     "name": "Neptune",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "planet",
     "status": "Natural",
@@ -1251,6 +1395,7 @@
   },
   {
     "name": "Rosetta",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Comet 67P",
     "type": "mission",
     "status": "Complete",
@@ -1275,6 +1420,7 @@
   },
   {
     "name": "Philae",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Comet 67P",
     "type": "mission",
     "status": "Landed",
@@ -1296,6 +1442,7 @@
   },
   {
     "name": "Hera",
+    "editions": ["ou", "schools"],
     "parent": "Sun",
     "orbit_type": "trajectory",
     "trajectory": {
@@ -1318,6 +1465,7 @@
   },
   {
     "name": "DART",
+    "editions": ["ou", "schools"],
     "parent": "Dimorphos",
     "menu_parent": "Didymos",
     "type": "mission",
@@ -1338,6 +1486,7 @@
   },
   {
     "name": "AKARI",
+    "editions": ["ou", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Decommissioned",
@@ -1363,6 +1512,7 @@
   },
   {
     "name": "Hitomi",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Lost",
@@ -1385,6 +1535,7 @@
   },
   {
     "name": "Spitzer",
+    "editions": ["ou", "schools"],
     "parent": "Sun",
     "menu_parent": "Earth",
     "type": "mission",
@@ -1411,6 +1562,7 @@
   },
   {
     "name": "Herschel",
+    "editions": ["ou", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Decommissioned",
@@ -1434,6 +1586,7 @@
   },
   {
     "name": "Planck",
+    "editions": ["ou", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Decommissioned",
@@ -1457,6 +1610,7 @@
   },
   {
     "name": "Peregrine",
+    "editions": ["ou", "schools"],
     "parent": "Moon",
     "type": "mission",
     "status": "Lost",
@@ -1477,6 +1631,7 @@
   },
   {
     "name": "Comet Interceptor",
+    "editions": ["ou", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Planned",
@@ -1501,6 +1656,8 @@
   },
   {
     "name": "EnVision",
+    "in_edition": { "astrobiology": { "diagram_scale": 8, "orbit": { "a_km": 12000, "e": 0, "i": 30, "node": 312, "peri": 0, "M0": 119, "rate": 0 } } },
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Venus",
     "type": "mission",
     "status": "Planned",
@@ -1524,7 +1681,69 @@
     }
   },
   {
+    "name": "VERITAS",
+    "in_edition": { "astrobiology": { "diagram_scale": 8, "orbit": { "a_km": 12000, "e": 0, "i": 30, "node": 261, "peri": 0, "M0": 175, "rate": 0 } } },
+    "editions": [
+      "astrobiology"
+    ],
+    "parent": "Venus",
+    "type": "mission",
+    "status": "Planned",
+    "launch_year": "TBC",
+    "description": "VERITAS (Venus Emissivity, Radio Science, InSAR, Topography, and Spectroscopy) is a planned NASA orbiter that will map Venus's surface in 3D with radar and measure its rocks' composition in the infrared. It will look for active volcanoes and signs that Venus once had water, to learn why Earth's twin turned out so differently.",
+    "model": "/models/veritas.glb",
+    "motion": {
+      "mode": "nadir",
+      "axis": "-y",
+      "along": "+z"
+    },
+    "model_scale": 1.5,
+    "radius": 0.6,
+    "size_m": 10,
+    "size_estimated": true,
+    "color": "#ffcc88",
+    "orbit": {
+      "a_km": 6302,
+      "e": 0,
+      "i": 85,
+      "M0": 320,
+      "rate": 5639.829231,
+      "illustrative": true
+    }
+  },
+  {
+    "name": "DAVINCI",
+    "in_edition": { "astrobiology": { "diagram_scale": 8, "orbit": { "a_km": 10000, "e": 0, "i": 30, "node": 120, "peri": 0, "M0": 340, "rate": 0 } } },
+    "editions": [
+      "astrobiology"
+    ],
+    "parent": "Venus",
+    "type": "mission",
+    "status": "Planned",
+    "launch_year": "TBC",
+    "description": "DAVINCI (Deep Atmosphere Venus Investigation of Noble gases, Chemistry, and Imaging) is a planned NASA mission that will drop a probe through Venus's atmosphere. On its hour-long descent the probe will sample the gases layer by layer, from the clouds to the surface, and photograph the mountainous Alpha Regio as it lands.",
+    "model": "/models/davinci.glb",
+    "motion": {
+      "mode": "sun",
+      "axis": "+y"
+    },
+    "model_scale": 1.5,
+    "radius": 0.6,
+    "size_m": 9,
+    "size_estimated": true,
+    "color": "#ff9966",
+    "orbit": {
+      "a_km": 9000,
+      "e": 0.2,
+      "i": 30,
+      "M0": 200,
+      "rate": 3304.60677,
+      "illustrative": true
+    }
+  },
+  {
     "name": "LightShip-1",
+    "editions": ["ou", "schools"],
     "parent": "Mars",
     "type": "mission",
     "status": "Planned",
@@ -1549,6 +1768,7 @@
   },
   {
     "name": "MMX",
+    "editions": ["ou", "schools"],
     "parent": "Phobos",
     "type": "mission",
     "model": "/models/mmx.glb",
@@ -1581,6 +1801,7 @@
   },
   {
     "name": "OGRE",
+    "editions": ["ou", "cei", "schools"],
     "parent": "Earth",
     "type": "mission",
     "status": "Planned",
@@ -1606,6 +1827,7 @@
   },
   {
     "name": "Hayabusa2",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Ryugu",
     "type": "mission",
     "status": "En Route",
@@ -1629,6 +1851,7 @@
   },
   {
     "name": "OSIRIS-REx",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Bennu",
     "type": "mission",
     "status": "En Route",
@@ -1652,6 +1875,7 @@
   },
   {
     "name": "Stardust",
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Comet Wild 2",
     "type": "mission",
     "status": "Decommissioned",
@@ -1675,6 +1899,7 @@
   },
   {
     "name": "Bennu",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
@@ -1697,6 +1922,7 @@
   },
   {
     "name": "Ryugu",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
@@ -1719,6 +1945,7 @@
   },
   {
     "name": "Itokawa",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
@@ -1740,6 +1967,7 @@
   },
   {
     "name": "Phaethon",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
@@ -1761,6 +1989,7 @@
   },
   {
     "name": "DESTINY+",
+    "editions": ["ou", "schools"],
     "parent": "Phaethon",
     "type": "mission",
     "model": "/models/destinyplus.glb",
@@ -1783,6 +2012,7 @@
   },
   {
     "name": "Hayabusa",
+    "editions": ["ou", "schools"],
     "parent": "Itokawa",
     "type": "mission",
     "model": "/models/hayabusa.glb",
@@ -1803,6 +2033,7 @@
   },
   {
     "name": "Didymos",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "asteroid",
     "status": "Natural",
@@ -1825,6 +2056,7 @@
   },
   {
     "name": "Dimorphos",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Didymos",
     "type": "moon",
     "status": "Natural",
@@ -1844,6 +2076,7 @@
   },
   {
     "name": "Comet Wild 2",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "comet",
     "status": "Natural",
@@ -1865,6 +2098,7 @@
   },
   {
     "name": "Comet 67P",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "type": "comet",
     "status": "Natural",
@@ -1893,6 +2127,7 @@
   },
   {
     "name": "4731 MonicaGrady",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 4731,
     "type": "asteroid",
@@ -1916,6 +2151,7 @@
   },
   {
     "name": "20386 IanFranchi",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 20386,
     "type": "asteroid",
@@ -1940,6 +2176,7 @@
   },
   {
     "name": "20617 RichardGreenwood",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 20617,
     "type": "asteroid",
@@ -1962,6 +2199,7 @@
   },
   {
     "name": "20626 Rider-Stokes",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 20626,
     "type": "asteroid",
@@ -1983,7 +2221,8 @@
     "model_named": "/models/Rider-Stokes.glb"
   },
   {
-    "name": "25275 Jocelynbell",
+    "name": "25275 JocelynBell",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 25275,
     "type": "asteroid",
@@ -2007,6 +2246,7 @@
   },
   {
     "name": "69423 OpenUni",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 69423,
     "type": "asteroid",
@@ -2026,10 +2266,13 @@
     "description": "A main-belt asteroid named after the OU itself. Its official naming citation reads: “The Open University (founded 1969 April 23) is the world’s leading university for flexible, innovative distance learning, having educated over 2 million part-time students. Through its research in astronomy, planetary and space science, the OU has a distinguished history of involvement in major Solar System exploration missions.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
     "model": "/models/Asteroid3.glb",
     "model_named_shown": true,
-    "model_named": "/models/OU.glb"
+    "model_named": "/models/ou_shield.glb",
+    "rotation_mode": "spin",
+    "tilt": 0
   },
   {
     "name": "10230 AndrewNorton",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 10230,
     "type": "asteroid",
@@ -2054,6 +2297,7 @@
   },
   {
     "name": "9831 SimonGreen",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 9831,
     "type": "asteroid",
@@ -2078,6 +2322,7 @@
   },
   {
     "name": "15614 Pillinger",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 15614,
     "type": "asteroid",
@@ -2100,7 +2345,8 @@
     "model_named": "/models/Pillinger.glb"
   },
   {
-    "name": "20594 Pemartin",
+    "name": "20594 PEMartin",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 20594,
     "type": "asteroid",
@@ -2122,6 +2368,7 @@
   },
   {
     "name": "17920 Zarnecki",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 17920,
     "type": "asteroid",
@@ -2145,6 +2392,7 @@
   },
   {
     "name": "3202 Graff",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 3202,
     "type": "asteroid",
@@ -2167,6 +2415,7 @@
   },
   {
     "name": "9159 McDonnell",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 9159,
     "type": "asteroid",
@@ -2190,6 +2439,7 @@
   },
   {
     "name": "158589 Snodgrass",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 158589,
     "type": "asteroid",
@@ -2213,6 +2463,7 @@
   },
   {
     "name": "15834 McBride",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 15834,
     "type": "asteroid",
@@ -2235,6 +2486,7 @@
   },
   {
     "name": "8463 NaomiMurdoch",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 8463,
     "type": "asteroid",
@@ -2257,6 +2509,7 @@
   },
   {
     "name": "11469 Rozitis",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 11469,
     "type": "asteroid",
@@ -2281,6 +2534,7 @@
   },
   {
     "name": "30226 SamuelLeeJackson",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 30226,
     "type": "asteroid",
@@ -2303,6 +2557,7 @@
   },
   {
     "name": "5497 SaraRussell",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 5497,
     "type": "asteroid",
@@ -2325,6 +2580,7 @@
   },
   {
     "name": "6580 PhilBland",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 6580,
     "type": "asteroid",
@@ -2347,6 +2603,7 @@
   },
   {
     "name": "7552 Sephton",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 7552,
     "type": "asteroid",
@@ -2370,6 +2627,7 @@
   },
   {
     "name": "7635 CarolineSmith",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 7635,
     "type": "asteroid",
@@ -2392,6 +2650,7 @@
   },
   {
     "name": "42772 Kokotanekova",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 42772,
     "type": "asteroid",
@@ -2413,7 +2672,8 @@
     "model_named": "/models/Kokotanekova.glb"
   },
   {
-    "name": "117595 Jemmadavidson",
+    "name": "117595 JemmaDavidson",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 117595,
     "type": "asteroid",
@@ -2436,6 +2696,7 @@
   },
   {
     "name": "97578 JessicaBarnes",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 97578,
     "type": "asteroid",
@@ -2458,6 +2719,7 @@
   },
   {
     "name": "7993 JohnBridges",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 7993,
     "type": "asteroid",
@@ -2479,6 +2741,7 @@
   },
   {
     "name": "14796 EmmaBullock",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 14796,
     "type": "asteroid",
@@ -2500,6 +2763,7 @@
   },
   {
     "name": "31551 AshleyKing",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 31551,
     "type": "asteroid",
@@ -2522,6 +2786,7 @@
   },
   {
     "name": "32520 JontiHorner",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 32520,
     "type": "asteroid",
@@ -2543,6 +2808,7 @@
   },
   {
     "name": "30288 ConelAlexander",
+    "editions": ["ou"],
     "parent": "Sun",
     "menu_order": 30288,
     "type": "asteroid",
@@ -2563,7 +2829,122 @@
     "model": "/models/Asteroid3.glb"
   },
   {
+    "name": "34584 MartinTowner",
+    "editions": ["ou"],
+    "parent": "Sun",
+    "menu_order": 34584,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 2.091,
+    "color": "#9a9894",
+    "rot_period": 0.44305,
+    "orbit": {
+      "a_au": 2.691217,
+      "e": 0.1239,
+      "i": 14.3,
+      "M0": 209.191,
+      "rate": 0.223245,
+      "node": 113.37,
+      "peri": 6.08
+    },
+    "description": "A main-belt asteroid named after Martin Towner, who worked at the OU on instruments for two OU-led landers: the Surface Science Package on the Huygens probe, which landed on Titan in 2005, and the environmental sensors on Beagle 2. Its official naming citation reads: “Martin Towner (b. 1968) is an Australian planetary scientist currently at Curtin University. His mission involvement with Cassini/Huygens and the Beagle 2 lander saw instrumentation he developed on the surface of Saturn and Mars. He co-founded the Australian Desert Fireball Network.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid2.glb"
+  },
+  {
+    "name": "30436 Busemann",
+    "editions": ["ou"],
+    "parent": "Sun",
+    "menu_order": 30436,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 2.828,
+    "radius_estimated": true,
+    "color": "#6e6c69",
+    "rot_period": 0.319083,
+    "orbit": {
+      "a_au": 2.642472,
+      "e": 0.168,
+      "i": 2.84,
+      "M0": 183.317,
+      "rate": 0.22945,
+      "node": 178.02,
+      "peri": 285.3
+    },
+    "description": "A main-belt asteroid named after Henner Busemann, who worked in the OU’s Planetary and Space Sciences group, where with Jemma Davidson he studied presolar grains and organic matter in dust particles from comet 26P/Grigg-Skjellerup. Its official naming citation reads: “Henner Busemann (b. 1967) is a German-Swiss professor of Cosmochemistry at ETH Zürich, Switzerland. He studies noble gases in meteorites to decipher their history, with the overarching goal to improve our understanding of the formation and evolution of the Sun and the planets of the solar system.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid4.glb"
+  },
+  {
+    "name": "13326 Ferri",
+    "editions": ["ou"],
+    "parent": "Sun",
+    "menu_order": 13326,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 5.698,
+    "color": "#74716c",
+    "orbit": {
+      "a_au": 3.147369,
+      "e": 0.2102,
+      "i": 5.7,
+      "M0": 119.582,
+      "rate": 0.176515,
+      "node": 142.58,
+      "peri": 166.36
+    },
+    "description": "A main-belt asteroid named after Francesca Ferri, who worked at the OU’s Planetary and Space Sciences Research Institute as a postdoctoral researcher and, in 2003–04, an ESA visiting research fellow, on the HASI instrument on the Huygens probe and on Beagle 2. Its official naming citation reads: “Francesca Ferri (b. 1967) is a planetary scientist at the University of Padua. She is involved in space research, and played an important role on the Cassini/Huygens HASI instrument. The name was suggested by M. Fulchignoni.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid5.glb"
+  },
+  {
+    "name": "7006 Folco",
+    "editions": ["ou"],
+    "parent": "Sun",
+    "menu_order": 7006,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 1.281,
+    "radius_estimated": true,
+    "color": "#85827d",
+    "orbit": {
+      "a_au": 2.438306,
+      "e": 0.126,
+      "i": 4.72,
+      "M0": 353.443,
+      "rate": 0.258864,
+      "node": 159.06,
+      "peri": 356.58
+    },
+    "description": "A main-belt asteroid named after Luigi Folco, who did his PhD at the OU’s Planetary and Space Sciences Research Institute (1998), where he studied ordinary chondrite meteorites. Its official naming citation reads: “Luigi Folco (b. 1965) is curator of meteorites at the Museo Nazionale dell’Antartide of the University of Siena. His research focuses on the thermal histories of minor planets through the study of ordinary chondrites.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid1.glb"
+  },
+  {
+    "name": "4473 Sears",
+    "editions": ["ou"],
+    "parent": "Sun",
+    "menu_order": 4473,
+    "type": "asteroid",
+    "menu_holder": "named",
+    "status": "Natural",
+    "radius_km": 6.537,
+    "color": "#8f8b85",
+    "orbit": {
+      "a_au": 3.016011,
+      "e": 0.0398,
+      "i": 8.79,
+      "M0": 243.285,
+      "rate": 0.188172,
+      "node": 319.18,
+      "peri": 186.67
+    },
+    "description": "A main-belt asteroid named after Derek Sears, who spent 1987 at the OU as a Senior Research Fellow, studying meteorites. Its official naming citation reads: “A professor at the University of Arkansas, Derek Sears (b. 1948) has championed thermoluminescence as a tool to unravel the geologic and thermal histories of meteorites. His stewardship of the journal <i>Meteoritics and Planetary Science</i> has placed it at the forefront in its field.” The shape model of this object is awaiting further study - and it may or may not be accurately represented in this visualisation.",
+    "model": "/models/Asteroid3.glb"
+  },
+  {
     "name": "Earth-Sun L1",
+    "editions": ["ou", "cei", "astrobiology", "schools"],
     "parent": "Sun",
     "menu_top_level": true,
     "show_orbit": false,
@@ -2576,6 +2957,7 @@
   },
   {
     "name": "Genesis",
+    "editions": ["ou", "schools"],
     "parent": "Earth-Sun L1",
     "type": "mission",
     "status": "Complete",
@@ -2600,6 +2982,8 @@
   },
   {
     "name": "Ariel",
+    "in_edition": { "astrobiology": { "show_orbit": false, "diagram_scale": 6, "orbit": { "M0": 234, "amplitude_km": { "y": 420000, "z": 420000 } } } },
+    "editions": ["ou", "astrobiology", "schools"],
     "parent": "Earth-Sun L2",
     "type": "mission",
     "status": "Planned",
@@ -2624,6 +3008,7 @@
   },
   {
     "name": "Open Science Observatories",
+    "editions": ["ou", "schools"],
     "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",
@@ -2646,6 +3031,7 @@
   },
   {
     "name": "Mars Yard",
+    "editions": ["ou", "astrobiology", "schools"],
     "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",
@@ -2677,6 +3063,7 @@
   },
   {
     "name": "Robert Hooke Building",
+    "editions": ["ou", "schools"],
     "menu_holder": "campus",
     "parent": "Earth",
     "type": "mission",

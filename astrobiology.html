@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-edition="astrobiology">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AstrobiologyOU: Life beyond Earth</title>
+    <meta name="description" content="Explore four places in the Solar System where life might be found, with the Open University's astrobiologists." />
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/astrobiology/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="./images/astrobiology/favicon-64.png" />
+    <link rel="apple-touch-icon" href="./images/astrobiology/apple-touch-icon.png" />
+    <link rel="preload" href="./data.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="./astrobiology.json" as="fetch" crossorigin="anonymous" />
+    <script type="module" crossorigin src="/space-vis-test/assets/astrobiology-BRhN5rxJ.js"></script>
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/markers-BQacoqak.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/engine-CZbfG9v-.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/assets/callouts-BVM8fRX4.js">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/markers-DPKYwzur.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/callouts-D2s6EQcn.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/assets/astrobiology-DIQChhXW.css">
+  </head>
+  <body>
+    <!-- The loading page: white, as the AstrobiologyOU logo is drawn on, with the logo and a few
+         words about life beyond Earth. Starting cuts a hole in it the shape of the logo's splats,
+         which flies past to show the Solar System. -->
+    <div id="astro-ground" class="astro-ground" aria-hidden="true"></div>
+    <section id="astro-intro" class="astro-intro" aria-labelledby="astro-intro-title">
+      <div class="astro-intro-text">
+        <h1 id="astro-intro-title" class="astro-intro-title">Life beyond Earth</h1>
+        <div id="astro-blurb" class="astro-blurb"></div>
+        <button id="astro-start" class="astro-start" type="button" disabled>Loading the Solar System…</button>
+      </div>
+    </section>
+
+    <!-- The logo, in layers: each splat flies off to its world in turn, leaving the wordmark. -->
+    <div id="astro-logo" class="astro-logo" role="img" aria-label="AstrobiologyOU">
+      <img class="astro-splat" data-splat="teal" src="./images/astrobiology/teal.png" alt="" width="525" height="380" />
+      <img class="astro-splat" data-splat="green" src="./images/astrobiology/green.png" alt="" width="525" height="380" />
+      <img class="astro-splat" data-splat="magenta" src="./images/astrobiology/magenta.png" alt="" width="525" height="380" />
+      <img class="astro-splat" data-splat="purple" src="./images/astrobiology/purple.png" alt="" width="525" height="380" />
+      <img class="astro-wordmark" src="./images/astrobiology/text.png" alt="" width="525" height="380" />
+    </div>
+
+    <!-- The four places, each ringed on the Solar System in its splat's colour. -->
+    <nav id="astro-menu" class="astro-menu" aria-label="Places where life might be found" hidden>
+      <h2 class="astro-menu-title">Where could life be?</h2>
+      <!-- In a place, the other places as a row of splats, to go straight there. -->
+      <div id="astro-others" class="astro-others" role="group" aria-label="Other places" hidden></div>
+      <ul id="astro-list" class="astro-list"></ul>
+      <!-- On a phone, the place's callouts one at a time. -->
+      <div id="astro-pager" class="astro-pager" hidden>
+        <button id="astro-pager-prev" type="button" aria-label="Previous">‹</button>
+        <span id="astro-pager-label" aria-live="polite"></span>
+        <button id="astro-pager-next" type="button" aria-label="Next">›</button>
+      </div>
+      <button id="astro-home" class="astro-home" type="button" hidden>Back to the Solar System</button>
+    </nav>
+    <div id="astro-rings" class="astro-rings"></div>
+    <canvas id="astro-light" class="astro-light" aria-hidden="true"></canvas>
+
+    <footer class="astro-brand brand-lockup" id="astro-brand" hidden><img class="brand-logo" src="./images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--space" src="./images/brand/ou-space-logo-white.png" alt="OU Space" width="464" height="200"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--astro" src="./images/astrobiology/logo-lockup.png" alt="AstrobiologyOU" width="221" height="160"></footer>
+
+    <p id="astro-announcer" class="visually-hidden" aria-live="polite"></p>
+  </body>
+</html>
