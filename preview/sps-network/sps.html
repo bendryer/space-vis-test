@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-app="sps">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPS Network</title>
+    <meta name="description" content="Where people from the Open University School of Physical Sciences work now, on a globe." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23060645'/%3E%3Ccircle cx='16' cy='16' r='10' fill='%231C46C0'/%3E%3Ccircle cx='12' cy='12' r='2' fill='%2366EEFA'/%3E%3Ccircle cx='21' cy='15' r='2' fill='%2366EEFA'/%3E%3Ccircle cx='15' cy='21' r='2' fill='%2366EEFA'/%3E%3C/svg%3E" />
+    <link rel="preload" href="./sps/tiles/tiles.json" as="fetch" crossorigin="anonymous" />
+    <script type="module" crossorigin src="/space-vis-test/preview/sps-network/assets/sps-qL7yTodX.js"></script>
+    <link rel="modulepreload" crossorigin href="/space-vis-test/preview/sps-network/assets/base-UD49d_zK.js">
+    <link rel="modulepreload" crossorigin href="/space-vis-test/preview/sps-network/assets/engine-XgPtNyR4.js">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/preview/sps-network/assets/base-BQlH6XPG.css">
+    <link rel="stylesheet" crossorigin href="/space-vis-test/preview/sps-network/assets/sps-CTnXYvuS.css">
+  </head>
+  <body>
+    <canvas id="globe" tabindex="0" aria-label="The globe. Drag to turn it, scroll or pinch to zoom; arrow keys turn it, plus and minus zoom."></canvas>
+    <div id="pins" class="pins"></div>
+
+    <header class="sps-header plate">
+      <h1 class="sps-title">SPS Network</h1>
+      <p class="sps-subtitle">Where people from the OU School of Physical Sciences work now</p>
+      <p id="sps-count" class="sps-count" aria-live="polite"></p>
+      <div class="sps-search">
+        <label class="visually-hidden" for="sps-search">Find a person or a place</label>
+        <input id="sps-search" type="search" placeholder="Find a person or a place" autocomplete="off"
+               role="combobox" aria-expanded="false" aria-controls="sps-results" aria-autocomplete="list" />
+        <ul id="sps-results" class="sps-results" role="listbox" hidden></ul>
+      </div>
+      <fieldset class="sps-legend">
+        <legend class="visually-hidden">Show or hide by kind of workplace</legend>
+        <div id="sps-categories"></div>
+        <label class="sps-toggle"><input id="sps-arcs" type="checkbox" checked /> <span>Lines from the OU</span></label>
+      </fieldset>
+    </header>
+
+    <aside id="sps-panel" class="sps-panel plate" hidden aria-labelledby="sps-panel-title">
+      <div class="sps-panel-head">
+        <button id="sps-back" class="sps-icon-button" type="button" hidden aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <h2 id="sps-panel-title" class="sps-panel-title" tabindex="-1"></h2>
+        <button id="sps-close" class="sps-icon-button" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div id="sps-panel-body" class="sps-panel-body"></div>
+    </aside>
+
+    <div class="sps-zoom" role="group" aria-label="Zoom">
+      <button id="sps-zoom-in" type="button" aria-label="Zoom in">+</button>
+      <button id="sps-zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+      <button id="sps-home" type="button" aria-label="Back to the whole globe">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+      </button>
+    </div>
+
+    <footer class="sps-footer">
+      <div class="brand-lockup"><img class="brand-logo" src="/space-vis-test/preview/sps-network/images/brand/ou-logo-primary-white.svg" alt="The Open University" width="561" height="192"><span class="brand-rule" aria-hidden="true"></span><img class="brand-logo brand-logo--space" src="/space-vis-test/preview/sps-network/images/brand/ou-space-logo-white.png" alt="OU Space" width="464" height="200"></div>
+      <p class="sps-credit"><span id="sps-clock"></span> <span id="sps-imagery"></span></p>
+    </footer>
+
+    <p id="sps-loading" class="sps-loading" role="status">Loading the Earth…</p>
+  </body>
+</html>

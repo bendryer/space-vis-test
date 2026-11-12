@@ -1,0 +1,224 @@
+{
+  "title": "Presentation capabilities (placeholders)",
+  "steps": [
+    {
+      "target": "Earth",
+      "title": "The local space environment",
+      "view": {
+        "lat": 20,
+        "lon": -30
+      },
+      "builds": [
+        {
+          "id": "gases",
+          "title": "Gases with height (placeholder chart)",
+          "layer": {
+            "image": "/presentations/capabilities/atmosphere.png",
+            "place": "limb",
+            "angle": 30,
+            "ground_row": 0.9,
+            "top_row": 0.07,
+            "top_km": 500,
+            "exaggerate": 8
+          }
+        },
+        {
+          "id": "iss",
+          "callout": {
+            "at": "ISS",
+            "image": "/images/ISS_science.webp",
+            "caption": "The ISS orbits about 420 km up, inside the thermosphere.",
+            "credit": "Placeholder caption · NASA"
+          }
+        },
+        {
+          "hide": [
+            "gases",
+            "iss"
+          ],
+          "title": "The local space environment"
+        }
+      ]
+    },
+    {
+      "target": "Earth",
+      "title": "The magnetosphere",
+      "view": {
+        "lat": 70,
+        "lon": 0,
+        "radii": 80
+      },
+      "builds": [
+        {
+          "id": "magnetosphere",
+          "layer": {
+            "image": "/presentations/capabilities/magnetosphere.png",
+            "place": "sun-line",
+            "centre": [
+              0.3,
+              0.5
+            ],
+            "radius": 0.01,
+            "opacity": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "target": "Mars",
+      "title": "Planetary science: Mars",
+      "view": {
+        "lat": 18.4,
+        "lon": 77.5
+      },
+      "builds": [
+        {
+          "id": "perseverance",
+          "callout": {
+            "at": "Perseverance",
+            "image": "/images/perseverance_science.jpg",
+            "caption": "Perseverance in Jezero crater, an ancient lake bed.",
+            "credit": "Placeholder caption · NASA/JPL-Caltech"
+          }
+        },
+        {
+          "id": "olympus",
+          "callout": {
+            "at": {
+              "lat": 18.65,
+              "lon": -133.8
+            },
+            "image": "/presentations/capabilities/olympus-mons.jpg",
+            "caption": "Olympus Mons, on the far side from here: its ring is dashed.",
+            "credit": "Placeholder"
+          }
+        },
+        {
+          "hide": [
+            "perseverance",
+            "olympus"
+          ]
+        },
+        {
+          "id": "topography",
+          "title": "Topography (placeholder map)",
+          "overlay": {
+            "image": "/presentations/capabilities/mars-topography.webp",
+            "opacity": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "target": "Sun",
+      "title": "The solar cycle",
+      "view": {
+        "lat": 0,
+        "lon": 0
+      },
+      "builds": [
+        {
+          "id": "cycle",
+          "title": "The Sun’s magnetic field, 1976 to 2025 (synthetic)",
+          "sun_cycle": {
+            "map": "/presentations/capabilities/butterfly.png",
+            "years": [
+              1975,
+              2026
+            ],
+            "from": 1976,
+            "to": 2025,
+            "seconds": 30,
+            "look": "magnetogram",
+            "gain": 1.6,
+            "chart": {
+              "image": "/presentations/capabilities/sunspots.png",
+              "years": [
+                1975,
+                2026
+              ],
+              "plot": [
+                0.0667,
+                0.9778
+              ],
+              "caption": "Sunspot record (placeholder)"
+            }
+          }
+        },
+        {
+          "id": "cycle",
+          "title": "Activity through cycle 24 (synthetic)",
+          "sun_cycle": {
+            "map": "/presentations/capabilities/butterfly.png",
+            "years": [
+              1975,
+              2026
+            ],
+            "from": 2008,
+            "to": 2025,
+            "seconds": 20,
+            "look": "activity",
+            "gain": 1.6,
+            "chart": {
+              "image": "/presentations/capabilities/sunspots.png",
+              "years": [
+                1975,
+                2026
+              ],
+              "plot": [
+                0.0667,
+                0.9778
+              ],
+              "caption": "Sunspot record (placeholder)"
+            }
+          }
+        },
+        {
+          "id": "region",
+          "callout": {
+            "at": {
+              "lat": 18,
+              "lon": 10
+            },
+            "image": "/presentations/capabilities/sun-active-region.jpg",
+            "caption": "Active regions form in bands that drift towards the equator through each cycle.",
+            "credit": "Placeholder"
+          }
+        }
+      ]
+    },
+    {
+      "target": "Earth",
+      "title": "28 October 2003: the Halloween storms",
+      "date": "2003-10-28T11:10:00Z",
+      "time_rate": 0,
+      "view": {
+        "lat": 30,
+        "lon": 10
+      },
+      "builds": [
+        {
+          "id": "clock",
+          "title": "An hour a second",
+          "time": {
+            "rate": 3600
+          }
+        }
+      ]
+    },
+    {
+      "target": "JUICE",
+      "title": "JUICE on its way to Jupiter",
+      "date": "2024-06-01T00:00:00Z",
+      "builds": [
+        {
+          "id": "clock",
+          "title": "A week a second",
+          "time": {
+            "rate": 604800
+          }
+        }
+      ]
+    }
+  ]
+}
