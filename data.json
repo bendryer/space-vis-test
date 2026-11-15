@@ -1586,6 +1586,30 @@
     }
   },
   {
+    "name": "XMM-Newton",
+    "editions": ["ou", "cei", "schools"],
+    "parent": "Earth",
+    "type": "mission",
+    "status": "Operational",
+    "launch_year": "1999",
+    "description": "XMM-Newton is ESA’s X-ray observatory, launched on an Ariane 5 on 10 December 1999. It carries three X-ray telescopes, each made of 58 mirrors nested one inside another to catch X-rays at grazing angles, and a small optical and ultraviolet telescope that watches the same patch of sky. From a long, looping orbit that takes two days and carries it more than 90,000 km out from Earth, it studies black holes, neutron stars, the remains of exploded stars and the hot gas in clusters of galaxies. More than 25 years on, it is still at work.",
+    "ou_involvement": "Andrew Holland, founding director of our Centre for Electronic Imaging (CEI), helped develop the CCDs in XMM-Newton’s two EPIC MOS X-ray cameras, with the University of Leicester’s X-ray astronomy group and EEV (now Teledyne e2v). At Brunel University, where the CEI began in 2004, its researchers started modelling the unwanted background signal that space radiation adds to the cameras, far higher in orbit than predicted before launch, and carried that work on when the CEI moved to the OU in 2009. They found that most of it comes from electrons knocked out of the spacecraft’s shielding by passing protons. Our astronomers also use XMM-Newton to study binary stars in which a white dwarf or a neutron star pulls gas off its companion. We’ve helped confirm the spin periods of white dwarfs in intermediate polars, surveyed the X-ray sources in the nearby galaxy NGC 253, and found a new Be/X-ray binary pulsar among the sources XMM-Newton catches by chance in the background of its observations.",
+    "model": "/models/xmm.glb",
+    "motion": {"mode": "sun", "axis": "+y"},
+    "radius": 0.5,
+    "size_m": 16.16,
+    "color": "#5588ff",
+    "orbit": {
+      "a_km": 66938.1,
+      "e": 0.46386,
+      "i": 63.74,
+      "M0": 28.47,
+      "rate": 180.465808,
+      "node": 281.14,
+      "peri": 62.32
+    }
+  },
+  {
     "name": "Spitzer",
     "editions": ["ou", "schools"],
     "parent": "Sun",
