@@ -413,8 +413,11 @@
     "type": "moon",
     "status": "Natural",
     "radius_km": 1737.4,
+    "diagram_clearance": 2.5,
     "gm": 4902.8,
     "texture": "/textures/moon.webp",
+    "texture_detail": "/textures/moon_8k.webp",
+    "normal_map": "/textures/moon_normal.webp",
     "color": "#aaaaaa",
     "orbit_color": "#888888",
     "tilt": 6.68,
@@ -519,6 +522,10 @@
       "lat": -84.5,
       "lon": 31.5
     },
+    "diagram_coords": {
+      "lat": -74,
+      "lon": 31.5
+    },
     "image_url": "/images/luna27_science.jpg",
     "image_alt": "The Moon's cratered south polar region, with a deep crater whose floor lies in permanent shadow",
     "description": "PROSPECT is the European Space Agency's exploration science payload for finding and analysing water ice and other materials on the Moon. An Italian drill collects samples from up to a metre below the surface, for analysis in the OU-provided ProSPA instrument. The package will be delivered to a south polar region of the Moon by the Intuitive Machines IM-4 lander, planned for 2027.",
@@ -540,6 +547,10 @@
     "orbit_type": "landed",
     "landed_coords": {
       "lat": -77,
+      "lon": -148.5
+    },
+    "diagram_coords": {
+      "lat": -74,
       "lon": -148.5
     },
     "image_url": "/images/lupex_science.jpg",
@@ -566,6 +577,10 @@
       "lat": -85.5,
       "lon": -30,
       "illustrative": true
+    },
+    "diagram_coords": {
+      "lat": -74,
+      "lon": -30
     },
     "description": "MAGPIE is ESA's first lunar rover, designed to operate for up to 10 Earth days at the lunar south pole, where it will drill into the subsurface to analyse material for water and other volatiles. The rover is being built by ispace Europe and is due to fly on ispace’s Mission 4 lander in 2029.",
     "ou_involvement": "We’re developing the Volatile Analyser, the ion-trap mass spectrometer in the Lunar Volatiles Scout drill on ESA’s MAGPIE rover. Building on our heritage in ion-trap mass spectrometry, it will identify and measure water and other volatiles in lunar soil, and how they vary with depth at the Moon’s south pole.",
@@ -803,6 +818,8 @@
     "radius_km": 3389.5,
     "gm": 42828.37,
     "texture": "/textures/mars.webp",
+    "texture_detail": "/textures/mars_8k.webp",
+    "normal_map": "/textures/mars_normal.webp",
     "color": "#cc3300",
     "orbit_color": "#ff4433",
     "pole": {"ra": 317.2692, "dec": 54.4325},
@@ -1042,6 +1059,7 @@
     "radius_km": 69911,
     "gm": 126686531.9,
     "texture": "/textures/jupiter.webp",
+    "texture_detail": "/textures/jupiter_4k.webp",
     "color": "#d8ca9d",
     "orbit_color": "#e0a96d",
     "pole": {"ra": 268.0566, "dec": 64.4953},
@@ -1066,7 +1084,8 @@
     "status": "Natural",
     "radius_km": 1821.6,
     "gm": 5959.92,
-    "texture": "/textures/io.jpg",
+    "texture": "/textures/io.webp",
+    "texture_detail": "/textures/io_8k.webp",
     "color": "#ffff00",
     "orbit": {
       "a_km": 421800.0,
@@ -1090,7 +1109,8 @@
     "status": "Natural",
     "radius_km": 1560.8,
     "gm": 3202.74,
-    "texture": "/textures/europa.jpg",
+    "texture": "/textures/europa.webp",
+    "texture_detail": "/textures/europa_8k.webp",
     "color": "#dddddd",
     "orbit": {
       "a_km": 671100.0,
@@ -1116,7 +1136,7 @@
     "status": "Natural",
     "radius_km": 2631.2,
     "gm": 9887.83,
-    "texture": "/textures/ganymede.jpg",
+    "texture": "/textures/ganymede.webp",
     "color": "#aaaaaa",
     "orbit": {
       "a_km": 1070400.0,
@@ -1142,7 +1162,8 @@
     "status": "Natural",
     "radius_km": 2410.3,
     "gm": 7179.29,
-    "texture": "/textures/callisto.jpg",
+    "texture": "/textures/callisto.webp",
+    "texture_detail": "/textures/callisto_8k.webp",
     "color": "#888888",
     "orbit": {
       "a_km": 1882700.0,
@@ -1257,8 +1278,8 @@
     "rot_period": 0.45,
     "ring": {
       "texture": "/textures/saturn_ring.png",
-      "inner_km": 74658,
-      "outer_km": 136775,
+      "inner_km": 74510,
+      "outer_km": 140395,
       "opacity": 0.9,
       "emissive": 0.2
     },
@@ -3067,6 +3088,7 @@
     "description": "The Open Science Observatories consist of two robotic telescopes, PIRATE and COAST, located at the Teide Observatory in Tenerife. They are designed to be operated remotely by students and researchers from anywhere in the world through a web-based interface. The facility is used for both undergraduate teaching and professional astronomical research, including the search for transiting exoplanets.",
     "ou_involvement": "We own and run these telescopes, a cornerstone of our distance-learning astronomy teaching. Our academics use them to monitor variable stars and to support space missions such as Ariel from the ground, and students use them to gain real experience of collecting and analysing astronomical data.",
     "model": "/models/pirate.glb",
+    "high_detail_px": 40,
     "model_scale": 0.5,
     "radius": 0.2,
     "size_m": 5,
@@ -3113,6 +3135,7 @@
     "parent": "Earth",
     "type": "mission",
     "model": "/models/ou_campus.glb",
+    "high_detail_px": 40,
     "status": "Operational",
     "launch_year": "1969",
     "orbit_type": "landed",
@@ -3481,38 +3504,80 @@
         "heading": "Planet, moon and sky maps",
         "items": [
           {
-            "subject": "Sun, Mercury, Venus, Earth, Moon, Mars, Jupiter, Saturn and its rings, Uranus, Neptune and the Milky Way",
+            "subject": "Sun, Mercury, Venus, Earth, Saturn, Uranus, Neptune and the Milky Way",
             "credit": "Solar System Scope",
             "licence": "CC BY 4.0",
             "url": "https://www.solarsystemscope.com/textures/",
             "confirmed": true
           },
           {
+            "subject": "Saturn",
+            "credit": "Björn Jónsson, map of Saturn from Cassini (south) and Voyager 2 (north) images (NASA/JPL/SSI); north polar hexagon from Solar System Scope’s map",
+            "licence": "Used with the author’s agreement, in the 3D view only",
+            "url": "https://bjj.mmedia.is/data/saturn/index.html",
+            "confirmed": true
+          },
+          {
+            "subject": "Saturn's rings",
+            "credit": "Björn Jónsson, model of Saturn's rings from Voyager images and the Voyager PPS occultation profile (NASA/JPL); colour from Cassini's 'A Full Sweep of Saturn's Rings' (PIA11142, NASA/JPL/Space Science Institute)",
+            "licence": "Used with the author’s agreement, in the 3D view only",
+            "url": "https://bjj.mmedia.is/data/s_rings/index.html",
+            "confirmed": true
+          },
+          {
+            "subject": "Earth at night",
+            "credit": "NASA Earth Observatory, Black Marble 2016 (Suomi NPP VIIRS)",
+            "licence": "Public domain",
+            "url": "https://svs.gsfc.nasa.gov/30876",
+            "confirmed": true
+          },
+          {
+            "subject": "Jupiter",
+            "credit": "NASA/JPL/Space Science Institute, Cassini global map of Jupiter (PIA07782)",
+            "licence": "Public domain",
+            "url": "https://science.nasa.gov/photojournal/",
+            "confirmed": true
+          },
+          {
+            "subject": "Mars",
+            "credit": "USGS Astrogeology, Viking colour mosaic (NASA/JPL); relief from MGS MOLA (NASA/GSFC)",
+            "licence": "Public domain",
+            "url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Mars_Viking_ClrMosaic_global_925m.tif",
+            "confirmed": true
+          },
+          {
+            "subject": "Moon",
+            "credit": "NASA Scientific Visualization Studio, CGI Moon Kit (LRO LROC WAC colour and LOLA elevation)",
+            "licence": "Public domain",
+            "url": "https://svs.gsfc.nasa.gov/4720",
+            "confirmed": true
+          },
+          {
             "subject": "Europa",
-            "credit": "Björn Jónsson and Steve Albers, from NASA/JPL Voyager and Galileo data",
-            "licence": "",
-            "url": "https://stevealbers.net/albers/sos/sos.html",
-            "confirmed": false
+            "credit": "Björn Jónsson, map of Europa from Voyager and Galileo images (NASA/JPL)",
+            "licence": "Used with the author’s agreement, in the 3D view only",
+            "url": "https://www.planetary.org/blogs/guest-blogs/2015/0218-mapping-europa.html",
+            "confirmed": true
           },
           {
             "subject": "Io",
-            "credit": "",
-            "licence": "",
-            "url": "",
+            "credit": "USGS Astrogeology, Galileo SSI and Voyager colour mosaic of Io (NASA/JPL)",
+            "licence": "Public domain",
+            "url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Io_GalileoSSI-Voyager_Global_Mosaic_ClrMerge_1km.tif",
             "confirmed": true
           },
           {
             "subject": "Ganymede",
-            "credit": "",
-            "licence": "",
-            "url": "",
+            "credit": "Björn Jónsson, map of Ganymede from Voyager and Galileo images (NASA/JPL)",
+            "licence": "Used with the author’s agreement, in the 3D view only",
+            "url": "https://bjj.mmedia.is/data/ganymede/index.html",
             "confirmed": true
           },
           {
             "subject": "Callisto",
-            "credit": "",
-            "licence": "",
-            "url": "",
+            "credit": "USGS Astrogeology, Galileo SSI and Voyager mosaic of Callisto (NASA/JPL)",
+            "licence": "Public domain",
+            "url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Callisto_Voyager_GalileoSSI_global_mosaic_1km.tif",
             "confirmed": true
           },
           {
@@ -3577,17 +3642,101 @@
             "confirmed": true
           },
           {
-            "subject": "Bennu, Ryugu and Comet Wild 2",
-            "credit": "",
-            "licence": "",
-            "url": "",
-            "confirmed": true
-          },
-          {
             "subject": "Didymos and Dimorphos",
             "credit": "NASA/Johns Hopkins APL (DART); shape models by Daly et al., DART Shapemodel Archive Bundle, NASA PDS Small Bodies Node, 2023",
             "licence": "",
             "url": "https://doi.org/10.26007/96fn-p578",
+            "confirmed": true
+          },
+          {
+            "subject": "SMILE (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "PLATO (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Comet Interceptor (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "BepiColombo (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Herschel (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Planck (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Schiaparelli (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Huygens (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "ExoMars Rosalind Franklin (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Ariel (model)",
+            "credit": "ESA",
+            "licence": "",
+            "url": "https://scifleet.esa.int/#/model-downloads",
+            "confirmed": false
+          },
+          {
+            "subject": "Europa Clipper (model)",
+            "credit": "NASA/JPL-Caltech",
+            "licence": "NASA images and media usage guidelines",
+            "url": "https://science.nasa.gov/missions/europa-clipper/europa-clipper-resources/europa-clipper-downloadable-3d-model/",
+            "confirmed": true
+          },
+          {
+            "subject": "Ryugu (model)",
+            "credit": "JAXA, University of Tokyo, Kochi University, Rikkyo University, Nagoya University, Chiba Institute of Technology, Meiji University, University of Aizu, AIST (shape: Watanabe et al. 2019; surface: Hayabusa2 ONC-T global basemap, JADE2)",
+            "licence": "",
+            "url": "https://data.darts.isas.jaxa.jp/pub/hayabusa2/paper/Watanabe_2019/",
+            "confirmed": false
+          },
+          {
+            "subject": "Bennu (model)",
+            "credit": "NASA's Scientific Visualization Studio; shape and OCAMS global mosaic NASA/Goddard/University of Arizona/CSA/York University/MDA",
+            "licence": "NASA images and media usage guidelines",
+            "url": "https://svs.gsfc.nasa.gov/5069",
             "confirmed": true
           },
           {
