@@ -1,0 +1,1 @@
+const e=["ou","cei","astrobiology","schools"];function i(){const o=new URLSearchParams(location.search).get("edition")||"";if(!o)return"ou";const n=o.toLowerCase();return e.includes(n)?n:(console.warn(`Unknown edition "${o}" (known: ${e.join(", ")}); showing the ou edition`),"ou")}export{i as p};
